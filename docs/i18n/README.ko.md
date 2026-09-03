@@ -103,7 +103,7 @@ authzest ui --workspace .
 
 - `GET /health` — backend 상태
 - `GET /api/health` — frontend용 동일 endpoint
-- `POST /api/scans` — 선택한 workspace 내부의 상대 경로나 절대 경로를 스캔
+- `POST /api/scans` — 로컬 서버 시작 시 선택한 workspace를 스캔하며 경로 본문은 받지 않음
 - `GET /docs` — FastAPI가 생성한 API 문서
 
 ## 개발 검증

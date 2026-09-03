@@ -30,7 +30,6 @@ const emptyReport: ScanReport = {
 
 function App() {
   const [health, setHealth] = useState<HealthState>("checking");
-  const [path, setPath] = useState("");
   const [report, setReport] = useState<ScanReport>(emptyReport);
   const [error, setError] = useState("");
   const [scanning, setScanning] = useState(false);
@@ -51,8 +50,6 @@ function App() {
     try {
       const response = await fetch("/api/scans", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path }),
       });
       if (!response.ok) {
         const payload = (await response.json()) as { detail?: string };
@@ -100,15 +97,11 @@ function App() {
         </p>
 
         <form className="scan-form" onSubmit={submitScan}>
-          <label htmlFor="repository">Repository path</label>
+          <label>Configured workspace</label>
           <div className="scan-controls">
-            <input
-              id="repository"
-              value={path}
-              onChange={(event) => setPath(event.target.value)}
-              placeholder="/Users/me/projects/my-fastapi-app"
-              required
-            />
+            <div className="workspace-value">
+              `authzest ui --workspace &lt;path&gt;`로 선택한 저장소
+            </div>
             <button type="submit" disabled={scanning || health !== "online"}>
               {scanning ? "분석 중…" : "Analyze repository"}
             </button>

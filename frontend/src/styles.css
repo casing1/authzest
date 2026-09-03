@@ -141,20 +141,16 @@ h1 {
   gap: 10px;
 }
 
-.scan-controls input {
+.workspace-value {
   flex: 1;
   min-width: 0;
   padding: 15px 17px;
   border: 1px solid #294139;
   border-radius: 10px;
-  outline: none;
-  color: #e8edf2;
+  color: #97a7a2;
   background: rgba(10, 25, 21, 0.8);
-}
-
-.scan-controls input:focus {
-  border-color: #50e3a4;
-  box-shadow: 0 0 0 3px rgba(80, 227, 164, 0.1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
 }
 
 .scan-controls button {
