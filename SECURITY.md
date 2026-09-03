@@ -1,22 +1,46 @@
+<p align="center">
+  <strong>English</strong> ·
+  <a href="docs/i18n/SECURITY.ko.md">한국어</a>
+</p>
+
 # Security Policy
 
 ## Supported versions
 
-아직 최초 공개 전 개발 단계이므로 최신 기본 브랜치만 보안 수정을 받습니다.
+AuthZest is in early development. Security fixes are provided only for the latest commit on the default
+branch until the first supported release is published.
 
 ## Reporting a vulnerability
 
-공개 issue에 취약점 세부사항이나 실제 대상의 민감한 코드를 올리지 마세요. 저장소 관리자가
-공개할 비공개 신고 채널(GitHub private vulnerability reporting 또는 전용 보안 이메일)을
-설정한 뒤 그 채널을 이용해 주세요. 채널이 아직 없다면 민감한 내용을 공개하지 말고 관리자에게
-비공개 연락 방법을 먼저 요청해 주세요.
+Do not disclose vulnerability details or sensitive source code from a real target in a public issue,
+discussion, or pull request.
 
-신고에는 가능한 범위에서 영향, 재현 조건, 최소 증명 코드, 완화 제안을 포함해 주세요. 접수 후
-관리자는 범위와 예상 대응 일정을 회신해야 합니다.
+Use GitHub private vulnerability reporting when it is available for this repository. If no private reporting
+channel is visible, contact the maintainer first and ask for a private communication method without including
+sensitive details in the initial public message.
+
+Include the following information when practical:
+
+- affected component and security impact
+- prerequisites and reproducible steps
+- minimal proof of concept that does not expose third-party data
+- suggested mitigation or relevant references
+
+The maintainer should acknowledge the report, confirm its scope, and provide an expected response timeline.
 
 ## Safe use
 
-AuthZest는 본인이 소유하거나 명시적으로 테스트 권한을 받은 코드와 환경에서만 사용해야 합니다.
-분석 대상 저장소에는 비밀키, 운영 데이터, 개인정보가 있을 수 있습니다. 향후 Codex adapter를
-활성화할 때는 외부로 전송되는 파일과 프롬프트를 명확히 표시하고 최소 권한, 사용자 승인,
-민감정보 제거 정책을 적용해야 합니다.
+Use AuthZest only with source code and environments that you own or are explicitly authorized to test.
+Repositories may contain credentials, production data, personal information, or proprietary code.
+
+The current deterministic local analyzer does not require an API key. Before a future Codex adapter sends any
+content outside the local process, it must clearly show which files and prompts will be transmitted and apply
+least privilege, explicit user approval, sensitive-data redaction, timeouts, and failure isolation.
+
+## Security design expectations
+
+- Network requests and external process execution must remain disabled by default.
+- Local API endpoints must not turn a caller-controlled path into unrestricted filesystem access.
+- Findings must include evidence and distinguish confirmed, suspected, and unknown states.
+- Security controls require regression tests before merge.
+- Secrets and personal information must never be committed to the repository.
