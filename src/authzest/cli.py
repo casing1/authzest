@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Annotated
 
@@ -89,6 +90,15 @@ def ui(
     host: Annotated[str, typer.Option(help="Address for the local server.")] = "127.0.0.1",
     port: Annotated[int, typer.Option(help="Port for the local server.")] = 8000,
     reload: Annotated[bool, typer.Option(help="Reload when Python source changes.")] = False,
+    workspace: Annotated[
+        Path | None,
+        typer.Option(
+            help="Directory that the local API is allowed to scan (default: current directory).",
+            exists=True,
+            file_okay=False,
+            resolve_path=True,
+        ),
+    ] = None,
 ) -> None:
     """Run the optional local dashboard without deploying a website."""
     try:
@@ -100,8 +110,12 @@ def ui(
         )
         raise typer.Exit(code=2) from exc
 
+    resolved_workspace = (workspace or Path.cwd()).expanduser().resolve()
+    os.environ["AUTHZEST_SCAN_ROOT"] = str(resolved_workspace)
+
     typer.echo(f"AuthZest local server: http://{host}:{port}")
     typer.echo(f"API docs: http://{host}:{port}/docs")
+    typer.echo(f"Scan workspace: {resolved_workspace}")
     uvicorn.run("authzest.api.app:app", host=host, port=port, reload=reload)
 
 
