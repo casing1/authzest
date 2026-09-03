@@ -8,11 +8,11 @@ frontend_dist = project_root / "frontend" / "dist"
 datas = [(str(frontend_dist), "frontend/dist")] if frontend_dist.is_dir() else []
 
 analysis = Analysis(
-    [str(project_root / "src" / "authguard" / "__main__.py")],
+    [str(project_root / "src" / "authzest" / "__main__.py")],
     pathex=[str(project_root / "src")],
     binaries=[],
     datas=datas,
-    hiddenimports=["authguard.api.app"],
+    hiddenimports=["authzest.api.app"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -28,7 +28,7 @@ executable = EXE(
     analysis.binaries,
     analysis.datas,
     [],
-    name="authguard",
+    name="authzest",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

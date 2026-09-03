@@ -3,7 +3,7 @@ from pathlib import Path
 
 import httpx
 
-from authguard.api.app import create_app
+from authzest.api.app import create_app
 
 
 def test_health_endpoint() -> None:
@@ -15,7 +15,7 @@ def test_health_endpoint() -> None:
     response = asyncio.run(request())
 
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "service": "authguard"}
+    assert response.json() == {"status": "ok", "service": "authzest"}
 
 
 def test_scan_endpoint(tmp_path: Path) -> None:

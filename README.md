@@ -1,32 +1,32 @@
-# AuthGuard (working title)
+# AuthZest
 
 FastAPI 저장소의 소스를 읽어 접근통제 구조를 분석하고 보안 테스트를 보조하는 OSS
-프로젝트의 초기 스캐폴드입니다. **AuthGuard는 가칭**이며, 공개 배포 전 패키지·프로젝트 이름의
-충돌 여부를 확인해야 합니다.
+프로젝트의 초기 스캐폴드입니다. 현재는 학기 프로젝트의 기반을 세우는 초기 개발 단계이며,
+기능은 작은 단위의 이슈와 커밋으로 점진적으로 확장합니다.
 
 현재 단계는 설치 가능한 CLI의 작은 수직 슬라이스에 집중합니다.
 
 - Python AST 기반 FastAPI 라우트 탐색
-- Typer CLI (`authguard scan`, `authguard doctor`)
+- Typer CLI (`authzest scan`, `authzest doctor`)
 - pipx 설치 및 PyInstaller 독립 실행 파일
-- 선택 기능인 FastAPI + React 로컬 대시보드 (`authguard ui`)
+- 선택 기능인 FastAPI + React 로컬 대시보드 (`authzest ui`)
 - 향후 Codex CLI 또는 App Server를 연결할 수 있는 adapter 경계
 
 Codex 연동은 아직 비활성입니다. 현재 구현은 API 키나 ChatGPT 로그인을 요구하지 않으며,
-`src/authguard/codex/`의 인터페이스 뒤에 실제 adapter를 추가하도록 설계했습니다. 공식
+`src/authzest/codex/`의 인터페이스 뒤에 실제 adapter를 추가하도록 설계했습니다. 공식
 [Codex App Server 문서](https://learn.chatgpt.com/docs/app-server)에 따르면 App Server는 인증,
 대화 기록, 승인과 스트리밍 이벤트가 필요한 제품 내 통합에 적합합니다.
 
 ## 권장 설치: pipx
 
 Python 3.12 이상과 pipx가 설치되어 있다면 저장소 루트에서 설치합니다. 설치 후에는 가상환경을
-직접 활성화하지 않아도 어느 디렉터리에서든 `authguard`를 실행할 수 있습니다.
+직접 활성화하지 않아도 어느 디렉터리에서든 `authzest`를 실행할 수 있습니다.
 
 ```bash
 pipx install .
-authguard --version
-authguard doctor
-authguard scan /path/to/fastapi-project
+authzest --version
+authzest doctor
+authzest scan /path/to/fastapi-project
 ```
 
 개발 중인 코드를 다시 설치할 때는 `pipx install . --force`를 사용합니다. 선택적인 로컬
@@ -39,9 +39,9 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 
-authguard --help
-authguard doctor
-authguard scan .
+authzest --help
+authzest doctor
+authzest scan .
 ```
 
 ## 독립 실행 파일
@@ -53,18 +53,18 @@ Python이나 npm이 없는 사용자에게는 GitHub Releases의 운영체제별
 source .venv/bin/activate
 python -m pip install -e '.[build]'
 cd frontend && npm ci && npm run build && cd ..
-python -m PyInstaller --clean --noconfirm authguard.spec
-./dist/authguard doctor
-./dist/authguard scan /path/to/fastapi-project
+python -m PyInstaller --clean --noconfirm authzest.spec
+./dist/authzest doctor
+./dist/authzest scan /path/to/fastapi-project
 ```
 
 Apple Silicon Mac에서 빌드 결과를 PATH에 설치하는 예시는 다음과 같습니다. 설치 대상에 같은 이름의
 파일이 없는지 먼저 확인하세요.
 
 ```bash
-install -m 755 dist/authguard /opt/homebrew/bin/authguard
-authguard --version
-authguard doctor
+install -m 755 dist/authzest /opt/homebrew/bin/authzest
+authzest --version
+authzest doctor
 ```
 
 `v*` 태그를 push하면 GitHub Actions가 macOS, Linux, Windows 실행 파일과 SHA-256 checksum을
@@ -82,7 +82,7 @@ npm install
 npm run build
 cd ..
 
-authguard ui
+authzest ui
 ```
 
 브라우저에서 `http://127.0.0.1:8000`을 여세요. 프론트엔드 개발 중에는 두 프로세스를
@@ -90,7 +90,7 @@ authguard ui
 
 ```bash
 # terminal 1
-authguard ui --reload
+authzest ui --reload
 
 # terminal 2
 cd frontend
@@ -102,12 +102,12 @@ Vite 개발 서버는 `/api`와 `/health` 요청을 `http://127.0.0.1:8000`으�
 ## 명령
 
 ```bash
-authguard --help
-authguard --version
-authguard doctor
-authguard scan <path>
-authguard scan <path> --json
-authguard ui --host 127.0.0.1 --port 8000
+authzest --help
+authzest --version
+authzest doctor
+authzest scan <path>
+authzest scan <path> --json
+authzest ui --host 127.0.0.1 --port 8000
 ```
 
 `doctor`는 실행 환경과 선택적인 Codex CLI 설치·로그인 상태를 확인합니다. Codex가 없거나 아직
@@ -142,7 +142,7 @@ npm run build
 
 ```text
 .
-├── src/authguard/
+├── src/authzest/
 │   ├── analyzer/        # 저장소 단위 분석과 집계
 │   ├── parser/          # 언어/프레임워크 소스 파싱
 │   ├── codex/           # AI adapter interface와 구현체
@@ -153,7 +153,7 @@ npm run build
 ├── tests/
 ├── frontend/            # 선택적인 React/Vite/TypeScript UI
 ├── scripts/             # Release 파일명 및 checksum 생성
-├── authguard.spec       # PyInstaller 단일 실행 파일 설정
+├── authzest.spec       # PyInstaller 단일 실행 파일 설정
 └── .github/workflows/   # CI와 운영체제별 Release 빌드
 ```
 

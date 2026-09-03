@@ -1,4 +1,4 @@
-from authguard.cli import app
+from authzest.cli import app
 
 if __name__ == "__main__":
     app()

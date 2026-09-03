@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from authguard.runner import ScanRunner
+from authzest.runner import ScanRunner
 
 
 def test_scan_runner_counts_python_files_and_routes(tmp_path: Path) -> None:

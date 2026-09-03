@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from authguard.analyzer import RepositoryAnalyzer
-from authguard.models import ScanReport
+from authzest.analyzer import RepositoryAnalyzer
+from authzest.models import ScanReport
 
 
 class ScanRunner:

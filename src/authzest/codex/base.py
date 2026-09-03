@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from authguard.models import Route
+from authzest.models import Route
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,10 +1,10 @@
-from authguard.codex.base import (
+from authzest.codex.base import (
     CodexAdapter,
     CodexAnalysisRequest,
     CodexFinding,
     CodexUnavailableError,
 )
-from authguard.codex.disabled import DisabledCodexAdapter
+from authzest.codex.disabled import DisabledCodexAdapter
 
 __all__ = [
     "CodexAdapter",

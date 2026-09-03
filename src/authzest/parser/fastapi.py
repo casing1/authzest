@@ -4,7 +4,7 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
-from authguard.models import Route
+from authzest.models import Route
 
 HTTP_METHODS = {"delete", "get", "head", "options", "patch", "post", "put"}
 

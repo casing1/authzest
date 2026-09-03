@@ -1,6 +1,6 @@
 # Contributing
 
-AuthGuard(가칭)에 기여해 주셔서 감사합니다.
+AuthZest(가칭)에 기여해 주셔서 감사합니다.
 
 ## 개발 환경
 
@@ -20,8 +20,8 @@ cd frontend && npm run lint && npm run format:check && npm run build
 
 ```bash
 python -m pip install -e '.[build]'
-python -m PyInstaller --clean --noconfirm authguard.spec
-./dist/authguard doctor
+python -m PyInstaller --clean --noconfirm authzest.spec
+./dist/authzest doctor
 ```
 
 ## 변경 원칙

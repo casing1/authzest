@@ -3,13 +3,13 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "authguard"
+name = "authzest"
 version = "0.1.0"
 description = "Source-aware authorization security testing for FastAPI projects"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
-authors = [{ name = "AuthGuard contributors" }]
+authors = [{ name = "AuthZest contributors" }]
 dependencies = [
   "typer>=0.9,<1.0",
 ]
@@ -34,7 +34,7 @@ build = [
 ]
 
 [project.scripts]
-authguard = "authguard.cli:app"
+authzest = "authzest.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

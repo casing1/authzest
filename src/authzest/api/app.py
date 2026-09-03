@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from authguard.runner import ScanRunner
+from authzest.runner import ScanRunner
 
 
 class ScanRequest(BaseModel):
@@ -24,7 +24,7 @@ def _default_frontend_dist() -> Path:
 
 def create_app(frontend_dist: Path | None = None) -> FastAPI:
     application = FastAPI(
-        title="AuthGuard API",
+        title="AuthZest API",
         version="0.1.0",
         description="Local API for source-aware FastAPI authorization analysis.",
     )
@@ -33,7 +33,7 @@ def create_app(frontend_dist: Path | None = None) -> FastAPI:
     @application.get("/health", tags=["system"])
     @application.get("/api/health", tags=["system"], include_in_schema=False)
     def health() -> dict[str, str]:
-        return {"status": "ok", "service": "authguard"}
+        return {"status": "ok", "service": "authzest"}
 
     @application.post("/api/scans", tags=["analysis"])
     def scan_repository(request: ScanRequest) -> dict[str, object]:
@@ -56,7 +56,7 @@ def create_app(frontend_dist: Path | None = None) -> FastAPI:
         @application.get("/", include_in_schema=False)
         def api_root() -> dict[str, str]:
             return {
-                "name": "AuthGuard",
+                "name": "AuthZest",
                 "message": "Build frontend/ to serve the dashboard here.",
                 "docs": "/docs",
             }

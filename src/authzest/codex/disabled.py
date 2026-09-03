@@ -1,4 +1,4 @@
-from authguard.codex.base import (
+from authzest.codex.base import (
     CodexAnalysisRequest,
     CodexFinding,
     CodexUnavailableError,

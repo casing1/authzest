@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from authguard.models import Route, ScanReport
-from authguard.parser import FastAPIRouteParser
+from authzest.models import Route, ScanReport
+from authzest.parser import FastAPIRouteParser
 
 SKIPPED_DIRECTORIES = {
     ".git",

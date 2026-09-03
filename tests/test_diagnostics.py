@@ -1,6 +1,6 @@
 import subprocess
 
-from authguard.diagnostics import collect_diagnostics
+from authzest.diagnostics import collect_diagnostics
 
 
 def test_doctor_allows_static_scans_when_codex_is_missing() -> None:

@@ -18,13 +18,13 @@ def normalized_platform() -> tuple[str, str]:
 def main() -> None:
     system, architecture = normalized_platform()
     extension = ".exe" if system == "windows" else ""
-    source = Path("dist") / f"authguard{extension}"
+    source = Path("dist") / f"authzest{extension}"
     if not source.is_file():
         raise SystemExit(f"Built executable not found: {source}")
 
     release_dir = Path("release")
     release_dir.mkdir(exist_ok=True)
-    target = release_dir / f"authguard-{system}-{architecture}{extension}"
+    target = release_dir / f"authzest-{system}-{architecture}{extension}"
     shutil.copy2(source, target)
 
     digest = hashlib.sha256(target.read_bytes()).hexdigest()

@@ -33,15 +33,15 @@ jobs:
         working-directory: frontend
       - run: npm run build
         working-directory: frontend
-      - run: python -m PyInstaller --clean --noconfirm authguard.spec
+      - run: python -m PyInstaller --clean --noconfirm authzest.spec
       - if: runner.os != 'Windows'
-        run: ./dist/authguard --version
+        run: ./dist/authzest --version
       - if: runner.os == 'Windows'
-        run: .\dist\authguard.exe --version
+        run: .\dist\authzest.exe --version
       - run: python scripts/package_release.py
       - uses: actions/upload-artifact@v4
         with:
-          name: authguard-${{ runner.os }}-${{ runner.arch }}
+          name: authzest-${{ runner.os }}-${{ runner.arch }}
           path: release/*
           if-no-files-found: error
 

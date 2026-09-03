@@ -7,7 +7,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import asdict, dataclass
 from typing import Any, Literal
 
-from authguard import __version__
+from authzest import __version__
 
 DiagnosticStatus = Literal["ok", "warning", "error"]
 CommandRunner = Callable[..., subprocess.CompletedProcess[str]]
@@ -66,7 +66,7 @@ def collect_diagnostics(
                 "Python",
                 "error",
                 python_detail,
-                "Install Python 3.12 or newer, then reinstall AuthGuard.",
+                "Install Python 3.12 or newer, then reinstall AuthZest.",
             )
         )
 

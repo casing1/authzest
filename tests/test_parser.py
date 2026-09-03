@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from authguard.parser import FastAPIRouteParser
+from authzest.parser import FastAPIRouteParser
 
 
 def test_parser_discovers_fastapi_style_route(tmp_path: Path) -> None:

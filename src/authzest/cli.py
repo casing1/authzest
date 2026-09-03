@@ -6,12 +6,12 @@ from typing import Annotated
 
 import typer
 
-from authguard import __version__
-from authguard.diagnostics import collect_diagnostics
-from authguard.runner import ScanRunner
+from authzest import __version__
+from authzest.diagnostics import collect_diagnostics
+from authzest.runner import ScanRunner
 
 app = typer.Typer(
-    name="authguard",
+    name="authzest",
     help="Source-aware authorization security testing for FastAPI projects.",
     no_args_is_help=True,
 )
@@ -19,7 +19,7 @@ app = typer.Typer(
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"authguard {__version__}")
+        typer.echo(f"authzest {__version__}")
         raise typer.Exit()
 
 
@@ -33,7 +33,7 @@ def main(
         help="Show the installed version and exit.",
     ),
 ) -> None:
-    """AuthGuard command-line application."""
+    """AuthZest command-line application."""
     del version
 
 
@@ -68,12 +68,12 @@ def scan(
 def doctor(
     as_json: bool = typer.Option(False, "--json", help="Print diagnostics as JSON."),
 ) -> None:
-    """Check whether AuthGuard and the optional Codex integration are ready."""
+    """Check whether AuthZest and the optional Codex integration are ready."""
     report = collect_diagnostics()
     if as_json:
         typer.echo(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
     else:
-        typer.echo(f"AuthGuard {report.version}")
+        typer.echo(f"AuthZest {report.version}")
         for check in report.checks:
             label = {"ok": "OK", "warning": "WARN", "error": "ERROR"}[check.status]
             typer.echo(f"[{label}] {check.name}: {check.detail}")
@@ -95,14 +95,14 @@ def ui(
         import uvicorn
     except ImportError as exc:
         typer.echo(
-            "UI dependencies are not installed. Reinstall AuthGuard with the 'ui' extra.",
+            "UI dependencies are not installed. Reinstall AuthZest with the 'ui' extra.",
             err=True,
         )
         raise typer.Exit(code=2) from exc
 
-    typer.echo(f"AuthGuard local server: http://{host}:{port}")
+    typer.echo(f"AuthZest local server: http://{host}:{port}")
     typer.echo(f"API docs: http://{host}:{port}/docs")
-    uvicorn.run("authguard.api.app:app", host=host, port=port, reload=reload)
+    uvicorn.run("authzest.api.app:app", host=host, port=port, reload=reload)
 
 
 if __name__ == "__main__":

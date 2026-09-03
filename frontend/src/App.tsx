@@ -73,9 +73,9 @@ function App() {
   return (
     <main className="shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="AuthGuard home">
+        <a className="brand" href="/" aria-label="AuthZest home">
           <span className="brand-mark">AG</span>
-          <span>AuthGuard</span>
+          <span>AuthZest</span>
         </a>
         <div className={`health health-${health}`}>
           <span className="health-dot" />
