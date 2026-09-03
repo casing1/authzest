@@ -103,7 +103,7 @@ FastAPI サーバーへプロキシします。
 
 - `GET /health` — backend の状態
 - `GET /api/health` — frontend 向けの同等 endpoint
-- `POST /api/scans` — 選択した workspace 内の相対パスまたは絶対パスをスキャン
+- `POST /api/scans` — ローカルサーバー起動時に選択した workspace をスキャンし、パス本文は受け付けない
 - `GET /docs` — FastAPI が生成する API ドキュメント
 
 ## 検証

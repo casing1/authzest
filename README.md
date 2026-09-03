@@ -101,7 +101,7 @@ separate terminals. Vite proxies `/api` and `/health` to the local FastAPI serve
 
 - `GET /health` — backend health
 - `GET /api/health` — equivalent endpoint for the frontend
-- `POST /api/scans` — scan a relative path or an absolute path contained in the selected workspace
+- `POST /api/scans` — scan the workspace selected when the local server started; no path body is accepted
 - `GET /docs` — generated FastAPI API documentation
 
 ## Verification
