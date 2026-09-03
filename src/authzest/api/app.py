@@ -7,13 +7,8 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 
 from authzest.runner import ScanRunner
-
-
-class ScanRequest(BaseModel):
-    path: str
 
 
 def _default_frontend_dist() -> Path:
@@ -26,18 +21,6 @@ def _default_frontend_dist() -> Path:
 def _default_scan_root() -> Path:
     configured_root = os.environ.get("AUTHZEST_SCAN_ROOT")
     return Path(configured_root) if configured_root else Path.cwd()
-
-
-def _resolve_scan_path(requested_path: str, scan_root: Path) -> Path:
-    """Resolve an API path without allowing it to escape the configured workspace."""
-    root = os.path.realpath(scan_root.expanduser())
-    candidate = os.path.realpath(os.path.join(root, requested_path))
-    comparison_root = os.path.normcase(root)
-    comparison_candidate = os.path.normcase(candidate)
-    root_prefix = comparison_root if comparison_root.endswith(os.sep) else comparison_root + os.sep
-    if comparison_candidate != comparison_root and not comparison_candidate.startswith(root_prefix):
-        raise PermissionError("Scan path must be inside the configured workspace.")
-    return Path(candidate)
 
 
 def create_app(frontend_dist: Path | None = None, scan_root: Path | None = None) -> FastAPI:
@@ -57,12 +40,9 @@ def create_app(frontend_dist: Path | None = None, scan_root: Path | None = None)
         return {"status": "ok", "service": "authzest"}
 
     @application.post("/api/scans", tags=["analysis"])
-    def scan_repository(request: ScanRequest) -> dict[str, object]:
+    def scan_repository() -> dict[str, object]:
         try:
-            target = _resolve_scan_path(request.path, resolved_scan_root)
-            return runner.run(target).to_dict()
-        except PermissionError as exc:
-            raise HTTPException(status_code=403, detail=str(exc)) from exc
+            return runner.run(resolved_scan_root).to_dict()
         except (FileNotFoundError, NotADirectoryError) as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
