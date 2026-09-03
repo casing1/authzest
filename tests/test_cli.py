@@ -3,6 +3,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
+from authzest import __version__
 from authzest.cli import app
 
 runner = CliRunner()
@@ -21,7 +22,7 @@ def test_version() -> None:
     result = runner.invoke(app, ["--version"])
 
     assert result.exit_code == 0
-    assert result.stdout.strip() == "authzest 0.1.0"
+    assert result.stdout.strip() == f"authzest {__version__}"
 
 
 def test_scan_can_return_json(tmp_path: Path) -> None:

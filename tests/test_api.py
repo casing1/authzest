@@ -3,6 +3,7 @@ from pathlib import Path
 
 import httpx
 
+from authzest import __version__
 from authzest.api.app import create_app
 
 
@@ -16,6 +17,7 @@ def test_health_endpoint() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "service": "authzest"}
+    assert create_app().version == __version__
 
 
 def test_scan_endpoint(tmp_path: Path) -> None:

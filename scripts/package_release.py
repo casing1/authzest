@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import platform
 import shutil
+from importlib.metadata import version
 from pathlib import Path
 
 
@@ -17,6 +19,8 @@ def normalized_platform() -> tuple[str, str]:
 
 def main() -> None:
     system, architecture = normalized_platform()
+    release_label = os.environ.get("AUTHZEST_RELEASE_TAG") or version("authzest")
+    release_label = release_label.removeprefix("v")
     extension = ".exe" if system == "windows" else ""
     source = Path("dist") / f"authzest{extension}"
     if not source.is_file():
@@ -24,7 +28,7 @@ def main() -> None:
 
     release_dir = Path("release")
     release_dir.mkdir(exist_ok=True)
-    target = release_dir / f"authzest-{system}-{architecture}{extension}"
+    target = release_dir / f"authzest-{release_label}-{system}-{architecture}{extension}"
     shutil.copy2(source, target)
 
     digest = hashlib.sha256(target.read_bytes()).hexdigest()
