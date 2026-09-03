@@ -127,6 +127,10 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
+Готовые preview-файлы доступны на [странице GitHub Releases](https://github.com/casing1/authzest/releases).
+Они ещё не нотарифицированы и не подписаны для публичного распространения, поэтому операционная система
+может показать предупреждение о непроверенном издателе.
+
 Отправка проверенного тега `v*` запускает release workflow, который создаёт исполняемые файлы для macOS,
 Linux и Windows вместе с контрольными суммами SHA-256. См. [историю изменений](../../CHANGELOG.md) и
 [руководство по релизу](../RELEASING.md).

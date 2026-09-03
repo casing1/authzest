@@ -127,6 +127,10 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
+Prebuilt preview binaries are available on the [GitHub Releases page](https://github.com/casing1/authzest/releases).
+They are not yet notarized or signed for public distribution, so operating systems may show an
+unverified-publisher warning.
+
 Pushing a verified `v*` tag starts the release workflow for macOS, Linux, and Windows binaries with SHA-256
 checksums. See the [changelog](CHANGELOG.md) and [release guide](docs/RELEASING.md).
 
