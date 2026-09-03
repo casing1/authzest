@@ -70,7 +70,7 @@ authzest --version
 authzest doctor
 authzest scan <path>
 authzest scan <path> --json
-authzest ui --host 127.0.0.1 --port 8000
+authzest ui --workspace <path> --host 127.0.0.1 --port 8000
 ```
 
 `doctor` checks the runtime and the optional Codex CLI installation and login state. Static analysis still
@@ -82,6 +82,8 @@ works when Codex is unavailable.
 ## Optional local dashboard
 
 The dashboard is local software and does not require website deployment.
+The HTTP API can scan only the selected workspace. Direct CLI scans may still target any path that the
+current user is authorized to read.
 
 ```bash
 cd frontend
@@ -89,7 +91,7 @@ npm ci
 npm run build
 cd ..
 
-authzest ui
+authzest ui --workspace .
 ```
 
 Open `http://127.0.0.1:8000`. For frontend development, run `authzest ui --reload` and `npm run dev` in
@@ -99,7 +101,7 @@ separate terminals. Vite proxies `/api` and `/health` to the local FastAPI serve
 
 - `GET /health` — backend health
 - `GET /api/health` — equivalent endpoint for the frontend
-- `POST /api/scans` — scan a repository with `{ "path": "/absolute/or/relative/path" }`
+- `POST /api/scans` — scan a relative path or an absolute path contained in the selected workspace
 - `GET /docs` — generated FastAPI API documentation
 
 ## Verification
