@@ -129,6 +129,10 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
+[GitHub Releases 페이지](https://github.com/casing1/authzest/releases)에서 미리 빌드된 preview 실행 파일을
+받을 수 있습니다. 아직 공개 배포용 notarization이나 signing이 적용되지 않아 운영체제에서 확인되지
+않은 게시자 경고를 표시할 수 있습니다.
+
 검증된 `v*` 태그를 push하면 macOS, Linux, Windows 실행 파일과 SHA-256 checksum을 만드는 release
 workflow가 시작됩니다. [변경 기록](../../CHANGELOG.md)과 [릴리스 안내](../RELEASING.md)를 참고하세요.
 

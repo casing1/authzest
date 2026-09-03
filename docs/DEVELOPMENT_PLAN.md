@@ -64,8 +64,8 @@ AuthZest는 먼저 결정론적인 정적 분석 도구를 만들고, 그 결과
 - [ ] end-to-end fixture 검사를 CI에 추가합니다.
 - [ ] 지원 범위, 알려진 한계와 보안 모델을 문서화합니다.
 - [x] semantic versioning과 changelog 규칙을 적용합니다.
-- [ ] 태그 기반 바이너리와 checksum 배포를 검증합니다.
-- [ ] 첫 번째 공개 pre-release를 만들고 설치 과정을 새 환경에서 검증합니다.
+- [x] 태그 기반 바이너리와 checksum 배포를 검증합니다.
+- [x] 첫 번째 공개 pre-release를 만들고 설치 과정을 새 환경에서 검증합니다.
 
 ## 작업별 체크리스트
 
