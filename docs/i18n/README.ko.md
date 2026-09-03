@@ -16,7 +16,7 @@ AuthZest는 FastAPI 프로젝트를 위한 오픈소스 소스 인식형 접근�
 근거를 생성합니다.
 
 > [!IMPORTANT]
-> AuthZest는 초기 개발 단계입니다. 버전 `0.1.0`은 실행 가능한 프로젝트 스캐폴딩이며 완성된
+> AuthZest는 초기 개발 단계입니다. 버전 `0.1.0-alpha.1`은 실행 가능한 프로젝트 스캐폴딩이며 완성된
 > 취약점 스캐너가 아닙니다. 접근통제 분류, 보안 finding, 능동 테스트와 Codex 기반 분석은 앞으로
 > 구현할 기능입니다.
 
@@ -129,8 +129,8 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
-`v*` 태그를 push하면 macOS, Linux, Windows 실행 파일과 SHA-256 checksum을 만드는 release
-workflow가 시작됩니다.
+검증된 `v*` 태그를 push하면 macOS, Linux, Windows 실행 파일과 SHA-256 checksum을 만드는 release
+workflow가 시작됩니다. [변경 기록](../../CHANGELOG.md)과 [릴리스 안내](../RELEASING.md)를 참고하세요.
 
 ## 프로젝트 구조
 

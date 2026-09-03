@@ -7,8 +7,8 @@
 
 ## Supported versions
 
-AuthZest is in early development. Security fixes are provided only for the latest commit on the default
-branch until the first supported release is published.
+AuthZest is in early development. Security fixes are provided for the latest published `0.1.x` prerelease
+and the latest commit on the default branch. Older preview builds are unsupported.
 
 ## Reporting a vulnerability
 

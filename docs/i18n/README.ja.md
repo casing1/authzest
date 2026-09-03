@@ -16,7 +16,7 @@ AuthZest は、FastAPI プロジェクト向けのオープンソースなソー
 解析で利用できる根拠を生成します。
 
 > [!IMPORTANT]
-> AuthZest は開発初期段階です。バージョン `0.1.0` は実行可能なプロジェクトのひな型であり、
+> AuthZest は開発初期段階です。バージョン `0.1.0-alpha.1` は実行可能なプロジェクトのひな型であり、
 > 完成した脆弱性スキャナーではありません。認可状態の分類、セキュリティ finding、能動的な
 > テスト、Codex を利用した解析は今後実装する予定です。
 
@@ -129,8 +129,9 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
-`v*` タグを push すると、macOS、Linux、Windows 向けの実行ファイルと SHA-256 checksum を
-作成する release workflow が開始されます。
+検証済みの `v*` タグを push すると、macOS、Linux、Windows 向けの実行ファイルと SHA-256
+checksum を作成する release workflow が開始されます。[変更履歴](../../CHANGELOG.md)と
+[リリースガイド](../RELEASING.md)を参照してください。
 
 ## プロジェクト構成
 

@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from authzest import __version__
 from authzest.runner import ScanRunner
 
 
@@ -26,7 +27,7 @@ def _default_scan_root() -> Path:
 def create_app(frontend_dist: Path | None = None, scan_root: Path | None = None) -> FastAPI:
     application = FastAPI(
         title="AuthZest API",
-        version="0.1.0",
+        version=__version__,
         description="Local API for source-aware FastAPI authorization analysis.",
     )
     runner = ScanRunner()

@@ -34,7 +34,7 @@ chore/55-update-actions
 
 Recommended types are `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, and `build`. AuthZest does
 not maintain a long-lived `develop` branch. Releases are created by tagging a verified commit on `main`, for
-example `v0.1.0`.
+example `v0.1.0-alpha.1`. Follow the [release guide](docs/RELEASING.md); published tags are immutable.
 
 ## Commit conventions
 
