@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/assets/authzest-banner.png" alt="AuthZest — ソースコード認識型の認可テスト" width="100%">
+  <img src="../assets/authzest-banner.png" alt="AuthZest — ソースコード認識型の認可テスト" width="100%">
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> ·
+  <a href="../../README.md">English</a> ·
   <a href="README.ko.md">한국어</a> ·
   <strong>日本語</strong> ·
   <a href="README.ru.md">Русский</a>
@@ -155,14 +155,14 @@ AI provider に依存してはいけません。
 
 ## ロードマップとコントリビューション
 
-- [開発計画](docs/DEVELOPMENT_PLAN.md)
+- [開発計画](../DEVELOPMENT_PLAN.md)
 - [公開ロードマップ issue](https://github.com/casing1/authzest/issues/1)
-- [コントリビューションとコミットのルール](CONTRIBUTING.md)
+- [コントリビューションとコミットのルール](../../CONTRIBUTING.md)
 
 実装前に issue を作成し、その issue に紐づく短期間のブランチを使用してください。Pull request
 はマージ前に Python と frontend のチェックを通過する必要があります。
 
 ## ライセンスとセキュリティ
 
-AuthZest は [MIT License](LICENSE) の下で公開されています。脆弱性は公開 issue ではなく、
-[SECURITY.md](SECURITY.md) に記載された非公開の手順で報告してください。
+AuthZest は [MIT License](../../LICENSE) の下で公開されています。脆弱性は公開 issue ではなく、
+[SECURITY.md](../../SECURITY.md) に記載された非公開の手順で報告してください。

@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/assets/authzest-banner.png" alt="AuthZest — 소스 인식형 접근통제 테스트" width="100%">
+  <img src="../assets/authzest-banner.png" alt="AuthZest — 소스 인식형 접근통제 테스트" width="100%">
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> ·
+  <a href="../../README.md">English</a> ·
   <strong>한국어</strong> ·
   <a href="README.ja.md">日本語</a> ·
   <a href="README.ru.md">Русский</a>
@@ -155,14 +155,14 @@ workflow가 시작됩니다.
 
 ## 로드맵과 기여
 
-- [개발 계획](docs/DEVELOPMENT_PLAN.md)
+- [개발 계획](../DEVELOPMENT_PLAN.md)
 - [공개 로드맵 issue](https://github.com/casing1/authzest/issues/1)
-- [기여 및 커밋 규칙](CONTRIBUTING.md)
+- [기여 및 커밋 규칙](CONTRIBUTING.ko.md)
 
 구현 전에 issue를 만들고 그 issue에 연결된 단기 브랜치를 사용해 주세요. Pull request는 병합 전
 Python과 frontend 검사를 통과해야 합니다.
 
 ## 라이선스와 보안
 
-AuthZest는 [MIT License](LICENSE)로 배포됩니다. 취약점은 공개 issue가 아니라
-[SECURITY.md](SECURITY.md)의 비공개 절차를 통해 제보해 주세요.
+AuthZest는 [MIT License](../../LICENSE)로 배포됩니다. 취약점은 공개 issue가 아니라
+[한국어 보안 정책](SECURITY.ko.md)의 비공개 절차를 통해 제보해 주세요.

@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/assets/authzest-banner.png" alt="AuthZest — анализ авторизации с учётом исходного кода" width="100%">
+  <img src="../assets/authzest-banner.png" alt="AuthZest — анализ авторизации с учётом исходного кода" width="100%">
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> ·
+  <a href="../../README.md">English</a> ·
   <a href="README.ko.md">한국어</a> ·
   <a href="README.ja.md">日本語</a> ·
   <strong>Русский</strong>
@@ -153,14 +153,14 @@ Windows вместе с контрольными суммами SHA-256.
 
 ## План развития и участие
 
-- [План разработки](docs/DEVELOPMENT_PLAN.md)
+- [План разработки](../DEVELOPMENT_PLAN.md)
 - [Публичный roadmap issue](https://github.com/casing1/authzest/issues/1)
-- [Правила участия и коммитов](CONTRIBUTING.md)
+- [Правила участия и коммитов](../../CONTRIBUTING.md)
 
 Перед реализацией создайте issue и используйте связанную с ним краткосрочную ветку. До слияния pull request
 должен пройти проверки Python и frontend.
 
 ## Лицензия и безопасность
 
-AuthZest распространяется по [лицензии MIT](LICENSE). Сообщайте об уязвимостях через закрытую процедуру,
-описанную в [SECURITY.md](SECURITY.md), а не через публичный issue.
+AuthZest распространяется по [лицензии MIT](../../LICENSE). Сообщайте об уязвимостях через закрытую процедуру,
+описанную в [SECURITY.md](../../SECURITY.md), а не через публичный issue.
