@@ -7,6 +7,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Fixed
+
+- Provided explicit repository context to the GitHub Release publishing job.
+- Wrote checksum manifests with portable LF line endings on every build platform.
+
 ## [0.1.0-alpha.1] - 2026-09-04
 
 ### Added

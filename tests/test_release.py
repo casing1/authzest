@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from scripts.package_release import write_checksum
 from scripts.verify_release import expected_tag, read_project_version, verify_release_tag
 
 
@@ -21,3 +22,14 @@ def test_read_project_version(tmp_path: Path) -> None:
     pyproject.write_text('[project]\nversion = "0.1.0a1"\n', encoding="utf-8")
 
     assert read_project_version(pyproject) == "0.1.0a1"
+
+
+def test_write_checksum_uses_a_portable_lf_manifest(tmp_path: Path) -> None:
+    artifact = tmp_path / "authzest-windows-x64.exe"
+    artifact.write_bytes(b"release artifact")
+
+    checksum = write_checksum(artifact)
+
+    manifest = checksum.read_bytes()
+    assert manifest.endswith(b"  authzest-windows-x64.exe\n")
+    assert b"\r\n" not in manifest
