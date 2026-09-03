@@ -25,11 +25,60 @@ def test_scan_endpoint(tmp_path: Path) -> None:
     )
 
     async def request() -> httpx.Response:
-        transport = httpx.ASGITransport(app=create_app())
+        transport = httpx.ASGITransport(app=create_app(scan_root=tmp_path))
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-            return await client.post("/api/scans", json={"path": str(tmp_path)})
+            return await client.post("/api/scans", json={"path": "."})
 
     response = asyncio.run(request())
 
     assert response.status_code == 200
     assert response.json()["route_count"] == 1
+
+
+def test_scan_endpoint_rejects_path_outside_workspace(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+
+    async def request() -> httpx.Response:
+        transport = httpx.ASGITransport(app=create_app(scan_root=workspace))
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.post("/api/scans", json={"path": str(outside)})
+
+    response = asyncio.run(request())
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Scan path must be inside the configured workspace."
+
+
+def test_scan_endpoint_rejects_parent_traversal(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    (tmp_path / "outside").mkdir()
+
+    async def request() -> httpx.Response:
+        transport = httpx.ASGITransport(app=create_app(scan_root=workspace))
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.post("/api/scans", json={"path": "../outside"})
+
+    response = asyncio.run(request())
+
+    assert response.status_code == 403
+
+
+def test_scan_endpoint_rejects_symlink_escape(tmp_path: Path) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (workspace / "escape").symlink_to(outside, target_is_directory=True)
+
+    async def request() -> httpx.Response:
+        transport = httpx.ASGITransport(app=create_app(scan_root=workspace))
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.post("/api/scans", json={"path": "escape"})
+
+    response = asyncio.run(request())
+
+    assert response.status_code == 403

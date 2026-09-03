@@ -70,7 +70,7 @@ authzest --version
 authzest doctor
 authzest scan <path>
 authzest scan <path> --json
-authzest ui --host 127.0.0.1 --port 8000
+authzest ui --workspace <path> --host 127.0.0.1 --port 8000
 ```
 
 Команда `doctor` проверяет среду выполнения, а также необязательную установку Codex CLI и состояние входа.
@@ -82,6 +82,8 @@ authzest ui --host 127.0.0.1 --port 8000
 ## Необязательная локальная панель
 
 Панель работает как локальное приложение и не требует публикации веб-сайта.
+HTTP API может сканировать только выбранную workspace. Прямое сканирование через CLI по-прежнему может
+использовать любой путь, доступный текущему пользователю для чтения.
 
 ```bash
 cd frontend
@@ -89,7 +91,7 @@ npm ci
 npm run build
 cd ..
 
-authzest ui
+authzest ui --workspace .
 ```
 
 Откройте `http://127.0.0.1:8000`. При разработке frontend запускайте `authzest ui --reload` и
@@ -99,7 +101,7 @@ authzest ui
 
 - `GET /health` — состояние backend
 - `GET /api/health` — аналогичный endpoint для frontend
-- `POST /api/scans` — сканирование репозитория с `{ "path": "/absolute/or/relative/path" }`
+- `POST /api/scans` — сканирование относительного или абсолютного пути внутри выбранной workspace
 - `GET /docs` — документация API, созданная FastAPI
 
 ## Проверка

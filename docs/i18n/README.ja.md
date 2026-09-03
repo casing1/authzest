@@ -70,7 +70,7 @@ authzest --version
 authzest doctor
 authzest scan <path>
 authzest scan <path> --json
-authzest ui --host 127.0.0.1 --port 8000
+authzest ui --workspace <path> --host 127.0.0.1 --port 8000
 ```
 
 `doctor` は実行環境と、任意で使用する Codex CLI のインストールおよびログイン状態を確認します。
@@ -83,6 +83,8 @@ Codex が利用できない場合でも静的解析は動作します。
 ## 任意機能: ローカルダッシュボード
 
 ダッシュボードはローカルソフトウェアとして動作するため、Web サイトへのデプロイは不要です。
+HTTP API がスキャンできるのは、選択した workspace の内部だけです。CLI から直接実行する
+スキャンでは、現在のユーザーが読み取れる任意のパスを引き続き指定できます。
 
 ```bash
 cd frontend
@@ -90,7 +92,7 @@ npm ci
 npm run build
 cd ..
 
-authzest ui
+authzest ui --workspace .
 ```
 
 `http://127.0.0.1:8000` を開いてください。frontend の開発時は `authzest ui --reload` と
@@ -101,7 +103,7 @@ FastAPI サーバーへプロキシします。
 
 - `GET /health` — backend の状態
 - `GET /api/health` — frontend 向けの同等 endpoint
-- `POST /api/scans` — `{ "path": "/absolute/or/relative/path" }` でリポジトリをスキャン
+- `POST /api/scans` — 選択した workspace 内の相対パスまたは絶対パスをスキャン
 - `GET /docs` — FastAPI が生成する API ドキュメント
 
 ## 検証

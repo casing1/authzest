@@ -71,7 +71,7 @@ authzest --version
 authzest doctor
 authzest scan <path>
 authzest scan <path> --json
-authzest ui --host 127.0.0.1 --port 8000
+authzest ui --workspace <path> --host 127.0.0.1 --port 8000
 ```
 
 `doctor`는 실행 환경과 선택적인 Codex CLI 설치 및 로그인 상태를 확인합니다. Codex를 사용할 수
@@ -84,6 +84,8 @@ FastAPI 스타일 라우트 데코레이터를 찾습니다. 아직 endpoint의 
 ## 선택 기능: 로컬 대시보드
 
 대시보드는 로컬 소프트웨어이며 웹사이트 배포가 필요하지 않습니다.
+HTTP API는 선택한 workspace 내부만 검사할 수 있습니다. CLI에서 직접 실행하는 scan은 현재
+사용자가 읽을 권한이 있는 임의 경로를 계속 대상으로 지정할 수 있습니다.
 
 ```bash
 cd frontend
@@ -91,7 +93,7 @@ npm ci
 npm run build
 cd ..
 
-authzest ui
+authzest ui --workspace .
 ```
 
 `http://127.0.0.1:8000`을 여세요. frontend 개발 중에는 `authzest ui --reload`와 `npm run dev`를
@@ -101,7 +103,7 @@ authzest ui
 
 - `GET /health` — backend 상태
 - `GET /api/health` — frontend용 동일 endpoint
-- `POST /api/scans` — `{ "path": "/absolute/or/relative/path" }`로 저장소 스캔
+- `POST /api/scans` — 선택한 workspace 내부의 상대 경로나 절대 경로를 스캔
 - `GET /docs` — FastAPI가 생성한 API 문서
 
 ## 개발 검증
