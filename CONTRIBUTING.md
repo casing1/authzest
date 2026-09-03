@@ -1,23 +1,27 @@
+<p align="center">
+  <strong>English</strong> ·
+  <a href="docs/i18n/CONTRIBUTING.ko.md">한국어</a>
+</p>
+
 # Contributing to AuthZest
 
-AuthZest는 작고 검증 가능한 변경을 꾸준히 병합하는 방식으로 개발합니다. 기능 수보다 변경 이유,
-검증 과정, 보안상 판단이 이력에 명확히 남는 것을 우선합니다.
+AuthZest grows through small, verifiable changes. A clear record of why a change was made, how it was
+verified, and which security decisions were considered matters more than the number of features.
 
-## 작업 흐름
+## Workflow
 
-1. 구현 전에 GitHub issue를 만들고 문제, 범위, 완료 조건을 적습니다.
-2. 최신 `main`에서 issue 번호가 포함된 짧은 작업 브랜치를 만듭니다.
-3. 한 가지 목적에 집중해 구현하고 같은 변경에서 테스트를 추가합니다.
-4. 로컬 검증을 통과시킨 뒤 의미 있는 단위로 커밋합니다.
-5. issue를 연결한 pull request를 열고 CI 결과를 확인합니다.
-6. 대화와 CI가 정리되면 merge commit으로 병합하고 작업 브랜치를 삭제합니다.
+1. Open a GitHub issue before implementation and describe the problem, scope, and acceptance criteria.
+2. Create a short-lived branch from the latest `main` and include the issue number in its name.
+3. Keep the implementation focused on one purpose and add tests in the same change.
+4. Run the local checks and commit in meaningful units.
+5. Open a pull request linked to the issue and wait for CI.
+6. Resolve discussions, merge with a merge commit, and delete the working branch.
 
-`main`에는 직접 push하지 않으며 항상 실행 가능하고 테스트를 통과하는 상태를 유지합니다.
+Do not push directly to `main`. It must remain runnable and pass all required checks.
 
-## 브랜치 이름
+## Branch names
 
-형식은 `<type>/<issue-number>-<short-description>`입니다. 설명은 소문자 영문과 하이픈을
-사용합니다.
+Use `<type>/<issue-number>-<short-description>`. Write the description in lowercase English with hyphens.
 
 ```text
 feat/12-router-prefix-resolution
@@ -28,28 +32,27 @@ refactor/42-report-model
 chore/55-update-actions
 ```
 
-권장 type은 `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, `build`입니다. 장기간 유지하는
-`develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0` 같은 태그를 붙여
-만듭니다.
+Recommended types are `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, and `build`. AuthZest does
+not maintain a long-lived `develop` branch. Releases are created by tagging a verified commit on `main`, for
+example `v0.1.0`.
 
-## 커밋 규칙
+## Commit conventions
 
-[Conventional Commits](https://www.conventionalcommits.org/)의 간단한 형태를 사용합니다.
+Use a lightweight form of [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```text
 <type>(<scope>): <summary>
 ```
 
-- summary는 명령형 영문으로 작성하고 마침표 없이 72자 이내로 제한합니다.
-- 커밋 하나에는 되돌리거나 검토할 수 있는 한 가지 논리적 변경만 담습니다.
-- 기능과 그 기능의 테스트는 가능하면 같은 커밋에 포함합니다.
-- `update`, `fix stuff`, `WIP`처럼 변경 의도를 알 수 없는 메시지는 사용하지 않습니다.
-- 설명이 필요하면 본문에 무엇을 했는지보다 왜 필요한지와 주요 선택을 적습니다.
-- 관련 issue는 본문 또는 footer에 `Refs #12`로 연결하고, 완료되는 issue는 PR에 `Closes #12`로
-  연결합니다.
-- 공개된 `main`의 커밋 기록은 rebase하거나 force push하지 않습니다.
+- Write the summary in imperative English, without a period, and keep it within 72 characters.
+- Keep each commit to one logical change that can be reviewed or reverted independently.
+- Include a feature and its tests in the same commit when practical.
+- Avoid unclear messages such as `update`, `fix stuff`, or `WIP`.
+- When a body is needed, explain why the change is necessary and record important tradeoffs.
+- Reference related issues with `Refs #12`. Use `Closes #12` in the pull request that completes the issue.
+- Never rebase or force-push the published history of `main`.
 
-권장 scope는 `parser`, `analyzer`, `runner`, `cli`, `api`, `web`, `codex`, `release`, `docs`입니다.
+Recommended scopes are `parser`, `analyzer`, `runner`, `cli`, `api`, `web`, `codex`, `release`, and `docs`.
 
 ```text
 feat(parser): resolve nested router prefixes
@@ -59,23 +62,23 @@ docs(contributing): define development workflow
 ci(actions): update Python test matrix
 ```
 
-type의 의미는 다음과 같습니다.
+Commit types have the following meanings:
 
-- `feat`: 사용자나 호출자가 사용할 수 있는 기능
-- `fix`: 잘못된 동작이나 회귀 수정
-- `test`: 제품 동작 변경 없이 테스트 추가 또는 정리
-- `refactor`: 외부 동작을 유지하는 구조 개선
-- `docs`: 문서만 변경
-- `chore`: 일반 유지보수
-- `ci`: 자동화 워크플로 변경
-- `build`: 패키징 또는 빌드 체계 변경
+- `feat`: functionality available to users or callers
+- `fix`: correction of incorrect behavior or a regression
+- `test`: tests only, without a product behavior change
+- `refactor`: structural improvement that preserves external behavior
+- `docs`: documentation-only changes
+- `chore`: general maintenance
+- `ci`: automation workflow changes
+- `build`: packaging or build-system changes
 
-## 개발 환경
+## Development setup
 
-1. Python 3.12 가상 환경을 만듭니다.
-2. `python -m pip install -e '.[dev]'`로 Python 개발 의존성을 설치합니다.
-3. `frontend/`에서 `npm install`을 실행합니다.
-4. 변경 전후에 아래 검증을 실행합니다.
+1. Create a Python 3.12 virtual environment.
+2. Install Python development dependencies with `python -m pip install -e '.[dev]'`.
+3. Run `npm install` in `frontend/`.
+4. Run the checks below before and after a change.
 
 ```bash
 pytest
@@ -84,7 +87,7 @@ ruff format --check .
 cd frontend && npm run lint && npm run format:check && npm run build
 ```
 
-독립 실행 파일을 확인하려면 프론트엔드를 빌드한 뒤 아래 명령을 실행합니다.
+To verify the standalone executable, build the frontend first and run:
 
 ```bash
 python -m pip install -e '.[build]'
@@ -92,28 +95,27 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
-## 변경 원칙
+## Change principles
 
-- `analyzer`, `parser`, `codex`, `runner` 경계를 유지합니다.
-- core가 CLI, FastAPI transport, React UI에 의존하지 않게 합니다.
-- AI 판단 전에 재현 가능하고 결정론적인 분석 결과를 먼저 만듭니다.
-- 보안 finding에는 source 위치, 근거, 신뢰도와 재현 가능한 최소 테스트를 포함합니다.
-- 실제 Codex 연동은 `CodexAdapter` protocol 구현체로 추가하고 core에 SDK나 프로세스 세부사항을
-  노출하지 않습니다.
-- 외부 프로세스 실행과 네트워크 요청은 기본적으로 비활성화하며 사용자가 명시적으로 허용해야
-  합니다.
+- Preserve the boundaries between `analyzer`, `parser`, `codex`, and `runner`.
+- Keep the core independent of the CLI, FastAPI transport, and React UI.
+- Produce reproducible deterministic results before adding AI judgment.
+- Security findings must include source location, evidence, confidence, and a minimal reproducible test.
+- Add a real Codex integration as a `CodexAdapter` protocol implementation; do not expose SDK or process
+  details to the core.
+- Keep external process execution and network requests disabled by default. They require explicit user opt-in.
 
-## 완료 조건
+## Definition of done
 
-pull request를 병합하려면 다음 조건을 만족해야 합니다.
+A pull request is ready to merge when:
 
-- issue의 완료 조건을 충족했습니다.
-- 새 동작 또는 수정된 동작을 검증하는 테스트가 있습니다.
-- Python과 frontend의 관련 로컬 검사가 통과했습니다.
-- 사용자에게 보이는 동작이 바뀌었다면 관련 문서를 함께 수정했습니다.
-- 보안 영향과 하위 호환성 영향을 PR에 기록했습니다.
-- 비밀키, 개인정보, 생성 파일을 커밋하지 않았습니다.
-- GitHub Actions의 필수 검사가 통과했습니다.
+- It satisfies the linked issue's acceptance criteria.
+- New or changed behavior is covered by tests.
+- Relevant Python and frontend checks pass locally.
+- User-facing behavior changes include appropriate documentation.
+- Security and backward-compatibility impact is recorded in the pull request.
+- No secrets, personal data, or generated files are committed.
+- All required GitHub Actions checks pass.
 
-버그와 기능 제안은 재현 절차, 기대 결과, 실제 결과, 실행 환경을 포함해 issue로 남겨 주세요.
-보안 취약점은 공개 issue 대신 [SECURITY.md](SECURITY.md)의 절차를 따라 주세요.
+Bug and feature issues should include reproduction steps, expected behavior, actual behavior, and environment
+details. Report vulnerabilities privately by following [SECURITY.md](SECURITY.md), not through a public issue.
