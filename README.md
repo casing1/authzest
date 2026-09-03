@@ -16,7 +16,7 @@ It analyzes repository structure and route declarations, then produces evidence 
 rules and optional AI analysis can use.
 
 > [!IMPORTANT]
-> AuthZest is in early development. Version `0.1.0` is an executable project scaffold, not a complete
+> AuthZest is in early development. Version `0.1.0-alpha.1` is an executable project scaffold, not a complete
 > vulnerability scanner. Authorization classification, security findings, active testing, and Codex-backed
 > analysis are planned work.
 
@@ -127,8 +127,8 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
-Pushing a `v*` tag starts the release workflow for macOS, Linux, and Windows binaries with SHA-256
-checksums.
+Pushing a verified `v*` tag starts the release workflow for macOS, Linux, and Windows binaries with SHA-256
+checksums. See the [changelog](CHANGELOG.md) and [release guide](docs/RELEASING.md).
 
 ## Project structure
 

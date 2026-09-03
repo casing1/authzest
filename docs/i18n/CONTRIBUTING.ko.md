@@ -34,8 +34,8 @@ chore/55-update-actions
 ```
 
 권장 type은 `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, `build`입니다. 장기간 유지하는
-`develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0` 같은 태그를 붙여
-만듭니다.
+`develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0-alpha.1` 같은 태그를
+붙여 만듭니다. [릴리스 안내](../RELEASING.md)를 따르며 공개된 태그는 변경하지 않습니다.
 
 ## 커밋 규칙
 
