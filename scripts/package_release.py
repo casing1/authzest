@@ -17,6 +17,13 @@ def normalized_platform() -> tuple[str, str]:
     return system, architecture
 
 
+def write_checksum(target: Path) -> Path:
+    digest = hashlib.sha256(target.read_bytes()).hexdigest()
+    checksum = target.with_name(f"{target.name}.sha256")
+    checksum.write_bytes(f"{digest}  {target.name}\n".encode("ascii"))
+    return checksum
+
+
 def main() -> None:
     system, architecture = normalized_platform()
     release_label = os.environ.get("AUTHZEST_RELEASE_TAG") or version("authzest")
@@ -31,9 +38,7 @@ def main() -> None:
     target = release_dir / f"authzest-{release_label}-{system}-{architecture}{extension}"
     shutil.copy2(source, target)
 
-    digest = hashlib.sha256(target.read_bytes()).hexdigest()
-    checksum = target.with_name(f"{target.name}.sha256")
-    checksum.write_text(f"{digest}  {target.name}\n", encoding="utf-8")
+    checksum = write_checksum(target)
     print(target)
     print(checksum)
 

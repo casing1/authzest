@@ -104,10 +104,12 @@ jobs:
         if: contains(github.ref_name, '-')
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: >-
           gh release create "$GITHUB_REF_NAME" release/* --generate-notes --prerelease --verify-tag
       - name: Create GitHub release
         if: ${{ !contains(github.ref_name, '-') }}
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: gh release create "$GITHUB_REF_NAME" release/* --generate-notes --verify-tag
