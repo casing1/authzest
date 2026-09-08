@@ -18,6 +18,7 @@ AuthZest는 작고 검증 가능한 변경을 꾸준히 병합하는 방식으�
 6. 대화와 CI가 정리되면 merge commit으로 병합하고 작업 브랜치를 삭제합니다.
 
 `main`에는 직접 push하지 않으며 항상 실행 가능하고 테스트를 통과하는 상태를 유지합니다.
+[브랜치 보호 정책](../BRANCH_RULES.md)에 따라 Python, frontend, CodeQL 검사를 통과해야 합니다.
 
 ## 브랜치 이름
 
