@@ -7,6 +7,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Composed literal same-file router and registration prefixes, preserving repeated registrations and
+  route source locations while omitting unresolved paths. See the [parser scope](docs/PARSER_SCOPE.md).
+
 ### Fixed
 
 - Required statically recognized FastAPI or APIRouter owners before collecting route decorators,
