@@ -21,6 +21,7 @@ AuthZest는 먼저 결정론적인 정적 분석 도구를 만들고, 그 결과
 
 ## Phase 2 — FastAPI 접근통제 탐색
 
+- [x] 같은 파일의 `FastAPI`/`APIRouter` 생성 객체를 식별하고 일반 객체의 데코레이터를 제외합니다.
 - [ ] `APIRouter` prefix와 `include_router` 구성을 해석합니다.
 - [ ] 애플리케이션, router, route와 함수 parameter의 `Depends`를 수집합니다.
 - [ ] FastAPI `Security`와 security scheme 사용을 수집합니다.
@@ -28,6 +29,8 @@ AuthZest는 먼저 결정론적인 정적 분석 도구를 만들고, 그 결과
 - [ ] 모든 분류에 파일, 줄 번호와 탐지 근거를 포함합니다.
 
 완료 기준: fixture의 endpoint별 기대 분류와 실제 결과가 모두 일치합니다.
+
+현재 라우트 탐색의 지원 구문과 미지원 패턴은 [parser scope](PARSER_SCOPE.md)에 기록합니다.
 
 ## Phase 3 — Finding engine
 
