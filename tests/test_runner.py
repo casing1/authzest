@@ -5,12 +5,15 @@ from authzest.runner import ScanRunner
 
 def test_scan_runner_counts_python_files_and_routes(tmp_path: Path) -> None:
     (tmp_path / "main.py").write_text(
+        "from fastapi import FastAPI\napp = FastAPI()\n"
         '@app.post("/sessions")\ndef create_session():\n    pass\n',
         encoding="utf-8",
     )
     ignored = tmp_path / "node_modules"
     ignored.mkdir()
-    (ignored / "ignored.py").write_text('@app.get("/ignored")\ndef ignored(): pass\n')
+    (ignored / "ignored.py").write_text(
+        'from fastapi import FastAPI\napp = FastAPI()\n@app.get("/ignored")\ndef ignored(): pass\n'
+    )
 
     report = ScanRunner().run(tmp_path)
 

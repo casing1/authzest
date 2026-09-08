@@ -9,6 +9,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Required statically recognized FastAPI or APIRouter owners before collecting route decorators,
+  excluding unrelated objects and shadowed or reassigned names. See the [parser scope](docs/PARSER_SCOPE.md).
 - Provided explicit repository context to the GitHub Release publishing job.
 - Wrote checksum manifests with portable LF line endings on every build platform.
 
