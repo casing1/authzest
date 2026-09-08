@@ -53,10 +53,56 @@ mounted in a running application. Only stable enclosing bindings are inherited b
 Parameters, local declarations, reassignment, deletion, and potentially conflicting conditional writes
 invalidate ownership. An unrelated `@cache.get(...)` is therefore not classified by its method name alone.
 
+## Same-file router prefixes and registration
+
+Literal `APIRouter(prefix=...)` and `include_router(..., prefix=...)` values are composed for supported
+straight-line declarations in the same scope:
+
+```python
+from fastapi import APIRouter, FastAPI
+
+app = FastAPI()
+users = APIRouter(prefix="/users")
+
+
+@users.get("/me")
+def current_user():
+    pass
+
+
+app.include_router(users, prefix="/api")
+app.include_router(router=users, prefix="/internal")
+```
+
+This reports `/api/users/me` and `/internal/users/me`, both pointing to the original `current_user`
+definition. The unregistered `/users/me` entry is not duplicated. Repeated registrations are preserved,
+even if their resulting paths match. Nested same-file router inclusions are supported when the child
+declarations and inclusions precede the parent inclusion.
+
+Prefixes are concatenated exactly, without slash normalization. An omitted prefix means an empty string;
+a nonempty prefix must start with `/` and must not end with `/`. Only literal strings are resolved. Dynamic
+values, invalid prefixes, and expanded `**kwargs` are not guessed. `FastAPI(prefix=...)` is not treated as
+an APIRouter prefix.
+
+A standalone router that is never included remains in the source inventory with its constructor prefix.
+Once a known router is referenced by an inclusion, its raw declaration entries are suppressed. A resolvable
+registration still appears even if another registration is unresolved; a router with only unresolved
+registrations contributes no guessed path. These entries remain source evidence, not a guarantee of
+deployment or reachability.
+
+Only routes and nested inclusions already declared before an inclusion are composed. Late additions are
+omitted from that registration. This is a conservative supported subset, not a simulation of every FastAPI
+version: [FastAPI 0.137.0](https://fastapi.tiangolo.com/release-notes/#01370-2026-06-14) changed router inclusion
+to use live references. Arbitrary mutations after inclusion and cross-scope composition remain deferred.
+Function-local declarations are analyzed in isolation; parsing a function does not apply its side effects
+to enclosing routers.
+
+For framework usage examples, see [FastAPI's router composition guide](https://fastapi.tiangolo.com/tutorial/bigger-applications/).
+
 ## Deferred patterns and interpretation
 
-- Router prefixes and `include_router` composition: paths currently remain exactly as declared.
 - Cross-file imports, relative imports, and resolution of which installed module an import loads.
+- Cross-scope router composition and additions or mutations after inclusion.
 - Instance or constructor aliases assigned through other variables, factory-call result inference,
   subclasses, and owners stored in attributes or containers.
 - Routes inside class bodies, conditions, loops, `try`, or `with` blocks. These blocks can still invalidate
@@ -71,5 +117,6 @@ protected, unprotected, or vulnerable. The report schema is unchanged and does n
 unresolved-declaration list, so an empty result must not be interpreted as proof that no endpoints exist
 or that access control is safe. Malformed or unreadable source continues to appear in `parse_errors`.
 
-Regression cases live in `tests/test_parser.py`, with CLI, API, and repository-runner fixtures covering the
-shared report contract. No FastAPI version compatibility claim beyond this source-syntax subset is made.
+Regression cases live in `tests/test_parser.py` and `tests/test_router_prefixes.py`, with CLI, API, and
+repository-runner fixtures covering the shared report contract. No FastAPI version compatibility claim
+beyond this source-syntax subset is made.
