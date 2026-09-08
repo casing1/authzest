@@ -18,6 +18,7 @@ verified, and which security decisions were considered matters more than the num
 6. Resolve discussions, merge with a merge commit, and delete the working branch.
 
 Do not push directly to `main`. It must remain runnable and pass all required checks.
+The [branch protection policy](docs/BRANCH_RULES.md) requires Python, frontend, and CodeQL checks.
 
 ## Branch names
 
