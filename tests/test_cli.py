@@ -40,3 +40,25 @@ def test_scan_can_return_json(tmp_path: Path) -> None:
     assert payload["python_files"] == 1
     assert payload["route_count"] == 1
     assert payload["routes"][0]["path"] == "/health"
+
+
+def test_scan_json_reports_each_router_registration(tmp_path: Path) -> None:
+    (tmp_path / "main.py").write_text(
+        "from fastapi import APIRouter, FastAPI\n"
+        "app = FastAPI()\n"
+        'router = APIRouter(prefix="/users")\n'
+        '@router.get("/me")\ndef read_me(): pass\n'
+        'app.include_router(router, prefix="/v1")\n'
+        'app.include_router(router, prefix="/v2")\n',
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["scan", str(tmp_path), "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["python_files"] == 1
+    assert payload["parse_errors"] == []
+    assert payload["route_count"] == 2
+    assert [route["path"] for route in payload["routes"]] == ["/v1/users/me", "/v2/users/me"]
+    assert all(route["file"] == "main.py" for route in payload["routes"])
