@@ -27,7 +27,9 @@ def test_version() -> None:
 
 def test_scan_can_return_json(tmp_path: Path) -> None:
     (tmp_path / "main.py").write_text(
-        '@app.get("/health")\ndef health():\n    return {"status": "ok"}\n',
+        "from fastapi import FastAPI\napp = FastAPI()\n"
+        '@app.get("/health")\ndef health():\n    return {"status": "ok"}\n'
+        'cache = object()\n@cache.get("/cache")\ndef cached(): pass\n',
         encoding="utf-8",
     )
 
@@ -37,3 +39,4 @@ def test_scan_can_return_json(tmp_path: Path) -> None:
     payload = json.loads(result.stdout)
     assert payload["python_files"] == 1
     assert payload["route_count"] == 1
+    assert payload["routes"][0]["path"] == "/health"
