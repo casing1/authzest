@@ -1,96 +1,150 @@
+<p align="center">
+  <strong>English</strong> ·
+  <a href="i18n/DEVELOPMENT_PLAN.ko.md">한국어</a>
+</p>
+
 # AuthZest Development Plan
 
-## 개발 방향
+[Documentation index](README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
 
-AuthZest는 먼저 결정론적인 정적 분석 도구를 만들고, 그 결과를 보강하는 선택 기능으로 Codex를
-연결합니다. AI가 없어도 같은 입력에서 같은 결과를 내고, 각 판단을 소스 위치로 설명할 수 있어야
-합니다.
+## Product direction
 
-진행 상황의 공개 기준은 [roadmap issue #1](https://github.com/casing1/authzest/issues/1)입니다.
-아래 단계의 항목은 구현 전에 더 작은 issue와 명확한 완료 조건으로 나눕니다.
+Build an installable, CLI-first, source-aware FastAPI access-control analysis tool for an OSS course.
+The core must produce useful, repeatable source evidence without an AI provider. Optional AI assistance
+can later explain that evidence and its limitations; it must not turn an assumption into a confirmed finding.
 
-## Phase 1 — 분석 범위 고정
+The existing local API and dashboard are optional interfaces to the same core. Website deployment,
+a native desktop shell, and new UI features are not prerequisites for the CLI milestone. Keep the
+`analyzer`, `parser`, `runner`, and `codex` boundaries independent of transports.
 
-- [ ] 지원할 FastAPI 버전과 Python 구문 범위를 정합니다.
-- [ ] authentication과 authorization의 판정 기준을 구분합니다.
-- [ ] 지원하지 않는 동적 패턴과 false-positive 처리 원칙을 적습니다.
-- [ ] 안전한 예제와 취약한 예제를 포함한 작은 fixture 애플리케이션을 만듭니다.
-- [ ] report model과 CLI exit code의 공개 계약을 정합니다.
+The [roadmap issue](https://github.com/casing1/authzest/issues/1) is the public task tracker. This document
+explains ordering and completion criteria. Split a task into a bounded issue before implementation;
+mark it complete only when its acceptance criteria and required PR checks pass and it merges.
 
-완료 기준: 지원 범위와 한계가 테스트 fixture로 표현되고 report schema가 테스트로 고정됩니다.
+## Current baseline
 
-## Phase 2 — FastAPI 접근통제 탐색
+- [x] Installable Python CLI with `scan`, `doctor`, `ui`, and basic text/JSON reports.
+- [x] Optional workspace-bound local API and React dashboard.
+- [x] FastAPI/APIRouter owner recognition ([#19](https://github.com/casing1/authzest/issues/19)).
+- [x] Literal same-file router prefixes and registrations ([#21](https://github.com/casing1/authzest/issues/21)).
+- [x] Repository-local static router imports and cross-file registration ([#25](https://github.com/casing1/authzest/issues/25)).
+- [x] Documented source-syntax subset and limitations in the [parser scope](PARSER_SCOPE.md).
+- [x] Python/frontend CI, CLI/API fixture regressions, required CodeQL checks, and issue-linked
+      merge-commit workflow.
+- [x] PyInstaller packaging and the published `v0.1.0-alpha.1` preview with checksums.
 
-- [x] 같은 파일의 `FastAPI`/`APIRouter` 생성 객체를 식별하고 일반 객체의 데코레이터를 제외합니다. ([#19](https://github.com/casing1/authzest/issues/19))
-- [x] 같은 파일·scope에서 문자열로 선언한 `APIRouter` prefix와 `include_router` 구성을 해석합니다. ([#21](https://github.com/casing1/authzest/issues/21))
-- [x] 저장소 내부의 정적 router import와 모듈 최상위 `include_router` 연결을 해석합니다. ([#25](https://github.com/casing1/authzest/issues/25))
-- [ ] 애플리케이션, router, route와 함수 parameter의 `Depends`를 수집합니다.
-- [ ] FastAPI `Security`와 security scheme 사용을 수집합니다.
-- [ ] route를 `protected`, `unprotected`, `unknown`으로 분류합니다.
-- [ ] 모든 분류에 파일, 줄 번호와 탐지 근거를 포함합니다.
+The latest source includes unreleased parser improvements; the published alpha binary does not include
+them. Package metadata still uses `0.1.0a1`, so a version string alone does not identify these source
+changes. Consult the [changelog](../CHANGELOG.md) and release tag.
 
-완료 기준: fixture의 endpoint별 기대 분류와 실제 결과가 모두 일치합니다.
+Basic JSON already exists. Versioned evidence/finding schemas, dependency analysis, authentication or
+authorization classification, AI analysis, and active testing do not. `scan` does not execute the target
+application or Codex. Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
-현재 라우트 탐색의 지원 구문과 미지원 패턴은 [parser scope](PARSER_SCOPE.md)에 기록합니다.
+## Milestone 1 — Dependency evidence
 
-## Phase 3 — Finding engine
+1. [ ] Collect route-local declarations ([#28](https://github.com/casing1/authzest/issues/28)):
+       parameter defaults, supported inline `Annotated`, and decorator `dependencies`.
+       Recognize actual `Depends`/`Security` imports, aliases, and shadowing. Record kind, target,
+       source position, declaration level, resolution state, and statically known scopes.
+2. [ ] Propagate application/router/`include_router` evidence to each route registration
+       ([#29](https://github.com/casing1/authzest/issues/29)), retaining distinct repeated-mount contexts.
+3. [ ] Resolve a documented subset of dependency references and nested dependency relationships.
+       Keep missing, cyclic, dynamic, overridden, or unsupported relationships explicit rather than guessing.
+4. [ ] Expose unresolved evidence and parsing limitations in reports instead of treating missing
+       evidence as a negative security result.
 
-- [ ] 인증 누락과 같은 고신뢰 finding부터 규칙을 추가합니다.
-- [ ] severity와 confidence를 분리합니다.
-- [ ] 오탐을 숨길 수 있는 suppression 형식과 사유 기록을 추가합니다.
-- [ ] 사람이 읽는 출력과 안정적인 JSON 출력을 함께 제공합니다.
-- [ ] 분석 실패를 취약점으로 잘못 보고하지 않도록 unknown 상태를 유지합니다.
+Completion: supported local fixtures have the expected declaration evidence and original source positions
+in CLI/API reports. Existing route fields remain compatible or a deliberate schema change is documented.
+Each issue includes positive, ordinary non-security, and unresolved cases; scanned source is never executed.
 
-완료 기준: finding마다 검출 fixture, 비검출 fixture와 source evidence가 존재합니다.
+## Milestone 2 — Interpretation and report contract
 
-## Phase 4 — 안전한 테스트 실행
+- [ ] Distinguish authentication (who the caller is) from authorization (what they may access).
+- [ ] Define the supported evidence rules, explicitly public endpoints, and unsupported middleware,
+      overrides, custom checks, and object-level policies before choosing classification labels.
+- [ ] Represent observed declarations separately from authentication evidence, authorization evidence,
+      and unknown/incomplete analysis. Neither `Depends` nor `Security` alone proves protection.
+- [ ] Define a versioned evidence/report schema, deterministic ordering, source-path handling, and
+      compatibility policy for text and JSON consumers.
+- [ ] Define and test CLI exit codes for invalid input, incomplete analysis, and eventual findings.
+      A successful scan or zero routes must not be described as a security pass.
+- [ ] Add a small maintained local fixture corpus with expected policy annotations and expected results.
+      Include public endpoints, ordinary DI, authentication checks, role/ownership scenarios, and unresolved cases.
 
-- [ ] 기본 동작은 요청을 보내지 않는 test plan 생성으로 제한합니다.
-- [ ] HTTP 실행은 명시적인 opt-in 옵션 뒤에 둡니다.
-- [ ] 초기 실행 대상은 localhost와 사용자가 허용한 주소로 제한합니다.
-- [ ] timeout, 요청 수 제한과 결과 재현 정보를 기록합니다.
-- [ ] 파괴적인 method와 실제 데이터 변경 가능성을 별도로 통제합니다.
+Completion: a reviewer can explain every reported state from source evidence and the documented rule.
+The fixture corpus reports matches, false positives, false negatives, and unknown cases; unsupported
+application behavior is not silently declared safe or vulnerable.
 
-완료 기준: 동의하지 않은 네트워크 요청이 발생하지 않으며 실행 결과를 재현할 수 있습니다.
+Current behavior is not the future contract: `scan` reports invalid repository paths with exit code 2,
+while returned parse errors can coexist with a successful exit. The CLI/API currently have no dedicated
+list of unresolved declarations. Those gaps must be addressed before security verdicts are introduced.
 
-## Phase 5 — 선택적 Codex adapter
+## Milestone 3 — Explainable deterministic checks
 
-- [ ] mock adapter로 interface와 failure behavior를 먼저 고정합니다.
-- [ ] Codex CLI adapter를 timeout과 명시적 opt-in 뒤에 추가합니다.
-- [ ] App Server adapter의 인증 및 승인 흐름을 별도로 검토합니다.
-- [ ] 전송 전 secret과 개인정보 redaction 정책을 적용합니다.
-- [ ] Codex 사용 불가 또는 실패 시 결정론적 분석 결과를 그대로 유지합니다.
+- [ ] Add narrowly scoped source checks against documented or user-declared access-control expectations;
+      absence of a recognizable dependency alone is not a vulnerability.
+- [ ] Attach source evidence and separate severity, confidence, and analysis completeness.
+- [ ] Add reasoned suppression, regression cases, and stable finding export on top of the existing JSON report.
+- [ ] Document how findings should be reviewed and what the tool cannot establish, including general
+      runtime authorization correctness and object ownership guarantees.
 
-완료 기준: Codex 연동을 제거해도 core, CLI와 테스트가 정상 동작합니다.
+Completion: every rule has matching, nonmatching, and unresolved fixtures and an explanation that can be
+reviewed without AI. Checks run locally on source code without generating or executing exploitation steps.
 
-## Phase 6 — 릴리스 준비
+## Milestone 4 — Optional AI-assisted explanation
 
-- [ ] end-to-end fixture 검사를 CI에 추가합니다.
-- [ ] 지원 범위, 알려진 한계와 보안 모델을 문서화합니다.
-- [x] semantic versioning과 changelog 규칙을 적용합니다.
-- [x] 태그 기반 바이너리와 checksum 배포를 검증합니다.
-- [x] 첫 번째 공개 pre-release를 만들고 설치 과정을 새 환경에서 검증합니다.
+This follows a stable evidence/report contract and comes before any optional active test runner.
+A small, clearly labelled explanation demo can support the term project without requiring a complete
+vulnerability scanner first.
 
-## 작업별 체크리스트
+- [ ] Extend the existing adapter protocol/disabled implementation with mock responses and failure tests.
+- [ ] Define the exact evidence payload, data minimization, secret redaction, approval, timeout, and
+      cancellation behavior before connecting any provider.
+- [ ] Add one explicit opt-in adapter behind the interface; evaluate CLI versus App Server separately.
+- [ ] Keep AI suggestions separate from deterministic results, attach evidence references, and preserve
+      the local report when AI is unavailable or wrong.
+- [ ] Evaluate the explanation demo on the maintained fixtures and document its limitations.
 
-### 시작 전
+Completion: the same scan remains useful with no credentials, network, or AI. No source content is sent
+externally without explicit approval, and AI-generated assumptions are never promoted to confirmed findings.
 
-- [ ] 연결된 issue와 명확한 완료 조건이 있습니다.
-- [ ] 작업 범위가 한 PR에 검토 가능한 크기입니다.
-- [ ] 최신 `main`에서 규칙에 맞는 브랜치를 만들었습니다.
-- [ ] 보안상 민감한 데이터나 실제 서비스 요청이 필요한지 확인했습니다.
+## Milestone 5 — CLI release and OSS evaluation
 
-### 구현 중
+Release preparation can proceed alongside the milestones above; packaging is already present and does not
+need to be rebuilt as a new product.
 
-- [ ] 모듈 경계를 유지하고 core에 UI 또는 provider 의존성을 넣지 않았습니다.
-- [ ] 정상, 경계, 실패 사례를 테스트로 표현했습니다.
-- [ ] finding은 소스 근거를 제공하고 unknown과 vulnerable을 구분합니다.
-- [ ] 관련 없는 포맷 변경이나 리팩터링을 섞지 않았습니다.
+- [ ] Run the installed CLI/binary against the maintained policy fixture corpus in CI, beyond the
+      existing in-process CLI/API regression tests.
+- [ ] Verify clean installation, execution, and upgrade for each advertised OS/architecture.
+- [ ] Define a tested support matrix rather than assuming every allowed dependency version is equivalent.
+- [ ] Verify release notes, both changelogs, tag/package version, and actual binary contents together.
+      The current release script checks tag/version spelling, not changelog completeness.
+- [ ] Publish a new preview from a verified `main` commit when a coherent milestone is ready.
+- [ ] Preserve issue decisions, meaningful commits, PR discussion, CI evidence, and a short reproducible demo.
+- [ ] Consider signing/notarization separately before broader binary distribution.
 
-### PR 전
+Completion: the documented CLI demo works from a clean installation, release claims match the downloaded
+binary, and changes can be traced from issue to test to PR. Do not inflate commit counts or publish a new
+release for every documentation edit. See the [release guide](RELEASING.md).
 
-- [ ] 커밋이 한 가지 논리적 변경을 설명합니다.
-- [ ] Python과 frontend의 관련 검사가 통과합니다.
-- [ ] 생성 파일, secret과 개인정보가 diff에 없습니다.
-- [ ] PR에 검증 방법, 보안 영향과 연결 issue를 적었습니다.
-- [ ] CI가 통과한 뒤 merge하고 브랜치를 삭제합니다.
+## Later, optional — Local regression execution
+
+This is not a prerequisite for source discovery, AI-assisted explanation, or the initial CLI deliverable.
+
+- [ ] Generate reviewable regression-test plans for maintained, owned local fixtures without sending requests.
+- [ ] Consider an explicitly approved local test harness with isolation, fixture-only scope, timeouts,
+      request limits, and protection against unintended data changes.
+- [ ] Keep execution opt-in and separate from `scan`; record reproducible results and unresolved outcomes.
+
+Internet-target scanning, autonomous exploitation, and arbitrary repository execution are not part of this
+development milestone. Revisit any execution scope in its own design issue before implementation.
+
+## Working checklist
+
+Before implementation, record the issue, supported subset, completion criteria, and a branch from current
+`main`. During implementation, add tests alongside each behavior and avoid unrelated refactoring.
+Before merge, update the English source and required translations together, verify links and commands,
+and pass Python, frontend, and CodeQL checks. Use meaningful commits and a merge commit, then synchronize
+the roadmap and remove the working branch. See [contributing](../CONTRIBUTING.md) and
+[branch rules](BRANCH_RULES.md).

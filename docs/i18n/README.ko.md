@@ -11,164 +11,189 @@
 
 # AuthZest
 
-AuthZest는 FastAPI 프로젝트를 위한 오픈소스 소스 인식형 접근통제 보안 테스트 도구입니다.
-저장소 구조와 라우트 선언을 분석하고, 이후 결정론적 규칙과 선택적 AI 분석에서 활용할 수 있는
-근거를 생성합니다.
+AuthZest는 FastAPI 애플리케이션의 소스 코드를 바탕으로 접근통제를 분석하기 위한 설치형 CLI 중심
+오픈소스 프로젝트입니다. 현재 Python core는 대상 애플리케이션을 import하거나 실행하지 않고
+라우트를 수집합니다. 접근통제 평가와 선택적 AI 지원은 이후 개발 단계입니다.
+
+React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 사용하기 위해 웹사이트를 배포할 필요는
+없습니다.
 
 > [!IMPORTANT]
-> AuthZest는 초기 개발 단계입니다. 버전 `0.1.0-alpha.1`은 실행 가능한 프로젝트 스캐폴딩이며 완성된
-> 취약점 스캐너가 아닙니다. 접근통제 분류, 보안 finding, 능동 테스트와 Codex 기반 분석은 앞으로
-> 구현할 기능입니다.
+> 공개된 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)는
+> 첫 실행 가능한 스캐폴딩입니다. 아래의 라우트 소유 객체 인식, prefix 합성, 파일 간 라우터 연결은
+> `main`에 구현되어 있지만 해당 실행 파일에는 **아직 릴리스되지 않았습니다**.
+> 소스 패키지도 여전히 `0.1.0a1`을 표시하므로 checkout 커밋과 [변경 기록](CHANGELOG.ko.md)을 함께
+> 확인해 공개 preview와 구분하세요. 어느 버전도 완성된 취약점 스캐너는 아닙니다.
 
-## 현재 동작하는 기능
+## 현재 소스에서 지원하는 기능
 
-- 일반적인 FastAPI 라우트 데코레이터의 Python AST 탐색
-- Typer CLI 명령: `scan`, `doctor`, `ui`
-- JSON 및 사람이 읽을 수 있는 스캔 요약
-- FastAPI 상태 확인 및 저장소 스캔 endpoint
-- localhost에서 실행되는 선택적 React/Vite 대시보드
-- PyInstaller 기반 단일 실행 파일 패키징
-- 분리된 `analyzer`, `parser`, `runner`, `codex` 모듈 경계
-- GitHub Actions의 Python 및 frontend CI
+- 정적으로 생성한 `FastAPI`·`APIRouter` 소유 객체와 지원하는 import 별칭 인식
+- 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
+- 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
+- `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
+- 선택적인 로컬 API·대시보드, 환경 진단, 독립 실행 파일 패키징
 
-Codex adapter는 현재 비활성화되어 있습니다. 로컬 분석에는 API key나 ChatGPT 로그인이 필요하지
-않습니다.
+지원 데코레이터는 `get`, `post`, `put`, `patch`, `delete`, `options`, `head`입니다.
+정적 분석의 지원 범위는 제한되어 있습니다. 동적이거나 해석할 수 없는 선언은 생략되므로 빈 보고서가
+endpoint의 부재나 접근통제의 안전성을 입증하지 않습니다. [파서 지원 범위](PARSER_SCOPE.ko.md)를
+참고하세요. 의존성 수집, 인증·인가 분류, 보안 finding은 아직 구현되지 않았습니다.
 
-## pipx로 설치
+`scan`은 Codex adapter가 비활성화된 로컬 정적 분석을 사용합니다. Codex를 호출하지 않으며 API key나
+ChatGPT 로그인이 필요하지 않습니다. 별도의 `doctor` 명령은 아래 설명처럼 설치된 Codex CLI를 호출할
+수 있습니다.
 
-AuthZest는 Python 3.12 이상이 필요합니다.
+## 소스에서 CLI 설치
+
+먼저 Python 3.12 이상과 [pipx](https://pipx.pypa.io/latest/how-to/install-pipx.html)를 설치하세요.
+개발 기준 버전은 Python 3.12입니다. 다음 명령은 PyPI
+패키지가 아니라 현재 저장소 소스를 독립적인 pipx 환경에 설치합니다.
 
 ```bash
 git clone https://github.com/casing1/authzest.git
 cd authzest
-pipx install .
+pipx install --python 3.12 .
 
-authzest --version
-authzest doctor
+authzest --help
 authzest scan /path/to/fastapi-project
+authzest scan /path/to/fastapi-project --json
 ```
 
-선택적인 로컬 대시보드를 포함하려면 `pipx install '.[ui]'`를 사용합니다. 개발 중인 현재 코드를
-다시 설치할 때는 `pipx install . --force`를 사용합니다.
+`/path/to/fastapi-project`를 실제 프로젝트 디렉터리로 바꾸세요. 명령을 찾지 못하면 `pipx ensurepath`를
+실행하고 새 터미널을 여세요. pipx로 설치한 CLI는 프로젝트 venv를 활성화하지 않아도 사용할 수 있습니다.
+예시는 Python 3.12를 선택합니다. 지원되는 다른 인터프리터를 사용한다면 `--python` 뒤의 `3.12`를
+해당 버전이나 실행 파일 경로로 바꾸세요.
+
+소스 설치를 업데이트하려면 변경 사항이 없는 `authzest` checkout의 `main`에서 실행하세요.
+
+```bash
+git pull --ff-only
+pipx install --force .
+```
+
+미리 빌드된 파일은 [독립 실행 파일](#독립-실행-파일)을 참고하세요. `ui` extra는 Python backend 의존성을
+설치하지만 일반 wheel·pipx 설치에 빌드된 대시보드 자산을 포함하지 않습니다. 선택적인 대시보드는
+아래의 editable 소스 환경을 사용하세요.
+
+## CLI 진단
+
+```bash
+authzest --version
+authzest doctor
+authzest doctor --json
+```
+
+`doctor`는 Python 실행 환경을 확인합니다. PATH에서 `codex`를 찾으면 `codex --version`과
+`codex login status`도 subprocess로 실행합니다. AI 스캔을 시작하거나 자격 증명 파일을 직접 읽지는
+않습니다. Codex가 없거나 로그인하지 않은 경우 경고를 표시하지만 정적 스캔은 계속 사용할 수 있습니다.
 
 ## 개발 환경
+
+복제한 저장소 루트에서 명령을 실행하세요. 예시는 macOS/Linux shell 기준입니다. Windows PowerShell에서는
+`py -3.12 -m venv .venv`로 venv를 만들고 `.venv\Scripts\Activate.ps1`로 활성화합니다.
 
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
-
-cd frontend
-npm ci
-cd ..
 ```
 
-## CLI
+editable 설치는 현재 checkout을 사용하며 `dev` extra에는 선택적인 backend 의존성도 포함됩니다.
+Node.js/npm은 frontend 작업이나 대시보드를 포함하는 빌드에만 필요합니다. CI는 Node.js 22를 사용합니다.
+
+## 선택적인 로컬 대시보드
+
+editable 개발 환경을 준비한 뒤 저장소 루트에서 대시보드를 빌드하고 실행하세요.
 
 ```bash
-authzest --help
-authzest --version
-authzest doctor
-authzest scan <path>
-authzest scan <path> --json
-authzest ui --workspace <path> --host 127.0.0.1 --port 8000
+npm --prefix frontend ci
+npm --prefix frontend run build
+authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 ```
 
-`doctor`는 실행 환경과 선택적인 Codex CLI 설치 및 로그인 상태를 확인합니다. Codex를 사용할 수
-없어도 정적 분석은 계속 동작합니다.
+[http://127.0.0.1:8000](http://127.0.0.1:8000)을 여세요. editable backend는 checkout의
+`frontend/dist`를 찾습니다. 빌드하지 않으면 `/`에는 대시보드 대신 API 안내가 표시됩니다.
 
-`scan`은 현재 Python 파일 수를 세고 `get`, `post`, `put`, `patch`, `delete`, `options`, `head`
-FastAPI 스타일 라우트 데코레이터를 찾습니다. 아직 endpoint의 접근통제가 안전한지는 판단하지
-않습니다.
+frontend를 개발할 때는 venv를 활성화한 터미널에서
+`authzest ui --workspace /path/to/fastapi-project --reload`를 실행하고, 저장소 루트의 다른 터미널에서
+`npm --prefix frontend run dev`를 실행하세요. [http://localhost:5173](http://localhost:5173)을 열면
+Vite가 `/api`와 `/health`를 8000번 포트로 전달합니다.
 
-## 선택 기능: 로컬 대시보드
+로컬 서버는 `GET /health`, `GET /api/health`, `POST /api/scans`와 `/docs`의 API 문서를 제공합니다.
+스캔 endpoint는 항상 서버 시작 시 선택한 workspace를 사용하며 요청 본문으로 다른 경로를 선택할 수
+없습니다. CLI 직접 스캔은 로컬 사용자가 지정한 경로를 사용합니다. 선택적인 서버는 loopback 주소에서
+실행하세요.
 
-대시보드는 로컬 소프트웨어이며 웹사이트 배포가 필요하지 않습니다.
-HTTP API는 선택한 workspace 내부만 검사할 수 있습니다. CLI에서 직접 실행하는 scan은 현재
-사용자가 읽을 권한이 있는 임의 경로를 계속 대상으로 지정할 수 있습니다.
+## 검증
 
-```bash
-cd frontend
-npm ci
-npm run build
-cd ..
-
-authzest ui --workspace .
-```
-
-`http://127.0.0.1:8000`을 여세요. frontend 개발 중에는 `authzest ui --reload`와 `npm run dev`를
-서로 다른 터미널에서 실행합니다. Vite는 `/api`와 `/health`를 로컬 FastAPI 서버로 전달합니다.
-
-## 로컬 API
-
-- `GET /health` — backend 상태
-- `GET /api/health` — frontend용 동일 endpoint
-- `POST /api/scans` — 로컬 서버 시작 시 선택한 workspace를 스캔하며 경로 본문은 받지 않음
-- `GET /docs` — FastAPI가 생성한 API 문서
-
-## 개발 검증
+개발 venv를 활성화한 상태에서 실행하세요.
 
 ```bash
-pytest
+python -m pytest
 ruff check .
 ruff format --check .
-
-cd frontend
-npm run lint
-npm run format:check
-npm run build
 ```
 
-## 단일 실행 파일
+frontend를 변경했다면 다음도 실행하세요.
 
 ```bash
-source .venv/bin/activate
-python -m pip install -e '.[build]'
-cd frontend && npm ci && npm run build && cd ..
-python -m PyInstaller --clean --noconfirm authzest.spec
-./dist/authzest doctor
+npm --prefix frontend ci
+npm --prefix frontend run lint
+npm --prefix frontend run format:check
+npm --prefix frontend run build
 ```
 
-[GitHub Releases 페이지](https://github.com/casing1/authzest/releases)에서 미리 빌드된 preview 실행 파일을
-받을 수 있습니다. 아직 공개 배포용 notarization이나 signing이 적용되지 않아 운영체제에서 확인되지
-않은 게시자 경고를 표시할 수 있습니다.
+## 독립 실행 파일
 
-검증된 `v*` 태그를 push하면 macOS, Linux, Windows 실행 파일과 SHA-256 checksum을 만드는 release
-workflow가 시작됩니다. [변경 기록](../../CHANGELOG.md)과 [릴리스 안내](../RELEASING.md)를 참고하세요.
+[공개 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)는 Linux x64,
+macOS arm64, Windows x64 실행 파일과 SHA-256 manifest를 제공합니다. 그래픽 설치 프로그램이 아닌
+CLI 프로그램이며 `main`의 미출시 파서 변경 사항은 포함하지 않습니다. 아직 서명·notarization이 적용되지
+않아 운영체제가 확인되지 않은 게시자 경고를 표시할 수 있습니다.
+
+현재 소스를 로컬에서 빌드하려면 개발 venv를 활성화하고 저장소 루트에서 실행하세요.
+
+```bash
+python -m pip install -e '.[build]'
+npm --prefix frontend ci
+npm --prefix frontend run build
+python -m PyInstaller --clean --noconfirm authzest.spec
+./dist/authzest --help
+```
+
+Windows 결과물은 `dist\authzest.exe`입니다. PyInstaller 빌드는 `frontend/dist`가 있으면 포함합니다.
+태그 검증, checksum, 배포 절차는 [릴리스 안내](RELEASING.ko.md)를 참고하세요.
 
 ## 프로젝트 구조
 
 ```text
-.
-├── src/authzest/
-│   ├── analyzer/        # 저장소 단위 분석과 집계
-│   ├── parser/          # 언어 및 프레임워크 소스 파싱
-│   ├── codex/           # 선택적 AI adapter interface와 구현체
-│   ├── runner/          # 분석 흐름 orchestration
-│   ├── api/             # FastAPI transport
-│   ├── cli.py           # Typer CLI transport
-│   └── models.py        # core 데이터 모델
-├── tests/
-├── frontend/            # 선택적인 React/Vite/TypeScript UI
-├── docs/                # 개발 계획과 브랜드 자산
-├── scripts/             # release 패키징 도구
-├── authzest.spec        # PyInstaller 설정
-└── .github/workflows/   # CI 및 release workflow
+src/authzest/
+├── analyzer/   # 저장소 분석과 집계
+├── parser/     # AST 라우트·import 해석
+├── runner/     # 공유 스캔 실행 흐름
+├── codex/      # 선택적 provider interface; scan adapter 비활성화
+├── cli.py      # Typer 명령줄 인터페이스
+├── api/        # 선택적 FastAPI 연결 계층
+└── models.py   # core 보고서 데이터
+tests/          # 회귀 테스트
+frontend/       # 선택적 React/Vite/TypeScript 대시보드
+docs/           # 안내, 번역, 자산
+scripts/        # 릴리스 도구
+.github/        # CI/릴리스 workflow와 기여 템플릿
 ```
 
-의존성은 CLI, API, UI에서 core 방향으로만 흐릅니다. core는 웹 서버, React 또는 특정 AI provider에
+CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 웹 서버, React 또는 특정 AI provider에
 의존하지 않아야 합니다.
 
 ## 로드맵과 기여
 
-- [개발 계획](../DEVELOPMENT_PLAN.md)
-- [공개 로드맵 issue](https://github.com/casing1/authzest/issues/1)
+- [문서 색인](INDEX.ko.md) — 영어 안내와 한국어 번역
+- [개발 체크리스트](DEVELOPMENT_PLAN.ko.md)와 [로드맵 issue #1](https://github.com/casing1/authzest/issues/1)
 - [기여 및 커밋 규칙](CONTRIBUTING.ko.md)
 
-구현 전에 issue를 만들고 그 issue에 연결된 단기 브랜치를 사용해 주세요. Pull request는 병합 전
-Python과 frontend 검사를 통과해야 합니다.
+범위가 정해진 작업을 issue로 추적하고, 단기 브랜치에서 개발한 뒤 의미 있는 커밋과 검증을 담은 PR을
+만들어 주세요. 보호된 `main`은 Python, frontend, CodeQL 검사를 요구합니다. 다음 core 마일스톤은
+접근통제 판정을 도입하기에 앞서 `Depends`·`Security` 근거를 수집하는 것입니다.
 
 ## 라이선스와 보안
 
-AuthZest는 [MIT License](../../LICENSE)로 배포됩니다. 취약점은 공개 issue가 아니라
-[한국어 보안 정책](SECURITY.ko.md)의 비공개 절차를 통해 제보해 주세요.
+AuthZest는 [MIT License](../../LICENSE)를 사용합니다. 취약점은 공개 issue가 아니라
+[보안 정책](SECURITY.ko.md)의 비공개 절차를 통해 제보해 주세요.
