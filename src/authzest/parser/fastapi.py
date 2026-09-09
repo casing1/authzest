@@ -3,7 +3,7 @@ from __future__ import annotations
 import ast
 from dataclasses import dataclass, field, replace
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Protocol
 
 from authzest.models import Route
 
@@ -16,6 +16,7 @@ Constructor = Literal["FastAPI", "APIRouter"]
 class _Owner:
     kind: Constructor
     prefix: str | None
+    source: Path | None = None
     routes: list[Route] = field(default_factory=list)
     included: bool = False
     inherited: bool = False
@@ -23,7 +24,20 @@ class _Owner:
     children: set[_Owner] = field(default_factory=set)
 
 
-Binding = Literal["module", "FastAPI", "APIRouter"] | _Owner
+@dataclass(slots=True)
+class _ModuleRef:
+    name: str
+    inherited_owners: dict[_Owner, _Owner] | None = None
+    imported_modules: frozenset[str] = frozenset()
+
+
+Binding = Literal["module", "FastAPI", "APIRouter"] | _Owner | _ModuleRef
+
+
+class _ImportResolver(Protocol):
+    def imports(self, statement: ast.Import | ast.ImportFrom, path: Path) -> dict[str, Binding]: ...
+
+    def attribute(self, module: _ModuleRef, name: str) -> Binding | None: ...
 
 
 @dataclass(slots=True)
@@ -47,6 +61,12 @@ class _Registrations:
 class ParseResult:
     routes: tuple[Route, ...]
     error: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class RepositoryParseResult:
+    routes: tuple[Route, ...]
+    errors: tuple[str, ...] = ()
 
 
 class _BoundNames(ast.NodeVisitor):
@@ -174,27 +194,25 @@ class FastAPIRouteParser:
         self._parse_body(tree.body, {}, path, registrations)
         return ParseResult(routes=registrations.result())
 
+    def parse_repository(self, root: Path, paths: list[Path]) -> RepositoryParseResult:
+        from authzest.parser.repository import _RepositoryParser
+
+        return _RepositoryParser(self, root, paths).parse()
+
     def _parse_body(
         self,
         body: list[ast.stmt],
         bindings: dict[str, Binding],
         file_path: Path,
         registrations: _Registrations,
+        resolver: _ImportResolver | None = None,
+        deferred: bool = False,
     ) -> None:
         # Function bodies are inventoried independently, not executed at their definition.
         # Preserve stable names without allowing an inner include to mutate an outer graph.
         inherited_owners: dict[_Owner, _Owner] = {}
         for name, binding in bindings.items():
-            if isinstance(binding, _Owner):
-                bindings[name] = inherited_owners.setdefault(
-                    binding,
-                    _Owner(
-                        binding.kind,
-                        binding.prefix,
-                        inherited=True,
-                        origin=binding.origin or binding,
-                    ),
-                )
+            bindings[name] = self._inherit(binding, inherited_owners)
 
         # A function executes later: do not inherit names changed later in its outer scope.
         later_writes: list[tuple[set[str], bool]] = []
@@ -206,13 +224,14 @@ class FastAPIRouteParser:
         for statement, (later_names, later_wildcard) in zip(
             body, reversed(later_writes), strict=True
         ):
+            prior_bindings = bindings.copy()
             written = _bound_names([statement])
             attempts = _IncludeCalls()
             attempts.visit(statement)
             for call in attempts.calls:
-                self._suppress_included_declarations(call, bindings)
+                self._suppress_included_declarations(call, bindings, resolver)
             if isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Call):
-                self._include_router(statement.value, bindings, registrations)
+                self._include_router(statement.value, bindings, registrations, file_path, resolver)
 
             if isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 # Decorator/default expressions with assignment can change other receivers.
@@ -230,7 +249,9 @@ class FastAPIRouteParser:
                 for decorator in statement.decorator_list:
                     if dynamic:
                         break
-                    found = self._route_from_decorator(decorator, statement, file_path, bindings)
+                    found = self._route_from_decorator(
+                        decorator, statement, file_path, bindings, resolver
+                    )
                     if found is not None:
                         owner, route = found
                         registrations.add(owner, route)
@@ -253,11 +274,15 @@ class FastAPIRouteParser:
                 if local.wildcard or later_wildcard:
                     inherited.clear()
                 if not local.external:
-                    self._parse_body(statement.body, inherited, file_path, registrations)
+                    self._parse_body(
+                        statement.body, inherited, file_path, registrations, resolver, deferred=True
+                    )
 
             owner = None
             if isinstance(statement, (ast.Assign, ast.AnnAssign)):
                 owner = self._constructor_owner(statement.value, bindings)
+                if owner is not None:
+                    owner.source = file_path
 
             # Annotation-only statements do not overwrite an existing module/local value.
             if isinstance(statement, ast.AnnAssign) and statement.value is None:
@@ -268,7 +293,24 @@ class FastAPIRouteParser:
                 for name in written.names:
                     bindings.pop(name, None)
 
-            if isinstance(statement, ast.Import):
+            if isinstance(statement, (ast.Import, ast.ImportFrom)) and resolver is not None:
+                imported = resolver.imports(statement, file_path)
+                if isinstance(statement, ast.Import):
+                    for name, binding in imported.items():
+                        previous = prior_bindings.get(name)
+                        if (
+                            isinstance(binding, _ModuleRef)
+                            and isinstance(previous, _ModuleRef)
+                            and binding.name == previous.name
+                        ):
+                            binding.imported_modules |= previous.imported_modules
+                bindings.update(
+                    {
+                        name: self._inherit(binding, inherited_owners) if deferred else binding
+                        for name, binding in imported.items()
+                    }
+                )
+            elif isinstance(statement, ast.Import):
                 for alias in statement.names:
                     name = alias.asname or alias.name.split(".")[0]
                     bindings.pop(name, None)
@@ -291,6 +333,40 @@ class FastAPIRouteParser:
                 for target in targets:
                     if isinstance(target, ast.Name):
                         bindings[target.id] = owner
+
+    @staticmethod
+    def _inherit(binding: Binding, owners: dict[_Owner, _Owner]) -> Binding:
+        if isinstance(binding, _Owner):
+            return owners.setdefault(
+                binding,
+                _Owner(
+                    binding.kind,
+                    binding.prefix,
+                    source=binding.source,
+                    inherited=True,
+                    origin=binding.origin or binding,
+                ),
+            )
+        if isinstance(binding, _ModuleRef):
+            return _ModuleRef(binding.name, owners, binding.imported_modules)
+        return binding
+
+    @staticmethod
+    def _binding(
+        expression: ast.expr,
+        bindings: dict[str, Binding],
+        resolver: _ImportResolver | None,
+    ) -> Binding | None:
+        if isinstance(expression, ast.Name):
+            return bindings.get(expression.id)
+        if isinstance(expression, ast.Attribute) and resolver is not None:
+            module = FastAPIRouteParser._binding(expression.value, bindings, resolver)
+            if isinstance(module, _ModuleRef):
+                found = resolver.attribute(module, expression.attr)
+                if found is not None and module.inherited_owners is not None:
+                    return FastAPIRouteParser._inherit(found, module.inherited_owners)
+                return found
+        return None
 
     @staticmethod
     def _constructor_owner(value: ast.expr | None, bindings: dict[str, Binding]) -> _Owner | None:
@@ -331,7 +407,9 @@ class FastAPIRouteParser:
         return prefix
 
     @staticmethod
-    def _suppress_included_declarations(call: ast.Call, bindings: dict[str, Binding]) -> None:
+    def _suppress_included_declarations(
+        call: ast.Call, bindings: dict[str, Binding], resolver: _ImportResolver | None = None
+    ) -> None:
         # Even an unresolved mount must not turn into a guessed unprefixed endpoint.
         arguments = [
             *call.args,
@@ -339,31 +417,34 @@ class FastAPIRouteParser:
         ]
         for argument in arguments:
             for node in ast.walk(argument):
-                if isinstance(node, ast.Name):
-                    child = bindings.get(node.id)
+                if isinstance(node, (ast.Name, ast.Attribute)):
+                    child = FastAPIRouteParser._binding(node, bindings, resolver)
                     if isinstance(child, _Owner) and child.kind == "APIRouter":
                         child.included = True
 
     @staticmethod
     def _include_router(
-        call: ast.Call, bindings: dict[str, Binding], registrations: _Registrations
+        call: ast.Call,
+        bindings: dict[str, Binding],
+        registrations: _Registrations,
+        file_path: Path,
+        resolver: _ImportResolver | None = None,
     ) -> None:
         if (
             not isinstance(call.func, ast.Attribute)
             or call.func.attr != "include_router"
-            or not isinstance(call.func.value, ast.Name)
             or any(keyword.arg is None for keyword in call.keywords)
             or any(isinstance(node, ast.NamedExpr) for node in ast.walk(call))
         ):
             return
-        parent = bindings.get(call.func.value.id)
+        parent = FastAPIRouteParser._binding(call.func.value, bindings, resolver)
         arguments = [
             *call.args,
             *(keyword.value for keyword in call.keywords if keyword.arg == "router"),
         ]
-        if len(arguments) != 1 or not isinstance(arguments[0], ast.Name):
+        if len(arguments) != 1:
             return
-        child = bindings.get(arguments[0].id)
+        child = FastAPIRouteParser._binding(arguments[0], bindings, resolver)
         prefix = FastAPIRouteParser._literal_prefix(call)
         if (
             not isinstance(parent, _Owner)
@@ -372,6 +453,7 @@ class FastAPIRouteParser:
             or parent is child
             or parent.inherited
             or child.inherited
+            or parent.source != file_path
             or parent.prefix is None
             or child.prefix is None
             or prefix is None
@@ -400,13 +482,14 @@ class FastAPIRouteParser:
         function: ast.FunctionDef | ast.AsyncFunctionDef,
         file_path: Path,
         bindings: dict[str, Binding],
+        resolver: _ImportResolver | None = None,
     ) -> tuple[_Owner, Route] | None:
         if not isinstance(decorator, ast.Call) or not isinstance(decorator.func, ast.Attribute):
             return None
 
         receiver = decorator.func.value
-        owner = bindings.get(receiver.id) if isinstance(receiver, ast.Name) else None
-        if not isinstance(owner, _Owner) or owner.prefix is None:
+        owner = FastAPIRouteParser._binding(receiver, bindings, resolver)
+        if not isinstance(owner, _Owner) or owner.prefix is None or owner.source != file_path:
             return None
         if any(isinstance(node, ast.NamedExpr) for node in ast.walk(decorator)):
             return None

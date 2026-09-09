@@ -1,3 +1,3 @@
-from authzest.parser.fastapi import FastAPIRouteParser, ParseResult
+from authzest.parser.fastapi import FastAPIRouteParser, ParseResult, RepositoryParseResult
 
-__all__ = ["FastAPIRouteParser", "ParseResult"]
+__all__ = ["FastAPIRouteParser", "ParseResult", "RepositoryParseResult"]

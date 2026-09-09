@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from authzest.models import Route, ScanReport
+from authzest.models import ScanReport
 from authzest.parser import FastAPIRouteParser
+from authzest.parser.repository import is_local_source
 
 SKIPPED_DIRECTORIES = {
     ".git",
@@ -35,18 +36,13 @@ class RepositoryAnalyzer:
             path
             for path in resolved_root.rglob("*.py")
             if not any(part in SKIPPED_DIRECTORIES for part in path.parts)
+            and is_local_source(path, resolved_root)
         ]
-        routes: list[Route] = []
-        errors: list[str] = []
-        for path in sorted(python_files):
-            result = self._parser.parse_file(path)
-            routes.extend(result.routes)
-            if result.error:
-                errors.append(result.error)
+        result = self._parser.parse_repository(resolved_root, python_files)
 
         return ScanReport(
             root=resolved_root,
             python_files=len(python_files),
-            routes=tuple(routes),
-            parse_errors=tuple(errors),
+            routes=result.routes,
+            parse_errors=result.errors,
         )

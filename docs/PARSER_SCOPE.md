@@ -5,7 +5,9 @@ application, instantiate its objects, or execute its code. The supported syntax 
 
 ## Supported declarations
 
-Routes must belong to an object constructed directly from an absolute FastAPI import in the same file:
+Routes must belong to an object constructed directly from a recognized FastAPI import. Single-file
+discovery recognizes local declarations; repository scans also connect supported imports between indexed
+source files:
 
 ```python
 from fastapi import FastAPI, APIRouter as Router
@@ -99,9 +101,59 @@ to enclosing routers.
 
 For framework usage examples, see [FastAPI's router composition guide](https://fastapi.tiangolo.com/tutorial/bigger-applications/).
 
+## Repository-local imports
+
+Repository scans build a module index from the selected source tree and its conventional `src/` directory.
+Only indexed Python files participate. Resolution does not use the interpreter's import machinery,
+installed packages, `sys.path`, or network access, and symlinked files or directories are excluded.
+
+For example, a router in `app/routers/users.py`:
+
+```python
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/users")
+
+
+@router.get("/me")
+def current_user():
+    pass
+```
+
+can be registered from `app/main.py`:
+
+```python
+from fastapi import FastAPI
+from .routers.users import router as users_router
+
+app = FastAPI()
+app.include_router(users_router, prefix="/api")
+```
+
+The result is `/api/users/me`, with its file and line pointing to `current_user` in `app/routers/users.py`.
+The raw `/users/me` declaration is not emitted again merely because the router file is also scanned.
+
+Supported imports are module-level, static absolute or package-relative imports. They include direct
+router imports, import aliases, module references such as `from app.routers import users` followed by
+`users.router`, and import-based reexports through `__init__.py`. Nested registrations and repeated mounts
+share router identities across the module cache. Separate registrations remain separate results.
+
+Missing modules, conflicting module names, cyclic imports, wildcard imports, and dynamic imports are not
+resolved by guessing. A local module named `fastapi` is not silently treated as the installed framework.
+Imports cannot expand the scan beyond its indexed file set. Unsupported imports may leave standalone
+declarations in the inventory, but do not establish an application registration or a security verdict.
+
+Cross-file composition currently connects completed module-level declarations. Registering additional
+decorators onto an imported router, using imported owners as mutable parent routers, and resolving router
+imports inside deferred function bodies remain outside this subset. Existing function-local analysis
+continues in isolation. The standalone `parse_file` entry point remains a single-file operation.
+
+The supported syntax follows [Python's import forms](https://docs.python.org/3.12/reference/import.html#package-relative-imports),
+but AuthZest does not simulate all runtime import behavior.
+
 ## Deferred patterns and interpretation
 
-- Cross-file imports, relative imports, and resolution of which installed module an import loads.
+- Runtime import hooks, external package resolution, wildcard imports, and ambiguous or cyclic modules.
 - Cross-scope router composition and additions or mutations after inclusion.
 - Instance or constructor aliases assigned through other variables, factory-call result inference,
   subclasses, and owners stored in attributes or containers.
@@ -117,6 +169,6 @@ protected, unprotected, or vulnerable. The report schema is unchanged and does n
 unresolved-declaration list, so an empty result must not be interpreted as proof that no endpoints exist
 or that access control is safe. Malformed or unreadable source continues to appear in `parse_errors`.
 
-Regression cases live in `tests/test_parser.py` and `tests/test_router_prefixes.py`, with CLI, API, and
-repository-runner fixtures covering the shared report contract. No FastAPI version compatibility claim
-beyond this source-syntax subset is made.
+Regression cases live in `tests/test_parser.py`, `tests/test_router_prefixes.py`, and
+`tests/test_cross_file_routes.py`, with CLI, API, and repository-runner fixtures covering the shared report
+contract. No FastAPI version compatibility claim beyond this source-syntax subset is made.

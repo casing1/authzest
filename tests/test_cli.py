@@ -62,3 +62,35 @@ def test_scan_json_reports_each_router_registration(tmp_path: Path) -> None:
     assert payload["route_count"] == 2
     assert [route["path"] for route in payload["routes"]] == ["/v1/users/me", "/v2/users/me"]
     assert all(route["file"] == "main.py" for route in payload["routes"])
+
+
+def test_scan_json_reports_cross_file_routes_with_source_provenance(tmp_path: Path) -> None:
+    package = tmp_path / "api"
+    package.mkdir()
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "users.py").write_text(
+        "from fastapi import APIRouter\n"
+        'router = APIRouter(prefix="/users")\n'
+        '@router.get("/me")\ndef read_me(): pass\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "main.py").write_text(
+        "from fastapi import FastAPI\n"
+        "from api import users\n"
+        "app = FastAPI()\n"
+        'app.include_router(users.router, prefix="/v1")\n'
+        'app.include_router(users.router, prefix="/v2")\n',
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["scan", str(tmp_path), "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["python_files"] == 3
+    assert payload["parse_errors"] == []
+    assert payload["route_count"] == 2
+    assert [route["path"] for route in payload["routes"]] == ["/v1/users/me", "/v2/users/me"]
+    assert all(route["file"] == str(Path("api/users.py")) for route in payload["routes"])
+    assert all(route["line"] == 4 for route in payload["routes"])
+    assert all(route["methods"] == ["GET"] for route in payload["routes"])
