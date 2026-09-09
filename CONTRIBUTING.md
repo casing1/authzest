@@ -7,14 +7,16 @@
 
 AuthZest grows through small, verifiable changes. A clear record of why a change was made, how it was
 verified, and which security decisions were considered matters more than the number of features.
+Find the project guides in the [documentation index](docs/README.md).
 
 ## Workflow
 
-1. Open a GitHub issue before implementation and describe the problem, scope, and acceptance criteria.
+1. Check the [roadmap issue](https://github.com/casing1/authzest/issues/1), then open or select a focused
+   GitHub issue with a problem statement, scope, and acceptance criteria before implementation.
 2. Create a short-lived branch from the latest `main` and include the issue number in its name.
 3. Keep the implementation focused on one purpose and add tests in the same change.
 4. Run the local checks and commit in meaningful units.
-5. Open a pull request linked to the issue and wait for CI.
+5. Open a pull request linked to the issue and wait for the required Python, frontend, and CodeQL checks.
 6. Resolve discussions, merge with a merge commit, and delete the working branch.
 
 Do not push directly to `main`. It must remain runnable and pass all required checks.
@@ -48,6 +50,7 @@ Use a lightweight form of [Conventional Commits](https://www.conventionalcommits
 - Write the summary in imperative English, without a period, and keep it within 72 characters.
 - Keep each commit to one logical change that can be reviewed or reverted independently.
 - Include a feature and its tests in the same commit when practical.
+- Do not split a coherent change merely to increase the commit count.
 - Avoid unclear messages such as `update`, `fix stuff`, or `WIP`.
 - When a body is needed, explain why the change is necessary and record important tradeoffs.
 - Reference related issues with `Refs #12`. Use `Closes #12` in the pull request that completes the issue.
@@ -76,19 +79,25 @@ Commit types have the following meanings:
 
 ## Development setup
 
-1. Create a Python 3.12 virtual environment.
+Run the commands below from the cloned repository root with the development virtual environment active.
+
+1. Create and activate a Python 3.12 virtual environment using the
+   [README setup instructions](README.md#development-setup).
 2. Install Python development dependencies with `python -m pip install -e '.[dev]'`.
-3. Run `npm install` in `frontend/`.
+3. Run `npm --prefix frontend ci` to install the committed frontend dependency versions.
 4. Run the checks below before and after a change.
 
 ```bash
-pytest
+python -m pytest
 ruff check .
 ruff format --check .
-cd frontend && npm run lint && npm run format:check && npm run build
+npm --prefix frontend run lint
+npm --prefix frontend run format:check
+npm --prefix frontend run build
 ```
 
-To verify the standalone executable, build the frontend first and run:
+After building the frontend above, verify the standalone executable from the repository root with the
+same virtual environment active:
 
 ```bash
 python -m pip install -e '.[build]'
@@ -96,15 +105,44 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ./dist/authzest doctor
 ```
 
+On Windows, use `dist\authzest.exe`. Explicitly running `doctor` can invoke an installed Codex CLI through
+`codex --version` and `codex login status`; it does not start an AI scan. See
+[CLI diagnostics](README.md#cli-diagnostics).
+
 ## Change principles
 
 - Preserve the boundaries between `analyzer`, `parser`, `codex`, and `runner`.
 - Keep the core independent of the CLI, FastAPI transport, and React UI.
+- Prioritize the CLI MVP; maintain the local UI without expanding its scope ahead of the core.
 - Produce reproducible deterministic results before adding AI judgment.
+- Collect source facts and define report, authentication, and authorization semantics before adding
+  optional AI explanations or an active test runner. A `Depends` or `Security` declaration alone does not
+  prove that access is protected; preserve `unknown` when evidence is insufficient.
 - Security findings must include source location, evidence, confidence, and a minimal reproducible test.
 - Add a real Codex integration as a `CodexAdapter` protocol implementation; do not expose SDK or process
   details to the core.
 - Keep external process execution and network requests disabled by default. They require explicit user opt-in.
+
+## Documentation and translations
+
+Every first-party Markdown document has an English source and a Korean counterpart. The root project
+`README.md` also has Japanese and Russian translations; other documents, including the documentation
+index, require English and Korean only.
+
+- Keep English documents in their conventional locations and translations together in `docs/i18n/`.
+- Normally name a Korean counterpart `<NAME>.ko.md`, preserving the source document's basename.
+  For example, `docs/BRANCH_RULES.md` pairs with `docs/i18n/BRANCH_RULES.ko.md`.
+- Use `docs/i18n/INDEX.ko.md` for `docs/README.md` so it does not conflict with the project README
+  translation. The authored `.github/pull_request_template.md` pairs with
+  `docs/i18n/PULL_REQUEST_TEMPLATE.ko.md`; GitHub continues to load the English template by default.
+- Add reciprocal language links and register new guides in the English and Korean documentation indexes.
+- Update the source and all its translations in the same pull request. Keep supported behavior, limitations,
+  commands, links, and checklist state aligned. Leave code identifiers and command syntax unchanged.
+- Keep the project README focused on an overview and getting started; put detailed guidance under `docs/`
+  and link it from the [documentation index](docs/README.md).
+
+This policy covers Markdown authored for the repository, including contribution templates. Generated
+output and third-party dependency documentation are not translated or committed as project guidance.
 
 ## Definition of done
 
@@ -114,6 +152,7 @@ A pull request is ready to merge when:
 - New or changed behavior is covered by tests.
 - Relevant Python and frontend checks pass locally.
 - User-facing behavior changes include appropriate documentation.
+- Documentation changes include the corresponding translations and working language links.
 - Security and backward-compatibility impact is recorded in the pull request.
 - No secrets, personal data, or generated files are committed.
 - All required GitHub Actions checks pass.
