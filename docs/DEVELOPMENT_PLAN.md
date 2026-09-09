@@ -21,9 +21,9 @@ AuthZest는 먼저 결정론적인 정적 분석 도구를 만들고, 그 결과
 
 ## Phase 2 — FastAPI 접근통제 탐색
 
-- [x] 같은 파일의 `FastAPI`/`APIRouter` 생성 객체를 식별하고 일반 객체의 데코레이터를 제외합니다.
-- [x] 같은 파일·scope에서 문자열로 선언한 `APIRouter` prefix와 `include_router` 구성을 해석합니다.
-- [ ] 다른 파일의 router import와 `include_router` 연결을 해석합니다.
+- [x] 같은 파일의 `FastAPI`/`APIRouter` 생성 객체를 식별하고 일반 객체의 데코레이터를 제외합니다. ([#19](https://github.com/casing1/authzest/issues/19))
+- [x] 같은 파일·scope에서 문자열로 선언한 `APIRouter` prefix와 `include_router` 구성을 해석합니다. ([#21](https://github.com/casing1/authzest/issues/21))
+- [x] 저장소 내부의 정적 router import와 모듈 최상위 `include_router` 연결을 해석합니다. ([#25](https://github.com/casing1/authzest/issues/25))
 - [ ] 애플리케이션, router, route와 함수 parameter의 `Depends`를 수집합니다.
 - [ ] FastAPI `Security`와 security scheme 사용을 수집합니다.
 - [ ] route를 `protected`, `unprotected`, `unknown`으로 분류합니다.
