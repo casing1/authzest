@@ -29,6 +29,16 @@ export function koreanCounterpart(file) {
   return `docs/i18n/${path.posix.basename(file).replace(/\.md$/i, "")}.ko.md`;
 }
 
+function stripHtmlTagsSafely(value) {
+  let previous;
+  let current = value;
+  do {
+    previous = current;
+    current = current.replace(/<[^>]*>/g, "");
+  } while (current !== previous);
+  return current;
+}
+
 function parseMarkdown(source, file, issues) {
   const prose = [];
   const blocks = [];
@@ -74,8 +84,7 @@ function parseMarkdown(source, file, issues) {
   const repeated = new Map();
   // GitHub-style ATX heading anchors for the source syntax used in these guides.
   for (const heading of text.matchAll(/^#{1,6}\s+(.+?)\s*#*\s*$/gm)) {
-    const slug = heading[1]
-      .replace(/<[^>]*>/g, "")
+    const slug = stripHtmlTagsSafely(heading[1])
       .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
       .toLowerCase()
       .replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, "")
