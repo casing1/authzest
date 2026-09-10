@@ -48,11 +48,13 @@ docs/
 
 ## Read the right version
 
-The latest `main` source includes route-owner recognition, literal router composition, and repository-local
-router imports. Those improvements are recorded in the alpha.2 changelog section, not included in the
-`v0.1.0-alpha.1` preview binary. This source targets `0.1.0a2`; check
-[GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and compare the
-changelog and commit/tag as well as `--version`.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10
+with package version `0.1.0a2` and schema `1.2`. Its binaries include route-owner recognition, literal router
+composition, repository-local imports, and local/inherited dependency evidence. The alpha.1 scaffold
+does not contain these improvements. See the [release record](releases/RELEASING.md) for the exact commit,
+three-platform artifacts, and validation limits. Compare the changelog and commit/tag as well as
+`--version`; `main` can advance beyond the released source. The next development task is
+[#33](https://github.com/casing1/authzest/issues/33), followed by [#35](https://github.com/casing1/authzest/issues/35).
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
 route-local plus inherited dependency declarations. They do not classify endpoints

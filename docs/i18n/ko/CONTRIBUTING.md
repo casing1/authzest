@@ -37,7 +37,7 @@ chore/55-update-actions
 ```
 
 권장 type은 `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, `build`입니다. 장기간 유지하는
-`develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0-alpha.1` 같은 태그를
+`develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0-alpha.2` 같은 태그를
 붙여 만듭니다. [릴리스 안내](releases/RELEASING.md)를 따르며 공개된 태그는 변경하지 않습니다.
 
 ## 커밋 규칙
@@ -115,10 +115,12 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 ```bash
 python -m pip install -e '.[build]'
 python -m PyInstaller --clean --noconfirm authzest.spec
-./dist/authzest doctor
+python scripts/smoke_release.py --binary dist/authzest
 ```
 
-Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor`를 실행하면 설치된 Codex CLI의
+Windows에서는 `--binary dist/authzest.exe`를 사용합니다. 이 제한된 smoke 검사는 Codex나 스캔 대상 코드를
+실행하지 않고 소스 전용 fixture, 리포트 일치, CLI 종료와 이동 복사본을 확인합니다. 일반 사용자 기기의
+설치·업그레이드 지원까지 입증하지는 않습니다. 선택 사항인 `doctor`를 명시적으로 실행하면 설치된 Codex CLI의
 `codex --version`과 `codex login status`를 호출할 수 있으며 AI 스캔을 시작하지는 않습니다.
 로그인에 성공해도 해당 연동이 구현되지 않았으므로 AI 분석이 활성화되지는 않습니다.
 [CLI 진단 안내](README.md#cli-진단)를 참고하세요.
@@ -159,6 +161,9 @@ Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor
   체크리스트 상태를 일치시키고 코드 식별자와 명령어 문법은 바꾸지 않습니다.
 - 프로젝트 README에는 개요와 시작 방법을 담습니다. 자세한 안내는 `docs/`에 작성하고
   [문서 목차](INDEX.md)에서 연결합니다.
+- 릴리스의 실제 발행과 공개 파일 검증 후, 후속 문서 PR에서 README들과 영·한 안내의 발행 상태,
+  다운로드 링크, 완료된 체크리스트와 검증 한계를 맞춥니다. 이 변경은 `Unreleased`에 기록하고
+  배포한 태그나 산출물은 다시 쓰지 않습니다.
 
 이 정책은 기여용 템플릿을 포함해 저장소를 위해 직접 작성하는 Markdown에 적용합니다. 생성 결과물과
 외부 의존성 문서는 프로젝트 안내 문서로 번역하거나 커밋하지 않습니다.

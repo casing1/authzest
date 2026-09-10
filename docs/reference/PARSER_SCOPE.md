@@ -2,12 +2,13 @@
 
 [Documentation](../README.md) · English · [한국어](../i18n/ko/reference/PARSER_SCOPE.md)
 
-This guide describes the current source on `main`. Owner recognition, prefix composition,
-repository-local imports, versioned registration evidence, and local/inherited dependency declarations are
-recorded in the [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10) and are not included in
-the published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
-This source targets package `0.1.0a2`; confirm available binaries in
-[GitHub Releases](https://github.com/casing1/authzest/releases), not from the version string alone.
+This guide describes the parser subset released in
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), package `0.1.0a2`.
+Owner recognition, prefix composition, repository-local imports, versioned registration evidence, and
+local/inherited dependency declarations are included in those binaries, as recorded in the
+[alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10). They are absent from the alpha.1 scaffold.
+The [release record](../releases/RELEASING.md) identifies the exact commit and verification scope;
+later `main` changes must be checked against that tag rather than inferred from a version string.
 
 AuthZest parses Python source with the standard-library AST parser. It does not import the scanned
 application, instantiate its objects, or execute its code. The supported syntax is tested on Python 3.12.

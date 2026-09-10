@@ -22,13 +22,12 @@ React ダッシュボードは任意のローカルインターフェースで�
 デプロイする必要はありません。
 
 > [!IMPORTANT]
-> 公開済みの [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) は、
-> 最初の実行可能なひな型です。以下に示すルート所有オブジェクトの認識、prefix の合成、ファイル間の
-> ルーター解決とレポート仕様は、そのバイナリには含まれていません。このソースは
-> `v0.1.0-alpha.2`（Python では `0.1.0a2`）を対象にしています。利用できる成果物は
-> [GitHub Releases](https://github.com/casing1/authzest/releases)で確認し、checkout のコミットと
-> [変更履歴](../../../CHANGELOG.md)を比較してください。バージョン文字列だけでは公開済みと判断できません。
-> どちらも完成した脆弱性スキャナーではありません。
+> [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) は 2026-09-10 に
+> Python パッケージ版 `0.1.0a2`、レポートスキーマ `1.2` として公開されました。バイナリには、
+> 以下のソース一覧・レポート・直接/継承依存宣言の根拠を扱う機能が含まれます。
+> 正確なコミットと検証結果は[変更履歴](../../../CHANGELOG.md)と[リリース記録](../../releases/RELEASING.md)を
+> 確認してください。`main` の checkout は、このタグより先に進んでいる場合があります。
+> まだアルファ段階のソース分析ツールであり、完成した脆弱性スキャナーや動作する Codex 修正フローではありません。
 
 ## 現在のソースが対応する機能
 
@@ -194,10 +193,16 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 ## 独立した実行ファイル
 
-[公開済み preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) は Linux x64、
-macOS arm64、Windows x64 の実行ファイルと SHA-256 manifest を提供します。GUI インストーラーではなく
-CLI プログラムであり、上記の新しいパーサー/レポート機能は含まれません。まだ署名・notarization を行って
-いないため、OS が未確認の発行元について警告する場合があります。
+[alpha.2 リリース](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) は Linux x64、
+macOS arm64、Windows x64 の実行ファイルと対応する SHA-256 manifest を提供します。上記のソース分析機能と
+レポートスキーマ `1.2` を含みます。GUI インストーラーではなく独立した CLI プログラムであり、
+ビルド済みバイナリの実行に Python や Node.js のインストールは不要です。
+
+OS/アーキテクチャに合うファイルと `.sha256` manifest をダウンロードし、実行前に
+[チェックサムと実行の手順](../../releases/RELEASING.md#verify-and-recover)に従ってください。
+3 プラットフォームの CI ビルドとダウンロード成果物の smoke 検査は成功しましたが、一般ユーザーの機器での
+クリーンインストール・アップグレードや、すべての OS バージョンとの互換性は未確認です。署名・公証は
+されていないため、OS が未確認の発行元について警告する場合があります。
 
 現在のソースをローカルでビルドするには、開発 venv を有効にし、リポジトリルートから実行します。
 
@@ -245,8 +250,9 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。
 [#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤と
 [#28](https://github.com/casing1/authzest/issues/28)・[#29](https://github.com/casing1/authzest/issues/29) の
-ルート直接・継承宣言の根拠は現在のソースに実装されています。次は公開とは別に alpha.2 の
-リリース準備状況を確認してから、以下の順序で進めます。
+ルート直接・継承宣言の根拠は alpha.2 に含まれます。
+リリース準備・公開 [#39](https://github.com/casing1/authzest/issues/39) は完了しました。
+次は以下の順序で進めます。
 
 1. [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)
 2. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)

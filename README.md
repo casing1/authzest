@@ -20,13 +20,12 @@ record. That workflow is planned, not implemented; static scans remain offline a
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
 > [!IMPORTANT]
-> The published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
-> is the first executable scaffold. Route-owner recognition, prefix composition, cross-file router
-> resolution, and the report contract described below are not included in those binaries.
-> This source targets `v0.1.0-alpha.2` (`0.1.0a2` in Python). Check
-> [GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and compare the
-> checkout commit with the [changelog](CHANGELOG.md). A version string alone does not prove publication.
-> Neither version is a complete vulnerability scanner.
+> [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on
+> 2026-09-10 with Python package version `0.1.0a2` and report schema `1.2`. Its binaries include the
+> source-inventory, report, and local/inherited dependency features described below.
+> See the [changelog](CHANGELOG.md) and [release record](docs/releases/RELEASING.md) for the exact
+> commit and validation evidence. A checkout of `main` can advance beyond that tag.
+> This is still an alpha source-analysis tool, not a complete vulnerability scanner or a working Codex repair loop.
 
 ## What the current source supports
 
@@ -187,10 +186,16 @@ The formatting command covers tracked Markdown; include new guides in staging be
 
 ## Standalone binaries
 
-The [published preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) provides Linux x64,
-macOS arm64, and Windows x64 executables with SHA-256 manifests. They are CLI programs, not graphical
-installers, and do not include the newer parser/report features described above. The binaries are not yet signed or
-notarized, so an operating system may warn about an unverified publisher.
+The [alpha.2 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) provides Linux x64,
+macOS arm64, and Windows x64 executables with matching SHA-256 manifests. They include the source-analysis
+features above and report schema `1.2`. They are standalone CLI programs, not graphical installers;
+running a prebuilt binary does not require installing Python or Node.js.
+
+Download the file for your OS/architecture and its `.sha256` manifest. Follow the
+[checksum and execution instructions](docs/releases/RELEASING.md#verify-and-recover) before running it.
+Three-platform CI builds and downloaded-artifact smoke checks passed; consumer-device clean installation,
+upgrades, and compatibility with every OS version have not been established. The binaries are unsigned
+and unnotarized, so an operating system may warn about an unverified publisher.
 
 To build the current source locally, activate the development venv and run from the repository root:
 
@@ -238,8 +243,9 @@ meaningful commits and validation. Protected `main` requires the Python, fronten
 The open-topic course plan uses 7 development weeks, with a separate 4–5 weeks reserved for exams, delays,
 and final preparation. The report/evidence foundation in [#32](https://github.com/casing1/authzest/issues/32)
 and route-local/inherited evidence in [#28](https://github.com/casing1/authzest/issues/28) and
-[#29](https://github.com/casing1/authzest/issues/29) are implemented in the current source. Next, assess
-alpha.2 release readiness separately from publication, then continue:
+[#29](https://github.com/casing1/authzest/issues/29) are included in alpha.2.
+Release preparation and publication [#39](https://github.com/casing1/authzest/issues/39) are complete.
+Next:
 
 1. [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33)
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)

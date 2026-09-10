@@ -7,8 +7,10 @@
 
 [Documentation index](../README.md) · [Parser scope](PARSER_SCOPE.md) · [Example](../guides/EXAMPLES.md)
 
-This describes schema **1.2** in the current source, not the original alpha.1 binary. The report schema
-version is independent of the source package version, 0.1.0a2. The core, CLI JSON, and local API
+This describes schema **1.2**, included in the published
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) binaries and this source.
+The original alpha.1 binary uses the legacy unversioned inventory. The report schema version is independent
+of package version `0.1.0a2`; see the [release record](../releases/RELEASING.md). The core, CLI JSON, and local API
 serialize the same report. No dependency classification, AI proposal, source modification, or target
 execution is performed by this report implementation.
 

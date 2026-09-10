@@ -21,12 +21,12 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 없습니다.
 
 > [!IMPORTANT]
-> 공개된 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)는
-> 첫 실행 가능한 스캐폴딩입니다. 아래의 라우트 소유 객체 인식, prefix 합성, 파일 간 라우터 연결과 리포트 계약은
-> 해당 실행 파일에는 포함되어 있지 않습니다. 이 소스는 `v0.1.0-alpha.2`(Python `0.1.0a2`)를 대상으로 합니다.
-> 제공되는 산출물은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서 확인하고 checkout 커밋과
-> [변경 기록](CHANGELOG.md)을 비교하세요. 버전 문자열만으로 배포를 입증하지 않습니다.
-> 어느 버전도 완성된 취약점 스캐너는 아닙니다.
+> [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에
+> Python 패키지 버전 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 실행 파일에는 아래의
+> 소스 목록·리포트·직접/상속 의존성 근거 기능이 포함됩니다.
+> 정확한 커밋과 검증 근거는 [변경 기록](CHANGELOG.md)과 [릴리스 기록](releases/RELEASING.md)을
+> 확인하세요. `main` checkout은 해당 태그 이후로 변경될 수 있습니다.
+> 아직 알파 소스 분석 도구이며 완성된 취약점 스캐너나 작동하는 Codex 수정 흐름은 아닙니다.
 
 ## 현재 소스에서 지원하는 기능
 
@@ -190,10 +190,16 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 ## 독립 실행 파일
 
-[공개 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)는 Linux x64,
-macOS arm64, Windows x64 실행 파일과 SHA-256 manifest를 제공합니다. 그래픽 설치 프로그램이 아닌
-CLI 프로그램이며 위에서 설명한 새 파서/리포트 기능은 포함하지 않습니다. 아직 서명·notarization이 적용되지
-않아 운영체제가 확인되지 않은 게시자 경고를 표시할 수 있습니다.
+[alpha.2 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 Linux x64,
+macOS arm64, Windows x64 실행 파일과 대응하는 SHA-256 manifest를 제공합니다. 위의 소스 분석 기능과
+리포트 스키마 `1.2`가 포함됩니다. 그래픽 설치 프로그램이 아닌 독립 CLI이며,
+빌드된 실행 파일을 사용하려고 Python이나 Node.js를 설치할 필요는 없습니다.
+
+자신의 OS/아키텍처에 맞는 파일과 `.sha256` manifest를 함께 받고 실행 전에
+[체크섬·실행 안내](releases/RELEASING.md#검증과-복구)를 따르세요.
+세 플랫폼 CI 빌드와 다운로드 산출물 smoke 검사는 통과했지만 일반 사용자 기기의 깨끗한 설치·업그레이드와
+모든 OS 버전의 호환성을 입증하지는 않았습니다. 서명·공증되지 않은 파일이므로 운영체제가
+확인되지 않은 게시자 경고를 표시할 수 있습니다.
 
 현재 소스를 로컬에서 빌드하려면 개발 venv를 활성화하고 저장소 루트에서 실행하세요.
 
@@ -241,8 +247,9 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 7주로 잡고, 별도의 4–5주는 시험 기간·지연·최종 준비를 위한 여유로 남깁니다.
 [#32](https://github.com/casing1/authzest/issues/32)의 리포트·근거 기반과
 [#28](https://github.com/casing1/authzest/issues/28)·[#29](https://github.com/casing1/authzest/issues/29)의
-라우트 직접·상속 근거는 현재 소스에 구현되어 있습니다. 다음은 배포와 별개로 alpha.2 릴리스 준비 상태를
-점검한 뒤 아래 순서로 진행합니다.
+라우트 직접·상속 근거는 alpha.2에 포함됩니다.
+릴리스 준비·발행 [#39](https://github.com/casing1/authzest/issues/39)는 완료했습니다.
+다음 순서로 진행합니다.
 
 1. [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33)
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
