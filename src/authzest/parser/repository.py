@@ -4,8 +4,9 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
+from authzest.parser.dependencies import TYPING_MODULES
 from authzest.parser.fastapi import (
-    CONSTRUCTORS,
+    FASTAPI_EXPORTS,
     Binding,
     FastAPIRouteParser,
     RepositoryParseResult,
@@ -224,6 +225,9 @@ class _RepositoryParser:
                 if alias.name == "fastapi" and "fastapi" not in self.locations:
                     bindings[name] = "module"
                     continue
+                if alias.name in TYPING_MODULES and alias.name not in self.locations:
+                    bindings[name] = "typing-module"
+                    continue
                 module = self._module(alias.name)
                 if module is not None:
                     imported = frozenset({alias.name})
@@ -240,7 +244,13 @@ class _RepositoryParser:
             return {
                 alias.asname or alias.name: alias.name
                 for alias in statement.names
-                if alias.name in CONSTRUCTORS
+                if alias.name in FASTAPI_EXPORTS
+            }
+        if statement.level == 0 and base in TYPING_MODULES and base not in self.locations:
+            return {
+                alias.asname or alias.name: "Annotated"
+                for alias in statement.names
+                if alias.name == "Annotated"
             }
         location = self._location(base)
         if location is not None and location.path == path and location.package:

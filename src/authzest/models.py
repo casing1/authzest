@@ -7,7 +7,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
-REPORT_SCHEMA_VERSION = "1.0"
+REPORT_SCHEMA_VERSION = "1.1"
 
 
 def _source_path(path: Path, root: Path | None) -> Path:
@@ -93,6 +93,32 @@ class Diagnostic:
 
 
 @dataclass(frozen=True, slots=True)
+class DependencyEvidence:
+    """A route-local declaration, not proof of callable resolution or access control."""
+
+    kind: Literal["Depends", "Security"]
+    target: str | None
+    location: SourceLocation
+    declaration_level: Literal["parameter-default", "parameter-annotation", "decorator"]
+    parameter: str | None = None
+    resolution: Literal["reference", "unresolved"] = "reference"
+    scopes: tuple[str, ...] | None = None
+    unresolved_reasons: tuple[str, ...] = ()
+
+    def to_dict(self, root: Path | None = None) -> dict[str, Any]:
+        return {
+            "kind": self.kind,
+            "target": self.target,
+            "location": self.location.to_dict(root),
+            "declaration_level": self.declaration_level,
+            "parameter": self.parameter,
+            "resolution": self.resolution,
+            "scopes": list(self.scopes) if self.scopes is not None else None,
+            "unresolved_reasons": list(self.unresolved_reasons),
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class Route:
     """A FastAPI-style route found in Python source."""
 
@@ -102,6 +128,7 @@ class Route:
     file: Path
     line: int
     registration: RegistrationEvidence | None = None
+    dependencies: tuple[DependencyEvidence, ...] = ()
 
     def to_dict(self, root: Path | None = None) -> dict[str, Any]:
         file_path = _source_path(self.file, root)
@@ -123,6 +150,8 @@ class Route:
             registration_id = "route-" + sha256(canonical.encode("utf-8")).hexdigest()
         data["registration_id"] = registration_id
         data["registration"] = registration
+        # Keep the 1.0 identity contract: dependency edits do not change a registration ID.
+        data["dependencies"] = [dependency.to_dict(root) for dependency in self.dependencies]
         return data
 
 
