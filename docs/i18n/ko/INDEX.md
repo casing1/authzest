@@ -48,12 +48,15 @@ docs/
 
 ## 올바른 버전의 문서 읽기
 
+소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
+[영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.
+
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 패키지
 버전 `0.1.0a2`, 스키마 `1.2`로 발행됐습니다. 실행 파일에는 라우트 소유 객체 인식, 리터럴 router 구성,
 저장소 내부 import와 직접·상속 의존성 근거가 포함됩니다. alpha.1 스캐폴딩에는 이 개선이 없습니다.
 정확한 커밋, 세 플랫폼 산출물과 검증의 한계는 [릴리스 기록](releases/RELEASING.md)을 참고하세요.
 `--version`뿐 아니라 변경 이력과 커밋/태그도 비교하세요. `main`은 배포된 소스 이후로 변경될 수 있습니다.
-다음 개발은 [#33](https://github.com/casing1/authzest/issues/33), 이후 [#35](https://github.com/casing1/authzest/issues/35)입니다.
+[#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐으며 다음 개발은 [#35](https://github.com/casing1/authzest/issues/35)입니다.
 
 현재 스캔은 스키마 1.2, 구조화된 진단, 구별되는 소스 등록 근거와 라우트 직접·상속 의존성 선언을 제공합니다.
 endpoint의 안전한 인가 여부 분류,

@@ -245,12 +245,13 @@ and final preparation. The report/evidence foundation in [#32](https://github.co
 and route-local/inherited evidence in [#28](https://github.com/casing1/authzest/issues/28) and
 [#29](https://github.com/casing1/authzest/issues/29) are included in alpha.2.
 Release preparation and publication [#39](https://github.com/casing1/authzest/issues/39) are complete.
-Next:
+Current source and next step:
 
-1. [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33)
+1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
-These capabilities are not implemented yet. Whether AI assistance improves results is a hypothesis to
+The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; #35's live workflow is not implemented yet.
+The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution
 permissions. Exploit-PoC generation, autonomous offensive workflows, and arbitrary repository execution

@@ -53,8 +53,10 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 
 ## 실제 연동 이전의 Codex 경계
 
-[#33: 근거에 연결된 설명과 오프라인 평가](https://github.com/casing1/authzest/issues/33)부터 시작합니다.
-실제 연동 방식 하나를 고르기 전에 최소 근거 payload와 mock adapter 테스트를 정의합니다.
+소스에 [#33: 근거에 연결된 설명과 오프라인 평가](https://github.com/casing1/authzest/issues/33)를 구현했습니다.
+[오프라인 계약](../reference/AI_CONTRACT.md)은 최소 입력, 검증한 가설, mock 실패 처리와 고정된
+비교 기반을 정의합니다. 정책 기준은 관리자가 승인했으며 예상값은 assistant 작성·코드 대조입니다.
+mock 지표는 모델 품질의 근거가 아닙니다.
 그 다음 [#35: 사용자 승인형 Codex 개선 흐름](https://github.com/casing1/authzest/issues/35)에서
 제안/승인 계약, adapter, 승인된 적용과 격리 검증을 다루며 #33만으로 전체 흐름이 구현되는 것은 아닙니다.
 기본 스캔과 CI에는 제공자 호출, 자격 증명, 구독이나 유료 모델이 필요하지 않습니다.

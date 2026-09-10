@@ -48,13 +48,16 @@ docs/
 
 ## Read the right version
 
+The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
+with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). It is not a live integration or part of alpha.2.
+
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10
 with package version `0.1.0a2` and schema `1.2`. Its binaries include route-owner recognition, literal router
 composition, repository-local imports, and local/inherited dependency evidence. The alpha.1 scaffold
 does not contain these improvements. See the [release record](releases/RELEASING.md) for the exact commit,
 three-platform artifacts, and validation limits. Compare the changelog and commit/tag as well as
-`--version`; `main` can advance beyond the released source. The next development task is
-[#33](https://github.com/casing1/authzest/issues/33), followed by [#35](https://github.com/casing1/authzest/issues/35).
+`--version`; `main` can advance beyond the released source. The offline foundation in
+[#33](https://github.com/casing1/authzest/issues/33) is implemented in source; next is [#35](https://github.com/casing1/authzest/issues/35).
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
 route-local plus inherited dependency declarations. They do not classify endpoints

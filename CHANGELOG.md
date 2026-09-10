@@ -14,6 +14,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Implement #33's offline AI schema `1.0`: selected, immutable source/registration evidence, exact-input
+  approval checks, strict response/reference validation, configurable identity/provenance, and isolated
+  mock review results. Disabled, invalid, failure, timeout, and cancellation paths preserve static scans.
+- Add a frozen six-case, three-mode evaluation harness with evaluator-only labels, repeated trials,
+  explicit metric denominators, and nullable unmeasured usage/human review data. Policy criteria were
+  maintainer-approved; reference labels remain assistant-authored and code-checked. Mock scores do not
+  demonstrate model performance. See the [offline contract](docs/reference/AI_CONTRACT.md).
+
+### Changed
+
+- Replace the unused `CodexFinding` adapter placeholder with untrusted JSON responses. No live adapter,
+  CLI/API behavior, report schema, target execution, patching, or published alpha.2 artifact changes.
+
 ### Documentation
 
 - Require appropriate issue/PR labels, maintainer assignment, milestone matching or a documented

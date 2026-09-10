@@ -1,0 +1,62 @@
+{
+  "version": "1",
+  "purpose": "scripted transport examples; never load evaluator labels",
+  "cases": {
+    "public": {
+      "model-only": {
+        "route-count": "1",
+        "policy": "public"
+      },
+      "evidence-plus-model": {
+        "route-count": "1",
+        "policy": "public"
+      }
+    },
+    "ordinary-di": {
+      "model-only": {
+        "dependency-count": "1",
+        "authorization": null
+      },
+      "evidence-plus-model": {
+        "dependency-count": "1",
+        "authorization": null
+      }
+    },
+    "security-scope": {
+      "model-only": {
+        "declared-scopes": "reports:read",
+        "authorization": null
+      },
+      "evidence-plus-model": {
+        "declared-scopes": "reports:read",
+        "authorization": null
+      }
+    },
+    "repeated-mount": {
+      "model-only": {
+        "route-count": "2"
+      },
+      "evidence-plus-model": {
+        "route-count": "2"
+      }
+    },
+    "dynamic-prefix": {
+      "model-only": {
+        "authorization": null
+      },
+      "evidence-plus-model": {
+        "authorization": null
+      }
+    },
+    "unresolved-dependency": {
+      "model-only": {
+        "policy": "restricted",
+        "authorization": null
+      },
+      "evidence-plus-model": {
+        "policy": "restricted",
+        "authorization": null
+      }
+    }
+  }
+}

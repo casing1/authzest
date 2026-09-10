@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "authorship": "assistant-authored reference labels; not human-authored",
+  "review_status": "policy-criteria-approved-by-maintainer-2026-09-10; exact-values-code-checked",
+  "review_scope": "Public intent is not enforcement; ordinary DI is not access control; scopes are declarations; repeated mounts are distinct; dynamic/incomplete authorization remains unknown.",
+  "cases": {
+    "public": {
+      "route-count": "1",
+      "policy": "public"
+    },
+    "ordinary-di": {
+      "dependency-count": "1",
+      "authorization": null
+    },
+    "security-scope": {
+      "declared-scopes": "reports:read",
+      "authorization": null
+    },
+    "repeated-mount": {
+      "route-count": "2"
+    },
+    "dynamic-prefix": {
+      "authorization": null
+    },
+    "unresolved-dependency": {
+      "policy": "restricted",
+      "authorization": null
+    }
+  }
+}
