@@ -7,13 +7,36 @@ the current release process. The binaries are not signed or notarized.
 
 ## Published preview and current source
 
-This source targets `v0.1.0-alpha.2`, with Python package `0.1.0a2` and report schema `1.2`.
-Check [GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and exact
-released commits. The package version or a dated changelog heading alone does not prove publication.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10,
+with Python package `0.1.0a2` and report schema `1.2`, from commit
+`7cc359acbb864ef6d31e3b536787857da4f7e09c` ([preparation PR #40](https://github.com/casing1/authzest/pull/40),
+[completed release issue #39](https://github.com/casing1/authzest/issues/39)). This is an alpha prerelease,
+not a stable security product. Subsequent documentation changes on `main` do not modify its tag or assets.
 The original [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
 does not contain the parser/report/dependency improvements documented in the
 [parser scope](../reference/PARSER_SCOPE.md) and [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10).
 Record the source commit with `git rev-parse HEAD` when reporting source-build behavior.
+
+### Alpha.2 validation record
+
+The [manual main run 34442310332](https://github.com/casing1/authzest/actions/runs/34442310332) and
+[tag publishing run 34442837616](https://github.com/casing1/authzest/actions/runs/34442837616) passed on the
+exact commit above. Checks included 451 Python tests, 14 documentation-checker tests, frontend lint/format
+and builds, four source-only fixtures, report parity, strict/invalid-input exits, and relocated binaries.
+Separate fresh jobs downloaded and checked each artifact without installing AuthZest's Python dependencies.
+
+| Platform    | Published executable                     |
+| ----------- | ---------------------------------------- |
+| Linux x64   | `authzest-0.1.0-alpha.2-linux-x64`       |
+| macOS arm64 | `authzest-0.1.0-alpha.2-macos-arm64`     |
+| Windows x64 | `authzest-0.1.0-alpha.2-windows-x64.exe` |
+
+Each executable has a matching `.sha256` manifest in the release: three binaries and three manifests.
+All public assets were downloaded again and their checksums verified. The published macOS binary also
+passed local isolated-copy fixture checks with a Python runtime containing no installed project dependencies.
+These records do not establish clean installation or upgrades on consumer devices, compatibility with
+every OS/Python/FastAPI version, signing/notarization, or authorization correctness. No Codex call, scanned
+application execution, or user-source modification was part of the smoke checks.
 
 ## Version policy
 
@@ -32,7 +55,7 @@ the mapping; they do not reserve the next release version:
 
 [`pyproject.toml`](../../pyproject.toml) is the source of truth for the Python runtime and API version. The
 frontend package marked `private: true` is not versioned independently. Choose a new, unused version for
-each new release; the already-published `v0.1.0-alpha.1` must not be issued again.
+each new release; neither the published `v0.1.0-alpha.1` nor `v0.1.0-alpha.2` may be issued again.
 
 ## Prepare a release
 
@@ -201,6 +224,13 @@ publish Python or npm packages or perform binary signing.
 
 - Confirm the generated GitHub release notes and both changelogs refer to the correct version and
   features. Build artifacts from `main` are not automatically a published release.
+- After publication and public-asset verification, open a documentation follow-up issue/PR from current
+  `main`. Replace preparation-only wording and old download links in all four README languages and
+  English/Korean guides. Record the release URL, date, exact commit, actual checks, and remaining limits;
+  update development/roadmap completion only for satisfied criteria. Keep later documentation changes in
+  `Unreleased`, run the documentation checks, and merge through required CI. Do not move the tag, replace
+  assets, or publish another version merely for this follow-up. Before publication, keep release claims
+  conditional; a planned version or successful dry run alone is not a public release.
 - If building or publishing fails, inspect the failed job before retrying. A transient failure can be
   retried for the same unchanged tag if its commit still satisfies validation. Do not use asset overwrite
   options to silently replace a release that users may already have downloaded.

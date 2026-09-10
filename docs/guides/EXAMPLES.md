@@ -9,7 +9,13 @@
 
 The maintained examples contain only fixed public sample data.
 They demonstrate source discovery without starting a server, importing the application, contacting an
-endpoint, or calling Codex. Use the current source checkout, not the older published alpha binary.
+endpoint, or calling Codex. These examples are verified with the
+[alpha.2 binaries](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) and matching source,
+not the alpha.1 scaffold. Run from a checkout containing the fixtures; a standalone executable does not
+install an examples directory. For the exact release fixtures, use the
+[tagged source archive](https://github.com/casing1/authzest/archive/refs/tags/v0.1.0-alpha.2.zip).
+The commands below assume `authzest` is on PATH; otherwise use the downloaded executable's absolute path.
+See the [release record](../releases/RELEASING.md) for validation evidence and limitations.
 
 ## Route registration example
 
@@ -47,7 +53,7 @@ python -m pytest tests/test_examples.py
 ## Route-local dependency example
 
 The [dependency example](../../examples/fastapi_dependencies/) demonstrates three supported declaration sites.
-From the repository root with the current source CLI installed:
+From the repository root with the alpha.2 CLI or matching source installation:
 
 ```bash
 authzest scan examples/fastapi_dependencies

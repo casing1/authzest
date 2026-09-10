@@ -49,12 +49,12 @@ weeks or a commitment to fill all remaining time. Pause development during exams
 | 6                | Failure/recovery cases, installation, and a small three-mode evaluation | Failed tests, stale approval, user edits, and recovery handled; actual usage and limitations recorded |
 | 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
 
-A new preview release is conditional on its checks, not required every week. Source package `0.1.0a2`
-targets `v0.1.0-alpha.2` after #28/#29. Release preparation adds bilingual changelog validation and binary
-fixture/relocated-copy smoke checks. Each publication still requires successful three-OS artifacts and
-verification of the exact selected SHA; these checks do not establish clean-machine or upgrade support.
-Check [GitHub Releases](https://github.com/casing1/authzest/releases) for publication status. This does not
-restart the seven-week plan or consume the exam buffer. Week 5 does not require
+A new preview release is conditional on its checks, not required every week.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), package `0.1.0a2`, was
+published after #28/#29 and release issue #39. Bilingual changelog checks, three-OS builds, and fresh
+downloaded-artifact fixture checks passed for its exact commit; see the [release record](../releases/RELEASING.md).
+Consumer-device clean installation and upgrades remain unverified. Future releases need their own checks.
+This does not restart the seven-week plan or consume the exam buffer. Week 5 does not require
 finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
 a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
 retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
@@ -73,11 +73,13 @@ buffer to expand features.
 - [x] Python/frontend CI, CLI/API fixture regressions, required CodeQL checks, and issue-linked
       merge-commit workflow.
 - [x] PyInstaller packaging and the published `v0.1.0-alpha.1` preview with checksums.
+- [x] Publish `v0.1.0-alpha.2` with schema `1.2`, local/inherited evidence, and checked three-platform
+      binaries ([#39](https://github.com/casing1/authzest/issues/39), [PR #40](https://github.com/casing1/authzest/pull/40)).
 - [x] Maintained [source-only demo](../guides/EXAMPLES.md), exact inventory regression, and documentation checks in CI.
 
-This source includes parser improvements absent from the alpha.1 binary and targets package `0.1.0a2`.
-Consult the [changelog](../../CHANGELOG.md), release artifacts, and exact commit/tag; a source version alone
-does not establish that a binary has been published.
+The parser/report/dependency improvements are now in alpha.2, not just an unreleased source checkout.
+The release commit is `7cc359acbb864ef6d31e3b536787857da4f7e09c`; consult the
+[changelog](../../CHANGELOG.md) and release record before equating later `main` changes with those binaries.
 
 Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
 source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](../reference/REPORT_CONTRACT.md).
@@ -97,7 +99,7 @@ Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
 current-source contract. Route-local declarations (#28) and inherited registration context (#29) are
-implemented. Next assess alpha.2 readiness, then build the offline AI contract (#33) and user-approved
+included in alpha.2. Next build the offline AI contract (#33) and user-approved
 Codex workflow (#35), without claiming complete Python coverage or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
@@ -194,15 +196,18 @@ Do not substitute Codex's settings-dependent tool approvals for AuthZest's exact
 Release preparation can proceed alongside the milestones above; packaging is already present and does not
 need to be rebuilt as a new product.
 
+- [x] For alpha.2, check four owned source-only fixtures through built/relocated binaries and fresh
+      downloaded-artifact jobs on Linux x64, macOS arm64, and Windows x64; verify checksums (#39).
 - [ ] Run the installed CLI/binary against the maintained policy fixture corpus in CI, beyond the
       existing in-process CLI/API regression tests.
 - [ ] Verify clean installation, execution, and upgrade for each advertised OS/architecture.
 - [ ] Define a tested support matrix and reproducible Python dependency constraints/build manifest rather
       than assuming every allowed dependency version is equivalent.
-- [ ] Verify release notes, both changelogs, tag/package version, and actual binary contents together.
+- [x] Verify alpha.2 release notes, both changelogs, tag/package version, and actual binary contents together (#39).
       The release script checks tag/version spelling and matching dated, nonempty English/Korean entries;
-      semantic content accuracy and actual artifact contents still require review.
-- [ ] Publish a new preview from a verified `main` commit when a coherent milestone is ready.
+      it does not replace the semantic content and artifact review performed for alpha.2.
+- [x] Publish alpha.2 from the verified `main` commit after its artifact gates pass (#39).
+- [ ] Repeat version, content, artifact, publication, and documentation checks for each future release.
 - [ ] Preserve issue decisions, meaningful commits, PR discussion, CI evidence, and a short reproducible demo.
 - [ ] Consider signing/notarization separately before broader binary distribution.
 

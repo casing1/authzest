@@ -48,10 +48,12 @@ docs/
 
 ## 올바른 버전의 문서 읽기
 
-최신 `main` 소스에는 라우트 소유 객체 인식, 리터럴 router 구성과 저장소 내부 router import가
-포함됩니다. 이 개선은 alpha.2 변경 이력에 기록하며 공개 `v0.1.0-alpha.1` preview 바이너리에는 없습니다.
-이 소스는 `0.1.0a2`를 대상으로 합니다. 제공되는 산출물은
-[GitHub Releases](https://github.com/casing1/authzest/releases)에서 확인하고 `--version`뿐 아니라 변경 이력과 커밋/태그도 비교하세요.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 패키지
+버전 `0.1.0a2`, 스키마 `1.2`로 발행됐습니다. 실행 파일에는 라우트 소유 객체 인식, 리터럴 router 구성,
+저장소 내부 import와 직접·상속 의존성 근거가 포함됩니다. alpha.1 스캐폴딩에는 이 개선이 없습니다.
+정확한 커밋, 세 플랫폼 산출물과 검증의 한계는 [릴리스 기록](releases/RELEASING.md)을 참고하세요.
+`--version`뿐 아니라 변경 이력과 커밋/태그도 비교하세요. `main`은 배포된 소스 이후로 변경될 수 있습니다.
+다음 개발은 [#33](https://github.com/casing1/authzest/issues/33), 이후 [#35](https://github.com/casing1/authzest/issues/35)입니다.
 
 현재 스캔은 스키마 1.2, 구조화된 진단, 구별되는 소스 등록 근거와 라우트 직접·상속 의존성 선언을 제공합니다.
 endpoint의 안전한 인가 여부 분류,

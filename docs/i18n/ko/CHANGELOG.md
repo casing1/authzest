@@ -14,13 +14,17 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
-alpha.2 준비 이후의 추가 변경은 아직 기록하지 않았습니다.
+### 문서
+
+- README 네 언어와 영·한 안내를 공개된 alpha.2 산출물, 릴리스 근거와 다음 #33/#35 작업에 맞췄습니다.
+  배포 절차에 발행 후 문서 동기화를 기록했습니다. 이 문서 전용 변경은 alpha.2 태그나 실행 파일을 바꾸지 않습니다.
 
 ## [0.1.0-alpha.2] - 2026-09-10
 
-리포트 스키마 `1.2`, 소스 패키지 `0.1.0a2`의 릴리스 준비 내용입니다. 날짜 제목이나 패키지 버전만으로
-배포를 입증하지 않습니다. 제공되는 산출물과 정확한 릴리스 커밋은
-[GitHub Releases](https://github.com/casing1/authzest/releases)에서 확인하세요. 이 개선은 alpha.1 바이너리에 없습니다.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)로 발행했습니다.
+Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은 `7cc359acbb864ef6d31e3b536787857da4f7e09c`입니다.
+산출물 검증과 한계는 [릴리스 기록](releases/RELEASING.md)에 연결했습니다.
+이 개선은 alpha.1이 아니라 alpha.2 실행 파일에 포함됩니다.
 
 ### 추가
 
@@ -105,6 +109,6 @@ alpha.2 준비 이후의 추가 변경은 아직 기록하지 않았습니다.
 - HTTP scan endpoint의 대상을 로컬 프로세스 소유자가 선택한 workspace로 제한했습니다.
 - HTTP API 계약에서 호출자가 지정하는 파일시스템 경로를 제거했습니다.
 
-[Unreleased]: https://github.com/casing1/authzest/commits/main/
-[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.2...main
+[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

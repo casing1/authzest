@@ -37,7 +37,7 @@ chore/55-update-actions
 
 Recommended types are `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, and `build`. AuthZest does
 not maintain a long-lived `develop` branch. Releases are created by tagging a verified commit on `main`, for
-example `v0.1.0-alpha.1`. Follow the [release guide](docs/releases/RELEASING.md); published tags are immutable.
+example `v0.1.0-alpha.2`. Follow the [release guide](docs/releases/RELEASING.md); published tags are immutable.
 
 ## Commit conventions
 
@@ -114,10 +114,12 @@ same virtual environment active:
 ```bash
 python -m pip install -e '.[build]'
 python -m PyInstaller --clean --noconfirm authzest.spec
-./dist/authzest doctor
+python scripts/smoke_release.py --binary dist/authzest
 ```
 
-On Windows, use `dist\authzest.exe`. Explicitly running `doctor` can invoke an installed Codex CLI through
+On Windows, use `--binary dist/authzest.exe`. This bounded smoke checks source-only fixtures, report parity,
+CLI exits, and a relocated copy without invoking Codex or scanned application code. It does not establish
+consumer-device installation or upgrade support. Explicitly running the optional `doctor` can invoke an installed Codex CLI through
 `codex --version` and `codex login status`; it does not start an AI scan. A successful login does not
 enable AI analysis, because that integration is not implemented. See
 [CLI diagnostics](README.md#cli-diagnostics).
@@ -156,6 +158,9 @@ index, require English and Korean only.
   commands, links, and checklist state aligned. Leave code identifiers and command syntax unchanged.
 - Keep the project README focused on an overview and getting started; put detailed guidance under `docs/`
   and link it from the [documentation index](docs/README.md).
+- After a release is actually published and its public assets are verified, synchronize release status,
+  download links, completed checklist items, and validation limits across the READMEs and English/Korean
+  guides in a follow-up docs PR. Keep this change in `Unreleased`; do not rewrite the released tag/assets.
 
 This policy covers Markdown authored for the repository, including contribution templates. Generated
 output and third-party dependency documentation are not translated or committed as project guidance.

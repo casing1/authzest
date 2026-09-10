@@ -14,13 +14,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
-No additional changes beyond the alpha.2 preparation are recorded yet.
+### Documentation
+
+- Synchronize the four README languages and English/Korean guides with the published alpha.2 artifacts,
+  release evidence, and next #33/#35 work. Record the post-publication documentation follow-up in the
+  release procedure. This documentation-only change does not alter the alpha.2 tag or binaries.
 
 ## [0.1.0-alpha.2] - 2026-09-10
 
-Prepared release contents for source package `0.1.0a2`, with report schema `1.2`. A dated heading or
-package version is not proof of publication: check [GitHub Releases](https://github.com/casing1/authzest/releases)
-for available artifacts and the exact released commit. These improvements are not in the alpha.1 binaries.
+Published as [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), with Python
+package `0.1.0a2` and report schema `1.2`, from commit `7cc359acbb864ef6d31e3b536787857da4f7e09c`.
+The [release record](docs/releases/RELEASING.md) links artifact checks and their limitations.
+These improvements are included in alpha.2, not the alpha.1 binaries.
 
 ### Added
 
@@ -109,6 +114,6 @@ for available artifacts and the exact released commit. These improvements are no
 - Restricted the HTTP scan endpoint to the workspace selected by the local process owner.
 - Removed caller-controlled filesystem paths from the HTTP API contract.
 
-[Unreleased]: https://github.com/casing1/authzest/commits/main/
-[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.2...main
+[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

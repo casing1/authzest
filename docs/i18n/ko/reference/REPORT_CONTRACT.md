@@ -7,8 +7,10 @@
 
 [문서 목차](../INDEX.md) · [파서 범위](PARSER_SCOPE.md) · [예제](../guides/EXAMPLES.md)
 
-첫 alpha.1 바이너리가 아닌 최신 소스의 스키마 **1.2**를 설명합니다. 리포트 스키마 버전은
-0.1.0a2인 소스 패키지 버전과 별개입니다. core, CLI JSON과 로컬 API는 같은 리포트를 직렬화합니다.
+공개된 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) 실행 파일과
+이 소스에 포함된 스키마 **1.2**를 설명합니다. 첫 alpha.1 바이너리는 기존 무버전 목록을 사용합니다.
+리포트 스키마 버전은 패키지 버전 `0.1.0a2`와 별개입니다. [릴리스 기록](../releases/RELEASING.md)을
+참고하세요. core, CLI JSON과 로컬 API는 같은 리포트를 직렬화합니다.
 이번 리포트 구현은 의존성 분류, AI 제안, 소스 수정이나 대상 코드 실행을 하지 않습니다.
 
 ## 호환성과 필드

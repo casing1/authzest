@@ -7,12 +7,33 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 
 ## 배포된 preview와 현재 소스
 
-이 소스는 `v0.1.0-alpha.2`, Python 패키지 `0.1.0a2`, 리포트 스키마 `1.2`를 대상으로 합니다.
-제공되는 산출물과 정확한 릴리스 커밋은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서
-확인하세요. 패키지 버전이나 변경 이력의 날짜 제목만으로 배포를 입증하지 않습니다.
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 Python
+패키지 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 커밋은 `7cc359acbb864ef6d31e3b536787857da4f7e09c`이며
+[준비 PR #40](https://github.com/casing1/authzest/pull/40), [완료된 릴리스 이슈 #39](https://github.com/casing1/authzest/issues/39)에
+연결됩니다. 안정화된 보안 제품이 아닌 알파 프리릴리스입니다. 이후 `main`의 문서 변경은 해당 태그나 산출물을 바꾸지 않습니다.
 첫 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에는
 [파서 범위](../reference/PARSER_SCOPE.md)와 [alpha.2 변경 이력](../CHANGELOG.md#010-alpha2---2026-09-10)의
 파서·리포트·의존성 개선이 없습니다. 소스 빌드의 동작을 보고할 때는 `git rev-parse HEAD`로 커밋도 기록하세요.
+
+### Alpha.2 검증 기록
+
+[main 사전 실행 34442310332](https://github.com/casing1/authzest/actions/runs/34442310332)과
+[태그 발행 실행 34442837616](https://github.com/casing1/authzest/actions/runs/34442837616)은 위의 정확한 커밋에서
+통과했습니다. Python 테스트 451개, 문서 검사기 테스트 14개, frontend lint/format·빌드,
+소스 전용 fixture 4종, 리포트 일치, strict/잘못된 입력 종료와 이동한 바이너리를 검사했습니다.
+별도 새 job에서 AuthZest의 Python 의존성을 설치하지 않고 각 산출물을 내려받아 확인했습니다.
+
+| 플랫폼      | 공개 실행 파일                           |
+| ----------- | ---------------------------------------- |
+| Linux x64   | `authzest-0.1.0-alpha.2-linux-x64`       |
+| macOS arm64 | `authzest-0.1.0-alpha.2-macos-arm64`     |
+| Windows x64 | `authzest-0.1.0-alpha.2-windows-x64.exe` |
+
+각 실행 파일에는 대응하는 `.sha256` manifest가 있으며 총 실행 파일 3개와 manifest 3개입니다.
+공개 파일을 모두 다시 내려받아 체크섬을 확인했습니다. 공개된 macOS 파일은 프로젝트 의존성이 설치되지 않은
+Python 환경에서 로컬 격리 복사본 fixture 검사도 통과했습니다. 이 기록은 일반 사용자 기기의 깨끗한 설치·업그레이드,
+모든 OS/Python/FastAPI 버전 호환성, 서명·공증이나 인가 정확성을 입증하지 않습니다. smoke 검사에 Codex 호출,
+스캔 대상 앱 실행이나 사용자 소스 수정은 포함하지 않았습니다.
 
 ## 버전 정책
 
@@ -31,7 +52,7 @@ Python 패키지 메타데이터에는 PEP 440 표기를, Git 태그에는 SemVe
 
 Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../../../pyproject.toml)입니다. `private: true`로 설정된
 frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리스마다 사용하지 않은 새 버전을
-선택하세요. 이미 배포한 `v0.1.0-alpha.1` 태그를 다시 발행하면 안 됩니다.
+선택하세요. 이미 배포한 `v0.1.0-alpha.1`과 `v0.1.0-alpha.2`는 모두 다시 발행하면 안 됩니다.
 
 ## 릴리스 준비
 
@@ -196,6 +217,11 @@ macOS, Windows 실행 파일을 빌드하고 바이너리/이동 복사본의 fi
 
 - 자동 생성된 GitHub 릴리스 노트와 두 언어의 변경 이력이 올바른 버전과 기능을 설명하는지 확인합니다.
   `main`의 빌드 아티팩트는 자동으로 공개 릴리스가 되는 것이 아닙니다.
+- 발행과 공개 파일 검증 후 최신 `main`에서 문서 후속 이슈/PR을 만듭니다. README 네 언어와 영·한 안내의
+  준비 단계 표현 및 이전 다운로드 링크를 바꿉니다. 릴리스 URL·날짜·정확한 커밋·실제 검사와 남은 한계를 기록하고
+  개발 계획/로드맵은 충족한 조건만 완료로 바꿉니다. 발행 이후 문서 변경은 `Unreleased`에 남기고 문서 검사와
+  필수 CI를 통과해 병합합니다. 이 후속 작업만으로 태그를 이동하거나 산출물을 교체하거나 새 버전을 발행하지 않습니다.
+  발행 전에는 조건부 표현을 유지하세요. 예정된 버전이나 dry run 성공만으로 공개 릴리스가 되는 것은 아닙니다.
 - 빌드나 배포가 실패하면 재시도 전에 실패한 작업을 확인합니다. 일시적인 실패라면 같은 태그와 커밋을
   유지하면서, 해당 커밋이 여전히 검증 조건을 만족할 때 재시도할 수 있습니다. 사용자가 이미 내려받았을 수
   있는 릴리스를 자산 덮어쓰기 옵션으로 조용히 교체하지 마세요.
