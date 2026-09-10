@@ -3,7 +3,7 @@
 [문서](INDEX.ko.md) · [English](../PARSER_SCOPE.md) · 한국어
 
 이 문서는 현재 `main`의 소스를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import 해석과
-버전이 있는 등록 근거는
+버전이 있는 등록 근거, 라우트 직접 의존성 선언은
 [`Unreleased`](CHANGELOG.ko.md#unreleased) 변경이며 배포된
 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에 포함되어 있지 않습니다.
 이 기능을 사용하려면 현재 소스를 checkout하세요. 패키지 버전은 아직 `0.1.0a1`에서 올리지 않았습니다.
@@ -177,11 +177,74 @@ import한 객체를 변경 가능한 부모 라우터로 사용하거나, 나중
 지원 문법은 [Python의 import 형태](https://docs.python.org/3.12/reference/import.html#package-relative-imports)를
 따르지만 AuthZest가 모든 런타임 import 동작을 재현하는 것은 아닙니다.
 
+## 라우트 직접 의존성 선언
+
+지원하는 route의 매개변수 기본값, 인라인 `Annotated` 메타데이터와 route decorator의 리터럴
+`dependencies` 목록에서 직접 `Depends`·`Security` 호출을 기록합니다. 인증·인가 분류가 아니라
+선언 사실입니다. 예를 들면 다음과 같습니다.
+
+```python
+from typing import Annotated
+from fastapi import Depends, FastAPI, Security
+
+app = FastAPI()
+
+
+@app.get("/items", dependencies=[Depends(trace_request)])
+def items(
+    page: Annotated[dict, Depends(pagination)],
+    context=Security(example_context, scopes=["items:read"]),
+):
+    pass
+```
+
+이 코드는 선언 구문만 보여주며 대상 이름은 여기 정의하지 않았고 파서도 callable을 조회하거나
+실행하지 않습니다. 런타임에 없는 단순/점 연결 이름도 구문상 `reference`일 수 있습니다.
+일반 DI는 보안 관련 이름과 같은 방식으로 기록합니다. `Security`, scope 문자열이나
+`get_current_user`라는 함수명이 접근통제 증거는 아닙니다.
+직접 관리하는 [의존성 예제](EXAMPLES.ko.md)에는 일반 샘플 함수와 예상 출력이 있습니다.
+
+지원하는 factory import는 `from fastapi import Depends as D, Security as S`, `import fastapi`,
+`import fastapi as fa`입니다. 인라인 `Annotated`는 `typing`과 `typing_extensions`의 직접 import 및
+모듈 별칭으로 인식합니다. 바인딩 변경과 이름 가림을 반영하며 사용자 객체가 `Depends`라는 이름을
+가졌다는 이유로 인식하지 않습니다. 저장소 분석은 로컬 framework/typing 모듈 이름 가림과 지원하는
+import 재수출도 반영합니다. 대상 callable의 import 해석은 이 기능의 범위가 아닙니다.
+
+Python 3.12 함수 type parameter는 해당 함수의 annotation과 본문에서 같은 이름을 가리지만 매개변수
+기본값이나 decorator에서는 가리지 않습니다. 소스 분석에서 이 맥락들의 바인딩을 구분하며 type parameter나
+annotation을 런타임 평가하지 않습니다.
+
+매개변수 근거는 위치 전용·일반·키워드 전용 기본값과 인라인 매개변수 annotation의 직접 인식한
+메타데이터를 다룹니다. `Annotated`의 첫 type 인자가 아닌 그 뒤의 메타데이터만 의존성 위치입니다.
+한 매개변수의 직접 의존성 선언이 여러 개면 런타임 우선순위를 추측하지 않고 미해석으로 보존합니다.
+확인한 의존성 포함 type alias와 중첩 annotation은 진단하지만 펼치지 않으며 문자열 annotation은 평가하지 않습니다.
+alias 진단은 단순/annotation 대입이나 Python 3.12 type alias의 인식한 `Annotated` 값과 이미 알려진
+alias의 단순 재대입으로 제한됩니다. 모든 alias나 재귀 타입 표현식을 찾지 않습니다. 첫 type 인자의
+일반 의존성 호출은 메타데이터가 아니며, 그 위치의 확인한 중첩 의존성 포함 `Annotated`는 펼치지 않고 진단합니다.
+
+decorator의 `dependencies`는 리터럴 목록, 빈 목록이나 `None`을 지원합니다. 인식한 직접 항목은
+수집하고 동적 목록·확장/미확인 항목·반복 인자는 진단합니다. 겹친 decorator마다 공통 매개변수 근거와
+해당 decorator 자신의 의존성만 기록합니다. 원본 소스 줄과 UTF-8 바이트 열 순서로 정렬합니다.
+같은 파일과 파일 간 mount는 원본 라우트 직접 근거를 유지하지만 app/router/include 의존성은 아직 상속하지 않습니다.
+
+대상은 위치 인자 하나 또는 `dependency=...`로 지정할 수 있습니다. 단순/점 연결 이름은 구문상 지원하며
+생략·`None` 대상, factory 호출, lambda와 기타 동적 대상은 미해석입니다. 표현식은 AST로 정규화하고
+실행하지 않습니다. 확장·중복·미확인 인자와 추가 위치 인자는 미해석입니다. `use_cache`와 `Depends`의
+`scope` 키워드는 허용하지만 런타임 동작을 해석하지 않습니다. `Security` scopes는 리터럴 문자열 목록,
+생략이나 명시적인 `None`만 확인하며 생략/`None`은 빈 목록입니다. 동적/잘못된 scopes는 사유와 null을
+유지합니다. 의존성 근거만 partial이면 route 자체는 보존합니다.
+
+이 제한된 구문은 FastAPI의 [의존성 참조](https://fastapi.tiangolo.com/reference/dependencies/),
+[의존성 안내](https://fastapi.tiangolo.com/tutorial/dependencies/)와
+[decorator 의존성 안내](https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/)를
+참고합니다. AuthZest는 모든 framework·Python 런타임 동작을 재현하지 않습니다.
+
 ## 등록 근거와 진단
 
-공통 리포트는 `schema_version: "1.0"`을 사용합니다. 이 리포트 스키마 버전은 Python 패키지 및
+공통 리포트는 `schema_version: "1.1"`을 사용합니다. 이 리포트 스키마 버전은 Python 패키지 및
 릴리스 버전과 별개입니다. 기존 라우트 필드와 `parse_errors`를 유지하며, `analysis_status`,
-`diagnostics`, 각 라우트의 `registration_id`와 `registration`을 추가합니다.
+`diagnostics`, 각 라우트의 `registration_id`와 `registration`은 1.0에 추가했습니다.
+1.1은 등록 ID 해시를 유지하며 각 라우트의 `dependencies`를 추가합니다.
 각 필드의 표현과 호환성 규칙은 [리포트 계약](REPORT_CONTRACT.ko.md)에 정의되어 있습니다.
 
 파서가 생성하는 모든 라우트에는 원본 데코레이터와 객체 생성자의 위치가 기록됩니다. 해석된 등록에는
@@ -212,11 +275,23 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 - `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
   `unresolved-include-owner`, `include-cycle`은 확인된 미지원 포함 시도를 설명합니다.
 - `conditional-registration`은 지원하지 않는 제어 흐름 안의 식별된 객체에 대한 라우트 선언을 표시합니다.
+- `unsupported-dependency-list`는 리터럴이 아니거나 반복한 decorator 의존성 목록,
+  `unsupported-dependency-entry`는 인식한 직접 의존성 호출이 아닌 항목입니다.
+- `unsupported-dependency-expression`, `unsupported-dependency-annotation`,
+  `unsupported-dependency-metadata`는 지원하지 않는 기본값/annotation 형태의 알려진 의존성 호출이나
+  펼치지 않는 의존성 포함 alias를 나타냅니다.
+- `unsupported-dependency-arguments`는 확장·중복·추가 위치·미확인 호출 인자입니다.
+  `unresolved-dependency-target`은 생략 또는 이름이 아닌 대상, `dynamic-security-scopes`는 확인한
+  문자열 목록으로 표현할 수 없는 scopes입니다. `ambiguous-dependency-declaration`은 한 매개변수에
+  직접 선언이 여러 개 있음을 나타내며 framework가 무엇을 선택할지 추측하지 않습니다.
 
 예를 들어 순환 import 때문에 식별된 app의 `include_router`에서 자식 라우터를 해석하지 못할 수
 있습니다. 이때 진단은 import가 성공했다고 주장하지 않고 해당 include 호출을 가리킵니다. 알 수 없는
 임의의 `.get(...)` 객체나 무관한 import는 이름만을 이유로 프레임워크 진단을 만들지 않습니다.
 진단은 지원하지 않는 모든 Python 패턴의 완전한 목록이 아닙니다.
+의존성 진단은 warning이며 route 경로가 확인돼도 리포트를 partial로 만듭니다. 근거 항목을 만드는
+호출은 `unresolved_reasons`에도 사유 코드를 보존합니다. 동적 목록이나 미지원 중첩 annotation은 의존성
+항목 없이 진단만 만들 수 있습니다. scopes 진단은 OAuth 실패 판정이 아니며 빈 의존성 목록은 공개 route label이 아닙니다.
 
 ## 추후 지원할 패턴과 결과 해석
 
@@ -229,9 +304,11 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 - `global` 또는 `nonlocal`을 사용하는 함수 본문, 라우트 선언의 대입 표현식, 임의 함수 호출이나 reflection을
   통한 런타임 변경.
 - 키워드로만 전달한 `path=`, 계산된 경로, `api_route`, `add_api_route`, WebSocket 선언.
-- 의존성 수집, 인증·인가 판정, 보안 문제 발견 결과.
+- app/router/include 의존성 상속, 중첩 의존성 그래프, 대상 callable 해석, 런타임 override,
+  인증·인가 판정과 보안 문제 발견 결과.
 
-지원하지 않거나 해석되지 않는 선언은 라우트 목록에서 빠집니다. 보호됨, 보호되지 않음, 취약함으로
+지원하지 않거나 해석되지 않는 route 선언은 목록에서 빠집니다. 지원 route의 의존성 근거가 미해석이면
+진단과 함께 route를 유지합니다. 보호됨, 보호되지 않음, 취약함으로
 분류하지 않습니다. 진단이나 파싱 오류가 있으면 `analysis_status: "partial"`, 없으면 `"bounded"`이며,
 어느 경우도 분석이 완전하다고 주장하지 않습니다. 빈 결과, 빈 진단 목록, 성공 종료는 endpoint가
 없거나 접근통제가 안전하다는 증거가 아닙니다.
@@ -248,5 +325,7 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 [`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py),
 [`test_source_encodings.py`](../../tests/test_source_encodings.py),
 [`test_report_parser.py`](../../tests/test_report_parser.py)에 있습니다. CLI, API, 저장소 runner
-fixture도 공통 보고서 계약을 검증합니다. 이 소스 문법 범위를 넘는 FastAPI 버전 호환성은 주장하지 않습니다.
+fixture도 공통 보고서 계약을 검증합니다. 라우트 직접 의존성 전달 계층 사례는
+[`test_dependency_transports.py`](../../tests/test_dependency_transports.py)에 있습니다.
+이 소스 문법 범위를 넘는 FastAPI 버전 호환성은 주장하지 않습니다.
 릴리스 절차는 [AuthZest 릴리스 관리](RELEASING.ko.md)를 참고하세요.

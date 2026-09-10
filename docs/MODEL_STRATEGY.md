@@ -20,9 +20,10 @@ optional future explanations. Runtime use remains opt-in: an offline static scan
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
 a design target, not a claim that an adapter, approval gate, or patch executor already exists.
 
-The current product inventories a bounded subset of FastAPI routes. It does not yet collect dependency
-evidence, determine authorization correctness, or run an AI adapter. The [source-only example](EXAMPLES.md)
-is a parser regression/demo, not a security benchmark.
+The current product inventories a bounded subset of FastAPI routes and route-local dependency declarations.
+It does not yet propagate inherited dependencies, resolve nested dependency graphs, determine authorization
+correctness, or run an AI adapter. The [source-only examples](EXAMPLES.md)
+are parser regressions/demos, not a security benchmark.
 
 ## Stable contracts, replaceable models
 
@@ -41,9 +42,11 @@ application/include-site provenance; a URL path or a handler location alone cann
 Record known unresolved cases without claiming every unsupported construct can be discovered.
 
 The current source implements [#32: report and registration contract](https://github.com/casing1/authzest/issues/32)
-with schema `1.0`, structured diagnostics, and distinct registration evidence. Next are
-[#28: route-local declarations](https://github.com/casing1/authzest/issues/28) and
-[#29: inherited declarations](https://github.com/casing1/authzest/issues/29).
+with structured diagnostics and distinct registration evidence, extended to schema `1.1` by
+[#28: route-local declarations](https://github.com/casing1/authzest/issues/28). Next is
+[#29: inherited declarations](https://github.com/casing1/authzest/issues/29). A dependency `reference` means
+simple/dotted-name syntax only, not resolved callable behavior or a security classification. Dependency
+evidence does not participate in the original registration-ID hash.
 The [report contract](REPORT_CONTRACT.md) retains default exit code 0 for returned partial reports;
 `--strict` opts into code 1 for known partial analysis, and invalid repository input returns 2.
 `bounded` is not complete analysis or a security pass. Registration IDs identify source registrations,

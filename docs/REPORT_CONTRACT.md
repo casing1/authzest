@@ -7,22 +7,23 @@
 
 [Documentation index](README.md) · [Parser scope](PARSER_SCOPE.md) · [Example](EXAMPLES.md)
 
-This describes schema **1.0** in the current source, not the published alpha binary. The report schema
+This describes schema **1.1** in the current source, not the published alpha binary. The report schema
 version is independent of the package version, which remains 0.1.0a1. The core, CLI JSON, and local API
 serialize the same report. No dependency classification, AI proposal, source modification, or target
 execution is performed by this report implementation.
 
 ## Compatibility and fields
 
-The first versioned schema extends the earlier unversioned inventory. Existing fields and their meanings
-remain; consumers that reject additional keys must accept the new fields before upgrading. Treat a
-missing schema version as the legacy format, not automatically as 1.0. Future additive fields may be
+Schema 1.0 extended the earlier unversioned inventory. Schema 1.1 adds route-local `dependencies` while
+preserving the 1.0 fields, meanings, and registration-ID algorithm. Consumers that reject additional keys
+must accept the new fields before upgrading. Treat a missing schema version as the legacy format, not
+automatically as 1.0 or 1.1. Future additive fields may be
 introduced in a minor schema version; removal, renaming, or changed meaning requires a major version and
 documented migration. Consumers should tolerate unknown keys but reject unsupported major versions.
 
 | Field                   | Meaning                                                                                |
 | ----------------------- | -------------------------------------------------------------------------------------- |
-| `schema_version`        | String identifying the report contract; currently `1.0`                                |
+| `schema_version`        | String identifying the report contract; currently `1.1`                                |
 | `root`                  | Absolute selected scan root; local machine context, not part of registration identity  |
 | `python_files`          | Number of selected Python files, including files that could not be parsed              |
 | `route_count`, `routes` | Number and ordered list of discovered source registrations/declarations                |
@@ -68,11 +69,43 @@ The digest is computed from canonical JSON containing route path, methods, funct
 function line, and the full registration object. JSON keys are sorted, separators are compact, Unicode is
 retained, and UTF-8 bytes are hashed. Identical inputs produce identical IDs across repeated scans and
 relocation of the selected root. Route order follows deterministic source discovery/import composition,
-not alphabetical endpoint order. Diagnostic wording can differ across Python/OS versions.
+not alphabetical endpoint order. Dependency evidence is excluded from this hash; schema 1.1 does not
+change IDs for otherwise unchanged registration evidence. Diagnostic wording can differ across Python/OS versions.
 
 **An ID is not a source-content hash, persistent runtime identity, or approval token.** A function body
 can change without moving its declaration. Future patch approval must separately bind the exact diff and
 original content/revision, reject stale approvals, and preserve user changes. See [workflow #35](https://github.com/casing1/authzest/issues/35).
+
+## Route-local dependency evidence
+
+Schema 1.1 adds `dependencies` to every route, including manually constructed legacy routes where it
+defaults to `[]`. An empty list means no supported route-local declarations were collected; it does not
+mean the route is public, unprotected, or free of dependencies. Application/router/include-level
+inheritance and nested dependency relationships are not collected yet. For a 1.0 report, absence of this
+field means the producer did not provide dependency evidence, not that a dependency scan found nothing.
+
+Each entry records a `Depends` or `Security` call on a supported route:
+
+| Member               | Meaning                                                                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `kind`               | `Depends` or `Security`, recognized from supported imports rather than name spelling alone                                         |
+| `target`             | AST-normalized target expression, or null when no target can be recorded; never evaluated                                          |
+| `location`           | Dependency call's original source position, with the same path/UTF-8 coordinate rules as registration evidence                     |
+| `declaration_level`  | `parameter-default`, `parameter-annotation`, or `decorator`                                                                        |
+| `parameter`          | Parameter name for parameter evidence; null for decorator evidence                                                                 |
+| `resolution`         | `reference` for accepted simple/dotted-name syntax with no unresolved reason; `unresolved` for any declaration limitation          |
+| `scopes`             | For `Security`, a statically known string list (including an empty list), or null for unresolved scopes; always null for `Depends` |
+| `unresolved_reasons` | Ordered machine-readable reason codes, also represented by report diagnostics                                                      |
+
+`reference` describes syntax, not callable lookup: the parser does not establish whether a target exists,
+an import resolves, a callable runs, or authentication/authorization is enforced. `target` is normalized
+Python expression text rather than a byte-exact source slice. Dynamic expressions remain untrusted data,
+never suggested commands. Target/scopes limitations remain visible without dropping an otherwise resolved route.
+
+Omitted `Security` scopes and explicit `scopes=None` are represented as `[]`. Literal string lists retain
+their source order and duplicates. Dynamic or invalid scopes are null with an unresolved reason, never a
+guessed empty list. Scopes are declared strings, not proof they are checked. Runtime behavior of `use_cache`
+and `scope` arguments is not interpreted. See [parser scope](PARSER_SCOPE.md) for accepted forms and diagnostics.
 
 ## Diagnostics
 
@@ -107,6 +140,9 @@ limitations, not security findings. JSON mode emits the full report on stdout be
 without mixing diagnostic text into stderr. Human output includes source paths, registration IDs,
 application/include positions, scope, and diagnostic details. Text layout is intended for people; use the
 versioned JSON contract for integrations. Unexpected internal exceptions are not security verdicts.
+Dependency text includes kind, target, declaration level, parameter, source location, scopes, and
+reference/unresolved state with reasons. JSON and the local API expose the full dependency records;
+the optional dashboard does not yet display individual dependency evidence.
 
 The API remains bound to the workspace chosen at server startup; callers cannot select a different path.
 There is no API strict flag: consumers must inspect `analysis_status` and `diagnostics`. The dashboard
@@ -120,3 +156,9 @@ legacy provenance, and field/status compatibility. [Parser tests](../tests/test_
 source positions, same-line repeated mounts, multiple apps, nested cross-file composition, known unresolved
 cases, deferred scope, and read-once source-only processing. [Transport tests](../tests/test_report_transports.py)
 cover CLI/API equivalence, output before strict failure, and invalid/empty/partial inputs.
+
+[Dependency model tests](../tests/test_dependency_contract.py) verify the additive schema, null/empty
+scopes, and unchanged registration identity. [Dependency parser tests](../tests/test_route_dependencies.py)
+and [edge cases](../tests/test_dependency_edge_cases.py) cover supported declarations, aliases, binding
+boundaries, and unresolved forms. [Dependency transport tests](../tests/test_dependency_transports.py)
+check the maintained example and shared core/CLI/API evidence, including strict partial output.

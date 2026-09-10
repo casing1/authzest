@@ -32,16 +32,20 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
-- Adds schema `1.0`, structured diagnostics, bounded/partial status, and distinct registration IDs with
+- Adds schema `1.1`, structured diagnostics, bounded/partial status, and distinct registration IDs with
   original declaration, application, and `include_router` evidence while retaining existing JSON fields.
+- Collects route-local `Depends`/`Security` declarations, source locations, and known scopes without
+  treating ordinary dependency injection as authentication or authorization.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
-This is a bounded static subset: unresolved declarations may be omitted from routes. Structured diagnostics
+This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
+unresolved dependency evidence remains in the report with diagnostics. Structured diagnostics
 cover selected unresolved cases and source/read errors, not every unsupported pattern. An empty report or
 `bounded` status does not establish that no endpoints exist or that access control is safe.
 See the [parser scope](docs/PARSER_SCOPE.md) and [report contract](docs/REPORT_CONTRACT.md).
-Dependency collection, authentication/authorization classification, and security findings are not implemented.
+Inherited dependency evidence, nested dependency graphs, authentication/authorization classification,
+and security findings are not implemented. A syntactic dependency reference does not establish what it does.
 
 `scan` uses local static analysis with the Codex adapter disabled. It does not invoke Codex or require an
 API key or ChatGPT login. The separate `doctor` command can invoke the installed Codex CLI, as explained below.
@@ -229,12 +233,11 @@ Track a bounded task in an issue, develop it on a short-lived branch, and submit
 meaningful commits and validation. Protected `main` requires the Python, frontend, and CodeQL checks.
 The open-topic course plan uses 7 development weeks, with a separate 4–5 weeks reserved for exams, delays,
 and final preparation. The report/evidence foundation in [#32](https://github.com/casing1/authzest/issues/32)
-is implemented in the current source. Next:
+and route-local evidence in [#28](https://github.com/casing1/authzest/issues/28) are implemented in the current source. Next:
 
-1. [#28: route-local `Depends`/`Security` evidence](https://github.com/casing1/authzest/issues/28)
-2. [#29: inherited dependency evidence](https://github.com/casing1/authzest/issues/29)
-3. [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33)
-4. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
+1. [#29: inherited dependency evidence](https://github.com/casing1/authzest/issues/29)
+2. [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33)
+3. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
 These capabilities are not implemented yet. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.

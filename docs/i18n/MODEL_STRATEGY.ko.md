@@ -19,8 +19,9 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 패치 적용이나 테스트 실행 허가가 아닙니다. 아래는 설계 목표이며 adapter·승인 단계·패치 실행기가
 이미 존재한다는 뜻이 아닙니다.
 
-현재 제품은 제한된 FastAPI 라우트 구문을 목록화합니다. 의존성 근거 수집, 인가 정확성 판정과
-AI adapter 실행은 아직 없습니다. [소스 전용 예제](EXAMPLES.ko.md)는 파서 회귀 검사와 데모이며
+현재 제품은 제한된 FastAPI 라우트 구문과 라우트 직접 의존성 선언을 목록화합니다. 상속 의존성 전파,
+중첩 의존성 그래프 해석, 인가 정확성 판정과 AI adapter 실행은 아직 없습니다.
+[소스 전용 예제](EXAMPLES.ko.md)는 파서 회귀 검사와 데모이며
 보안 벤치마크가 아닙니다.
 
 ## 안정적인 계약과 교체 가능한 모델
@@ -39,10 +40,11 @@ AI adapter 실행은 아직 없습니다. [소스 전용 예제](EXAMPLES.ko.md)
 위치 근거가 필요하며 URL 경로나 handler 위치만으로는 맥락을 식별할 수 없습니다. 확인한 미해석
 사례는 기록하되 모든 미지원 구문을 발견할 수 있다고 주장하지 않습니다.
 
-현재 소스는 [#32: 리포트와 등록 계약](https://github.com/casing1/authzest/issues/32)의 스키마 `1.0`,
-구조화된 진단과 구별되는 등록 근거를 구현합니다. 다음은
-[#28: 라우트 직접 선언](https://github.com/casing1/authzest/issues/28),
-[#29: 상속 선언](https://github.com/casing1/authzest/issues/29) 순서입니다.
+현재 소스는 [#32: 리포트와 등록 계약](https://github.com/casing1/authzest/issues/32)의 구조화된 진단과
+구별되는 등록 근거를 구현하고 [#28: 라우트 직접 선언](https://github.com/casing1/authzest/issues/28)으로
+스키마 `1.1`까지 확장했습니다. 다음은 [#29: 상속 선언](https://github.com/casing1/authzest/issues/29)입니다.
+의존성 `reference`는 단순/점 연결 이름 구문만 뜻하며 callable 동작 해석이나 보안 분류가 아닙니다.
+의존성 근거는 기존 등록 ID 해시에 포함하지 않습니다.
 [리포트 계약](REPORT_CONTRACT.ko.md)은 부분 리포트도 기본 종료 코드 0으로 반환하며
 `--strict`를 선택하면 확인한 부분 분석에는 1, 잘못된 저장소 입력에는 2를 반환합니다.
 `bounded`는 완전한 분석이나 보안 통과가 아닙니다. 등록 ID는 소스 등록을 식별하며 전체 파일 내용,

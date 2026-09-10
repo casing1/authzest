@@ -33,16 +33,20 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
-- 기존 JSON 필드를 유지하며 스키마 `1.0`, 구조화된 진단, bounded/partial 상태와 원본 선언·app·
+- 기존 JSON 필드를 유지하며 스키마 `1.1`, 구조화된 진단, bounded/partial 상태와 원본 선언·app·
   `include_router` 근거를 포함한 구별되는 등록 ID 추가
+- 라우트에 직접 선언된 `Depends`·`Security`, 소스 위치와 확인한 scopes 수집. 일반 의존성 주입을
+  인증이나 인가로 판단하지 않음
 - 선택적인 로컬 API·대시보드, 환경 진단, 독립 실행 파일 패키징
 
 지원 데코레이터는 `get`, `post`, `put`, `patch`, `delete`, `options`, `head`입니다.
-정적 분석의 지원 범위는 제한되어 있으며 미해석 선언은 라우트 목록에서 생략될 수 있습니다.
+정적 분석의 지원 범위는 제한되어 있으며 미해석 route 선언은 생략될 수 있습니다.
+지원 route의 의존성 근거가 미해석이면 진단과 함께 리포트에 유지합니다.
 구조화된 진단은 일부 미해석 사례와 소스/읽기 오류를 다루며 모든 미지원 패턴을 포괄하지 않습니다.
 빈 보고서나 `bounded` 상태가 endpoint의 부재나 접근통제의 안전성을 입증하지 않습니다.
 [파서 지원 범위](PARSER_SCOPE.ko.md)와 [리포트 계약](REPORT_CONTRACT.ko.md)을 참고하세요.
-의존성 수집, 인증·인가 분류, 보안 finding은 아직 구현되지 않았습니다.
+상속 의존성 근거, 중첩 의존성 그래프, 인증·인가 분류와 보안 finding은 아직 구현되지 않았습니다.
+구문상 의존성 참조를 찾았다는 사실만으로 그 동작을 입증하지 않습니다.
 
 `scan`은 Codex adapter가 비활성화된 로컬 정적 분석을 사용합니다. Codex를 호출하지 않으며 API key나
 ChatGPT 로그인이 필요하지 않습니다. 별도의 `doctor` 명령은 아래 설명처럼 설치된 Codex CLI를 호출할
@@ -232,13 +236,13 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 범위가 정해진 작업을 issue로 추적하고, 단기 브랜치에서 개발한 뒤 의미 있는 커밋과 검증을 담은 PR을
 만들어 주세요. 보호된 `main`은 Python, frontend, CodeQL 검사를 요구합니다. 자유 주제 과목의 개발 계획은
 7주로 잡고, 별도의 4–5주는 시험 기간·지연·최종 준비를 위한 여유로 남깁니다.
-[#32](https://github.com/casing1/authzest/issues/32)의 리포트·근거 기반은 현재 소스에 구현되어 있습니다.
+[#32](https://github.com/casing1/authzest/issues/32)의 리포트·근거 기반과
+[#28](https://github.com/casing1/authzest/issues/28)의 라우트 직접 선언 근거는 현재 소스에 구현되어 있습니다.
 다음 순서는 아래와 같습니다.
 
-1. [#28: 라우트에 직접 선언된 `Depends`·`Security` 근거](https://github.com/casing1/authzest/issues/28)
-2. [#29: 상속된 의존성 근거](https://github.com/casing1/authzest/issues/29)
-3. [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33)
-4. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
+1. [#29: 상속된 의존성 근거](https://github.com/casing1/authzest/issues/29)
+2. [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33)
+3. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 
 이 기능들은 아직 구현되지 않았습니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
 가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.

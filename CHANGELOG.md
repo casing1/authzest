@@ -19,6 +19,12 @@ in that preview binary, even though current Python package metadata still uses `
 
 ### Added
 
+- Extended the report to schema `1.1` with route-local `Depends`/`Security` evidence from supported
+  parameter defaults, inline `Annotated`, and decorator `dependencies`. Records original source locations,
+  syntactic targets, known scopes, and unresolved reasons without classifying authentication/authorization.
+  Existing registration IDs and fields are preserved; inherited and nested dependency analysis remain deferred.
+- Added a source-only dependency example and CLI/API regressions for ordinary DI, scope limits, and
+  strict partial-report behavior. No model calls, target execution, or release publication were added.
 - Added report schema `1.0` with structured source diagnostics and explicit `bounded`/`partial`
   analysis status, while retaining existing route fields and legacy parse errors. This schema version
   is separate from the unchanged Python package version. See the [report contract](docs/REPORT_CONTRACT.md).

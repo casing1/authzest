@@ -3,7 +3,7 @@
 [Documentation](README.md) · English · [한국어](i18n/PARSER_SCOPE.ko.md)
 
 This guide describes the current source on `main`. Owner recognition, prefix composition,
-repository-local imports, and versioned registration evidence are [`Unreleased`](../CHANGELOG.md#unreleased)
+repository-local imports, versioned registration evidence, and route-local dependency declarations are [`Unreleased`](../CHANGELOG.md#unreleased)
 changes and are not included in
 the published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
 Use a current source checkout to try these features; the package version has not yet been bumped from
@@ -183,11 +183,79 @@ continues in isolation. The standalone `parse_file` entry point remains a single
 The supported syntax follows [Python's import forms](https://docs.python.org/3.12/reference/import.html#package-relative-imports),
 but AuthZest does not simulate all runtime import behavior.
 
+## Route-local dependency declarations
+
+For a supported route, the parser records direct `Depends` and `Security` calls in parameter defaults,
+inline `Annotated` metadata, and the route decorator's literal `dependencies` list. These are declaration
+facts, not authentication/authorization classifications. For example:
+
+```python
+from typing import Annotated
+from fastapi import Depends, FastAPI, Security
+
+app = FastAPI()
+
+
+@app.get("/items", dependencies=[Depends(trace_request)])
+def items(
+    page: Annotated[dict, Depends(pagination)],
+    context=Security(example_context, scopes=["items:read"]),
+):
+    pass
+```
+
+The snippet illustrates declaration syntax only: target names are not defined here and the parser does
+not look up or execute those callables. A simple or dotted target name can be `reference` even when it
+is missing at runtime. General-purpose DI is recorded in the same way as security-related names;
+`Security`, a scope string, or a function called `get_current_user` is not proof of access control.
+The maintained [dependency example](EXAMPLES.md) supplies ordinary sample functions and expected output.
+
+Supported factory imports include `from fastapi import Depends as D, Security as S`, `import fastapi`,
+and `import fastapi as fa`. Inline `Annotated` is recognized through `typing` or `typing_extensions`,
+including direct-import and module aliases. Binding changes and shadowing are respected; a user-defined
+object named `Depends` is not identified by spelling alone. Repository analysis also respects locally
+shadowed framework/typing modules and supported import reexports. Target-callable import resolution is
+not part of this feature.
+
+Python 3.12 function type parameters shadow names in that function's annotations and body, but not its
+parameter defaults or decorators. These contexts use separate bindings during source analysis; this is
+not runtime evaluation of a type parameter or annotation.
+
+Parameter evidence covers positional-only, ordinary, and keyword-only defaults, plus direct recognized
+metadata on inline parameter annotations. Only metadata after the first `Annotated` type argument is a
+dependency site. Multiple direct dependency declarations for one parameter are preserved as unresolved,
+not assigned a guessed runtime precedence. Known dependency-bearing type aliases and nested annotations
+are diagnosed but not expanded; string annotations are not evaluated.
+Alias diagnostics are bounded to recognized `Annotated` values in simple/annotated assignments or
+Python 3.12 type aliases, and simple rebinding of an already known alias. They do not discover every
+alias or recursive type expression. A plain dependency call in the first type argument is not metadata;
+a recognized nested dependency-bearing `Annotated` there is diagnosed without expansion.
+
+Decorator `dependencies` accepts a literal list, an empty list, or `None`. Recognized direct entries are
+collected; dynamic collections, expanded/unknown entries, and repeated arguments receive diagnostics.
+Each stacked decorator receives the common parameter evidence and only its own decorator dependencies.
+Records are ordered by original source line and UTF-8 byte column. Same-file and cross-file mounts retain
+that original route-local evidence; app/router/include dependencies are not inherited yet.
+
+The target may be one positional argument or `dependency=...`. Simple/dotted names are accepted syntax;
+implicit or `None` targets, factory calls, lambdas, and other dynamic targets are unresolved. Expressions
+are normalized with the AST, never executed. Expanded, duplicate, unknown, or extra positional arguments
+are unresolved. `use_cache` and the `Depends` `scope` keyword are accepted without interpreting their
+runtime behavior. `Security` scopes are known only for a literal list of strings, omitted scopes, or
+explicit `None`; omission/`None` mean an empty list. Dynamic or invalid scopes remain null with a reason.
+The route itself is retained when only dependency evidence is partial.
+
+This bounded syntax is informed by FastAPI's [dependency reference](https://fastapi.tiangolo.com/reference/dependencies/),
+[dependency tutorial](https://fastapi.tiangolo.com/tutorial/dependencies/), and
+[decorator dependency guide](https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/).
+AuthZest does not reproduce every framework or Python runtime behavior.
+
 ## Registration evidence and diagnostics
 
-The shared report uses `schema_version: "1.0"`. This report-schema version is independent of the
+The shared report uses `schema_version: "1.1"`. This report-schema version is independent of the
 Python package and release version. Existing route fields and `parse_errors` remain available;
-`analysis_status`, `diagnostics`, and each route's `registration_id` and `registration` are additive.
+`analysis_status`, `diagnostics`, and each route's `registration_id` and `registration` were added in
+1.0; 1.1 adds each route's `dependencies` without changing the registration-ID hash.
 The [report contract](REPORT_CONTRACT.md) defines their representation and compatibility rules.
 
 Every route produced by the parser records its original decorator and owner-constructor locations.
@@ -220,11 +288,24 @@ The bounded parser reports these known cases without expanding the supported dis
 - `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
   `unresolved-include-owner`, and `include-cycle` describe known unsupported inclusion attempts.
 - `conditional-registration` marks a known-owner route declaration in unsupported control flow.
+- `unsupported-dependency-list` covers a nonliteral or repeated decorator dependency collection;
+  `unsupported-dependency-entry` covers an entry that is not a recognized direct dependency call.
+- `unsupported-dependency-expression`, `unsupported-dependency-annotation`, and
+  `unsupported-dependency-metadata` cover known dependency calls in unsupported default/annotation shapes
+  and known dependency-bearing aliases that are not expanded.
+- `unsupported-dependency-arguments` covers expanded, duplicate, extra positional, or unknown call arguments.
+  `unresolved-dependency-target` marks an implicit or non-name target; `dynamic-security-scopes` marks scopes
+  that cannot be represented as a known string list. `ambiguous-dependency-declaration` marks multiple
+  direct declarations for one parameter without guessing which one the framework would select.
 
 For example, an import cycle can leave the child of a recognized app's `include_router` unresolved;
 the diagnostic points to that include call rather than claiming the import succeeded. Arbitrary
 unknown `.get(...)` receivers and unrelated imports do not produce framework diagnostics merely
 because of their names. Diagnostics are not an exhaustive list of every unsupported Python pattern.
+Dependency diagnostics are warnings and make the report partial even when the route path remains known.
+Calls that produce an evidence entry also retain their reason codes in `unresolved_reasons`; a dynamic
+collection or unsupported nested annotation can instead produce a diagnostic with no dependency entry.
+Scope diagnostics do not assert an OAuth failure, and an empty dependency list is not a public-route label.
 
 ## Deferred patterns and interpretation
 
@@ -237,9 +318,11 @@ because of their names. Diagnostics are not an exhaustive list of every unsuppor
 - Function bodies using `global` or `nonlocal`, assignment expressions in route declarations, and runtime
   mutation through arbitrary calls or reflection.
 - Keyword-only `path=`, computed paths, `api_route`, `add_api_route`, and WebSocket declarations.
-- Dependency collection, authentication or authorization decisions, and security findings.
+- Application/router/include dependency inheritance, nested dependency graphs, target-callable resolution,
+  runtime overrides, authentication or authorization decisions, and security findings.
 
-Unsupported or unresolved declarations are omitted from the route inventory. They are not labelled
+Unsupported or unresolved route declarations are omitted from the route inventory; supported routes with
+unresolved dependency evidence remain with diagnostics. They are not labelled
 protected, unprotected, or vulnerable. A report with diagnostics or parse errors has
 `analysis_status: "partial"`; otherwise its status is `"bounded"`, never a claim of complete analysis.
 An empty result, an empty diagnostic list, or a successful exit must not be interpreted as proof that
@@ -257,5 +340,6 @@ Regression cases live in [`test_parser.py`](../tests/test_parser.py),
 [`test_cross_file_routes.py`](../tests/test_cross_file_routes.py), and
 [`test_source_encodings.py`](../tests/test_source_encodings.py), and
 [`test_report_parser.py`](../tests/test_report_parser.py), with CLI, API, and repository-runner
-fixtures covering the shared report contract. No FastAPI version compatibility claim beyond this
+fixtures covering the shared report contract. Route-local dependency transport cases live in
+[`test_dependency_transports.py`](../tests/test_dependency_transports.py). No FastAPI version compatibility claim beyond this
 source-syntax subset is made. For the release process, see [Releasing AuthZest](RELEASING.md).
