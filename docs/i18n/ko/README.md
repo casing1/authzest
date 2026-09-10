@@ -249,12 +249,13 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 [#28](https://github.com/casing1/authzest/issues/28)·[#29](https://github.com/casing1/authzest/issues/29)의
 라우트 직접·상속 근거는 alpha.2에 포함됩니다.
 릴리스 준비·발행 [#39](https://github.com/casing1/authzest/issues/39)는 완료했습니다.
-다음 순서로 진행합니다.
+현재 소스 상태와 다음 작업은 아래와 같습니다.
 
-1. [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33)
+1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 
-이 기능들은 아직 구현되지 않았습니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
+[오프라인 기반](reference/AI_CONTRACT.md)은 alpha.2 바이너리에 포함되지 않으며 #35의 실제 흐름은 아직 구현되지 않았습니다.
+6개 사례·3개 모드의 mock 평가는 모델 성능이 아닌 계약을 검사합니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
 가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.
 최종 데모는 직접 소유·관리하는 fixture를 대상으로 하며 데이터 공유·패치·실행은 각각 별도로 허가받습니다.
 취약점 악용 PoC 생성, 자율 공격 흐름과 임의 저장소 실행은 범위 밖입니다.

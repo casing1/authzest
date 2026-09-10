@@ -56,8 +56,10 @@ not complete file contents, source revisions, runtime objects, or patch approval
 
 ## Codex boundary before a live integration
 
-Start with [#33: evidence-linked explanations and offline evaluation](https://github.com/casing1/authzest/issues/33).
-Define a minimal evidence payload and mock adapter tests before choosing one live integration.
+The source implements [#33: evidence-linked explanations and offline evaluation](https://github.com/casing1/authzest/issues/33).
+The [offline contract](../reference/AI_CONTRACT.md) defines minimized inputs, validated hypotheses,
+mock failures, and a frozen comparison harness. Policy criteria are maintainer-approved; expected values
+are assistant-authored and code-checked. Mock metrics are not model-quality evidence.
 [#35: user-approved Codex improvement workflow](https://github.com/casing1/authzest/issues/35) then covers
 proposal/approval contracts, the adapter, approved application, and isolated verification; #33 alone does
 not implement that workflow. No provider call, credentials, subscription, or paid model is required by

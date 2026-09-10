@@ -252,12 +252,13 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 [#28](https://github.com/casing1/authzest/issues/28)・[#29](https://github.com/casing1/authzest/issues/29) の
 ルート直接・継承宣言の根拠は alpha.2 に含まれます。
 リリース準備・公開 [#39](https://github.com/casing1/authzest/issues/39) は完了しました。
-次は以下の順序で進めます。
+現在のソースと次の作業は以下のとおりです。
 
-1. [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)
+1. ソースに実装済み: [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)。
 2. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)
 
-これらの機能はまだ実装されていません。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
+[オフライン基盤](../../reference/AI_CONTRACT.md) は alpha.2 バイナリに含まれず、#35 の実連携フローは未実装です。
+6 ケース・3 モードの mock 評価はモデル性能ではなく契約を検証します。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
 仮説です。コアは provider や特定の GPT モデルがなくても役立つものにします。
 最終デモは自ら所有・管理する fixture を対象とし、データ共有・パッチ・実行を別々に許可します。
 脆弱性を悪用する PoC の生成、自律的な攻撃フロー、任意のリポジトリの実行は対象外です。

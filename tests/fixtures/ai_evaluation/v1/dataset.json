@@ -1,0 +1,100 @@
+{
+  "version": "1",
+  "purpose": "offline-contract-evaluation-not-model-performance",
+  "cases": [
+    {
+      "id": "public",
+      "split": "development",
+      "policies": [
+        "The /health route is intentionally public."
+      ],
+      "questions": [
+        {
+          "id": "route-count",
+          "text": "How many source route registrations are inventoried? Answer a decimal integer."
+        },
+        {
+          "id": "policy",
+          "text": "What is the declared access policy: public or restricted?"
+        }
+      ]
+    },
+    {
+      "id": "ordinary-di",
+      "split": "development",
+      "policies": [
+        "The pagination dependency is ordinary input handling, not an access-control requirement."
+      ],
+      "questions": [
+        {
+          "id": "dependency-count",
+          "text": "How many effective dependency declarations are inventoried? Answer a decimal integer."
+        },
+        {
+          "id": "authorization",
+          "text": "Does this source establish general authorization correctness? Abstain if not established."
+        }
+      ]
+    },
+    {
+      "id": "security-scope",
+      "split": "development",
+      "policies": [
+        "Reading reports is intended to require reports:read. A declaration alone is not proof of enforcement."
+      ],
+      "questions": [
+        {
+          "id": "declared-scopes",
+          "text": "List statically declared scope strings, comma-separated and sorted."
+        },
+        {
+          "id": "authorization",
+          "text": "Does this source establish general authorization correctness? Abstain if not established."
+        }
+      ]
+    },
+    {
+      "id": "repeated-mount",
+      "split": "held-out",
+      "policies": [
+        "Each source include-site registration is distinct even when it shares a handler."
+      ],
+      "questions": [
+        {
+          "id": "route-count",
+          "text": "How many source route registrations are inventoried? Answer a decimal integer."
+        }
+      ]
+    },
+    {
+      "id": "dynamic-prefix",
+      "split": "held-out",
+      "policies": [
+        "Dynamic registration cannot establish runtime authorization correctness."
+      ],
+      "questions": [
+        {
+          "id": "authorization",
+          "text": "Does this source establish general authorization correctness? Abstain if not established."
+        }
+      ]
+    },
+    {
+      "id": "unresolved-dependency",
+      "split": "held-out",
+      "policies": [
+        "The endpoint is intended to be restricted, but an unresolved declaration does not establish enforcement."
+      ],
+      "questions": [
+        {
+          "id": "policy",
+          "text": "What is the declared access policy: public or restricted?"
+        },
+        {
+          "id": "authorization",
+          "text": "Does this source establish general authorization correctness? Abstain if not established."
+        }
+      ]
+    }
+  ]
+}

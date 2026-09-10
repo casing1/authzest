@@ -83,6 +83,8 @@ The release commit is `7cc359acbb864ef6d31e3b536787857da4f7e09c`; consult the
 
 Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
 source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](../reference/REPORT_CONTRACT.md).
+The source-only [offline AI contract and mock evaluation](../reference/AI_CONTRACT.md) is implemented
+after alpha.2; the published binaries remain unchanged.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, Codex review, patch application, and verification execution are not implemented.
 `scan` does not execute the target application or Codex.
@@ -99,7 +101,7 @@ Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
 current-source contract. Route-local declarations (#28) and inherited registration context (#29) are
-included in alpha.2. Next build the offline AI contract (#33) and user-approved
+included in alpha.2. The offline AI contract (#33) is now implemented in source; next is the user-approved
 Codex workflow (#35), without claiming complete Python coverage or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
@@ -166,9 +168,10 @@ contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remai
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
 and verification workflow. These are future tasks, not features enabled by the report contract.
 
-- [ ] Define evidence-linked explanations and offline evaluation
-      ([#33](https://github.com/casing1/authzest/issues/33)); extend the disabled adapter with mock responses,
-      invalid-reference cases, and failure tests.
+- [x] Define evidence-linked explanations and offline evaluation
+      ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
+      validation, mock lifecycle tests, and a frozen three-mode harness. Policy criteria are maintainer-approved;
+      labels are assistant-authored/code-checked and mock scores do not establish live model performance.
 - [ ] Define the permitted evidence payload, data minimization, secret handling, timeout, cancellation,
       and separate data-sharing, patch-application, and verification-execution permissions before live calls.
 - [ ] Add one opt-in Codex adapter behind the interface; choose CLI or App Server, not both. Keep AI
