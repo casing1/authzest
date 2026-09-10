@@ -74,6 +74,19 @@ pipx install --force .
 설치하지만 일반 wheel·pipx 설치에 빌드된 대시보드 자산을 포함하지 않습니다. 선택적인 대시보드는
 아래의 editable 소스 환경을 사용하세요.
 
+## 포함된 예제 실행
+
+저장소 루트에서 현재 소스 설치본으로 함께 제공되는 로컬 fixture를 스캔하세요.
+
+```bash
+authzest scan examples/fastapi_inventory
+authzest scan examples/fastapi_inventory --json
+```
+
+Python 파일 4개와 `GET` 라우트 3개(`/health`, `/v1/catalog/items`, `/v2/catalog/items`)가 나옵니다.
+이 예제는 취약점 탐지가 아니라 정적 탐색과 같은 라우터의 반복 등록을 보여줍니다.
+fixture 구성과 예상 근거는 [예제 안내](EXAMPLES.ko.md)를 참고하세요.
+
 ## CLI 진단
 
 ```bash
@@ -85,6 +98,7 @@ authzest doctor --json
 `doctor`는 Python 실행 환경을 확인합니다. PATH에서 `codex`를 찾으면 `codex --version`과
 `codex login status`도 subprocess로 실행합니다. AI 스캔을 시작하거나 자격 증명 파일을 직접 읽지는
 않습니다. Codex가 없거나 로그인하지 않은 경우 경고를 표시하지만 정적 스캔은 계속 사용할 수 있습니다.
+로그인에 성공해도 AI 분석이 활성화되지는 않습니다. 해당 연동은 아직 구현되지 않았습니다.
 
 ## 개발 환경
 
@@ -98,7 +112,8 @@ python -m pip install -e '.[dev]'
 ```
 
 editable 설치는 현재 checkout을 사용하며 `dev` extra에는 선택적인 backend 의존성도 포함됩니다.
-Node.js/npm은 frontend 작업이나 대시보드를 포함하는 빌드에만 필요합니다. CI는 Node.js 22를 사용합니다.
+Node.js/npm은 frontend 작업, 문서 검증, 대시보드를 포함하는 빌드에 필요합니다.
+CI는 Node.js 22를 사용합니다.
 
 ## 선택적인 로컬 대시보드
 
@@ -112,6 +127,8 @@ authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000)을 여세요. editable backend는 checkout의
 `frontend/dist`를 찾습니다. 빌드하지 않으면 `/`에는 대시보드 대신 API 안내가 표시됩니다.
+대시보드는 미실행·빈 결과·부분 스캔을 구분하고 parse-error 상세를 보여줍니다.
+재스캔이 실패하면 이전 결과를 비웁니다. 이는 라우트 수집 상태이며 접근통제 판정이 아닙니다.
 
 frontend를 개발할 때는 venv를 활성화한 터미널에서
 `authzest ui --workspace /path/to/fastapi-project --reload`를 실행하고, 저장소 루트의 다른 터미널에서
@@ -141,6 +158,17 @@ npm --prefix frontend run lint
 npm --prefix frontend run format:check
 npm --prefix frontend run build
 ```
+
+문서를 변경했다면 위와 같이 frontend 의존성을 설치한 뒤 저장소 루트에서 실행하세요.
+
+```bash
+node --test scripts/check_docs.test.mjs
+node scripts/check_docs.mjs
+git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+```
+
+검사기는 문서 예제를 실행하지 않고 번역 쌍, 로컬 링크, 명령어의 일치 여부를 확인합니다.
+포맷 명령은 Git이 추적하는 Markdown을 검사하므로 새 안내 문서는 최종 확인 전에 staging에 포함하세요.
 
 ## 독립 실행 파일
 
@@ -187,11 +215,20 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 
 - [문서 색인](INDEX.ko.md) — 영어 안내와 한국어 번역
 - [개발 체크리스트](DEVELOPMENT_PLAN.ko.md)와 [로드맵 issue #1](https://github.com/casing1/authzest/issues/1)
+- [모델 및 평가 전략](MODEL_STRATEGY.ko.md)
 - [기여 및 커밋 규칙](CONTRIBUTING.ko.md)
 
 범위가 정해진 작업을 issue로 추적하고, 단기 브랜치에서 개발한 뒤 의미 있는 커밋과 검증을 담은 PR을
-만들어 주세요. 보호된 `main`은 Python, frontend, CodeQL 검사를 요구합니다. 다음 core 마일스톤은
-접근통제 판정을 도입하기에 앞서 `Depends`·`Security` 근거를 수집하는 것입니다.
+만들어 주세요. 보호된 `main`은 Python, frontend, CodeQL 검사를 요구합니다. 자유 주제 과목의 개발 계획은
+7주로 잡고, 별도의 4–5주는 시험 기간·지연·최종 준비를 위한 여유로 남깁니다. 예정 순서는 다음과 같습니다.
+
+1. [#32: 보고서·근거 규격](https://github.com/casing1/authzest/issues/32)
+2. [#28: 라우트에 직접 선언된 `Depends`·`Security` 근거](https://github.com/casing1/authzest/issues/28)
+3. [#29: 상속된 의존성 근거](https://github.com/casing1/authzest/issues/29)
+4. [#33: 근거를 연결한 오프라인 AI 평가](https://github.com/casing1/authzest/issues/33)
+
+이 기능들은 아직 구현되지 않았습니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
+가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.
 
 ## 라이선스와 보안
 

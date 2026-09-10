@@ -21,6 +21,8 @@ Translations are grouped in `docs/i18n/`, leaving only the English project READM
 | Documentation index                     | [Index](README.md)                                 | [문서 목차](i18n/INDEX.ko.md)                    |
 | Development direction and TODO order    | [Development plan](DEVELOPMENT_PLAN.md)            | [개발 계획](i18n/DEVELOPMENT_PLAN.ko.md)         |
 | Supported source syntax and limitations | [Parser scope](PARSER_SCOPE.md)                    | [파서 범위](i18n/PARSER_SCOPE.ko.md)             |
+| Maintained source-only CLI demo         | [Examples](EXAMPLES.md)                            | [예제](i18n/EXAMPLES.ko.md)                      |
+| Replaceable models and measurable value | [Model strategy](MODEL_STRATEGY.md)                | [모델 전략](i18n/MODEL_STRATEGY.ko.md)           |
 | Contributions and commit conventions    | [Contributing](../CONTRIBUTING.md)                 | [기여 안내](i18n/CONTRIBUTING.ko.md)             |
 | Required checks and branch protection   | [Branch rules](BRANCH_RULES.md)                    | [브랜치 규칙](i18n/BRANCH_RULES.ko.md)           |
 | Versions, binaries, and release checks  | [Releasing](RELEASING.md)                          | [릴리스 가이드](i18n/RELEASING.ko.md)            |

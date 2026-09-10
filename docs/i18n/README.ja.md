@@ -75,6 +75,19 @@ pipx install --force .
 `ui` extra は Python backend の依存関係をインストールしますが、通常の wheel・pipx インストールに
 ビルド済みダッシュボードのアセットは含めません。任意のダッシュボードには、以下の editable ソース環境を使います。
 
+## 同梱のサンプルを試す
+
+リポジトリルートから、現在のソースのインストールで同梱のローカル fixture をスキャンします。
+
+```bash
+authzest scan examples/fastapi_inventory
+authzest scan examples/fastapi_inventory --json
+```
+
+Python ファイル 4 個と `GET` ルート 3 個(`/health`、`/v1/catalog/items`、`/v2/catalog/items`)が得られます。
+これは脆弱性の検出ではなく、静的な探索と同じルーターの繰り返し登録を示すサンプルです。
+fixture の構成と期待する根拠は[サンプルガイド](../EXAMPLES.md)を参照してください。
+
 ## CLI 診断
 
 ```bash
@@ -86,6 +99,7 @@ authzest doctor --json
 `doctor` は Python の実行環境を確認します。PATH 上に `codex` が見つかると、`codex --version` と
 `codex login status` も subprocess として実行します。AI スキャンを開始したり、認証情報ファイルを
 直接読んだりはしません。Codex やログインがなくても警告にとどまり、静的スキャンは利用できます。
+ログインに成功しても AI 解析は有効になりません。その連携はまだ実装されていません。
 
 ## 開発環境
 
@@ -99,7 +113,8 @@ python -m pip install -e '.[dev]'
 ```
 
 editable インストールはこの checkout を使い、`dev` extra には任意の backend 依存関係も含まれます。
-Node.js/npm は frontend の作業やダッシュボードを含むビルドにのみ必要です。CI は Node.js 22 を使います。
+Node.js/npm は frontend の作業、ドキュメントの検証、ダッシュボードを含むビルドに必要です。
+CI は Node.js 22 を使います。
 
 ## 任意のローカルダッシュボード
 
@@ -113,6 +128,9 @@ authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000) を開いてください。editable backend は checkout 内の
 `frontend/dist` を参照します。ビルドがない場合、`/` にはダッシュボードではなく API の案内が表示されます。
+
+ダッシュボードは未実行・空の結果・部分的なスキャンを区別し、parse-error の詳細を表示します。
+再スキャンに失敗すると前の結果を消去します。これらは収集状態であり、アクセス制御の判定ではありません。
 
 frontend 開発時は、venv が有効なターミナルで
 `authzest ui --workspace /path/to/fastapi-project --reload` を実行し、リポジトリルートの別ターミナルで
@@ -142,6 +160,17 @@ npm --prefix frontend run lint
 npm --prefix frontend run format:check
 npm --prefix frontend run build
 ```
+
+ドキュメントを変更した場合は、上記の frontend 依存関係をインストールしてからリポジトリルートで実行します。
+
+```bash
+node --test scripts/check_docs.test.mjs
+node scripts/check_docs.mjs
+git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+```
+
+検査ツールはドキュメントの実行例を実行せず、翻訳ペア、ローカルリンク、コマンドの一致を確認します。
+整形コマンドは Git が追跡する Markdown が対象なので、新しいガイドは最終確認の前に staging に含めてください。
 
 ## 独立した実行ファイル
 
@@ -188,11 +217,20 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 - [ドキュメント索引](../README.md) — 英語のガイドと韓国語訳
 - [開発チェックリスト](../DEVELOPMENT_PLAN.md)と[ロードマップ issue #1](https://github.com/casing1/authzest/issues/1)
+- [モデルと評価の方針](../MODEL_STRATEGY.md)
 - [コントリビューションとコミットのルール](../../CONTRIBUTING.md)
 
 範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
-作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。次のコアの
-マイルストーンは、アクセス制御を判定する前に `Depends`・`Security` の根拠を収集することです。
+作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
+授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。予定順序は以下です。
+
+1. [#32: レポート・根拠の仕様](https://github.com/casing1/authzest/issues/32)
+2. [#28: ルートに直接宣言された `Depends`・`Security` の根拠](https://github.com/casing1/authzest/issues/28)
+3. [#29: 継承された依存関係の根拠](https://github.com/casing1/authzest/issues/29)
+4. [#33: 根拠に結び付いたオフライン AI 評価](https://github.com/casing1/authzest/issues/33)
+
+これらの機能はまだ実装されていません。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
+仮説です。コアは provider や特定の GPT モデルがなくても役立つものにします。
 
 ## ライセンスとセキュリティ
 
