@@ -8,6 +8,10 @@
 
 Closes #
 
+<!-- Set labels, include casing1 as an assignee without removing others, and match the linked issue's milestone.
+If this is genuinely cross-milestone roadmap/process work, explain here why no milestone applies.
+Read back the actual metadata; this template does not configure GitHub fields automatically. -->
+
 ## Verification
 
 <!-- List the exact checks or manual scenarios used. -->
@@ -24,6 +28,8 @@ Closes #
 ## Checklist
 
 - [ ] The change has one clear purpose and satisfies the issue acceptance criteria.
+- [ ] Relevant labels and the `casing1` assignee are set on the issue and PR, preserving existing metadata.
+- [ ] The milestone matches the linked issue, or an explicit cross-milestone reason is recorded; actual metadata was verified.
 - [ ] Commits represent meaningful changes; behavior and its tests are kept together when practical.
 - [ ] New or changed behavior has tests, or tests are not applicable to this documentation-only change.
 - [ ] Any findings include source evidence and distinguish unknown from vulnerable.

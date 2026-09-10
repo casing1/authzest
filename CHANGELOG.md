@@ -16,6 +16,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Documentation
 
+- Require appropriate issue/PR labels, maintainer assignment, milestone matching or a documented
+  cross-milestone exception, and metadata readback in contribution guidance and PR checklists.
 - Synchronize the four README languages and English/Korean guides with the published alpha.2 artifacts,
   release evidence, and next #33/#35 work. Record the post-publication documentation follow-up in the
   release procedure. This documentation-only change does not alter the alpha.2 tag or binaries.

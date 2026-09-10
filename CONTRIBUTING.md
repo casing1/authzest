@@ -22,6 +22,29 @@ Find the project guides in the [documentation index](docs/README.md).
 Do not push directly to `main`. It must remain runnable and pass all required checks.
 The [branch protection policy](docs/development/BRANCH_RULES.md) requires Python, frontend, and CodeQL checks.
 
+## Required issue and PR metadata
+
+Apply these rules whenever creating an issue or pull request, not only when preparing a release:
+
+- **Assignee:** include `casing1` for the current maintainer-led workflow. Add the maintainer without
+  removing existing assignees. An assignee identifies responsibility; the author records the account that
+  created the item. Preserve author/bot provenance rather than rewriting it.
+- **Labels:** choose the relevant work type from `bug`, `enhancement`, `documentation`, and `maintenance`.
+  Add applicable areas from `area:core`, `area:api`, `area:ci`, `area:release`, and `area:codex`.
+  Use `roadmap` for planning or cross-phase work. `security` means security-related work, not a confirmed
+  vulnerability. Reuse the [existing labels](https://github.com/casing1/authzest/labels), preserve relevant
+  labels already present, and avoid unnecessary duplicate categories.
+- **Milestone:** select the relevant open [milestone](https://github.com/casing1/authzest/milestones) and
+  keep a focused issue and its PR aligned. Whole-project roadmap items such as #1 and genuinely
+  cross-milestone process work may remain unmilestoned only with an explicit reason in the body.
+  Do not reopen completed release milestones or invent a due date just to populate the field.
+- **Creation check:** set metadata during creation when supported; otherwise complete it immediately
+  afterward. Read back the actual issue/PR to verify labels, assignees, milestone or documented exception,
+  and the linked issue before reporting creation complete. Copying checklist text does not set GitHub fields.
+
+These are mandatory maintainer workflow and review checks, not a claim that GitHub or CI automatically
+populates or enforces the metadata. Check them again before merging; required CI and review gates still apply.
+
 ## Branch names
 
 Use `<type>/<issue-number>-<short-description>`. Write the description in lowercase English with hyphens.
@@ -170,6 +193,7 @@ output and third-party dependency documentation are not translated or committed 
 A pull request is ready to merge when:
 
 - It satisfies the linked issue's acceptance criteria.
+- Issue/PR labels, assignees, and milestone (or a documented cross-milestone exception) are set and verified.
 - New or changed behavior is covered by tests.
 - Relevant Python and frontend checks pass locally.
 - Documentation checker tests, translation/link checks, and Markdown formatting pass for documentation changes.
