@@ -4,9 +4,9 @@
 
 <p align="center">
   <strong>English</strong> ·
-  <a href="docs/i18n/README.ko.md">한국어</a> ·
-  <a href="docs/i18n/README.ja.md">日本語</a> ·
-  <a href="docs/i18n/README.ru.md">Русский</a>
+  <a href="docs/i18n/ko/README.md">한국어</a> ·
+  <a href="docs/i18n/ja/README.md">日本語</a> ·
+  <a href="docs/i18n/ru/README.md">Русский</a>
 </p>
 
 # AuthZest
@@ -22,9 +22,11 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > [!IMPORTANT]
 > The published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
 > is the first executable scaffold. Route-owner recognition, prefix composition, cross-file router
-> resolution, and the report contract described below are implemented on `main` but **not yet released** in those binaries.
-> The source package still reports `0.1.0a1`; use the checkout commit and [changelog](CHANGELOG.md) to
-> distinguish it from the published preview. Neither version is a complete vulnerability scanner.
+> resolution, and the report contract described below are not included in those binaries.
+> This source targets `v0.1.0-alpha.2` (`0.1.0a2` in Python). Check
+> [GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and compare the
+> checkout commit with the [changelog](CHANGELOG.md). A version string alone does not prove publication.
+> Neither version is a complete vulnerability scanner.
 
 ## What the current source supports
 
@@ -45,7 +47,7 @@ This is a bounded static subset: unresolved route declarations may be omitted. A
 unresolved dependency evidence remains in the report with diagnostics. Structured diagnostics
 cover selected unresolved cases and source/read errors, not every unsupported pattern. An empty report or
 `bounded` status does not establish that no endpoints exist or that access control is safe.
-See the [parser scope](docs/PARSER_SCOPE.md) and [report contract](docs/REPORT_CONTRACT.md).
+See the [parser scope](docs/reference/PARSER_SCOPE.md) and [report contract](docs/reference/REPORT_CONTRACT.md).
 Nested dependency graphs, authentication/authorization classification, and security findings are not
 implemented. Effective evidence describes source context, not runtime dependency order or protection.
 
@@ -100,7 +102,7 @@ authzest scan examples/fastapi_inventory --json
 
 Expect 4 Python files and 3 `GET` routes: `/health`, `/v1/catalog/items`, and `/v2/catalog/items`.
 This demonstrates static discovery and repeated router registration, not vulnerability detection.
-See the [example guide](docs/EXAMPLES.md) for the fixture and expected evidence.
+See the [example guide](docs/guides/EXAMPLES.md) for the fixture and expected evidence.
 
 ## CLI diagnostics
 
@@ -187,7 +189,7 @@ The formatting command covers tracked Markdown; include new guides in staging be
 
 The [published preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) provides Linux x64,
 macOS arm64, and Windows x64 executables with SHA-256 manifests. They are CLI programs, not graphical
-installers, and do not include the unreleased parser changes on `main`. The binaries are not yet signed or
+installers, and do not include the newer parser/report features described above. The binaries are not yet signed or
 notarized, so an operating system may warn about an unverified publisher.
 
 To build the current source locally, activate the development venv and run from the repository root:
@@ -201,7 +203,7 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ```
 
 On Windows, the output is `dist\authzest.exe`. The PyInstaller build includes `frontend/dist` when it exists.
-Tag validation, checksums, and publishing are described in the [release guide](docs/RELEASING.md).
+Tag validation, checksums, and publishing are described in the [release guide](docs/releases/RELEASING.md).
 
 ## Project structure
 
@@ -227,8 +229,8 @@ or a specific AI provider.
 ## Roadmap and contributing
 
 - [Documentation index](docs/README.md) — English guides and Korean translations
-- [Development checklist](docs/DEVELOPMENT_PLAN.md) and [roadmap issue #1](https://github.com/casing1/authzest/issues/1)
-- [Model and evaluation strategy](docs/MODEL_STRATEGY.md)
+- [Development checklist](docs/development/DEVELOPMENT_PLAN.md) and [roadmap issue #1](https://github.com/casing1/authzest/issues/1)
+- [Model and evaluation strategy](docs/development/MODEL_STRATEGY.md)
 - [Contribution and commit rules](CONTRIBUTING.md)
 
 Track a bounded task in an issue, develop it on a short-lived branch, and submit a pull request with

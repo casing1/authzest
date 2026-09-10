@@ -1,13 +1,13 @@
 # FastAPI route discovery
 
-[Documentation](README.md) · English · [한국어](i18n/PARSER_SCOPE.ko.md)
+[Documentation](../README.md) · English · [한국어](../i18n/ko/reference/PARSER_SCOPE.md)
 
 This guide describes the current source on `main`. Owner recognition, prefix composition,
-repository-local imports, versioned registration evidence, and local/inherited dependency declarations are [`Unreleased`](../CHANGELOG.md#unreleased)
-changes and are not included in
+repository-local imports, versioned registration evidence, and local/inherited dependency declarations are
+recorded in the [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10) and are not included in
 the published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
-Use a current source checkout to try these features; the package version has not yet been bumped from
-`0.1.0a1`.
+This source targets package `0.1.0a2`; confirm available binaries in
+[GitHub Releases](https://github.com/casing1/authzest/releases), not from the version string alone.
 
 AuthZest parses Python source with the standard-library AST parser. It does not import the scanned
 application, instantiate its objects, or execute its code. The supported syntax is tested on Python 3.12.
@@ -208,7 +208,7 @@ The snippet illustrates declaration syntax only: target names are not defined he
 not look up or execute those callables. A simple or dotted target name can be `reference` even when it
 is missing at runtime. General-purpose DI is recorded in the same way as security-related names;
 `Security`, a scope string, or a function called `get_current_user` is not proof of access control.
-The maintained [dependency example](EXAMPLES.md) supplies ordinary sample functions and expected output.
+The maintained [dependency example](../guides/EXAMPLES.md) supplies ordinary sample functions and expected output.
 
 Supported factory imports include `from fastapi import Depends as D, Security as S`, `import fastapi`,
 and `import fastapi as fa`. Inline `Annotated` is recognized through `typing` or `typing_extensions`,
@@ -271,7 +271,7 @@ chains are composed; unsupported, cyclic, or cross-scope include attempts remain
 diagnostics on such uncomposed include attempts are not exhaustive; the existing include diagnostics
 remain the supported evidence. Runtime overrides, arbitrary owner mutation, factory results, and callable
 sub-dependency graphs remain outside this feature. Effective order is source context, not FastAPI execution
-order, cache reuse, or proof of authentication/authorization. See the [inheritance example](EXAMPLES.md).
+order, cache reuse, or proof of authentication/authorization. See the [inheritance example](../guides/EXAMPLES.md).
 
 ## Registration evidence and diagnostics
 
@@ -360,11 +360,11 @@ printed but returns exit code 1. Invalid repository input returns exit code 2. T
 returns HTTP 200 for a produced partial report; callers inspect `analysis_status` and `diagnostics`.
 See the [report contract](REPORT_CONTRACT.md) for the full output and exit-code policy.
 
-Regression cases live in [`test_parser.py`](../tests/test_parser.py),
-[`test_router_prefixes.py`](../tests/test_router_prefixes.py),
-[`test_cross_file_routes.py`](../tests/test_cross_file_routes.py), and
-[`test_source_encodings.py`](../tests/test_source_encodings.py), and
-[`test_report_parser.py`](../tests/test_report_parser.py), with CLI, API, and repository-runner
+Regression cases live in [`test_parser.py`](../../tests/test_parser.py),
+[`test_router_prefixes.py`](../../tests/test_router_prefixes.py),
+[`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py), and
+[`test_source_encodings.py`](../../tests/test_source_encodings.py), and
+[`test_report_parser.py`](../../tests/test_report_parser.py), with CLI, API, and repository-runner
 fixtures covering the shared report contract. Route-local dependency transport cases live in
-[`test_dependency_transports.py`](../tests/test_dependency_transports.py). No FastAPI version compatibility claim beyond this
-source-syntax subset is made. For the release process, see [Releasing AuthZest](RELEASING.md).
+[`test_dependency_transports.py`](../../tests/test_dependency_transports.py). No FastAPI version compatibility claim beyond this
+source-syntax subset is made. For the release process, see [Releasing AuthZest](../releases/RELEASING.md).

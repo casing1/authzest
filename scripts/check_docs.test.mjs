@@ -10,15 +10,15 @@ import { checkDocs, koreanCounterpart } from "./check_docs.mjs";
 
 const readmes = [
   "README.md",
-  "docs/i18n/README.ko.md",
-  "docs/i18n/README.ja.md",
-  "docs/i18n/README.ru.md",
+  "docs/i18n/ko/README.md",
+  "docs/i18n/ja/README.md",
+  "docs/i18n/ru/README.md",
 ];
-const indexes = ["docs/README.md", "docs/i18n/INDEX.ko.md"];
-const guide = ["docs/GUIDE.md", "docs/i18n/GUIDE.ko.md"];
+const indexes = ["docs/README.md", "docs/i18n/ko/INDEX.md"];
+const guide = ["docs/GUIDE.md", "docs/i18n/ko/GUIDE.md"];
 const template = [
   ".github/pull_request_template.md",
-  "docs/i18n/PULL_REQUEST_TEMPLATE.ko.md",
+  "docs/i18n/ko/PULL_REQUEST_TEMPLATE.md",
 ];
 
 function links(from, destinations) {
@@ -79,7 +79,7 @@ test("valid guides cover indexes, template mapping, images, Unicode anchors, and
   assert.equal(report.counts.pairs, 4);
   assert.equal(report.counts.images, 1);
   assert.equal(report.counts.fragments, 2);
-  assert.equal(koreanCounterpart("docs/README.md"), "docs/i18n/INDEX.ko.md");
+  assert.equal(koreanCounterpart("docs/README.md"), "docs/i18n/ko/INDEX.md");
   assert.equal(
     koreanCounterpart(".github/pull_request_template.md"),
     template[1],
@@ -92,7 +92,55 @@ test("a new guide must have its Korean counterpart", (context) => {
   });
   assert.ok(
     report.issues.includes(
-      "docs/NEW.md: missing Korean counterpart docs/i18n/NEW.ko.md",
+      "docs/NEW.md: missing Korean counterpart docs/i18n/ko/NEW.md",
+    ),
+  );
+});
+
+test("topic paths keep same-basename guides and their Korean sources distinct", (context) => {
+  const pairs = [
+    ["docs/guides/GUIDE.md", "docs/i18n/ko/guides/GUIDE.md"],
+    ["docs/reference/GUIDE.md", "docs/i18n/ko/reference/GUIDE.md"],
+    ["CONTRIBUTING.md", "docs/i18n/ko/CONTRIBUTING.md"],
+  ];
+  const report = runFixture(context, (sources) => {
+    for (const pair of pairs) {
+      assert.equal(koreanCounterpart(pair[0]), pair[1]);
+      for (const file of pair)
+        sources[file] = `# Topic\n${links(
+          file,
+          pair.filter((other) => other !== file),
+        )}\n`;
+      for (const index of indexes) sources[index] += `${links(index, pair)}\n`;
+    }
+  });
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.counts.pairs, 7);
+});
+
+test("orphan translations and ambiguous source mappings are rejected", (context) => {
+  const report = runFixture(context, (sources) => {
+    sources["docs/i18n/ko/reference/ORPHAN.md"] = "# Orphan\n";
+    // A root and docs-root guide with the same name cannot share one translation.
+    sources["GUIDE.md"] = "# Duplicate mapping\n";
+  });
+  assert.ok(
+    report.issues.includes(
+      "docs/i18n/ko/reference/ORPHAN.md: expected exactly one English source",
+    ),
+  );
+  assert.ok(
+    report.issues.includes(`${guide[1]}: expected exactly one English source`),
+  );
+});
+
+test("the old mixed-language directory cannot silently leave stale guides behind", (context) => {
+  const report = runFixture(context, (sources) => {
+    sources["docs/i18n/GUIDE.ko.md"] = "# Stale translation\n";
+  });
+  assert.ok(
+    report.issues.includes(
+      "docs/i18n/GUIDE.ko.md: translations must use a language directory",
     ),
   );
 });
@@ -237,7 +285,7 @@ test("a symlink entrypoint actually checks documents and exits nonzero for failu
   assert.equal(failed.status, 1, failed.stderr);
   assert.ok(
     JSON.parse(failed.stdout).issues.includes(
-      "docs/NEW.md: missing Korean counterpart docs/i18n/NEW.ko.md",
+      "docs/NEW.md: missing Korean counterpart docs/i18n/ko/NEW.md",
     ),
   );
 });

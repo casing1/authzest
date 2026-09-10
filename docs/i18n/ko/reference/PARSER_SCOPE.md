@@ -1,12 +1,13 @@
 # FastAPI 라우트 탐색
 
-[문서](INDEX.ko.md) · [English](../PARSER_SCOPE.md) · 한국어
+[문서](../INDEX.md) · [English](../../../reference/PARSER_SCOPE.md) · 한국어
 
 이 문서는 현재 `main`의 소스를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import 해석과
 버전이 있는 등록 근거, 라우트 직접·상속 의존성 선언은
-[`Unreleased`](CHANGELOG.ko.md#unreleased) 변경이며 배포된
+[alpha.2 변경 이력](../CHANGELOG.md#010-alpha2---2026-09-10)에 기록하며 배포된
 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에 포함되어 있지 않습니다.
-이 기능을 사용하려면 현재 소스를 checkout하세요. 패키지 버전은 아직 `0.1.0a1`에서 올리지 않았습니다.
+이 소스는 패키지 `0.1.0a2`를 대상으로 합니다. 버전 문자열만 보지 말고
+[GitHub Releases](https://github.com/casing1/authzest/releases)에서 제공되는 바이너리를 확인하세요.
 
 AuthZest는 Python 표준 라이브러리의 AST 파서로 Python 소스를 분석합니다. 분석 대상 애플리케이션을
 import하거나 객체를 생성하거나 코드를 실행하지 않습니다. 지원 문법은 Python 3.12에서 테스트합니다.
@@ -202,7 +203,7 @@ def items(
 실행하지 않습니다. 런타임에 없는 단순/점 연결 이름도 구문상 `reference`일 수 있습니다.
 일반 DI는 보안 관련 이름과 같은 방식으로 기록합니다. `Security`, scope 문자열이나
 `get_current_user`라는 함수명이 접근통제 증거는 아닙니다.
-직접 관리하는 [의존성 예제](EXAMPLES.ko.md)에는 일반 샘플 함수와 예상 출력이 있습니다.
+직접 관리하는 [의존성 예제](../guides/EXAMPLES.md)에는 일반 샘플 함수와 예상 출력이 있습니다.
 
 지원하는 factory import는 `from fastapi import Depends as D, Security as S`, `import fastapi`,
 `import fastapi as fa`입니다. 인라인 `Annotated`는 `typing`과 `typing_extensions`의 직접 import 및
@@ -257,7 +258,7 @@ decorator의 `dependencies`는 리터럴 목록, 빈 목록이나 `None`을 지�
 교차 scope include 시도는 미해석으로 남습니다. 이런 미합성 include 시도의 의존성 진단은 완전하지 않으며
 기존 include 진단이 지원하는 근거입니다. 런타임 override, 임의 owner 변경, factory 결과와 callable
 하위 의존성 그래프는 여전히 범위 밖입니다. 적용 순서는 소스 맥락이며 FastAPI 실행 순서, cache 재사용이나
-인증·인가 증명이 아닙니다. [상속 예제](EXAMPLES.ko.md)를 참고하세요.
+인증·인가 증명이 아닙니다. [상속 예제](../guides/EXAMPLES.md)를 참고하세요.
 
 ## 등록 근거와 진단
 
@@ -266,7 +267,7 @@ decorator의 `dependencies`는 리터럴 목록, 빈 목록이나 `None`을 지�
 `diagnostics`, 각 라우트의 `registration_id`와 `registration`은 1.0에 추가했습니다.
 1.1에는 각 라우트의 `dependencies`를, 1.2에는 `effective_dependencies`를 추가했습니다.
 두 의존성 목록 모두 등록 ID 해시를 바꾸지 않습니다.
-각 필드의 표현과 호환성 규칙은 [리포트 계약](REPORT_CONTRACT.ko.md)에 정의되어 있습니다.
+각 필드의 표현과 호환성 규칙은 [리포트 계약](REPORT_CONTRACT.md)에 정의되어 있습니다.
 
 파서가 생성하는 모든 라우트에는 원본 데코레이터와 객체 생성자의 위치가 기록됩니다. 해석된 등록에는
 알려진 경우 애플리케이션 객체와 각 `include_router` 구문의 위치, 부모 객체, 자식 라우터, 리터럴
@@ -338,14 +339,14 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 종료 코드 0을 반환합니다. `--strict`를 사용하면 부분 리포트를 출력한 뒤 종료 코드 1을 반환합니다.
 잘못된 저장소 입력은 종료 코드 2를 반환합니다. 로컬 scan API는 생성된 부분 리포트에 HTTP 200을
 반환하므로 호출자는 `analysis_status`와 `diagnostics`를 확인해야 합니다. 전체 출력 및 종료 코드
-정책은 [리포트 계약](REPORT_CONTRACT.ko.md)을 참고하세요.
+정책은 [리포트 계약](REPORT_CONTRACT.md)을 참고하세요.
 
-회귀 테스트는 [`test_parser.py`](../../tests/test_parser.py),
-[`test_router_prefixes.py`](../../tests/test_router_prefixes.py),
-[`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py),
-[`test_source_encodings.py`](../../tests/test_source_encodings.py),
-[`test_report_parser.py`](../../tests/test_report_parser.py)에 있습니다. CLI, API, 저장소 runner
+회귀 테스트는 [`test_parser.py`](../../../../tests/test_parser.py),
+[`test_router_prefixes.py`](../../../../tests/test_router_prefixes.py),
+[`test_cross_file_routes.py`](../../../../tests/test_cross_file_routes.py),
+[`test_source_encodings.py`](../../../../tests/test_source_encodings.py),
+[`test_report_parser.py`](../../../../tests/test_report_parser.py)에 있습니다. CLI, API, 저장소 runner
 fixture도 공통 보고서 계약을 검증합니다. 라우트 직접 의존성 전달 계층 사례는
-[`test_dependency_transports.py`](../../tests/test_dependency_transports.py)에 있습니다.
+[`test_dependency_transports.py`](../../../../tests/test_dependency_transports.py)에 있습니다.
 이 소스 문법 범위를 넘는 FastAPI 버전 호환성은 주장하지 않습니다.
-릴리스 절차는 [AuthZest 릴리스 관리](RELEASING.ko.md)를 참고하세요.
+릴리스 절차는 [AuthZest 릴리스 관리](../releases/RELEASING.md)를 참고하세요.

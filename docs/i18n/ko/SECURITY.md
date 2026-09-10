@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="../../SECURITY.md">English</a> ·
+  <a href="../../../SECURITY.md">English</a> ·
   <strong>한국어</strong>
 </p>
 

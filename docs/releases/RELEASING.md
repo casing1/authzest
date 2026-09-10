@@ -1,21 +1,19 @@
 # Releasing AuthZest
 
-[Documentation](README.md) · English · [한국어](i18n/RELEASING.ko.md)
+[Documentation](../README.md) · English · [한국어](../i18n/ko/releases/RELEASING.md)
 
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
 ## Published preview and current source
 
-The published preview is [v0.1.0-alpha.1](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
-The owner recognition, router prefix composition, and cross-file import resolution documented in the
-[parser scope](PARSER_SCOPE.md) were added afterward and are still listed under
-[`Unreleased`](../CHANGELOG.md#unreleased). They are available from current source, not from that preview
-binary.
-
-Current source still declares `0.1.0a1` in `pyproject.toml`. Until the next release preparation bumps that
-version, `authzest --version` alone cannot distinguish the preview from a source installation. Record the
-source commit with `git rev-parse HEAD` when reporting source-build behavior.
+This source targets `v0.1.0-alpha.2`, with Python package `0.1.0a2` and report schema `1.2`.
+Check [GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and exact
+released commits. The package version or a dated changelog heading alone does not prove publication.
+The original [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
+does not contain the parser/report/dependency improvements documented in the
+[parser scope](../reference/PARSER_SCOPE.md) and [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10).
+Record the source commit with `git rev-parse HEAD` when reporting source-build behavior.
 
 ## Version policy
 
@@ -27,12 +25,12 @@ the mapping; they do not reserve the next release version:
 
 | Release stage | `pyproject.toml` | Git tag          |
 | ------------- | ---------------- | ---------------- |
-| Alpha         | `0.1.0a1`        | `v0.1.0-alpha.1` |
+| Alpha         | `0.1.0a2`        | `v0.1.0-alpha.2` |
 | Beta          | `0.1.0b1`        | `v0.1.0-beta.1`  |
 | Candidate     | `0.1.0rc1`       | `v0.1.0-rc.1`    |
 | Final         | `0.1.0`          | `v0.1.0`         |
 
-[`pyproject.toml`](../pyproject.toml) is the source of truth for the Python runtime and API version. The
+[`pyproject.toml`](../../pyproject.toml) is the source of truth for the Python runtime and API version. The
 frontend package marked `private: true` is not versioned independently. Choose a new, unused version for
 each new release; the already-published `v0.1.0-alpha.1` must not be issued again.
 
@@ -47,8 +45,8 @@ checking a local build.
 2. Create a short-lived branch from the latest `main`.
 3. Update `project.version` in `pyproject.toml`.
 4. Move the completed changes from `Unreleased` into a dated heading such as
-   `## [X.Y.Z-alpha.N] - YYYY-MM-DD` in [`CHANGELOG.md`](../CHANGELOG.md). Keep its
-   [Korean counterpart](i18n/CHANGELOG.ko.md) aligned, including the version, date, and links.
+   `## [X.Y.Z-alpha.N] - YYYY-MM-DD` in [`CHANGELOG.md`](../../CHANGELOG.md). Keep its
+   [Korean counterpart](../i18n/ko/CHANGELOG.md) aligned, including the version, date, and links.
 5. Replace the placeholder below with the unused tag chosen in the issue, matching the new package
    version. The placeholder intentionally fails validation until replaced.
 
@@ -58,8 +56,8 @@ checking a local build.
 
 6. Run the release checks:
 
-   `doctor` can invoke an installed Codex CLI through the diagnostic commands `codex --version` and
-   `codex login status`. It does not start AI analysis; missing Codex or authentication produces a warning.
+   The scan smoke checks do not invoke `doctor`, Codex, or target application code. Dependency installation
+   and artifact downloads can access the network.
 
    ```bash
    python -m pip install -e '.[dev,build]'
@@ -77,13 +75,20 @@ checking a local build.
    python scripts/verify_release.py "${AUTHZEST_NEXT_TAG:?Set the unused release tag first}"
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md
    python -m PyInstaller --clean --noconfirm authzest.spec
-   ./dist/authzest --version
-   ./dist/authzest doctor
+   python scripts/smoke_release.py --binary dist/authzest
    ```
 
-   [`verify_release.py`](../scripts/verify_release.py) validates only the exact tag/package-version
-   match. It does **not** validate the changelog. The separate heading check and a review of both
-   changelogs are maintainer steps; verify that the date and released entries are correct.
+   [`verify_release.py`](../../scripts/verify_release.py) validates the exact tag/package-version match,
+   one matching dated heading per English/Korean changelog, valid equal dates, and nonempty content.
+   It does not prove publication or semantic translation/feature accuracy; review the entries as well.
+   The default Korean path is `docs/i18n/ko/CHANGELOG.md`.
+
+   [`smoke_release.py`](../../scripts/smoke_release.py) checks version/help/text output, schema `1.2` JSON
+   against the checkout core, all four maintained source-only fixtures, bounded strict exit 0, partial
+   default/strict exits 0/1, and invalid-root exit 2. Binary mode tests the selected executable and a
+   relocated temporary copy with an isolated working directory and sanitized Python environment.
+   On Windows use `--binary dist/authzest.exe`. The per-command timeout defaults to 45 seconds;
+   `--expected-version` can explicitly select the expected PEP 440 version instead of `pyproject.toml`.
 
 7. Open a pull request and merge it only after the required CI and CodeQL checks pass.
 8. Run the release workflow on `main` to verify all three platform builds before publishing:
@@ -96,6 +101,16 @@ checking a local build.
    and download its artifacts for smoke checks. A manual run on `main` builds artifacts without creating
    a release. A manual run against a tag is not a dry run: the publishing conditions depend on the ref
    being a tag.
+
+   In this checkout, validate each downloaded platform artifact directory separately on its matching OS:
+
+   ```bash
+   python scripts/smoke_release.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
+   ```
+
+   Artifact mode requires exactly one executable and its matching `.sha256` manifest, validates the
+   checksum, then executes only a relocated temporary copy. It does not modify or execute the original
+   downloaded file. Match the checkout to that build's commit; report comparison uses its core and fixtures.
 
 9. After the manual `main` run succeeds and its artifacts pass smoke checks, inspect its full `headSha`.
    Replace `RUN_ID` below with that run's ID, confirm `status` is `completed` and `conclusion` is `success`,
@@ -137,13 +152,18 @@ a version/changelog mismatch, or an existing tag:
 )
 ```
 
-The [release workflow](../.github/workflows/release.yml) checks that the tag targets the current remote
+The [release workflow](../../.github/workflows/release.yml) checks that the tag targets the current remote
 `main` commit **when validation runs**. `main` can advance after the local check, so coordinate other merges
 until validation has completed. If it advances before validation and the run fails, do not move or
 overwrite the tag; record the failed attempt and prepare a new version from the verified current `main`.
 
 During validation, the workflow repeats the Python and frontend quality checks. It then builds Linux,
-macOS, and Windows executables with the dashboard assets and writes a `.sha256` file for each binary.
+macOS, and Windows executables with the dashboard assets, runs binary/relocated-copy fixture smoke checks,
+and writes a `.sha256` file for each binary. The versioned artifact also receives checksum-aware smoke checks.
+Separate fresh jobs download each platform's artifact, confirm AuthZest is not installed in the Python
+environment, and run artifact smoke with Python isolated mode (`-I`) without installing project packages.
+Publishing requires validation, builds, and all fresh artifact-verification jobs to pass. These fresh-job
+checks still do not establish clean installation or upgrades on consumer devices.
 Asset names include the release version, operating system, and detected build architecture. Tags with a prerelease
 suffix create a GitHub prerelease; final-version tags create a regular release. This workflow does not
 publish Python or npm packages or perform binary signing.
@@ -154,7 +174,7 @@ publish Python or npm packages or perform binary signing.
 - On macOS or Linux, run `shasum -a 256 -c <asset>.sha256` from the directory containing both downloaded
   files, replacing `<asset>` with the actual filename. On Windows, compare `Get-FileHash -Algorithm SHA256`
   output with the corresponding manifest. A checksum verifies file integrity, not publisher identity.
-- Run the downloaded executable's `--version` and `doctor` commands on at least one clean environment.
+- Run the downloaded executable's `--version`, `--help`, and maintained fixture scans in a clean environment.
   After verifying its checksum, enable execution on the exact downloaded macOS/Linux file. From its
   download directory, replace the filename placeholder and run:
 
@@ -162,7 +182,7 @@ publish Python or npm packages or perform binary signing.
   AUTHZEST_DOWNLOADED_BINARY='REPLACE_WITH_THE_EXACT_DOWNLOADED_FILENAME'
   chmod u+x "./$AUTHZEST_DOWNLOADED_BINARY"
   "./$AUTHZEST_DOWNLOADED_BINARY" --version
-  "./$AUTHZEST_DOWNLOADED_BINARY" doctor
+  "./$AUTHZEST_DOWNLOADED_BINARY" --help
   ```
 
   Windows `.exe` files do not need `chmod`. From the download directory in PowerShell, select the exact
@@ -171,11 +191,13 @@ publish Python or npm packages or perform binary signing.
   ```powershell
   $AuthZestDownloadedBinary = '.\REPLACE_WITH_THE_EXACT_DOWNLOADED_FILENAME.exe'
   & $AuthZestDownloadedBinary --version
-  & $AuthZestDownloadedBinary doctor
+  & $AuthZestDownloadedBinary --help
   ```
 
-  Verify each supported platform before describing its installation as tested. As with the local checks,
-  `doctor` can invoke installed Codex diagnostic commands; missing Codex or authentication may warn.
+  Verify each supported platform before describing its clean installation or upgrade as tested. Use the
+  [source-only examples](../guides/EXAMPLES.md) for fixture commands, with the reviewed fixtures copied into
+  that environment. `doctor` is optional and can invoke installed Codex diagnostic commands; it is not a
+  release smoke prerequisite.
 
 - Confirm the generated GitHub release notes and both changelogs refer to the correct version and
   features. Build artifacts from `main` are not automatically a published release.
@@ -185,6 +207,7 @@ publish Python or npm packages or perform binary signing.
 - Never move or overwrite an existing release tag. If a published release is faulty, document the
   problem in an issue and the changelogs, then publish a new patch or prerelease version.
 
-The workflow runs the version command on every built executable. Clean-environment installation,
-checksum verification after download, changelog review, and release-note accuracy remain maintainer
-checks rather than fully automated guarantees.
+The workflow's isolated relocated-copy checks are not clean-machine installation or upgrade tests.
+Independently verify downloaded assets on each advertised platform and review release-note/content accuracy.
+Signing/notarization, general FastAPI compatibility, and access-control correctness are not established by
+these smoke checks. Publish only after the required run and artifact checks pass for the exact selected SHA.

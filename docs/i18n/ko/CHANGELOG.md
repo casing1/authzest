@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="../../CHANGELOG.md">English</a> ·
+  <a href="../../../CHANGELOG.md">English</a> ·
   <strong>한국어</strong>
 </p>
 
 # 변경 이력
 
-[문서 목차](INDEX.ko.md) · [릴리스 가이드](RELEASING.ko.md)
+[문서 목차](INDEX.md) · [릴리스 가이드](releases/RELEASING.md)
 
 AuthZest의 주요 변경사항을 기록합니다.
 
@@ -14,26 +14,34 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
-이 항목은 공개 `v0.1.0-alpha.1` 태그 이후 `main`의 변경입니다. 현재 Python 패키지 메타데이터가
-아직 `0.1.0a1`이어도 해당 preview 바이너리에는 포함되지 않습니다.
+alpha.2 준비 이후의 추가 변경은 아직 기록하지 않았습니다.
+
+## [0.1.0-alpha.2] - 2026-09-10
+
+리포트 스키마 `1.2`, 소스 패키지 `0.1.0a2`의 릴리스 준비 내용입니다. 날짜 제목이나 패키지 버전만으로
+배포를 입증하지 않습니다. 제공되는 산출물과 정확한 릴리스 커밋은
+[GitHub Releases](https://github.com/casing1/authzest/releases)에서 확인하세요. 이 개선은 alpha.1 바이너리에 없습니다.
 
 ### 추가
 
+- 소스 전용 예제, JSON/리포트 동등성, strict/잘못된 입력 종료와 격리된 실행 파일 복사본을 검사하는
+  바이너리 릴리스 smoke 검사를 추가했습니다. 깨끗한 컴퓨터나 업그레이드 검증을 대체하지 않습니다.
+- 태그/패키지 버전 검사에 영한 변경 이력의 날짜 제목 검증을 추가했습니다.
 - 리포트를 스키마 `1.2`로 확장하고 `effective_dependencies`에 지원하는 FastAPI/APIRouter 생성자,
   `include_router` 선언과 라우트 직접 근거를 담습니다. 반복·다중 app mount에서도 원본 위치와 선언
   종류를 유지합니다. `dependencies`는 직접 선언만 유지하고 두 목록은 등록 ID에서 제외합니다.
   맥락 순서는 런타임 실행 순서 보장이 아닙니다.
 - 소스 전용 상속 예제와 합성·미해석 목록·직접 필드 호환성·CLI/API 공통 출력의 회귀 검사를 추가했습니다.
-  AI 연동이나 릴리스를 추가하지 않았습니다.
+  AI 연동은 추가하지 않았습니다.
 - 리포트를 스키마 `1.1`로 확장하여 지원하는 매개변수 기본값, 인라인 `Annotated`와 decorator
   `dependencies`에서 라우트 직접 `Depends`·`Security` 근거를 수집합니다. 원본 소스 위치, 구문상 대상,
   확인한 scopes와 미해석 사유를 기록하지만 인증·인가를 분류하지 않습니다. 기존 등록 ID와 필드는
   유지했습니다. 당시 후속 작업이었던 상속 분석은 위에서 추가했으며 중첩 의존성 그래프는 아직 후속 작업입니다.
 - 소스 전용 의존성 예제와 일반 DI·scopes 한계·strict 부분 리포트 동작의 CLI/API 회귀 검사를 추가했습니다.
-  모델 호출, 대상 실행이나 릴리스 발행은 추가하지 않았습니다.
+  모델 호출이나 대상 실행은 추가하지 않았습니다.
 - 리포트 스키마 `1.0`을 추가하여 구조화된 소스 진단과 명시적인 `bounded`/`partial` 분석 상태를
-  제공하며 기존 라우트 필드와 파싱 오류를 유지합니다. 이 스키마 버전은 바뀌지 않은 Python
-  패키지 버전과 별개입니다. [리포트 계약](REPORT_CONTRACT.ko.md)을 참고하세요.
+  제공하며 기존 라우트 필드와 파싱 오류를 유지합니다. 이 스키마 버전은 Python
+  패키지 버전과 별개입니다. [리포트 계약](reference/REPORT_CONTRACT.md)을 참고하세요.
 - 일정하게 계산되는 소스 등록 ID, 원본 데코레이터와 객체 위치, 애플리케이션 식별 근거,
   바깥에서 안쪽 순서의 include chain, 명시적인 지연 함수 본문 목록 표시를 추가했습니다.
   같은 줄의 반복 호출을 포함해 같은 경로의 등록도 각각 구별합니다.
@@ -46,10 +54,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 - 대상 소스를 실행하지 않고 저장소 내부의 절대·상대 router import, 별칭과 모듈 참조를 해석하며
   cross-file 등록 경로와 원본 소스 위치를 보존합니다.
 - 같은 파일의 리터럴 router 및 등록 prefix를 합성하고 반복 등록과 라우트 소스 위치를 보존하며
-  미해석 경로를 생략합니다. [파서 범위](PARSER_SCOPE.ko.md)를 참고하세요.
+  미해석 경로를 생략합니다. [파서 범위](reference/PARSER_SCOPE.md)를 참고하세요.
 
 ### 변경
 
+- 영어 안내는 주제별로, 번역은 언어별·동일 주제 하위 폴더로 정리하고 문서 목차, 기여 안내와
+  저장소 링크를 함께 수정했습니다.
 - 최종 제품 목표를 Codex 보조·사용자 승인형 방어적 수정 흐름으로 명확히 했습니다. 소스 근거 검토,
   회귀 테스트 초안과 패치 제안, 정확한 diff 승인, 승인한 변경 적용, 검증 결과 보고를 연결합니다.
   이 흐름은 [#35](https://github.com/casing1/authzest/issues/35)의 계획이며 이번 소스 리포트 변경으로
@@ -76,7 +86,7 @@ AuthZest의 주요 변경사항을 기록합니다.
 - 대시보드에서 미실행·실행 중·실패·빈 결과·부분 결과를 구분하고 파싱 오류의 상세 내용을 표시합니다.
   새 시도 전에 이전 결과를 지우고 고유한 행 key로 반복 라우트 등록을 각각 유지합니다.
 - 라우트 데코레이터 수집 전에 정적으로 인식한 FastAPI 또는 APIRouter 객체를 요구하여 무관한
-  객체와 가려지거나 재할당된 이름을 제외합니다. [파서 범위](PARSER_SCOPE.ko.md)를 참고하세요.
+  객체와 가려지거나 재할당된 이름을 제외합니다. [파서 범위](reference/PARSER_SCOPE.md)를 참고하세요.
 - GitHub Release 게시 작업에 저장소 정보를 명시적으로 제공했습니다.
 - 모든 빌드 플랫폼에서 checksum manifest를 이식 가능한 LF 줄바꿈으로 작성합니다.
 
@@ -95,5 +105,6 @@ AuthZest의 주요 변경사항을 기록합니다.
 - HTTP scan endpoint의 대상을 로컬 프로세스 소유자가 선택한 workspace로 제한했습니다.
 - HTTP API 계약에서 호출자가 지정하는 파일시스템 경로를 제거했습니다.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/casing1/authzest/commits/main/
+[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

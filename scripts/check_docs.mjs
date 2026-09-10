@@ -6,11 +6,11 @@ import { fileURLToPath } from "node:url";
 const DEFAULT_ROOT = fileURLToPath(new URL("../", import.meta.url));
 const READMES = [
   "README.md",
-  "docs/i18n/README.ko.md",
-  "docs/i18n/README.ja.md",
-  "docs/i18n/README.ru.md",
+  "docs/i18n/ko/README.md",
+  "docs/i18n/ja/README.md",
+  "docs/i18n/ru/README.md",
 ];
-const INDEXES = ["docs/README.md", "docs/i18n/INDEX.ko.md"];
+const INDEXES = ["docs/README.md", "docs/i18n/ko/INDEX.md"];
 const EXCLUDED = new Set([
   "node_modules",
   "vendor",
@@ -22,11 +22,12 @@ const EXCLUDED = new Set([
 ]);
 
 export function koreanCounterpart(file) {
-  if (file === "docs/README.md") return "docs/i18n/INDEX.ko.md";
+  if (file === "docs/README.md") return "docs/i18n/ko/INDEX.md";
   if (file.toLowerCase() === ".github/pull_request_template.md") {
-    return "docs/i18n/PULL_REQUEST_TEMPLATE.ko.md";
+    return "docs/i18n/ko/PULL_REQUEST_TEMPLATE.md";
   }
-  return `docs/i18n/${path.posix.basename(file).replace(/\.md$/i, "")}.ko.md`;
+  // Mirror topic paths so guides with the same basename retain distinct translations.
+  return `docs/i18n/ko/${file.startsWith("docs/") ? file.slice(5) : file}`;
 }
 
 function stripHtmlTagsSafely(value) {
@@ -321,13 +322,19 @@ export function checkDocs(root = DEFAULT_ROOT, options = {}) {
     }
   }
   for (const korean of files.filter((file) =>
-    /^docs\/i18n\/.*\.ko\.md$/.test(file),
+    file.startsWith("docs/i18n/ko/"),
   )) {
     if (
       sources.filter((file) => koreanCounterpart(file) === korean).length !== 1
     ) {
       issues.push(`${korean}: expected exactly one English source`);
     }
+  }
+  for (const translated of files.filter((file) =>
+    file.startsWith("docs/i18n/"),
+  )) {
+    if (!/^docs\/i18n\/(?:ko|ja|ru)\//.test(translated))
+      issues.push(`${translated}: translations must use a language directory`);
   }
   const englishReadme = documents.get("README.md");
   if (englishReadme) {

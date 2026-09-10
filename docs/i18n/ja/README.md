@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="../assets/authzest-banner.png" alt="AuthZest — ソースコード認識型の認可テスト" width="100%">
+  <img src="../../assets/authzest-banner.png" alt="AuthZest — ソースコード認識型の認可テスト" width="100%">
 </p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.ko.md">한국어</a> ·
+  <a href="../../../README.md">English</a> ·
+  <a href="../ko/README.md">한국어</a> ·
   <strong>日本語</strong> ·
-  <a href="README.ru.md">Русский</a>
+  <a href="../ru/README.md">Русский</a>
 </p>
 
 # AuthZest
@@ -24,9 +24,11 @@ React ダッシュボードは任意のローカルインターフェースで�
 > [!IMPORTANT]
 > 公開済みの [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) は、
 > 最初の実行可能なひな型です。以下に示すルート所有オブジェクトの認識、prefix の合成、ファイル間の
-> ルーター解決とレポート仕様は `main` に実装されていますが、そのバイナリには**まだリリースされていません**。
-> ソースパッケージも引き続き `0.1.0a1` と表示するため、checkout のコミットと
-> [変更履歴](../../CHANGELOG.md)で公開済み preview と区別してください。どちらも完成した脆弱性スキャナーではありません。
+> ルーター解決とレポート仕様は、そのバイナリには含まれていません。このソースは
+> `v0.1.0-alpha.2`（Python では `0.1.0a2`）を対象にしています。利用できる成果物は
+> [GitHub Releases](https://github.com/casing1/authzest/releases)で確認し、checkout のコミットと
+> [変更履歴](../../../CHANGELOG.md)を比較してください。バージョン文字列だけでは公開済みと判断できません。
+> どちらも完成した脆弱性スキャナーではありません。
 
 ## 現在のソースが対応する機能
 
@@ -47,7 +49,7 @@ React ダッシュボードは任意のローカルインターフェースで�
 対応するルートで依存関係の根拠が未解決の場合、ルートは診断とともにレポートに残ります。
 構造化された診断は一部の未解決ケースとソース/読み取りエラーを扱いますが、すべての未対応パターンを
 網羅するものではありません。空のレポートや `bounded` 状態は endpoint の不在やアクセス制御の安全性を
-証明しません。[パーサーの対応範囲](../PARSER_SCOPE.md)と[レポート仕様](../REPORT_CONTRACT.md)を参照してください。
+証明しません。[パーサーの対応範囲](../../reference/PARSER_SCOPE.md)と[レポート仕様](../../reference/REPORT_CONTRACT.md)を参照してください。
 入れ子の依存関係グラフ、認証・認可の分類とセキュリティ finding は未実装です。
 適用文脈の根拠はソース上の文脈であり、実行時の依存関係の順序や保護を保証しません。
 
@@ -104,7 +106,7 @@ authzest scan examples/fastapi_inventory --json
 
 Python ファイル 4 個と `GET` ルート 3 個(`/health`、`/v1/catalog/items`、`/v2/catalog/items`)が得られます。
 これは脆弱性の検出ではなく、静的な探索と同じルーターの繰り返し登録を示すサンプルです。
-fixture の構成と期待する根拠は[サンプルガイド](../EXAMPLES.md)を参照してください。
+fixture の構成と期待する根拠は[サンプルガイド](../../guides/EXAMPLES.md)を参照してください。
 
 ## CLI 診断
 
@@ -194,7 +196,7 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 [公開済み preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) は Linux x64、
 macOS arm64、Windows x64 の実行ファイルと SHA-256 manifest を提供します。GUI インストーラーではなく
-CLI プログラムであり、`main` の未リリースのパーサー変更は含まれません。まだ署名・notarization を行って
+CLI プログラムであり、上記の新しいパーサー/レポート機能は含まれません。まだ署名・notarization を行って
 いないため、OS が未確認の発行元について警告する場合があります。
 
 現在のソースをローカルでビルドするには、開発 venv を有効にし、リポジトリルートから実行します。
@@ -208,7 +210,7 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ```
 
 Windows の出力は `dist\authzest.exe` です。PyInstaller は `frontend/dist` が存在する場合に同梱します。
-タグの検証、checksum、公開手順については[リリースガイド](../RELEASING.md)を参照してください。
+タグの検証、checksum、公開手順については[リリースガイド](../../releases/RELEASING.md)を参照してください。
 
 ## プロジェクト構成
 
@@ -233,10 +235,10 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 ## ロードマップとコントリビューション
 
-- [ドキュメント索引](../README.md) — 英語のガイドと韓国語訳
-- [開発チェックリスト](../DEVELOPMENT_PLAN.md)と[ロードマップ issue #1](https://github.com/casing1/authzest/issues/1)
-- [モデルと評価の方針](../MODEL_STRATEGY.md)
-- [コントリビューションとコミットのルール](../../CONTRIBUTING.md)
+- [ドキュメント索引](../../README.md) — 英語のガイドと韓国語訳
+- [開発チェックリスト](../../development/DEVELOPMENT_PLAN.md)と[ロードマップ issue #1](https://github.com/casing1/authzest/issues/1)
+- [モデルと評価の方針](../../development/MODEL_STRATEGY.md)
+- [コントリビューションとコミットのルール](../../../CONTRIBUTING.md)
 
 範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
 作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
@@ -256,5 +258,5 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 ## ライセンスとセキュリティ
 
-AuthZest は [MIT License](../../LICENSE) を採用しています。脆弱性は公開 issue ではなく、
-[セキュリティポリシー](../../SECURITY.md)に記載された非公開の手順で報告してください。
+AuthZest は [MIT License](../../../LICENSE) を採用しています。脆弱性は公開 issue ではなく、
+[セキュリティポリシー](../../../SECURITY.md)に記載された非公開の手順で報告してください。

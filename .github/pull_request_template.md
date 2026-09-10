@@ -1,4 +1,4 @@
-[한국어 작성 안내](https://github.com/casing1/authzest/blob/main/docs/i18n/PULL_REQUEST_TEMPLATE.ko.md)
+[한국어 작성 안내](https://github.com/casing1/authzest/blob/main/docs/i18n/ko/PULL_REQUEST_TEMPLATE.md)
 
 ## Summary
 
