@@ -97,6 +97,21 @@ test("a new guide must have its Korean counterpart", (context) => {
   );
 });
 
+test("heading normalization preserves formatted text, Unicode, duplicates, and explicit anchors", (context) => {
+  const report = runFixture(context, (sources) => {
+    for (const file of guide) {
+      sources[file] +=
+        "\n# <em>Formatted</em> and [linked](https://example.com)\n" +
+        "[Formatted heading](#formatted-and-linked)\n" +
+        "# Café e\u0301!\n[Unicode heading](#café-e%CC%81)\n" +
+        "# Repeat\n# Repeat\n[Second repetition](#repeat-1)\n" +
+        '<span id="manual-anchor"></span>\n[Explicit anchor](#manual-anchor)\n';
+    }
+  });
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.counts.fragments, 10);
+});
+
 test("missing files and heading fragments identify their source document", (context) => {
   const report = runFixture(context, (sources) => {
     sources[guide[0]] +=
