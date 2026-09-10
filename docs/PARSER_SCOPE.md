@@ -10,6 +10,10 @@ Use a current source checkout to try these features; the package version has not
 
 AuthZest parses Python source with the standard-library AST parser. It does not import the scanned
 application, instantiate its objects, or execute its code. The supported syntax is tested on Python 3.12.
+Both single-file and repository parsing read source bytes and let Python interpret UTF-8, a UTF-8 byte
+order mark (BOM), and PEP 263 source-encoding declarations such as `# coding: latin-1`. Invalid byte
+sequences, unknown encodings, and conflicting BOM/encoding declarations are reported as parse errors.
+Repository scans continue with other readable, valid source files.
 
 ## Supported declarations
 
@@ -114,10 +118,13 @@ For framework usage examples, see [FastAPI's router composition guide](https://f
 Repository scans build a module index from the selected source tree and its conventional `src/` directory.
 Only indexed Python files participate. Resolution does not use the interpreter's import machinery,
 installed packages, `sys.path`, or network access, and symlinked files or directories are excluded.
-The normal scan excludes `.git`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`, `.venv`, `__pycache__`,
-`dist`, `node_modules`, and `venv`. These files cannot become candidates merely because another source
-file imports them. The index also supports namespace packages represented by the indexed source tree;
-an `__init__.py` is not required for every directory.
+Within the selected root, the normal scan excludes source files beneath descendant directories named
+`.git`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`, `.venv`, `__pycache__`, `dist`, `node_modules`, or
+`venv`. The explicit scan root and its ancestors are not tested against that name list: choosing a root
+named `dist`, or a project below a parent named `dist`, still scans its eligible source files. A nested
+`dist` directory inside that root remains excluded. Excluded files cannot become candidates merely
+because another source file imports them. The index also supports namespace packages represented by the
+indexed source tree; an `__init__.py` is not required for every directory.
 
 For example, a router in `app/routers/users.py`:
 
@@ -192,9 +199,14 @@ Unsupported or unresolved declarations are omitted from the route inventory. The
 protected, unprotected, or vulnerable. The report schema is unchanged and does not yet expose an explicit
 unresolved-declaration list, so an empty result must not be interpreted as proof that no endpoints exist
 or that access control is safe. Malformed or unreadable source continues to appear in `parse_errors`.
+The text CLI prints each parse error to stderr and labels the inventory as partial; JSON retains the
+`parse_errors` array. This does not change exit-code behavior: returned parse errors can still accompany exit code 0,
+while an invalid repository path produces exit code 2. Neither exit code 0 nor an empty error array proves
+that every declaration was resolved. A versioned completeness/exit-code contract remains planned.
 
 Regression cases live in [`test_parser.py`](../tests/test_parser.py),
-[`test_router_prefixes.py`](../tests/test_router_prefixes.py), and
-[`test_cross_file_routes.py`](../tests/test_cross_file_routes.py), with CLI, API, and repository-runner
+[`test_router_prefixes.py`](../tests/test_router_prefixes.py),
+[`test_cross_file_routes.py`](../tests/test_cross_file_routes.py), and
+[`test_source_encodings.py`](../tests/test_source_encodings.py), with CLI, API, and repository-runner
 fixtures covering the shared report contract. No FastAPI version compatibility claim beyond this
 source-syntax subset is made. For the release process, see [Releasing AuthZest](RELEASING.md).

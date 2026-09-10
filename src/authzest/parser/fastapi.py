@@ -186,7 +186,7 @@ class FastAPIRouteParser:
 
     def parse_file(self, path: Path) -> ParseResult:
         try:
-            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            tree = ast.parse(path.read_bytes(), filename=str(path))
         except (OSError, SyntaxError, UnicodeError) as exc:
             return ParseResult(routes=(), error=f"{path}: {exc}")
 
