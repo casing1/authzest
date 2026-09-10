@@ -1,14 +1,14 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="i18n/REPORT_CONTRACT.ko.md">한국어</a>
+  <a href="../i18n/ko/reference/REPORT_CONTRACT.md">한국어</a>
 </p>
 
 # Source report contract
 
-[Documentation index](README.md) · [Parser scope](PARSER_SCOPE.md) · [Example](EXAMPLES.md)
+[Documentation index](../README.md) · [Parser scope](PARSER_SCOPE.md) · [Example](../guides/EXAMPLES.md)
 
-This describes schema **1.2** in the current source, not the published alpha binary. The report schema
-version is independent of the package version, which remains 0.1.0a1. The core, CLI JSON, and local API
+This describes schema **1.2** in the current source, not the original alpha.1 binary. The report schema
+version is independent of the source package version, 0.1.0a2. The core, CLI JSON, and local API
 serialize the same report. No dependency classification, AI proposal, source modification, or target
 execution is performed by this report implementation.
 
@@ -179,21 +179,21 @@ in a separate expandable list.
 
 ## Regression evidence
 
-[Model contract tests](../tests/test_report_contract.py) cover canonical identity, root relocation, null
-legacy provenance, and field/status compatibility. [Parser tests](../tests/test_report_parser.py) cover
+[Model contract tests](../../tests/test_report_contract.py) cover canonical identity, root relocation, null
+legacy provenance, and field/status compatibility. [Parser tests](../../tests/test_report_parser.py) cover
 source positions, same-line repeated mounts, multiple apps, nested cross-file composition, known unresolved
-cases, deferred scope, and read-once source-only processing. [Transport tests](../tests/test_report_transports.py)
+cases, deferred scope, and read-once source-only processing. [Transport tests](../../tests/test_report_transports.py)
 cover CLI/API equivalence, output before strict failure, and invalid/empty/partial inputs.
 
-[Dependency model tests](../tests/test_dependency_contract.py) verify the additive schema, null/empty
-scopes, and unchanged registration identity. [Dependency parser tests](../tests/test_route_dependencies.py)
-and [edge cases](../tests/test_dependency_edge_cases.py) cover supported declarations, aliases, binding
-boundaries, and unresolved forms. [Dependency transport tests](../tests/test_dependency_transports.py)
+[Dependency model tests](../../tests/test_dependency_contract.py) verify the additive schema, null/empty
+scopes, and unchanged registration identity. [Dependency parser tests](../../tests/test_route_dependencies.py)
+and [edge cases](../../tests/test_dependency_edge_cases.py) cover supported declarations, aliases, binding
+boundaries, and unresolved forms. [Dependency transport tests](../../tests/test_dependency_transports.py)
 check the maintained example and shared core/CLI/API evidence, including strict partial output.
 
-[Inherited parser tests](../tests/test_inherited_dependencies.py) cover source-context composition and
-unresolved declarations. [Inherited transport tests](../tests/test_inherited_dependency_transports.py)
+[Inherited parser tests](../../tests/test_inherited_dependencies.py) cover source-context composition and
+unresolved declarations. [Inherited transport tests](../../tests/test_inherited_dependency_transports.py)
 check the repeated/multi-app example, shared reports, and preserved local evidence.
-[Inherited model tests](../tests/test_inherited_dependency_contract.py) and
-[independent edge cases](../tests/test_inherited_dependency_edge_cases.py) verify compatibility, identity,
+[Inherited model tests](../../tests/test_inherited_dependency_contract.py) and
+[independent edge cases](../../tests/test_inherited_dependency_edge_cases.py) verify compatibility, identity,
 and bounded cross-file composition.

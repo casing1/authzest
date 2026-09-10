@@ -1,11 +1,11 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="docs/i18n/CHANGELOG.ko.md">한국어</a>
+  <a href="docs/i18n/ko/CHANGELOG.md">한국어</a>
 </p>
 
 # Changelog
 
-[Documentation index](docs/README.md) · [Release guide](docs/RELEASING.md)
+[Documentation index](docs/README.md) · [Release guide](docs/releases/RELEASING.md)
 
 All notable changes to AuthZest are documented in this file.
 
@@ -14,27 +14,35 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
-These entries describe changes on `main` after the published `v0.1.0-alpha.1` tag. They are not included
-in that preview binary, even though current Python package metadata still uses `0.1.0a1`.
+No additional changes beyond the alpha.2 preparation are recorded yet.
+
+## [0.1.0-alpha.2] - 2026-09-10
+
+Prepared release contents for source package `0.1.0a2`, with report schema `1.2`. A dated heading or
+package version is not proof of publication: check [GitHub Releases](https://github.com/casing1/authzest/releases)
+for available artifacts and the exact released commit. These improvements are not in the alpha.1 binaries.
 
 ### Added
 
+- Added binary release smoke checks for source-only examples, JSON/report parity, strict/invalid-input
+  exits, and an isolated relocated executable copy. These do not replace clean-machine or upgrade checks.
+- Added bilingual dated changelog validation alongside the tag/package-version check.
 - Extended the report to schema `1.2` with `effective_dependencies`: supported FastAPI/APIRouter
   constructor and `include_router` declarations plus route-local evidence, preserving original positions
   and declaration levels across repeated/multi-app mounts. `dependencies` remains route-local and both
   lists remain excluded from registration IDs. Context order is not a runtime execution guarantee.
 - Added a source-only inheritance example and regression coverage for composition, unresolved collections,
-  local-field compatibility, and shared CLI/API output. No AI integration or release was added.
+  local-field compatibility, and shared CLI/API output. No AI integration was added.
 - Extended the report to schema `1.1` with route-local `Depends`/`Security` evidence from supported
   parameter defaults, inline `Annotated`, and decorator `dependencies`. Records original source locations,
   syntactic targets, known scopes, and unresolved reasons without classifying authentication/authorization.
   Existing registration IDs and fields were preserved; inherited analysis was deferred at that step and
   is now added above. Nested dependency graphs remain deferred.
 - Added a source-only dependency example and CLI/API regressions for ordinary DI, scope limits, and
-  strict partial-report behavior. No model calls, target execution, or release publication were added.
+  strict partial-report behavior. No model calls or target execution were added.
 - Added report schema `1.0` with structured source diagnostics and explicit `bounded`/`partial`
   analysis status, while retaining existing route fields and legacy parse errors. This schema version
-  is separate from the unchanged Python package version. See the [report contract](docs/REPORT_CONTRACT.md).
+  is independent of the Python package version. See the [report contract](docs/reference/REPORT_CONTRACT.md).
 - Added deterministic source-registration IDs, original decorator and owner positions, application
   identity, outer-to-inner include chains, and explicit deferred function-body inventory. Same-path
   registrations remain distinct, including repeated calls on the same line.
@@ -47,10 +55,12 @@ in that preview binary, even though current Python package metadata still uses `
 - Resolved repository-local absolute and relative router imports, aliases, and module references without
   executing target source, preserving cross-file registration paths and original source locations.
 - Composed literal same-file router and registration prefixes, preserving repeated registrations and
-  route source locations while omitting unresolved paths. See the [parser scope](docs/PARSER_SCOPE.md).
+  route source locations while omitting unresolved paths. See the [parser scope](docs/reference/PARSER_SCOPE.md).
 
 ### Changed
 
+- Grouped English guides by topic and translations by language with mirrored topic directories, updating
+  the documentation index, contribution instructions, and repository links together.
 - Clarified the final product goal as a Codex-assisted, user-approved defensive repair loop: review
   source evidence, propose regression-test drafts and a patch, obtain approval for the exact diff,
   apply approved changes, and report verification results. This loop is planned in
@@ -80,7 +90,7 @@ in that preview binary, even though current Python package metadata still uses `
   details, cleared stale results before a new attempt, and kept repeated route registrations distinct
   through unique row keys.
 - Required statically recognized FastAPI or APIRouter owners before collecting route decorators,
-  excluding unrelated objects and shadowed or reassigned names. See the [parser scope](docs/PARSER_SCOPE.md).
+  excluding unrelated objects and shadowed or reassigned names. See the [parser scope](docs/reference/PARSER_SCOPE.md).
 - Provided explicit repository context to the GitHub Release publishing job.
 - Wrote checksum manifests with portable LF line endings on every build platform.
 
@@ -99,5 +109,6 @@ in that preview binary, even though current Python package metadata still uses `
 - Restricted the HTTP scan endpoint to the workspace selected by the local process owner.
 - Removed caller-controlled filesystem paths from the HTTP API contract.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/casing1/authzest/commits/main/
+[0.1.0-alpha.2]: https://github.com/casing1/authzest/releases
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

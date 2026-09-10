@@ -1,6 +1,6 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="docs/i18n/CONTRIBUTING.ko.md">한국어</a>
+  <a href="docs/i18n/ko/CONTRIBUTING.md">한국어</a>
 </p>
 
 # Contributing to AuthZest
@@ -20,7 +20,7 @@ Find the project guides in the [documentation index](docs/README.md).
 6. Resolve discussions, merge with a merge commit, and delete the working branch.
 
 Do not push directly to `main`. It must remain runnable and pass all required checks.
-The [branch protection policy](docs/BRANCH_RULES.md) requires Python, frontend, and CodeQL checks.
+The [branch protection policy](docs/development/BRANCH_RULES.md) requires Python, frontend, and CodeQL checks.
 
 ## Branch names
 
@@ -37,7 +37,7 @@ chore/55-update-actions
 
 Recommended types are `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, and `build`. AuthZest does
 not maintain a long-lived `develop` branch. Releases are created by tagging a verified commit on `main`, for
-example `v0.1.0-alpha.1`. Follow the [release guide](docs/RELEASING.md); published tags are immutable.
+example `v0.1.0-alpha.1`. Follow the [release guide](docs/releases/RELEASING.md); published tags are immutable.
 
 ## Commit conventions
 
@@ -106,7 +106,7 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 The checker validates translation pairs, local links, and command parity without executing documentation
 examples. The formatting command covers tracked Markdown; stage new guides before the final check.
-The [included example](docs/EXAMPLES.md) provides a deterministic local CLI demonstration.
+The [included example](docs/guides/EXAMPLES.md) provides a deterministic local CLI demonstration.
 
 After building the frontend above, verify the standalone executable from the repository root with the
 same virtual environment active:
@@ -135,7 +135,7 @@ enable AI analysis, because that integration is not implemented. See
 - Add a real Codex integration as a `CodexAdapter` protocol implementation; do not expose SDK or process
   details to the core.
 - Treat improved results from AI as a hypothesis to evaluate, not an established advantage. Follow the
-  [model and evaluation strategy](docs/MODEL_STRATEGY.md), keeping provider and model choices outside the core.
+  [model and evaluation strategy](docs/development/MODEL_STRATEGY.md), keeping provider and model choices outside the core.
 - Keep external process execution and network requests disabled by default. They require explicit user opt-in.
 
 ## Documentation and translations
@@ -144,12 +144,13 @@ Every first-party Markdown document has an English source and a Korean counterpa
 `README.md` also has Japanese and Russian translations; other documents, including the documentation
 index, require English and Korean only.
 
-- Keep English documents in their conventional locations and translations together in `docs/i18n/`.
-- Normally name a Korean counterpart `<NAME>.ko.md`, preserving the source document's basename.
-  For example, `docs/BRANCH_RULES.md` pairs with `docs/i18n/BRANCH_RULES.ko.md`.
-- Use `docs/i18n/INDEX.ko.md` for `docs/README.md` so it does not conflict with the project README
+- Keep conventional English root documents; group detailed guides in `docs/guides/`, `docs/reference/`,
+  `docs/development/`, and `docs/releases/`.
+- Put translations in `docs/i18n/<language>/`, mirroring topic directories without filename language suffixes.
+  For example, `docs/development/BRANCH_RULES.md` pairs with `docs/i18n/ko/development/BRANCH_RULES.md`.
+- Use `docs/i18n/ko/INDEX.md` for `docs/README.md` so it does not conflict with the project README
   translation. The authored `.github/pull_request_template.md` pairs with
-  `docs/i18n/PULL_REQUEST_TEMPLATE.ko.md`; GitHub continues to load the English template by default.
+  `docs/i18n/ko/PULL_REQUEST_TEMPLATE.md`; GitHub continues to load the English template by default.
 - Add reciprocal language links and register new guides in the English and Korean documentation indexes.
 - Update the source and all its translations in the same pull request. Keep supported behavior, limitations,
   commands, links, and checklist state aligned. Leave code identifiers and command syntax unchanged.

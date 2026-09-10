@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="../../CONTRIBUTING.md">English</a> ·
+  <a href="../../../CONTRIBUTING.md">English</a> ·
   <strong>한국어</strong>
 </p>
 
@@ -7,7 +7,7 @@
 
 AuthZest는 작고 검증 가능한 변경을 꾸준히 병합하는 방식으로 개발합니다. 기능 수보다 변경 이유,
 검증 과정, 보안상 판단이 이력에 명확히 남는 것을 우선합니다.
-프로젝트 안내 문서는 [문서 목차](INDEX.ko.md)에서 찾을 수 있습니다.
+프로젝트 안내 문서는 [문서 목차](INDEX.md)에서 찾을 수 있습니다.
 
 ## 작업 흐름
 
@@ -20,7 +20,7 @@ AuthZest는 작고 검증 가능한 변경을 꾸준히 병합하는 방식으�
 6. 대화와 CI가 정리되면 merge commit으로 병합하고 작업 브랜치를 삭제합니다.
 
 `main`에는 직접 push하지 않으며 항상 실행 가능하고 테스트를 통과하는 상태를 유지합니다.
-[브랜치 보호 정책](BRANCH_RULES.ko.md)에 따라 Python, frontend, CodeQL 검사를 통과해야 합니다.
+[브랜치 보호 정책](development/BRANCH_RULES.md)에 따라 Python, frontend, CodeQL 검사를 통과해야 합니다.
 
 ## 브랜치 이름
 
@@ -38,7 +38,7 @@ chore/55-update-actions
 
 권장 type은 `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, `ci`, `build`입니다. 장기간 유지하는
 `develop` 브랜치는 두지 않습니다. 릴리스는 검증된 `main` 커밋에 `v0.1.0-alpha.1` 같은 태그를
-붙여 만듭니다. [릴리스 안내](RELEASING.ko.md)를 따르며 공개된 태그는 변경하지 않습니다.
+붙여 만듭니다. [릴리스 안내](releases/RELEASING.md)를 따르며 공개된 태그는 변경하지 않습니다.
 
 ## 커밋 규칙
 
@@ -82,7 +82,7 @@ type의 의미는 다음과 같습니다.
 
 아래 명령은 복제한 저장소 루트에서 개발용 가상 환경을 활성화한 상태로 실행합니다.
 
-1. [README의 개발 환경 안내](README.ko.md#개발-환경)에 따라 Python 3.12 가상 환경을 만들고
+1. [README의 개발 환경 안내](README.md#개발-환경)에 따라 Python 3.12 가상 환경을 만들고
    활성화합니다.
 2. `python -m pip install -e '.[dev]'`로 Python 개발 의존성을 설치합니다.
 3. `npm --prefix frontend ci`를 실행해 저장소에 기록된 버전의 frontend 의존성을 설치합니다.
@@ -107,7 +107,7 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 검사기는 문서 예제를 실행하지 않고 번역 쌍, 로컬 링크, 명령어의 일치 여부를 검증합니다.
 포맷 명령은 Git이 추적하는 Markdown을 검사하므로 새 안내 문서는 최종 확인 전에 staging에 포함합니다.
-[포함된 예제](EXAMPLES.ko.md)는 결정론적인 로컬 CLI 시연을 제공합니다.
+[포함된 예제](guides/EXAMPLES.md)는 결정론적인 로컬 CLI 시연을 제공합니다.
 
 위에서 frontend를 빌드한 뒤, 같은 가상 환경을 활성화한 상태로 저장소 루트에서 독립 실행 파일을
 확인합니다.
@@ -121,7 +121,7 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor`를 실행하면 설치된 Codex CLI의
 `codex --version`과 `codex login status`를 호출할 수 있으며 AI 스캔을 시작하지는 않습니다.
 로그인에 성공해도 해당 연동이 구현되지 않았으므로 AI 분석이 활성화되지는 않습니다.
-[CLI 진단 안내](README.ko.md#cli-진단)를 참고하세요.
+[CLI 진단 안내](README.md#cli-진단)를 참고하세요.
 
 ## 변경 원칙
 
@@ -136,7 +136,7 @@ Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor
 - 실제 Codex 연동은 `CodexAdapter` protocol 구현체로 추가하고 core에 SDK나 프로세스 세부사항을
   노출하지 않습니다.
 - AI가 결과를 개선한다는 주장은 입증된 장점이 아니라 평가할 가설로 다룹니다.
-  [모델 및 평가 전략](MODEL_STRATEGY.ko.md)을 따르고 provider·모델 선택은 core 바깥에서 처리합니다.
+  [모델 및 평가 전략](development/MODEL_STRATEGY.md)을 따르고 provider·모델 선택은 core 바깥에서 처리합니다.
 - 외부 프로세스 실행과 네트워크 요청은 기본적으로 비활성화하며 사용자가 명시적으로 허용해야
   합니다.
 
@@ -146,18 +146,19 @@ Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor
 프로젝트 `README.md`에는 일본어와 러시아어 번역도 제공합니다. 문서 목차를 포함한 나머지 문서는
 영어와 한국어만 필수입니다.
 
-- 영어 문서는 일반적인 위치에 유지하고 번역은 `docs/i18n/`에 모읍니다.
-- 한국어 번역은 원본 파일명을 유지한 `<NAME>.ko.md`를 기본으로 사용합니다. 예를 들어
-  `docs/BRANCH_RULES.md`의 번역은 `docs/i18n/BRANCH_RULES.ko.md`입니다.
-- `docs/README.md`의 번역은 프로젝트 README 번역과 충돌하지 않도록 `docs/i18n/INDEX.ko.md`로
+- 관례적인 영어 루트 문서는 유지하고 상세 안내는 `docs/guides/`, `docs/reference/`,
+  `docs/development/`, `docs/releases/`에 주제별로 모읍니다.
+- 번역은 `docs/i18n/<language>/` 안에서 같은 주제 폴더를 사용하며 파일명 언어 접미사는 붙이지 않습니다.
+  예를 들어 `docs/development/BRANCH_RULES.md`의 번역은 `docs/i18n/ko/development/BRANCH_RULES.md`입니다.
+- `docs/README.md`의 번역은 프로젝트 README 번역과 충돌하지 않도록 `docs/i18n/ko/INDEX.md`로
   만듭니다. 직접 작성하는 `.github/pull_request_template.md`는
-  `docs/i18n/PULL_REQUEST_TEMPLATE.ko.md`와 짝을 이룹니다. GitHub는 계속 영어 템플릿을 기본으로
+  `docs/i18n/ko/PULL_REQUEST_TEMPLATE.md`와 짝을 이룹니다. GitHub는 계속 영어 템플릿을 기본으로
   불러옵니다.
 - 원본과 번역에 서로 연결되는 언어 링크를 넣고, 새 안내 문서를 영어와 한국어 문서 목차에 등록합니다.
 - 같은 pull request에서 원본과 모든 번역을 함께 갱신합니다. 지원 동작, 한계, 명령어, 링크와
   체크리스트 상태를 일치시키고 코드 식별자와 명령어 문법은 바꾸지 않습니다.
 - 프로젝트 README에는 개요와 시작 방법을 담습니다. 자세한 안내는 `docs/`에 작성하고
-  [문서 목차](INDEX.ko.md)에서 연결합니다.
+  [문서 목차](INDEX.md)에서 연결합니다.
 
 이 정책은 기여용 템플릿을 포함해 저장소를 위해 직접 작성하는 Markdown에 적용합니다. 생성 결과물과
 외부 의존성 문서는 프로젝트 안내 문서로 번역하거나 커밋하지 않습니다.
@@ -177,4 +178,4 @@ Pull request를 병합하려면 다음 조건을 만족해야 합니다.
 - GitHub Actions의 필수 검사가 통과했습니다.
 
 버그와 기능 제안은 재현 절차, 기대 결과, 실제 결과, 실행 환경을 포함해 issue로 남겨 주세요.
-보안 취약점은 공개 issue 대신 [한국어 보안 정책](SECURITY.ko.md)의 절차를 따라 주세요.
+보안 취약점은 공개 issue 대신 [한국어 보안 정책](SECURITY.md)의 절차를 따라 주세요.

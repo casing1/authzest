@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="../MODEL_STRATEGY.md">English</a> ·
+  <a href="../../../development/MODEL_STRATEGY.md">English</a> ·
   <strong>한국어</strong>
 </p>
 
 # 모델 전략과 평가
 
-[문서 목차](INDEX.ko.md) · [개발 계획](DEVELOPMENT_PLAN.ko.md)
+[문서 목차](../INDEX.md) · [개발 계획](DEVELOPMENT_PLAN.md)
 
 ## 결정
 
@@ -21,7 +21,7 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 
 현재 제품은 제한된 FastAPI 라우트 구문, 라우트 직접 의존성 선언과 app/router/include 상속 맥락을
 목록화합니다. 중첩 의존성 그래프 해석, 인가 정확성 판정과 AI adapter 실행은 아직 없습니다.
-[소스 전용 예제](EXAMPLES.ko.md)는 파서 회귀 검사와 데모이며
+[소스 전용 예제](../guides/EXAMPLES.md)는 파서 회귀 검사와 데모이며
 보안 벤치마크가 아닙니다.
 
 ## 안정적인 계약과 교체 가능한 모델
@@ -46,7 +46,7 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 적용 맥락은 각 선언의 위치/종류를 유지하지만 바깥→안쪽 순서가 런타임 실행 순서 보장은 아닙니다.
 의존성 `reference`는 단순/점 연결 이름 구문만 뜻하며 callable 동작 해석이나 보안 분류가 아닙니다.
 의존성 근거는 기존 등록 ID 해시에 포함하지 않습니다.
-[리포트 계약](REPORT_CONTRACT.ko.md)은 부분 리포트도 기본 종료 코드 0으로 반환하며
+[리포트 계약](../reference/REPORT_CONTRACT.md)은 부분 리포트도 기본 종료 코드 0으로 반환하며
 `--strict`를 선택하면 확인한 부분 분석에는 1, 잘못된 저장소 입력에는 2를 반환합니다.
 `bounded`는 완전한 분석이나 보안 통과가 아닙니다. 등록 ID는 소스 등록을 식별하며 전체 파일 내용,
 소스 revision, 런타임 객체나 패치 승인을 식별하는 값이 아닙니다.

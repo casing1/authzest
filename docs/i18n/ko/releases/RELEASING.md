@@ -1,20 +1,18 @@
 # AuthZest 릴리스 관리
 
-[문서](INDEX.ko.md) · [English](../RELEASING.md) · 한국어
+[문서](../INDEX.md) · [English](../../../releases/RELEASING.md) · 한국어
 
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
 ## 배포된 preview와 현재 소스
 
-현재 배포된 preview는 [v0.1.0-alpha.1](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)입니다.
-[파서 지원 범위](PARSER_SCOPE.ko.md)에 설명된 FastAPI 객체 식별, 라우터 prefix 합성, 다른 파일의 import 해석은
-그 이후 추가되었으며 아직 [`Unreleased`](CHANGELOG.ko.md#unreleased)에 있습니다. 이 기능들은 현재 소스에서
-사용할 수 있으며, 해당 preview 바이너리에 포함되어 있지 않습니다.
-
-현재 소스의 `pyproject.toml` 버전도 여전히 `0.1.0a1`입니다. 다음 릴리스를 준비하면서 버전을 올리기 전에는
-`authzest --version`만으로 preview와 소스 설치본을 구분할 수 없습니다. 소스 빌드의 동작을 보고할 때는
-`git rev-parse HEAD`로 소스 커밋도 기록하세요.
+이 소스는 `v0.1.0-alpha.2`, Python 패키지 `0.1.0a2`, 리포트 스키마 `1.2`를 대상으로 합니다.
+제공되는 산출물과 정확한 릴리스 커밋은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서
+확인하세요. 패키지 버전이나 변경 이력의 날짜 제목만으로 배포를 입증하지 않습니다.
+첫 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에는
+[파서 범위](../reference/PARSER_SCOPE.md)와 [alpha.2 변경 이력](../CHANGELOG.md#010-alpha2---2026-09-10)의
+파서·리포트·의존성 개선이 없습니다. 소스 빌드의 동작을 보고할 때는 `git rev-parse HEAD`로 커밋도 기록하세요.
 
 ## 버전 정책
 
@@ -26,12 +24,12 @@ Python 패키지 메타데이터에는 PEP 440 표기를, Git 태그에는 SemVe
 
 | 릴리스 단계 | `pyproject.toml` | Git 태그         |
 | ----------- | ---------------- | ---------------- |
-| Alpha       | `0.1.0a1`        | `v0.1.0-alpha.1` |
+| Alpha       | `0.1.0a2`        | `v0.1.0-alpha.2` |
 | Beta        | `0.1.0b1`        | `v0.1.0-beta.1`  |
 | Candidate   | `0.1.0rc1`       | `v0.1.0-rc.1`    |
 | Final       | `0.1.0`          | `v0.1.0`         |
 
-Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../pyproject.toml)입니다. `private: true`로 설정된
+Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../../../pyproject.toml)입니다. `private: true`로 설정된
 frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리스마다 사용하지 않은 새 버전을
 선택하세요. 이미 배포한 `v0.1.0-alpha.1` 태그를 다시 발행하면 안 됩니다.
 
@@ -44,9 +42,9 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    [릴리스](https://github.com/casing1/authzest/releases)와 태그를 확인합니다.
 2. 최신 `main`에서 짧게 유지할 작업 브랜치를 만듭니다.
 3. `pyproject.toml`의 `project.version`을 수정합니다.
-4. [`CHANGELOG.md`](../../CHANGELOG.md)의 `Unreleased`에서 완료된 변경을
+4. [`CHANGELOG.md`](../../../../CHANGELOG.md)의 `Unreleased`에서 완료된 변경을
    `## [X.Y.Z-alpha.N] - YYYY-MM-DD`와 같은 날짜가 있는 제목 아래로 옮깁니다.
-   [한국어 변경 이력](CHANGELOG.ko.md)의 버전, 날짜, 링크도 함께 맞춥니다.
+   [한국어 변경 이력](../CHANGELOG.md)의 버전, 날짜, 링크도 함께 맞춥니다.
 5. 아래 자리표시자를 이슈에서 정한 미사용 태그로 바꿉니다. 새 패키지 버전과 정확히 대응해야 합니다.
    자리표시자를 그대로 두면 검증이 실패하도록 되어 있습니다.
 
@@ -56,8 +54,8 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
 
 6. 릴리스 검사를 실행합니다.
 
-   `doctor`는 설치된 Codex CLI의 진단 명령인 `codex --version`과 `codex login status`를 실행할 수 있습니다.
-   AI 분석을 시작하지 않으며, Codex가 없거나 로그인하지 않았다면 경고가 나옵니다.
+   스캔 smoke 검사는 `doctor`, Codex나 대상 애플리케이션 코드를 실행하지 않습니다.
+   의존성 설치와 산출물 다운로드는 네트워크에 접근할 수 있습니다.
 
    ```bash
    python -m pip install -e '.[dev,build]'
@@ -75,13 +73,19 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    python scripts/verify_release.py "${AUTHZEST_NEXT_TAG:?Set the unused release tag first}"
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md
    python -m PyInstaller --clean --noconfirm authzest.spec
-   ./dist/authzest --version
-   ./dist/authzest doctor
+   python scripts/smoke_release.py --binary dist/authzest
    ```
 
-   [`verify_release.py`](../../scripts/verify_release.py)는 태그와 패키지 버전이 정확히 대응하는지만 검사합니다.
-   변경 이력은 검사하지 않습니다. 별도 제목 확인과 영어·한국어 변경 이력의 검토는 관리자가 수행해야 합니다.
-   날짜와 해당 버전에 포함된 변경도 확인하세요.
+   [`verify_release.py`](../../../../scripts/verify_release.py)는 정확한 태그/패키지 버전 대응, 영한 변경 이력마다
+   하나의 대응 날짜 제목, 유효하고 같은 날짜와 비어 있지 않은 내용을 확인합니다. 배포 여부나 번역/기능
+   내용의 정확성까지 입증하지 않으므로 항목도 검토하세요. 기본 한국어 경로는 `docs/i18n/ko/CHANGELOG.md`입니다.
+
+   [`smoke_release.py`](../../../../scripts/smoke_release.py)는 버전/help/텍스트, checkout core와 스키마 `1.2`
+   JSON 동등성, 유지하는 소스 전용 fixture 4개, bounded strict 종료 0, partial 기본/strict 종료 0/1과
+   잘못된 루트 종료 2를 확인합니다. binary 모드는 선택한 실행 파일과 별도 작업 디렉터리·정리한 Python
+   환경에서 이동한 임시 복사본을 검사합니다. Windows에서는 `--binary dist/authzest.exe`를 사용합니다.
+   명령별 timeout 기본값은 45초이며 `--expected-version`으로 `pyproject.toml` 대신 예상 PEP 440 버전을
+   지정할 수 있습니다.
 
 7. PR을 만들고 필수 CI와 CodeQL 검사가 통과한 뒤 병합합니다.
 8. 배포 전에 `main`에서 릴리스 워크플로를 실행하여 세 플랫폼의 빌드를 검증합니다.
@@ -94,6 +98,16 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    아티팩트를 내려받아 기본 동작을 점검합니다. `main`에서 수동 실행하면 릴리스를 만들지 않고 아티팩트만
    빌드합니다. 태그를 지정한 수동 실행은 dry run이 아닙니다. 배포 조건은 실행 대상 ref가 태그인지에 따라
    결정됩니다.
+
+   이 checkout에서 다운로드한 플랫폼별 산출물 디렉터리를 대응 OS에서 각각 확인합니다.
+
+   ```bash
+   python scripts/smoke_release.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
+   ```
+
+   artifact 모드는 실행 파일 하나와 대응 `.sha256` manifest를 요구하고 checksum 확인 뒤 이동한 임시
+   복사본만 실행합니다. 다운로드 원본은 수정하거나 실행하지 않습니다. 리포트 비교에 checkout의 core와
+   fixture를 쓰므로 checkout을 해당 빌드의 커밋에 맞추세요.
 
 9. 수동 `main` 실행이 성공하고 아티팩트의 기본 동작을 확인한 뒤, 해당 실행의 전체 `headSha`를 확인합니다.
    아래 `RUN_ID`를 해당 실행 ID로 바꾸고 `status`가 `completed`, `conclusion`이 `success`인지 확인한 다음,
@@ -135,13 +149,18 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
 )
 ```
 
-[릴리스 워크플로](../../.github/workflows/release.yml)는 검증 단계가 실행되는 시점에 태그가 원격 `main`의
+[릴리스 워크플로](../../../../.github/workflows/release.yml)는 검증 단계가 실행되는 시점에 태그가 원격 `main`의
 최신 커밋을 가리키는지 확인합니다. 로컬 확인 이후에도 `main`이 바뀔 수 있으므로 검증이 끝날 때까지 다른
 병합 일정을 조율하세요. 검증 전에 `main`이 바뀌어 실패했다면 태그를 이동하거나 덮어쓰지 말고, 실패한
 시도를 기록한 뒤 검증된 최신 `main`에서 새 버전을 준비합니다.
 
 워크플로는 검증 과정에서 Python과 frontend 품질 검사를 다시 실행하고, 대시보드 자산을 포함한 Linux,
-macOS, Windows 실행 파일과 각 바이너리의 `.sha256` 파일을 만듭니다. 자산 이름에는 릴리스 버전, 운영체제,
+macOS, Windows 실행 파일을 빌드하고 바이너리/이동 복사본의 fixture smoke 검사를 수행하며 각 바이너리의
+`.sha256` 파일을 만듭니다. 버전이 있는 산출물도 checksum을 확인하는 smoke 검사를 거칩니다.
+별도의 새 job은 플랫폼별 산출물을 다운로드하고 Python 환경에 AuthZest가 설치되지 않았는지 확인한 뒤,
+프로젝트 패키지 설치 없이 Python 격리 모드(`-I`)로 artifact smoke를 실행합니다. 배포에는 검증·빌드·모든
+새 artifact 검증 job의 통과가 필요합니다. 이 검사도 사용자 기기의 깨끗한 설치나 업그레이드를 입증하지 않습니다.
+자산 이름에는 릴리스 버전, 운영체제,
 빌드 시 확인한 아키텍처가 들어갑니다. prerelease 접미사가 있는 태그는 GitHub prerelease를 만들고,
 최종 버전 태그는 일반 릴리스를 만듭니다. Python·npm 패키지 배포와 바이너리 서명은 수행하지 않습니다.
 
@@ -151,7 +170,7 @@ macOS, Windows 실행 파일과 각 바이너리의 `.sha256` 파일을 만듭�
 - macOS나 Linux에서는 두 파일이 있는 디렉터리에서 `shasum -a 256 -c <asset>.sha256`을 실행합니다.
   `<asset>`은 실제 파일 이름으로 바꿉니다. Windows에서는 `Get-FileHash -Algorithm SHA256` 결과와 해당
   manifest를 비교합니다. checksum은 파일 무결성을 확인하며 게시자의 신원을 증명하지는 않습니다.
-- 최소 한 곳의 깨끗한 환경에서 내려받은 실행 파일의 `--version`과 `doctor`를 실행합니다. checksum을 확인한
+- 깨끗한 환경에서 내려받은 실행 파일의 `--version`, `--help`와 유지하는 fixture 스캔을 실행합니다. checksum을 확인한
   뒤 macOS/Linux에서 사용할 정확한 다운로드 파일에 실행 권한을 추가합니다. 다운로드 디렉터리에서 파일 이름
   자리표시자를 바꾸고 실행하세요.
 
@@ -159,7 +178,7 @@ macOS, Windows 실행 파일과 각 바이너리의 `.sha256` 파일을 만듭�
   AUTHZEST_DOWNLOADED_BINARY='REPLACE_WITH_THE_EXACT_DOWNLOADED_FILENAME'
   chmod u+x "./$AUTHZEST_DOWNLOADED_BINARY"
   "./$AUTHZEST_DOWNLOADED_BINARY" --version
-  "./$AUTHZEST_DOWNLOADED_BINARY" doctor
+  "./$AUTHZEST_DOWNLOADED_BINARY" --help
   ```
 
   Windows `.exe` 파일에는 `chmod`가 필요하지 않습니다. 다운로드 디렉터리의 PowerShell에서 정확히 내려받은
@@ -168,12 +187,12 @@ macOS, Windows 실행 파일과 각 바이너리의 `.sha256` 파일을 만듭�
   ```powershell
   $AuthZestDownloadedBinary = '.\REPLACE_WITH_THE_EXACT_DOWNLOADED_FILENAME.exe'
   & $AuthZestDownloadedBinary --version
-  & $AuthZestDownloadedBinary doctor
+  & $AuthZestDownloadedBinary --help
   ```
 
-  특정 플랫폼의 설치를 검증했다고 설명하려면 그 플랫폼에서도 확인해야 합니다. 로컬 검사와 마찬가지로
-  `doctor`는 설치된 Codex 진단 명령을 실행할 수 있으며, Codex가 없거나 로그인하지 않았다면 경고가 나올 수
-  있습니다.
+  특정 플랫폼의 깨끗한 설치나 업그레이드를 검증했다고 설명하려면 그 플랫폼에서 확인해야 합니다.
+  검토한 fixture를 그 환경에 복사하고 [소스 전용 예제](../guides/EXAMPLES.md)의 명령을 사용하세요.
+  `doctor`는 선택 사항이며 설치된 Codex 진단 명령을 실행할 수 있습니다. 릴리스 smoke의 필수 조건은 아닙니다.
 
 - 자동 생성된 GitHub 릴리스 노트와 두 언어의 변경 이력이 올바른 버전과 기능을 설명하는지 확인합니다.
   `main`의 빌드 아티팩트는 자동으로 공개 릴리스가 되는 것이 아닙니다.
@@ -183,6 +202,7 @@ macOS, Windows 실행 파일과 각 바이너리의 `.sha256` 파일을 만듭�
 - 기존 릴리스 태그를 이동하거나 덮어쓰지 않습니다. 배포된 릴리스에 문제가 있다면 이슈와 변경 이력에
   기록하고 새 patch 또는 prerelease 버전을 배포합니다.
 
-워크플로는 모든 빌드 실행 파일에 대해 버전 명령을 실행합니다. 깨끗한 환경에서의 설치, 다운로드 후
-checksum 확인, 변경 이력 검토, 릴리스 노트의 정확성은 관리자가 확인해야 하며 모두 자동으로 보장되는 것은
-아닙니다.
+워크플로의 격리된 이동 복사본 검사는 깨끗한 컴퓨터의 설치나 업그레이드 테스트가 아닙니다.
+지원한다고 안내하는 플랫폼마다 다운로드 산출물을 별도로 확인하고 릴리스 노트/내용의 정확성을 검토하세요.
+서명/공증, 일반적인 FastAPI 호환성이나 접근통제 정확성은 이 smoke 검사로 입증되지 않습니다.
+정확히 선택한 SHA에서 필수 실행과 산출물 검증을 통과한 뒤에만 배포하세요.

@@ -1,10 +1,10 @@
 [English template](https://github.com/casing1/authzest/blob/main/.github/pull_request_template.md) ·
-[문서 목차](INDEX.ko.md)
+[문서 목차](INDEX.md)
 
 # Pull request 작성 안내
 
 GitHub는 `.github/pull_request_template.md`의 영어 템플릿을 기본으로 불러옵니다. 아래 내용은 같은
-항목을 한국어로 설명한 작성 안내입니다. 자세한 작업 흐름은 [기여 안내](CONTRIBUTING.ko.md)를
+항목을 한국어로 설명한 작성 안내입니다. 자세한 작업 흐름은 [기여 안내](CONTRIBUTING.md)를
 따릅니다. issue를 닫는 `Closes #`와 검사 이름은 번역하지 않습니다.
 
 ## 변경 요약

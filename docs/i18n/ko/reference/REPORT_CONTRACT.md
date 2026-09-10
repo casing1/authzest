@@ -1,14 +1,14 @@
 <p align="center">
-  <a href="../REPORT_CONTRACT.md">English</a> ·
+  <a href="../../../reference/REPORT_CONTRACT.md">English</a> ·
   <strong>한국어</strong>
 </p>
 
 # 소스 리포트 계약
 
-[문서 목차](INDEX.ko.md) · [파서 범위](PARSER_SCOPE.ko.md) · [예제](EXAMPLES.ko.md)
+[문서 목차](../INDEX.md) · [파서 범위](PARSER_SCOPE.md) · [예제](../guides/EXAMPLES.md)
 
-공개 alpha 바이너리가 아닌 최신 소스의 스키마 **1.2**를 설명합니다. 리포트 스키마 버전은 아직
-0.1.0a1인 패키지 버전과 별개입니다. core, CLI JSON과 로컬 API는 같은 리포트를 직렬화합니다.
+첫 alpha.1 바이너리가 아닌 최신 소스의 스키마 **1.2**를 설명합니다. 리포트 스키마 버전은
+0.1.0a2인 소스 패키지 버전과 별개입니다. core, CLI JSON과 로컬 API는 같은 리포트를 직렬화합니다.
 이번 리포트 구현은 의존성 분류, AI 제안, 소스 수정이나 대상 코드 실행을 하지 않습니다.
 
 ## 호환성과 필드
@@ -105,7 +105,7 @@ digest는 route 경로·메서드·함수·POSIX 상대 파일·함수 줄과 �
 생략한 `Security` scopes와 명시적인 `scopes=None`은 `[]`로 기록합니다. 리터럴 문자열 목록은 원본 순서와
 중복을 유지합니다. 동적이거나 잘못된 scopes는 미해석 사유와 null을 기록하며 빈 목록으로 추측하지 않습니다.
 scopes는 선언한 문자열이지 검사됐다는 증거가 아닙니다. `use_cache`와 `scope` 인자의 런타임 동작은 해석하지
-않습니다. 지원 형식과 진단은 [파서 범위](PARSER_SCOPE.ko.md)를 참고하세요.
+않습니다. 지원 형식과 진단은 [파서 범위](PARSER_SCOPE.md)를 참고하세요.
 
 ## 적용 맥락의 의존성 근거
 
@@ -123,7 +123,7 @@ scopes는 선언한 문자열이지 검사됐다는 증거가 아닙니다. `use
 이는 **런타임 의존성 그래프나 실행 순서 보장이 아닙니다**. callable 하위 의존성, cache 재사용,
 override나 인가 적용을 모델링하지 않습니다. 경로만으로 묶지 말고 등록 근거로 각 mount를 해석하세요.
 ID에는 여전히 두 의존성 목록을 포함하지 않으며 내용에 묶인 패치 승인이 아닙니다.
-합성 한계는 [파서 범위](PARSER_SCOPE.ko.md)를 참고하세요.
+합성 한계는 [파서 범위](PARSER_SCOPE.md)를 참고하세요.
 
 직접 선언만 넣어 수동 생성한 기존 route의 적용 목록은 그 직접 선언을 담습니다. 생성자/mount 근거를
 만들어내지 않습니다. `effective_dependencies`가 없는 이전 리포트는 이 맥락을 제공하지 않았으며
@@ -137,7 +137,7 @@ ID에는 여전히 두 의존성 목록을 포함하지 않으며 내용에 묶�
 분석을 partial로 만듭니다. 기존 parse error는 구조화된 대응 진단과 함께 보존하므로 두 목록을 독립 실패로
 더하지 않습니다.
 
-지원하는 사유 코드와 발생 범위는 [파서 범위](PARSER_SCOPE.ko.md)에 있습니다. 특히 미해석 include 자식은
+지원하는 사유 코드와 발생 범위는 [파서 범위](PARSER_SCOPE.md)에 있습니다. 특히 미해석 include 자식은
 근거가 있는 include 시도 위치에서 진단하며, 모든 미해석 import를 목록화하는 것은 아닙니다. 소스 파싱에
 실패해도 다른 파일의 유효한 route는 유지합니다. JSON 진단은 구조화된 출력이지 HTML에 안전한 문자열이나
 실행할 명령이 아닙니다.
@@ -174,20 +174,20 @@ API는 시작할 때 선택한 workspace에 계속 제한되며 호출자가 다
 
 ## 회귀 검증 근거
 
-[모델 계약 테스트](../../tests/test_report_contract.py)는 canonical ID, 루트 이동, 기존 null 근거와 필드/상태
-호환성을 검증합니다. [파서 테스트](../../tests/test_report_parser.py)는 소스 위치, 같은 줄 반복 mount, 여러 app,
+[모델 계약 테스트](../../../../tests/test_report_contract.py)는 canonical ID, 루트 이동, 기존 null 근거와 필드/상태
+호환성을 검증합니다. [파서 테스트](../../../../tests/test_report_parser.py)는 소스 위치, 같은 줄 반복 mount, 여러 app,
 중첩 cross-file 합성, 알려진 미해석 사례, deferred scope와 소스 전용·한 번 읽기 동작을 검증합니다.
-[전달 계층 테스트](../../tests/test_report_transports.py)는 CLI/API 동등성, strict 실패 전 출력과 잘못된 입력·
+[전달 계층 테스트](../../../../tests/test_report_transports.py)는 CLI/API 동등성, strict 실패 전 출력과 잘못된 입력·
 빈 입력·부분 입력을 검증합니다.
 
-[의존성 모델 테스트](../../tests/test_dependency_contract.py)는 추가 스키마, null/빈 scopes와 등록 ID
-유지를 검증합니다. [의존성 파서 테스트](../../tests/test_route_dependencies.py)와
-[경계 사례](../../tests/test_dependency_edge_cases.py)는 지원 선언, 별칭, 바인딩 범위와 미해석 형식을
-검증합니다. [의존성 전달 계층 테스트](../../tests/test_dependency_transports.py)는 직접 관리하는 예제와
+[의존성 모델 테스트](../../../../tests/test_dependency_contract.py)는 추가 스키마, null/빈 scopes와 등록 ID
+유지를 검증합니다. [의존성 파서 테스트](../../../../tests/test_route_dependencies.py)와
+[경계 사례](../../../../tests/test_dependency_edge_cases.py)는 지원 선언, 별칭, 바인딩 범위와 미해석 형식을
+검증합니다. [의존성 전달 계층 테스트](../../../../tests/test_dependency_transports.py)는 직접 관리하는 예제와
 strict 부분 출력을 포함한 core/CLI/API 공통 근거를 검증합니다.
 
-[상속 파서 테스트](../../tests/test_inherited_dependencies.py)는 소스 맥락 합성과 미해석 선언을
-검증합니다. [상속 전달 계층 테스트](../../tests/test_inherited_dependency_transports.py)는 반복·다중 app
+[상속 파서 테스트](../../../../tests/test_inherited_dependencies.py)는 소스 맥락 합성과 미해석 선언을
+검증합니다. [상속 전달 계층 테스트](../../../../tests/test_inherited_dependency_transports.py)는 반복·다중 app
 예제, 공통 리포트와 직접 근거 보존을 검증합니다.
-[상속 모델 테스트](../../tests/test_inherited_dependency_contract.py)와
-[독립 경계 사례](../../tests/test_inherited_dependency_edge_cases.py)는 호환성, 식별값과 제한된 파일 간 합성을 검증합니다.
+[상속 모델 테스트](../../../../tests/test_inherited_dependency_contract.py)와
+[독립 경계 사례](../../../../tests/test_inherited_dependency_edge_cases.py)는 호환성, 식별값과 제한된 파일 간 합성을 검증합니다.

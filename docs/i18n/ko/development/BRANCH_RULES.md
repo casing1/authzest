@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="../BRANCH_RULES.md">English</a> ·
+  <a href="../../../development/BRANCH_RULES.md">English</a> ·
   <strong>한국어</strong>
 </p>
 
 # 브랜치 보호
 
-[문서 목차](INDEX.ko.md) · [기여 안내](CONTRIBUTING.ko.md)
+[문서 목차](../INDEX.md) · [기여 안내](../CONTRIBUTING.md)
 
 활성화된 [Protect main ruleset](https://github.com/casing1/authzest/rules/22200692)은 저장소의 기본
 브랜치에 적용됩니다. 규칙은 저장소 설정에서 강제하며, 이 문서는 정책을 설명할 뿐 설정을 직접

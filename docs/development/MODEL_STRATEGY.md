@@ -1,11 +1,11 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="i18n/MODEL_STRATEGY.ko.md">한국어</a>
+  <a href="../i18n/ko/development/MODEL_STRATEGY.md">한국어</a>
 </p>
 
 # Model strategy and evaluation
 
-[Documentation index](README.md) · [Development plan](DEVELOPMENT_PLAN.md)
+[Documentation index](../README.md) · [Development plan](DEVELOPMENT_PLAN.md)
 
 ## Decision
 
@@ -22,7 +22,7 @@ a design target, not a claim that an adapter, approval gate, or patch executor a
 
 The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
 and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
-correctness, or run an AI adapter. The [source-only examples](EXAMPLES.md)
+correctness, or run an AI adapter. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
 ## Stable contracts, replaceable models
@@ -49,7 +49,7 @@ each declaration's location/level; its outer-to-inner sequence does not promise 
 A dependency `reference` means
 simple/dotted-name syntax only, not resolved callable behavior or a security classification. Dependency
 evidence does not participate in the original registration-ID hash.
-The [report contract](REPORT_CONTRACT.md) retains default exit code 0 for returned partial reports;
+The [report contract](../reference/REPORT_CONTRACT.md) retains default exit code 0 for returned partial reports;
 `--strict` opts into code 1 for known partial analysis, and invalid repository input returns 2.
 `bounded` is not complete analysis or a security pass. Registration IDs identify source registrations,
 not complete file contents, source revisions, runtime objects, or patch approvals.

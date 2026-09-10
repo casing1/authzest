@@ -1,6 +1,6 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="i18n/INDEX.ko.md">한국어</a>
+  <a href="i18n/ko/INDEX.md">한국어</a>
 </p>
 
 # Documentation
@@ -12,37 +12,53 @@ The local dashboard is optional and does not require website deployment.
 ## Guides and languages
 
 English is the canonical language. Every repository-owned Markdown document has Korean content;
-the project README also has [Japanese](i18n/README.ja.md) and [Russian](i18n/README.ru.md) versions.
-Translations are grouped in `docs/i18n/`, leaving only the English project README at the repository root.
+the project README also has [Japanese](i18n/ja/README.md) and [Russian](i18n/ru/README.md) versions.
+English detail pages are grouped by topic; translations mirror that structure under language folders.
+The conventional English README, contributing, security, and changelog files remain at the repository root.
 
-| Document                                        | English                                            | 한국어                                           |
-| ----------------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| Project overview and installation               | [README](../README.md)                             | [프로젝트 소개](i18n/README.ko.md)               |
-| Documentation index                             | [Index](README.md)                                 | [문서 목차](i18n/INDEX.ko.md)                    |
-| Development direction and TODO order            | [Development plan](DEVELOPMENT_PLAN.md)            | [개발 계획](i18n/DEVELOPMENT_PLAN.ko.md)         |
-| Supported source syntax and limitations         | [Parser scope](PARSER_SCOPE.md)                    | [파서 범위](i18n/PARSER_SCOPE.ko.md)             |
-| Maintained source-only CLI demo                 | [Examples](EXAMPLES.md)                            | [예제](i18n/EXAMPLES.ko.md)                      |
-| Replaceable models and measurable value         | [Model strategy](MODEL_STRATEGY.md)                | [모델 전략](i18n/MODEL_STRATEGY.ko.md)           |
-| Versioned diagnostics and registration evidence | [Report contract](REPORT_CONTRACT.md)              | [리포트 계약](i18n/REPORT_CONTRACT.ko.md)        |
-| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                 | [기여 안내](i18n/CONTRIBUTING.ko.md)             |
-| Required checks and branch protection           | [Branch rules](BRANCH_RULES.md)                    | [브랜치 규칙](i18n/BRANCH_RULES.ko.md)           |
-| Versions, binaries, and release checks          | [Releasing](RELEASING.md)                          | [릴리스 가이드](i18n/RELEASING.ko.md)            |
-| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                       | [변경 이력](i18n/CHANGELOG.ko.md)                |
-| Private reporting and safe-use policy           | [Security](../SECURITY.md)                         | [보안 정책](i18n/SECURITY.ko.md)                 |
-| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md) | [PR 작성 안내](i18n/PULL_REQUEST_TEMPLATE.ko.md) |
+```text
+docs/
+├── README.md                 # English index
+├── guides/                   # Usage and examples
+├── reference/                # Parser scope and report contracts
+├── development/              # Plan, model strategy, branch rules
+├── releases/                 # Release procedure
+├── assets/                   # Shared images
+└── i18n/
+    ├── ko/                   # Korean root docs, INDEX.md, mirrored topics
+    ├── ja/README.md          # Japanese project overview
+    └── ru/README.md          # Russian project overview
+```
+
+| Document                                        | English                                             | 한국어                                               |
+| ----------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Project overview and installation               | [README](../README.md)                              | [프로젝트 소개](i18n/ko/README.md)                   |
+| Documentation index                             | [Index](README.md)                                  | [문서 목차](i18n/ko/INDEX.md)                        |
+| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md) | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md) |
+| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)           | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)       |
+| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                      | [예제](i18n/ko/guides/EXAMPLES.md)                   |
+| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)     | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)   |
+| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)     | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)  |
+| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                  | [기여 안내](i18n/ko/CONTRIBUTING.md)                 |
+| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)         | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)   |
+| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                  | [릴리스 가이드](i18n/ko/releases/RELEASING.md)       |
+| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                        | [변경 이력](i18n/ko/CHANGELOG.md)                    |
+| Private reporting and safe-use policy           | [Security](../SECURITY.md)                          | [보안 정책](i18n/ko/SECURITY.md)                     |
+| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)  | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)     |
 
 ## Read the right version
 
 The latest `main` source includes route-owner recognition, literal router composition, and repository-local
-router imports. Those improvements are listed under **Unreleased**; they are not in the published
-`v0.1.0-alpha.1` preview binary. Package metadata remains `0.1.0a1` until a release-preparation change,
-so compare the changelog and commit/tag as well as `--version`.
+router imports. Those improvements are recorded in the alpha.2 changelog section, not included in the
+`v0.1.0-alpha.1` preview binary. This source targets `0.1.0a2`; check
+[GitHub Releases](https://github.com/casing1/authzest/releases) for available artifacts and compare the
+changelog and commit/tag as well as `--version`.
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
 route-local plus inherited dependency declarations. They do not classify endpoints
 as securely authorized, or run AI/active tests. Unresolved source patterns may be omitted, so an empty
-report or successful exit is not a security guarantee. The [report contract](REPORT_CONTRACT.md) defines
-bounded/partial status and opt-in strict exits. The [development plan](DEVELOPMENT_PLAN.md) separates
+report or successful exit is not a security guarantee. The [report contract](reference/REPORT_CONTRACT.md) defines
+bounded/partial status and opt-in strict exits. The [development plan](development/DEVELOPMENT_PLAN.md) separates
 those planned capabilities from the current implementation.
 
 ## Updating documentation
@@ -51,7 +67,7 @@ those planned capabilities from the current implementation.
   versions, completion status, and limitations across languages.
 - Use relative repository links and check them from each translated file's actual directory. GitHub PR
   template links may use stable repository URLs because the template is copied into a PR body.
-- Keep this index in sync when adding, moving, or renaming a guide. The Korean index is `INDEX.ko.md`
+- Keep this index in sync when adding, moving, or renaming a guide. The Korean index is `i18n/ko/INDEX.md`
   to avoid colliding with the project README translation.
 - Audit tracked project Markdown, including `.github/`; do not edit dependency/vendor documentation,
   generated build files, or synced external references as part of localization.

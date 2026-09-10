@@ -1,11 +1,11 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="i18n/BRANCH_RULES.ko.md">한국어</a>
+  <a href="../i18n/ko/development/BRANCH_RULES.md">한국어</a>
 </p>
 
 # Branch protection
 
-[Documentation index](README.md) · [Contribution guide](../CONTRIBUTING.md)
+[Documentation index](../README.md) · [Contribution guide](../../CONTRIBUTING.md)
 
 The active [Protect main ruleset](https://github.com/casing1/authzest/rules/22200692) applies to the
 repository's default branch. Repository settings enforce these rules; this document describes the policy

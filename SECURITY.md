@@ -1,6 +1,6 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="docs/i18n/SECURITY.ko.md">한국어</a>
+  <a href="docs/i18n/ko/SECURITY.md">한국어</a>
 </p>
 
 # Security Policy

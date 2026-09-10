@@ -1,11 +1,11 @@
 <p align="center">
   <strong>English</strong> ·
-  <a href="i18n/DEVELOPMENT_PLAN.ko.md">한국어</a>
+  <a href="../i18n/ko/development/DEVELOPMENT_PLAN.md">한국어</a>
 </p>
 
 # AuthZest Development Plan
 
-[Documentation index](README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
+[Documentation index](../README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
 
 ## Product direction
 
@@ -49,12 +49,12 @@ weeks or a commitment to fill all remaining time. Pause development during exams
 | 6                | Failure/recovery cases, installation, and a small three-mode evaluation | Failed tests, stale approval, user edits, and recovery handled; actual usage and limitations recorded |
 | 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
 
-A new preview release is conditional on its checks, not required every week. The next candidate is
-`v0.1.0-alpha.2` after #28 and #29 are merged and release-installation checks pass. The source feature
-prerequisites are implemented, but this does not make alpha.2 ready or publish it. Version/changelog
-preparation, fresh three-OS release artifacts, fixture scans, and clean-install checks remain. Current
-release automation checks binary `--version`, not a complete installed fixture demo. This does not restart
-the seven-week plan or consume the exam buffer. Week 5 does not require
+A new preview release is conditional on its checks, not required every week. Source package `0.1.0a2`
+targets `v0.1.0-alpha.2` after #28/#29. Release preparation adds bilingual changelog validation and binary
+fixture/relocated-copy smoke checks. Each publication still requires successful three-OS artifacts and
+verification of the exact selected SHA; these checks do not establish clean-machine or upgrade support.
+Check [GitHub Releases](https://github.com/casing1/authzest/releases) for publication status. This does not
+restart the seven-week plan or consume the exam buffer. Week 5 does not require
 finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
 a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
 retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
@@ -69,18 +69,18 @@ buffer to expand features.
 - [x] FastAPI/APIRouter owner recognition ([#19](https://github.com/casing1/authzest/issues/19)).
 - [x] Literal same-file router prefixes and registrations ([#21](https://github.com/casing1/authzest/issues/21)).
 - [x] Repository-local static router imports and cross-file registration ([#25](https://github.com/casing1/authzest/issues/25)).
-- [x] Documented source-syntax subset and limitations in the [parser scope](PARSER_SCOPE.md).
+- [x] Documented source-syntax subset and limitations in the [parser scope](../reference/PARSER_SCOPE.md).
 - [x] Python/frontend CI, CLI/API fixture regressions, required CodeQL checks, and issue-linked
       merge-commit workflow.
 - [x] PyInstaller packaging and the published `v0.1.0-alpha.1` preview with checksums.
-- [x] Maintained [source-only demo](EXAMPLES.md), exact inventory regression, and documentation checks in CI.
+- [x] Maintained [source-only demo](../guides/EXAMPLES.md), exact inventory regression, and documentation checks in CI.
 
-The latest source includes unreleased parser improvements; the published alpha binary does not include
-them. Package metadata still uses `0.1.0a1`, so a version string alone does not identify these source
-changes. Consult the [changelog](../CHANGELOG.md) and release tag.
+This source includes parser improvements absent from the alpha.1 binary and targets package `0.1.0a2`.
+Consult the [changelog](../../CHANGELOG.md), release artifacts, and exact commit/tag; a source version alone
+does not establish that a binary has been published.
 
 Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
-source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](REPORT_CONTRACT.md).
+source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](../reference/REPORT_CONTRACT.md).
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, Codex review, patch application, and verification execution are not implemented.
 `scan` does not execute the target application or Codex.
@@ -139,7 +139,7 @@ Completion: a reviewer can explain every reported state from source evidence and
 The fixture corpus reports matches, false positives, false negatives, and unknown cases; unsupported
 application behavior is not silently declared safe or vulnerable.
 
-The current [report contract](REPORT_CONTRACT.md) retains exit code 0 for a returned report by default,
+The current [report contract](../reference/REPORT_CONTRACT.md) retains exit code 0 for a returned report by default,
 even when analysis is partial. Opt-in `--strict` returns 1 for known partial analysis; invalid repository
 input returns 2. Structured diagnostics record selected unresolved cases and source/read errors, not every
 unsupported declaration. Neither `bounded` status nor exit code 0 means complete analysis or a security pass.
@@ -200,15 +200,15 @@ need to be rebuilt as a new product.
 - [ ] Define a tested support matrix and reproducible Python dependency constraints/build manifest rather
       than assuming every allowed dependency version is equivalent.
 - [ ] Verify release notes, both changelogs, tag/package version, and actual binary contents together.
-      The current release script checks tag/version spelling, not changelog completeness.
-      Automate the missing changelog/content consistency checks as a separate release task.
+      The release script checks tag/version spelling and matching dated, nonempty English/Korean entries;
+      semantic content accuracy and actual artifact contents still require review.
 - [ ] Publish a new preview from a verified `main` commit when a coherent milestone is ready.
 - [ ] Preserve issue decisions, meaningful commits, PR discussion, CI evidence, and a short reproducible demo.
 - [ ] Consider signing/notarization separately before broader binary distribution.
 
 Completion: the documented CLI demo works from a clean installation, release claims match the downloaded
 binary, and changes can be traced from issue to test to PR. Do not inflate commit counts or publish a new
-release for every documentation edit. See the [release guide](RELEASING.md).
+release for every documentation edit. See the [release guide](../releases/RELEASING.md).
 
 ## Execution scope and deliberate exclusions
 
@@ -227,5 +227,5 @@ Before implementation, record the issue, supported subset, completion criteria, 
 `main`. During implementation, add tests alongside each behavior and avoid unrelated refactoring.
 Before merge, update the English source and required translations together, verify links and commands,
 and pass Python, frontend, and CodeQL checks. Use meaningful commits and a merge commit, then synchronize
-the roadmap and remove the working branch. See [contributing](../CONTRIBUTING.md) and
+the roadmap and remove the working branch. See [contributing](../../CONTRIBUTING.md) and
 [branch rules](BRANCH_RULES.md).
