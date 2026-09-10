@@ -1,6 +1,5 @@
 from authzest.codex.base import (
     CodexAnalysisRequest,
-    CodexFinding,
     CodexUnavailableError,
 )
 
@@ -12,6 +11,6 @@ class DisabledCodexAdapter:
     def name(self) -> str:
         return "disabled"
 
-    async def analyze(self, request: CodexAnalysisRequest) -> tuple[CodexFinding, ...]:
+    async def analyze(self, request: CodexAnalysisRequest) -> str:
         del request
         raise CodexUnavailableError("Codex integration is not configured.")
