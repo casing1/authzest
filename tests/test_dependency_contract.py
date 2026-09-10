@@ -143,7 +143,7 @@ def test_additive_dependency_schema_does_not_conflate_references_with_diagnostic
     )
     payload = report.to_dict()
 
-    assert payload["schema_version"] == "1.1"
+    assert payload["schema_version"] == "1.2"
     assert payload["analysis_status"] == "bounded"
     assert payload["diagnostics"] == []
     assert payload["routes"][0]["dependencies"] == [evidence.to_dict(tmp_path)]

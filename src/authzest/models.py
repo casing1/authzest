@@ -7,7 +7,11 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
-REPORT_SCHEMA_VERSION = "1.1"
+REPORT_SCHEMA_VERSION = "1.2"
+
+DependencyLevel = Literal[
+    "parameter-default", "parameter-annotation", "decorator", "application", "router", "include"
+]
 
 
 def _source_path(path: Path, root: Path | None) -> Path:
@@ -94,12 +98,12 @@ class Diagnostic:
 
 @dataclass(frozen=True, slots=True)
 class DependencyEvidence:
-    """A route-local declaration, not proof of callable resolution or access control."""
+    """A source declaration, not proof of callable resolution or access control."""
 
     kind: Literal["Depends", "Security"]
     target: str | None
     location: SourceLocation
-    declaration_level: Literal["parameter-default", "parameter-annotation", "decorator"]
+    declaration_level: DependencyLevel
     parameter: str | None = None
     resolution: Literal["reference", "unresolved"] = "reference"
     scopes: tuple[str, ...] | None = None
@@ -129,6 +133,12 @@ class Route:
     line: int
     registration: RegistrationEvidence | None = None
     dependencies: tuple[DependencyEvidence, ...] = ()
+    inherited_dependencies: tuple[DependencyEvidence, ...] = ()
+
+    @property
+    def effective_dependencies(self) -> tuple[DependencyEvidence, ...]:
+        """Known inherited and local declarations, not a runtime dependency graph."""
+        return self.inherited_dependencies + self.dependencies
 
     def to_dict(self, root: Path | None = None) -> dict[str, Any]:
         file_path = _source_path(self.file, root)
@@ -152,6 +162,9 @@ class Route:
         data["registration"] = registration
         # Keep the 1.0 identity contract: dependency edits do not change a registration ID.
         data["dependencies"] = [dependency.to_dict(root) for dependency in self.dependencies]
+        data["effective_dependencies"] = [
+            dependency.to_dict(root) for dependency in self.effective_dependencies
+        ]
         return data
 
 
