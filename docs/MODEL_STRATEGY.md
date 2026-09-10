@@ -20,8 +20,8 @@ optional future explanations. Runtime use remains opt-in: an offline static scan
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
 a design target, not a claim that an adapter, approval gate, or patch executor already exists.
 
-The current product inventories a bounded subset of FastAPI routes and route-local dependency declarations.
-It does not yet propagate inherited dependencies, resolve nested dependency graphs, determine authorization
+The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
+and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
 correctness, or run an AI adapter. The [source-only examples](EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
@@ -42,9 +42,11 @@ application/include-site provenance; a URL path or a handler location alone cann
 Record known unresolved cases without claiming every unsupported construct can be discovered.
 
 The current source implements [#32: report and registration contract](https://github.com/casing1/authzest/issues/32)
-with structured diagnostics and distinct registration evidence, extended to schema `1.1` by
-[#28: route-local declarations](https://github.com/casing1/authzest/issues/28). Next is
-[#29: inherited declarations](https://github.com/casing1/authzest/issues/29). A dependency `reference` means
+with structured diagnostics and distinct registration evidence, extended to schema `1.2` by
+[#28: route-local declarations](https://github.com/casing1/authzest/issues/28) and
+[#29: inherited declarations](https://github.com/casing1/authzest/issues/29). Effective context preserves
+each declaration's location/level; its outer-to-inner sequence does not promise runtime execution order.
+A dependency `reference` means
 simple/dotted-name syntax only, not resolved callable behavior or a security classification. Dependency
 evidence does not participate in the original registration-ID hash.
 The [report contract](REPORT_CONTRACT.md) retains default exit code 0 for returned partial reports;

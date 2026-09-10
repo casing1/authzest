@@ -38,8 +38,8 @@ router imports. Those improvements are listed under **Unreleased**; they are not
 `v0.1.0-alpha.1` preview binary. Package metadata remains `0.1.0a1` until a release-preparation change,
 so compare the changelog and commit/tag as well as `--version`.
 
-Current scans provide schema 1.1, structured diagnostics, distinct source registration evidence, and
-route-local dependency declarations. They do not propagate inherited dependencies, classify endpoints
+Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
+route-local plus inherited dependency declarations. They do not classify endpoints
 as securely authorized, or run AI/active tests. Unresolved source patterns may be omitted, so an empty
 report or successful exit is not a security guarantee. The [report contract](REPORT_CONTRACT.md) defines
 bounded/partial status and opt-in strict exits. The [development plan](DEVELOPMENT_PLAN.md) separates

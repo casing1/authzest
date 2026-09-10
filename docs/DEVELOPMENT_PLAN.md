@@ -50,8 +50,11 @@ weeks or a commitment to fill all remaining time. Pause development during exams
 | 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
 
 A new preview release is conditional on its checks, not required every week. The next candidate is
-`v0.1.0-alpha.2` after #28 and #29 are merged and release-installation checks pass; #28 alone does not
-trigger publication. This does not restart the seven-week plan or consume the exam buffer. Week 5 does not require
+`v0.1.0-alpha.2` after #28 and #29 are merged and release-installation checks pass. The source feature
+prerequisites are implemented, but this does not make alpha.2 ready or publish it. Version/changelog
+preparation, fresh three-OS release artifacts, fixture scans, and clean-install checks remain. Current
+release automation checks binary `--version`, not a complete installed fixture demo. This does not restart
+the seven-week plan or consume the exam buffer. Week 5 does not require
 finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
 a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
 retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
@@ -76,9 +79,9 @@ The latest source includes unreleased parser improvements; the published alpha b
 them. Package metadata still uses `0.1.0a1`, so a version string alone does not identify these source
 changes. Consult the [changelog](../CHANGELOG.md) and release tag.
 
-Current-source JSON uses schema `1.1`, structured diagnostics, bounded/partial status, distinct
-source registration evidence, and route-local dependency declarations; see the [report contract](REPORT_CONTRACT.md).
-Inherited dependencies, nested dependency graphs, authentication/authorization classification, finding
+Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
+source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](REPORT_CONTRACT.md).
+Nested dependency graphs, authentication/authorization classification, finding
 schemas, Codex review, patch application, and verification execution are not implemented.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
@@ -93,9 +96,9 @@ Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
       and test text/JSON output and CLI exit semantics without claiming exhaustive unsupported-pattern detection.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
-current-source contract. Route-local declarations are implemented in #28; the next core task is #29.
-Inherited dependency and policy data will extend this foundation without claiming complete Python coverage
-or runtime registration certainty.
+current-source contract. Route-local declarations (#28) and inherited registration context (#29) are
+implemented. Next assess alpha.2 readiness, then build the offline AI contract (#33) and user-approved
+Codex workflow (#35), without claiming complete Python coverage or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
 
@@ -104,9 +107,11 @@ or runtime registration certainty.
        Recognize actual `Depends`/`Security` imports, aliases, and shadowing. Record kind, target,
        source position, declaration level, resolution state, and statically known scopes.
        `reference` identifies simple/dotted-name syntax, not callable/import resolution or protection.
-2. [ ] Propagate application/router/`include_router` evidence to each route registration
+2. [x] Propagate application/router/`include_router` evidence to each route registration
        ([#29](https://github.com/casing1/authzest/issues/29)), using #32's registration identity and retaining
        distinct repeated-mount contexts rather than grouping by path or handler alone.
+       Keep route-local `dependencies` unchanged and expose the combined source context in
+       `effective_dependencies`, not as a runtime execution order or authorization verdict.
 3. [ ] Resolve a documented subset of dependency references and nested dependency relationships.
        Keep missing, cyclic, dynamic, overridden, or unsupported relationships explicit rather than guessing.
 4. [ ] Expose unresolved evidence and parsing limitations in reports instead of treating missing

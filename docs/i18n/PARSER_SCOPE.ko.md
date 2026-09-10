@@ -3,7 +3,7 @@
 [문서](INDEX.ko.md) · [English](../PARSER_SCOPE.md) · 한국어
 
 이 문서는 현재 `main`의 소스를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import 해석과
-버전이 있는 등록 근거, 라우트 직접 의존성 선언은
+버전이 있는 등록 근거, 라우트 직접·상속 의존성 선언은
 [`Unreleased`](CHANGELOG.ko.md#unreleased) 변경이며 배포된
 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에 포함되어 있지 않습니다.
 이 기능을 사용하려면 현재 소스를 checkout하세요. 패키지 버전은 아직 `0.1.0a1`에서 올리지 않았습니다.
@@ -225,7 +225,7 @@ alias의 단순 재대입으로 제한됩니다. 모든 alias나 재귀 타입 �
 decorator의 `dependencies`는 리터럴 목록, 빈 목록이나 `None`을 지원합니다. 인식한 직접 항목은
 수집하고 동적 목록·확장/미확인 항목·반복 인자는 진단합니다. 겹친 decorator마다 공통 매개변수 근거와
 해당 decorator 자신의 의존성만 기록합니다. 원본 소스 줄과 UTF-8 바이트 열 순서로 정렬합니다.
-같은 파일과 파일 간 mount는 원본 라우트 직접 근거를 유지하지만 app/router/include 의존성은 아직 상속하지 않습니다.
+같은 파일과 파일 간 mount는 원본 라우트 직접 근거를 유지합니다. 적용 목록은 아래의 지원 상속 맥락을 더합니다.
 
 대상은 위치 인자 하나 또는 `dependency=...`로 지정할 수 있습니다. 단순/점 연결 이름은 구문상 지원하며
 생략·`None` 대상, factory 호출, lambda와 기타 동적 대상은 미해석입니다. 표현식은 AST로 정규화하고
@@ -239,12 +239,33 @@ decorator의 `dependencies`는 리터럴 목록, 빈 목록이나 `None`을 지�
 [decorator 의존성 안내](https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/)를
 참고합니다. AuthZest는 모든 framework·Python 런타임 동작을 재현하지 않습니다.
 
+## 상속 등록 맥락
+
+식별한 `FastAPI(...)`·`APIRouter(...)` 생성자와 지원하는 `include_router(...)` 호출의 리터럴
+`dependencies` 목록도 수집합니다. 같은 직접 호출/import와 대상/scopes 규칙을 적용합니다.
+선언 위치 종류는 `application`, `router`, `include`이며 받는 handler가 아니라 원본 의존성 호출의
+위치를 유지합니다. 생략·`None`·빈 리터럴 목록은 그 위치에서 선언이 없다는 뜻입니다. 동적 목록과
+미지원 항목은 의존성을 추측하지 않고 기존 의존성 진단을 사용하며 확인한 route는 partial 분석으로 유지합니다.
+
+`effective_dependencies`에는 바깥 owner 선언, 해당 include 위치 선언, 차례로 안쪽 owner/include
+맥락과 마지막 원본 라우트 직접 `dependencies`가 들어갑니다. 맥락별 소스 순서를 유지하며 중복을
+제거하거나 전체를 재정렬하지 않습니다. 독립 router도 자체 생성자 근거를 유지합니다. 지원하는 저장소
+내부 파일 간 import를 포함한 중첩·반복 mount는 원본 항목과 각 등록의 별도 app/include 근거를 유지합니다.
+기존 `dependencies` 목록을 상속 목록으로 바꾸지 않습니다.
+
+기존 제한된 합성 규칙을 그대로 따릅니다. 이미 선언한 지원 route/include chain만 합성하고 미지원·순환·
+교차 scope include 시도는 미해석으로 남습니다. 이런 미합성 include 시도의 의존성 진단은 완전하지 않으며
+기존 include 진단이 지원하는 근거입니다. 런타임 override, 임의 owner 변경, factory 결과와 callable
+하위 의존성 그래프는 여전히 범위 밖입니다. 적용 순서는 소스 맥락이며 FastAPI 실행 순서, cache 재사용이나
+인증·인가 증명이 아닙니다. [상속 예제](EXAMPLES.ko.md)를 참고하세요.
+
 ## 등록 근거와 진단
 
-공통 리포트는 `schema_version: "1.1"`을 사용합니다. 이 리포트 스키마 버전은 Python 패키지 및
+공통 리포트는 `schema_version: "1.2"`를 사용합니다. 이 리포트 스키마 버전은 Python 패키지 및
 릴리스 버전과 별개입니다. 기존 라우트 필드와 `parse_errors`를 유지하며, `analysis_status`,
 `diagnostics`, 각 라우트의 `registration_id`와 `registration`은 1.0에 추가했습니다.
-1.1은 등록 ID 해시를 유지하며 각 라우트의 `dependencies`를 추가합니다.
+1.1에는 각 라우트의 `dependencies`를, 1.2에는 `effective_dependencies`를 추가했습니다.
+두 의존성 목록 모두 등록 ID 해시를 바꾸지 않습니다.
 각 필드의 표현과 호환성 규칙은 [리포트 계약](REPORT_CONTRACT.ko.md)에 정의되어 있습니다.
 
 파서가 생성하는 모든 라우트에는 원본 데코레이터와 객체 생성자의 위치가 기록됩니다. 해석된 등록에는
@@ -275,7 +296,7 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 - `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
   `unresolved-include-owner`, `include-cycle`은 확인된 미지원 포함 시도를 설명합니다.
 - `conditional-registration`은 지원하지 않는 제어 흐름 안의 식별된 객체에 대한 라우트 선언을 표시합니다.
-- `unsupported-dependency-list`는 리터럴이 아니거나 반복한 decorator 의존성 목록,
+- `unsupported-dependency-list`는 지원 decorator·생성자·include 호출의 리터럴이 아니거나 반복한 의존성 목록,
   `unsupported-dependency-entry`는 인식한 직접 의존성 호출이 아닌 항목입니다.
 - `unsupported-dependency-expression`, `unsupported-dependency-annotation`,
   `unsupported-dependency-metadata`는 지원하지 않는 기본값/annotation 형태의 알려진 의존성 호출이나
@@ -304,8 +325,7 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 - `global` 또는 `nonlocal`을 사용하는 함수 본문, 라우트 선언의 대입 표현식, 임의 함수 호출이나 reflection을
   통한 런타임 변경.
 - 키워드로만 전달한 `path=`, 계산된 경로, `api_route`, `add_api_route`, WebSocket 선언.
-- app/router/include 의존성 상속, 중첩 의존성 그래프, 대상 callable 해석, 런타임 override,
-  인증·인가 판정과 보안 문제 발견 결과.
+- 중첩 callable 의존성 그래프, 대상 callable 해석, 런타임 override, 인증·인가 판정과 보안 문제 발견 결과.
 
 지원하지 않거나 해석되지 않는 route 선언은 목록에서 빠집니다. 지원 route의 의존성 근거가 미해석이면
 진단과 함께 route를 유지합니다. 보호됨, 보호되지 않음, 취약함으로

@@ -7,23 +7,24 @@
 
 [Documentation index](README.md) · [Parser scope](PARSER_SCOPE.md) · [Example](EXAMPLES.md)
 
-This describes schema **1.1** in the current source, not the published alpha binary. The report schema
+This describes schema **1.2** in the current source, not the published alpha binary. The report schema
 version is independent of the package version, which remains 0.1.0a1. The core, CLI JSON, and local API
 serialize the same report. No dependency classification, AI proposal, source modification, or target
 execution is performed by this report implementation.
 
 ## Compatibility and fields
 
-Schema 1.0 extended the earlier unversioned inventory. Schema 1.1 adds route-local `dependencies` while
-preserving the 1.0 fields, meanings, and registration-ID algorithm. Consumers that reject additional keys
+Schema 1.0 extended the earlier unversioned inventory; 1.1 added route-local `dependencies`; 1.2 adds
+`effective_dependencies` with inherited and route-local declarations. Existing fields, meanings, and
+the registration-ID algorithm remain unchanged. Consumers that reject additional keys
 must accept the new fields before upgrading. Treat a missing schema version as the legacy format, not
-automatically as 1.0 or 1.1. Future additive fields may be
+automatically as a versioned schema. Future additive fields may be
 introduced in a minor schema version; removal, renaming, or changed meaning requires a major version and
 documented migration. Consumers should tolerate unknown keys but reject unsupported major versions.
 
 | Field                   | Meaning                                                                                |
 | ----------------------- | -------------------------------------------------------------------------------------- |
-| `schema_version`        | String identifying the report contract; currently `1.1`                                |
+| `schema_version`        | String identifying the report contract; currently `1.2`                                |
 | `root`                  | Absolute selected scan root; local machine context, not part of registration identity  |
 | `python_files`          | Number of selected Python files, including files that could not be parsed              |
 | `route_count`, `routes` | Number and ordered list of discovered source registrations/declarations                |
@@ -69,7 +70,7 @@ The digest is computed from canonical JSON containing route path, methods, funct
 function line, and the full registration object. JSON keys are sorted, separators are compact, Unicode is
 retained, and UTF-8 bytes are hashed. Identical inputs produce identical IDs across repeated scans and
 relocation of the selected root. Route order follows deterministic source discovery/import composition,
-not alphabetical endpoint order. Dependency evidence is excluded from this hash; schema 1.1 does not
+not alphabetical endpoint order. Both dependency lists are excluded from this hash; schema 1.2 does not
 change IDs for otherwise unchanged registration evidence. Diagnostic wording can differ across Python/OS versions.
 
 **An ID is not a source-content hash, persistent runtime identity, or approval token.** A function body
@@ -78,10 +79,11 @@ original content/revision, reject stale approvals, and preserve user changes. Se
 
 ## Route-local dependency evidence
 
-Schema 1.1 adds `dependencies` to every route, including manually constructed legacy routes where it
+Schema 1.1 added `dependencies` to every route, including manually constructed legacy routes where it
 defaults to `[]`. An empty list means no supported route-local declarations were collected; it does not
-mean the route is public, unprotected, or free of dependencies. Application/router/include-level
-inheritance and nested dependency relationships are not collected yet. For a 1.0 report, absence of this
+mean the route is public, unprotected, or free of dependencies. This list remains route-local in 1.2;
+inherited declarations appear only in the effective list below. Nested callable relationships are not
+collected yet. For a 1.0 report, absence of this
 field means the producer did not provide dependency evidence, not that a dependency scan found nothing.
 
 Each entry records a `Depends` or `Security` call on a supported route:
@@ -106,6 +108,31 @@ Omitted `Security` scopes and explicit `scopes=None` are represented as `[]`. Li
 their source order and duplicates. Dynamic or invalid scopes are null with an unresolved reason, never a
 guessed empty list. Scopes are declared strings, not proof they are checked. Runtime behavior of `use_cache`
 and `scope` arguments is not interpreted. See [parser scope](PARSER_SCOPE.md) for accepted forms and diagnostics.
+
+## Effective dependency context
+
+Schema 1.2 adds `effective_dependencies` to each route. It combines supported inherited application,
+router, and include declarations with that route's unchanged local `dependencies`. The entries use the
+same fields above. Inherited entries add `declaration_level` values `application`, `router`, and `include`,
+have `parameter: null`, and keep the original dependency call's source location. `dependencies` itself
+continues to use only its original three declaration levels. No inherited declaration is relabelled local.
+
+The deterministic sequence describes source registration context: outer owner's constructor declarations,
+that include site's declarations, successive inner owner/include contexts, then the route-local list.
+Each list keeps declaration order; there is no global source-position sort or deduplication across
+contexts. A standalone app/router contributes its own constructor declarations. Repeated mounts and
+different apps can therefore have different effective lists even for the same handler or URL path.
+
+This is **not a runtime dependency graph or execution-order guarantee**. It does not model callable
+sub-dependencies, cache reuse, overrides, or authorization enforcement. Use registration provenance to
+interpret each mount; do not group by path alone. IDs still exclude both dependency lists and are not
+content-bound patch approvals. See [parser scope](PARSER_SCOPE.md) for composition limits.
+
+In a manually constructed legacy route with only local declarations, the effective list contains those
+local declarations. No constructor/mount evidence is invented. An older report without
+`effective_dependencies` did not provide this context; do not interpret its absence as an empty inherited
+scan result. Dynamic dependency collections retain known routes with diagnostics and a partial report,
+without invented entries; `effective_dependencies: []` does not establish that no dependencies exist.
 
 ## Diagnostics
 
@@ -140,8 +167,9 @@ limitations, not security findings. JSON mode emits the full report on stdout be
 without mixing diagnostic text into stderr. Human output includes source paths, registration IDs,
 application/include positions, scope, and diagnostic details. Text layout is intended for people; use the
 versioned JSON contract for integrations. Unexpected internal exceptions are not security verdicts.
-Dependency text includes kind, target, declaration level, parameter, source location, scopes, and
-reference/unresolved state with reasons. JSON and the local API expose the full dependency records;
+Dependency text prints the effective list; declaration levels distinguish inherited from route-local
+entries. It includes kind, target, parameter, source location, scopes, and reference/unresolved state with reasons.
+JSON and the local API expose both dependency lists;
 the optional dashboard does not yet display individual dependency evidence.
 
 The API remains bound to the workspace chosen at server startup; callers cannot select a different path.
@@ -162,3 +190,10 @@ scopes, and unchanged registration identity. [Dependency parser tests](../tests/
 and [edge cases](../tests/test_dependency_edge_cases.py) cover supported declarations, aliases, binding
 boundaries, and unresolved forms. [Dependency transport tests](../tests/test_dependency_transports.py)
 check the maintained example and shared core/CLI/API evidence, including strict partial output.
+
+[Inherited parser tests](../tests/test_inherited_dependencies.py) cover source-context composition and
+unresolved declarations. [Inherited transport tests](../tests/test_inherited_dependency_transports.py)
+check the repeated/multi-app example, shared reports, and preserved local evidence.
+[Inherited model tests](../tests/test_inherited_dependency_contract.py) and
+[independent edge cases](../tests/test_inherited_dependency_edge_cases.py) verify compatibility, identity,
+and bounded cross-file composition.
