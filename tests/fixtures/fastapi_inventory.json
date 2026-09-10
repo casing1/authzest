@@ -34,7 +34,8 @@
         "include_chain": [],
         "execution_scope": "module"
       },
-      "dependencies": []
+      "dependencies": [],
+      "effective_dependencies": []
     },
     {
       "path": "/v1/catalog/items",
@@ -93,7 +94,8 @@
         ],
         "execution_scope": "module"
       },
-      "dependencies": []
+      "dependencies": [],
+      "effective_dependencies": []
     },
     {
       "path": "/v2/catalog/items",
@@ -152,12 +154,13 @@
         ],
         "execution_scope": "module"
       },
-      "dependencies": []
+      "dependencies": [],
+      "effective_dependencies": []
     }
   ],
   "parse_errors": [],
   "codex_status": "disabled",
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "analysis_status": "bounded",
   "diagnostics": []
 }

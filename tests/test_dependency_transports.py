@@ -35,7 +35,7 @@ def test_owned_dependency_example_has_source_facts_without_target_imports(
 
     monkeypatch.setattr(builtins, "__import__", reject_target_import)
     payload = ScanRunner().run(EXAMPLE).to_dict()
-    assert payload["schema_version"] == "1.1"
+    assert payload["schema_version"] == "1.2"
     assert payload["analysis_status"] == "bounded"
     assert payload["python_files"] == 1 and payload["route_count"] == 2
     assert payload["diagnostics"] == [] and payload["codex_status"] == "disabled"

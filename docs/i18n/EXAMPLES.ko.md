@@ -34,8 +34,8 @@ import한 router에는 자체 prefix가 있고 두 번 등록됩니다. 두 moun
 정확한 예상 JSON은 [별도 저장](../../tests/fixtures/fastapi_inventory.json)하며,
 [테스트](../../tests/test_examples.py)에서 비교할 때는 컴퓨터마다 다른 스캔 루트를 제외하고
 라우트 파일의 경로 구분자를 POSIX 형식으로 정규화합니다.
-현재 스키마는 1.1이며 이 fixture에는 지원하는 라우트 직접 의존성 선언이 없으므로 세 route 모두
-`dependencies: []`입니다. 인증이나 인가를 분류한 결과가 아닙니다.
+현재 스키마는 1.2이며 이 fixture에는 지원하는 직접·상속 의존성 선언이 없으므로 세 route 모두
+`dependencies: []`, `effective_dependencies: []`입니다. 인증이나 인가를 분류한 결과가 아닙니다.
 
 개발 환경을 활성화한 뒤 다음 명령으로 예제를 검증합니다.
 
@@ -68,6 +68,33 @@ authzest scan examples/fastapi_dependencies --json --strict
 [전달 계층 회귀 검사](../../tests/test_dependency_transports.py)는 소스 위치, core/CLI/API 공통 출력과
 partial 리포트·strict 종료 1을 반환하는 별도 동적 scopes 사례를 검증합니다.
 각 의존성 필드와 null/빈 목록 구분은 [리포트 계약](REPORT_CONTRACT.ko.md)에 정의합니다.
+이 예제에는 app/router/include 의존성을 선언하지 않았으므로 스키마 1.2의 적용 목록과 직접 목록이 같습니다.
+
+## 상속 등록 예제
+
+[상속 예제](../../examples/fastapi_inheritance/)는 router 하나를 두 app에 연결하고 첫 app에서
+mount를 반복합니다. 저장소 루트에서 실행합니다.
+
+```bash
+authzest scan examples/fastapi_inheritance
+authzest scan examples/fastapi_inheritance --json --strict
+```
+
+예상 결과는 **Python 파일 1개, GET 등록 3개, bounded 분석, 진단 없음, Codex 비활성**, 종료 코드 0입니다.
+모든 등록이 원본 handler `main.py:36`과 직접 `Depends(route_context)`를 공유합니다. 적용 목록은 각각
+app → include → router → 라우트 직접 맥락 순서의 선언 4개입니다.
+
+| 경로          | App 생성자   | Include 호출 | 적용 대상 순서                                                              |
+| ------------- | ------------ | ------------ | --------------------------------------------------------------------------- |
+| `/items`      | `main.py:30` | `main.py:40` | `application_context`, `primary_mount`, `router_context`, `route_context`   |
+| `/items`      | `main.py:31` | `main.py:41` | `alternate_context`, `secondary_mount`, `router_context`, `route_context`   |
+| `/copy/items` | `main.py:30` | `main.py:42` | `application_context`, `secondary_mount`, `router_context`, `route_context` |
+
+같은 `/items` 경로 두 개도 등록 ID와 app/include 근거로 구분합니다. JSON의 `dependencies`는 직접 선언
+하나만 담고 `effective_dependencies`는 원본 호출 위치와 선언 종류를 유지한 항목 4개를 담습니다.
+이는 소스 맥락 순서이며 런타임 실행 순서 보장이 아닙니다. 모든 샘플 의존성은 아무 작업도 하지 않는
+일반 DI이며 인증·인가를 강제하지 않습니다. [상속 전달 계층 테스트](../../tests/test_inherited_dependency_transports.py)는
+대상을 import하거나 실행하지 않고 fixture와 core/CLI/API 공통 출력을 검증합니다.
 
 이것은 목록화 회귀 검사이지 접근통제 label을 갖춘 평가 집합이 아닙니다. 취약점 탐지 성능을 측정하거나
 애플리케이션이 안전함을 증명하지 않습니다. 미지원 선언은 누락될 수 있으므로 [파서 범위](PARSER_SCOPE.ko.md)를

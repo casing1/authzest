@@ -6,7 +6,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Literal
 
-from authzest.models import DependencyEvidence, SourceLocation
+from authzest.models import DependencyEvidence, DependencyLevel, SourceLocation
 
 DEPENDENCY_FACTORIES = {"Depends", "Security"}
 TYPING_MODULES = {"typing", "typing_extensions"}
@@ -14,7 +14,7 @@ ANNOTATED_ALIAS = "dependency-annotation-alias"
 
 
 class _RouteDependencies:
-    """Collect direct dependency syntax; never resolve or execute a callable."""
+    """Collect declared dependency syntax; never resolve or execute a callable."""
 
     def __init__(
         self,
@@ -66,7 +66,7 @@ class _RouteDependencies:
     def collect(
         self, function: ast.FunctionDef | ast.AsyncFunctionDef, decorator: ast.Call
     ) -> tuple[DependencyEvidence, ...]:
-        found = self._decorator(decorator)
+        found = list(self.collect_declared(decorator, "decorator"))
         parameter_collector = self.without_names(
             {parameter.name for parameter in function.type_params}
         )
@@ -171,15 +171,17 @@ class _RouteDependencies:
                 )
         return found
 
-    def _decorator(self, decorator: ast.Call) -> list[DependencyEvidence]:
-        declarations = [
-            keyword.value for keyword in decorator.keywords if keyword.arg == "dependencies"
-        ]
+    def collect_declared(
+        self,
+        call: ast.Call,
+        level: Literal["decorator", "application", "router", "include"],
+    ) -> tuple[DependencyEvidence, ...]:
+        declarations = [keyword.value for keyword in call.keywords if keyword.arg == "dependencies"]
         if len(declarations) > 1:
             self.diagnose(
                 "unsupported-dependency-list",
-                "The decorator has repeated dependencies arguments.",
-                decorator,
+                f"The {level} declaration has repeated dependencies arguments.",
+                call,
             )
         found = []
         for declaration in declarations:
@@ -188,13 +190,13 @@ class _RouteDependencies:
             if not isinstance(declaration, ast.List):
                 self.diagnose(
                     "unsupported-dependency-list",
-                    "Decorator dependencies must be a literal list or None.",
+                    "Declared dependencies must be a literal list or None.",
                     declaration,
                 )
                 continue
             for entry in declaration.elts:
                 if self._known_call(entry):
-                    evidence = self._call(entry, "decorator", None)
+                    evidence = self._call(entry, level, None)
                     if len(declarations) > 1:
                         evidence = replace(
                             evidence,
@@ -209,15 +211,15 @@ class _RouteDependencies:
                 else:
                     self.diagnose(
                         "unsupported-dependency-entry",
-                        "A decorator dependency entry is not a recognized direct dependency call.",
+                        "A declared dependency entry is not a recognized direct dependency call.",
                         entry,
                     )
-        return found
+        return tuple(found)
 
     def _call(
         self,
         call: ast.Call,
-        level: Literal["parameter-default", "parameter-annotation", "decorator"],
+        level: DependencyLevel,
         parameter: str | None,
     ) -> DependencyEvidence:
         kind = self._kind(call.func)

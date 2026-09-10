@@ -68,7 +68,9 @@ def scan(
     typer.echo(
         f"Analysis: {report.analysis_status} (supported static subset; not a security verdict)"
     )
-    typer.echo("Dependency evidence: route-local declarations, not access-control guarantees")
+    typer.echo(
+        "Dependency evidence: inherited and route-local declarations, not access-control guarantees"
+    )
     for route in report.routes:
         methods = ",".join(route.methods)
         serialized = route.to_dict(report.root)
@@ -86,7 +88,7 @@ def scan(
                     f"    Include: {location['file']}:{location['line']}:{location['column']}"
                     f" prefix={site['prefix']!r}"
                 )
-        for dependency in serialized["dependencies"]:
+        for dependency in serialized["effective_dependencies"]:
             location = dependency["location"]
             target = dependency["target"] if dependency["target"] is not None else "<unresolved>"
             parameter = f" parameter={dependency['parameter']}" if dependency["parameter"] else ""

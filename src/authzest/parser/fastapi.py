@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Literal, Protocol
 
 from authzest.models import (
+    DependencyEvidence,
     Diagnostic,
     IncludeSite,
     OwnerEvidence,
@@ -37,6 +38,7 @@ class _Owner:
     inherited: bool = False
     origin: _Owner | None = None
     children: set[_Owner] = field(default_factory=set)
+    dependencies: tuple[DependencyEvidence, ...] = ()
 
 
 @dataclass(slots=True)
@@ -414,6 +416,11 @@ class FastAPIRouteParser:
                 if owner is not None:
                     owner.source = file_path
                     owner.location = _location(file_path, statement.value)
+                    owner.dependencies = self._dependency_collector(
+                        bindings, registrations, file_path, resolver
+                    ).collect_declared(
+                        statement.value, "application" if owner.kind == "FastAPI" else "router"
+                    )
                     if owner.prefix is None:
                         registrations.diagnose(
                             "unsupported-owner-construction",
@@ -509,6 +516,7 @@ class FastAPIRouteParser:
                     binding.prefix,
                     source=binding.source,
                     location=binding.location,
+                    dependencies=binding.dependencies,
                     inherited=True,
                     origin=binding.origin or binding,
                 ),
@@ -690,6 +698,9 @@ class FastAPIRouteParser:
                 seen.add(descendant)
                 pending.extend(descendant.children)
         parent.children.add(child)
+        include_dependencies = FastAPIRouteParser._dependency_collector(
+            bindings, registrations, file_path, resolver
+        ).collect_declared(call, "include")
         for route in tuple(child.routes):
             registration = route.registration
             assert registration is not None
@@ -710,6 +721,11 @@ class FastAPIRouteParser:
                     route,
                     path=parent.prefix + prefix + route.path,
                     registration=registration,
+                    inherited_dependencies=(
+                        *parent.dependencies,
+                        *include_dependencies,
+                        *route.inherited_dependencies,
+                    ),
                 ),
             )
 
@@ -799,4 +815,5 @@ class FastAPIRouteParser:
             dependencies=FastAPIRouteParser._dependency_collector(
                 bindings, registrations, file_path, resolver
             ).collect(function, decorator),
+            inherited_dependencies=owner.dependencies,
         )

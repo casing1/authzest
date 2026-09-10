@@ -3,7 +3,7 @@
 [Documentation](README.md) · English · [한국어](i18n/PARSER_SCOPE.ko.md)
 
 This guide describes the current source on `main`. Owner recognition, prefix composition,
-repository-local imports, versioned registration evidence, and route-local dependency declarations are [`Unreleased`](../CHANGELOG.md#unreleased)
+repository-local imports, versioned registration evidence, and local/inherited dependency declarations are [`Unreleased`](../CHANGELOG.md#unreleased)
 changes and are not included in
 the published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
 Use a current source checkout to try these features; the package version has not yet been bumped from
@@ -235,7 +235,7 @@ Decorator `dependencies` accepts a literal list, an empty list, or `None`. Recog
 collected; dynamic collections, expanded/unknown entries, and repeated arguments receive diagnostics.
 Each stacked decorator receives the common parameter evidence and only its own decorator dependencies.
 Records are ordered by original source line and UTF-8 byte column. Same-file and cross-file mounts retain
-that original route-local evidence; app/router/include dependencies are not inherited yet.
+that original route-local evidence. The effective list adds supported inherited context as described below.
 
 The target may be one positional argument or `dependency=...`. Simple/dotted names are accepted syntax;
 implicit or `None` targets, factory calls, lambdas, and other dynamic targets are unresolved. Expressions
@@ -250,12 +250,36 @@ This bounded syntax is informed by FastAPI's [dependency reference](https://fast
 [decorator dependency guide](https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/).
 AuthZest does not reproduce every framework or Python runtime behavior.
 
+## Inherited registration context
+
+The parser also collects literal `dependencies` lists on recognized `FastAPI(...)` and `APIRouter(...)`
+constructors and supported `include_router(...)` calls. The same direct-call/import and target/scopes
+rules apply. Their declaration levels are `application`, `router`, and `include`; locations remain at
+the original dependency calls, not the receiving handler. Omitted values, `None`, and empty literal lists
+mean no declarations at that site. Dynamic collections and unsupported entries use the existing dependency
+diagnostics rather than guessed dependencies; a known route remains with partial analysis.
+
+`effective_dependencies` contains the outer owner declarations, that include site's declarations,
+successive inner owner/include contexts, and finally the original route-local `dependencies`. Source order
+is preserved within each context without deduplicating or globally sorting entries. A standalone router
+retains its own constructor evidence. Nested and repeated mounts, including supported repository-local
+cross-file imports, preserve the original records and each registration's distinct application/include
+provenance. The old `dependencies` list is never replaced with an inherited list.
+
+This follows the existing bounded composition rules: only already-declared supported route/include
+chains are composed; unsupported, cyclic, or cross-scope include attempts remain unresolved. Dependency
+diagnostics on such uncomposed include attempts are not exhaustive; the existing include diagnostics
+remain the supported evidence. Runtime overrides, arbitrary owner mutation, factory results, and callable
+sub-dependency graphs remain outside this feature. Effective order is source context, not FastAPI execution
+order, cache reuse, or proof of authentication/authorization. See the [inheritance example](EXAMPLES.md).
+
 ## Registration evidence and diagnostics
 
-The shared report uses `schema_version: "1.1"`. This report-schema version is independent of the
+The shared report uses `schema_version: "1.2"`. This report-schema version is independent of the
 Python package and release version. Existing route fields and `parse_errors` remain available;
 `analysis_status`, `diagnostics`, and each route's `registration_id` and `registration` were added in
-1.0; 1.1 adds each route's `dependencies` without changing the registration-ID hash.
+1.0; 1.1 added each route's `dependencies`; 1.2 adds `effective_dependencies`. Neither dependency list
+changes the registration-ID hash.
 The [report contract](REPORT_CONTRACT.md) defines their representation and compatibility rules.
 
 Every route produced by the parser records its original decorator and owner-constructor locations.
@@ -288,7 +312,8 @@ The bounded parser reports these known cases without expanding the supported dis
 - `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
   `unresolved-include-owner`, and `include-cycle` describe known unsupported inclusion attempts.
 - `conditional-registration` marks a known-owner route declaration in unsupported control flow.
-- `unsupported-dependency-list` covers a nonliteral or repeated decorator dependency collection;
+- `unsupported-dependency-list` covers a nonliteral or repeated dependency collection on a supported
+  decorator, constructor, or include call;
   `unsupported-dependency-entry` covers an entry that is not a recognized direct dependency call.
 - `unsupported-dependency-expression`, `unsupported-dependency-annotation`, and
   `unsupported-dependency-metadata` cover known dependency calls in unsupported default/annotation shapes
@@ -318,8 +343,8 @@ Scope diagnostics do not assert an OAuth failure, and an empty dependency list i
 - Function bodies using `global` or `nonlocal`, assignment expressions in route declarations, and runtime
   mutation through arbitrary calls or reflection.
 - Keyword-only `path=`, computed paths, `api_route`, `add_api_route`, and WebSocket declarations.
-- Application/router/include dependency inheritance, nested dependency graphs, target-callable resolution,
-  runtime overrides, authentication or authorization decisions, and security findings.
+- Nested callable dependency graphs, target-callable resolution, runtime overrides, authentication or
+  authorization decisions, and security findings.
 
 Unsupported or unresolved route declarations are omitted from the route inventory; supported routes with
 unresolved dependency evidence remain with diagnostics. They are not labelled

@@ -19,10 +19,17 @@ in that preview binary, even though current Python package metadata still uses `
 
 ### Added
 
+- Extended the report to schema `1.2` with `effective_dependencies`: supported FastAPI/APIRouter
+  constructor and `include_router` declarations plus route-local evidence, preserving original positions
+  and declaration levels across repeated/multi-app mounts. `dependencies` remains route-local and both
+  lists remain excluded from registration IDs. Context order is not a runtime execution guarantee.
+- Added a source-only inheritance example and regression coverage for composition, unresolved collections,
+  local-field compatibility, and shared CLI/API output. No AI integration or release was added.
 - Extended the report to schema `1.1` with route-local `Depends`/`Security` evidence from supported
   parameter defaults, inline `Annotated`, and decorator `dependencies`. Records original source locations,
   syntactic targets, known scopes, and unresolved reasons without classifying authentication/authorization.
-  Existing registration IDs and fields are preserved; inherited and nested dependency analysis remain deferred.
+  Existing registration IDs and fields were preserved; inherited analysis was deferred at that step and
+  is now added above. Nested dependency graphs remain deferred.
 - Added a source-only dependency example and CLI/API regressions for ordinary DI, scope limits, and
   strict partial-report behavior. No model calls, target execution, or release publication were added.
 - Added report schema `1.0` with structured source diagnostics and explicit `bounded`/`partial`

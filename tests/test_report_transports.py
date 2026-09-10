@@ -28,7 +28,7 @@ def test_partial_cli_contract_preserves_output_before_optional_failure(
     assert result.exit_code == (1 if strict else 0)
     if json_output:
         payload = json.loads(result.stdout)
-        assert payload["schema_version"] == "1.1"
+        assert payload["schema_version"] == "1.2"
         assert payload["analysis_status"] == "partial"
         assert payload["diagnostics"][0]["location"]["file"] == "broken.py"
         assert result.stderr == ""
