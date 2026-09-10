@@ -60,16 +60,19 @@ def scan(
     typer.echo(f"Codex analysis: {report.codex_status}")
     for route in report.routes:
         methods = ",".join(route.methods)
-        typer.echo(f"  {methods:7} {route.path}  ({route.file.name}:{route.line})")
+        source_file = route.to_dict(report.root)["file"]
+        typer.echo(f"  {methods:7} {route.path}  ({source_file}:{route.line})")
     if report.parse_errors:
-        typer.echo(f"Parse errors: {len(report.parse_errors)}", err=True)
+        typer.echo(f"Parse errors: {len(report.parse_errors)} (partial source inventory)", err=True)
+        for error in report.parse_errors:
+            typer.echo(f"  {error}", err=True)
 
 
 @app.command()
 def doctor(
     as_json: bool = typer.Option(False, "--json", help="Print diagnostics as JSON."),
 ) -> None:
-    """Check whether AuthZest and the optional Codex integration are ready."""
+    """Check local scan readiness and optional Codex diagnostics; AI analysis is not implemented."""
     report = collect_diagnostics()
     if as_json:
         typer.echo(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))

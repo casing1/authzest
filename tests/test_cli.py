@@ -94,3 +94,58 @@ def test_scan_json_reports_cross_file_routes_with_source_provenance(tmp_path: Pa
     assert all(route["file"] == str(Path("api/users.py")) for route in payload["routes"])
     assert all(route["line"] == 4 for route in payload["routes"])
     assert all(route["methods"] == ["GET"] for route in payload["routes"])
+
+
+def test_scan_text_distinguishes_equal_filenames_in_different_directories(tmp_path: Path) -> None:
+    for package in ("api", "admin"):
+        directory = tmp_path / package
+        directory.mkdir()
+        (directory / "users.py").write_text(
+            "from fastapi import APIRouter\nrouter = APIRouter()\n"
+            f'@router.get("/{package}/users")\ndef read_users(): pass\n',
+            encoding="utf-8",
+        )
+
+    result = runner.invoke(app, ["scan", str(tmp_path)])
+
+    assert result.exit_code == 0
+    assert f"({Path('api/users.py')}:4)" in result.stdout
+    assert f"({Path('admin/users.py')}:4)" in result.stdout
+
+
+def test_scan_text_displays_parse_errors_without_discarding_routes(tmp_path: Path) -> None:
+    (tmp_path / "main.py").write_text(
+        'from fastapi import FastAPI\napp = FastAPI()\n@app.get("/health")\ndef health(): pass\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "broken.py").write_text("def broken(:\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["scan", str(tmp_path)])
+
+    assert result.exit_code == 0
+    assert "GET     /health  (main.py:4)" in result.stdout
+    assert "Parse errors: 1 (partial source inventory)" in result.stderr
+    assert str(tmp_path / "broken.py") in result.stderr
+    assert "invalid syntax" in result.stderr
+
+
+def test_scan_json_keeps_parse_errors_in_the_existing_contract(tmp_path: Path) -> None:
+    (tmp_path / "broken.py").write_text("def broken(:\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["scan", str(tmp_path), "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert set(payload) == {
+        "root",
+        "python_files",
+        "route_count",
+        "routes",
+        "parse_errors",
+        "codex_status",
+    }
+    assert payload["python_files"] == 1
+    assert payload["route_count"] == 0
+    assert len(payload["parse_errors"]) == 1
+    assert str(tmp_path / "broken.py") in payload["parse_errors"][0]
+    assert result.stderr == ""

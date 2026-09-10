@@ -77,7 +77,7 @@ def collect_diagnostics(
                 "Codex CLI",
                 "warning",
                 "not found; local static scans still work",
-                "Install Codex CLI before enabling AI analysis.",
+                "AI analysis is not implemented; no Codex setup is needed for local scans.",
             )
         )
         return DoctorReport(version=__version__, checks=tuple(checks))
@@ -86,7 +86,13 @@ def collect_diagnostics(
         version_result = _run_command((codex_path, "--version"), run)
         version_text = version_result.stdout.strip() or "installed"
         version_status: DiagnosticStatus = "ok" if version_result.returncode == 0 else "warning"
-        checks.append(DiagnosticCheck("Codex CLI", version_status, version_text))
+        checks.append(
+            DiagnosticCheck(
+                "Codex CLI",
+                version_status,
+                f"{version_text}; diagnostic only; AI analysis is not implemented",
+            )
+        )
 
         login_result = _run_command((codex_path, "login", "status"), run)
         if login_result.returncode == 0:
@@ -98,7 +104,7 @@ def collect_diagnostics(
                     "Codex login",
                     "warning",
                     "not authenticated; local static scans still work",
-                    "Run 'codex login' and complete the browser sign-in flow.",
+                    "This is an optional diagnostic; logging in does not enable AI analysis.",
                 )
             )
     except (OSError, subprocess.TimeoutExpired):
@@ -107,7 +113,7 @@ def collect_diagnostics(
                 "Codex CLI",
                 "warning",
                 "installed but could not be checked",
-                "Run 'codex --version' and 'codex login status' manually.",
+                "AI analysis is not implemented; this optional check does not block local scans.",
             )
         )
 
