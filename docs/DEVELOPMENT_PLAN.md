@@ -49,7 +49,9 @@ weeks or a commitment to fill all remaining time. Pause development during exams
 | 6                | Failure/recovery cases, installation, and a small three-mode evaluation | Failed tests, stale approval, user edits, and recovery handled; actual usage and limitations recorded |
 | 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
 
-A new preview release is conditional on its checks, not required every week. Week 5 does not require
+A new preview release is conditional on its checks, not required every week. The next candidate is
+`v0.1.0-alpha.2` after #28 and #29 are merged and release-installation checks pass; #28 alone does not
+trigger publication. This does not restart the seven-week plan or consume the exam buffer. Week 5 does not require
 finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
 a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
 retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
@@ -74,10 +76,11 @@ The latest source includes unreleased parser improvements; the published alpha b
 them. Package metadata still uses `0.1.0a1`, so a version string alone does not identify these source
 changes. Consult the [changelog](../CHANGELOG.md) and release tag.
 
-Current-source JSON uses schema `1.0`, structured diagnostics, bounded/partial status, and distinct
-source registration evidence; see the [report contract](REPORT_CONTRACT.md). Dependency analysis,
-authentication/authorization classification, finding schemas, Codex review, patch application, and
-verification execution are not implemented. `scan` does not execute the target application or Codex.
+Current-source JSON uses schema `1.1`, structured diagnostics, bounded/partial status, distinct
+source registration evidence, and route-local dependency declarations; see the [report contract](REPORT_CONTRACT.md).
+Inherited dependencies, nested dependency graphs, authentication/authorization classification, finding
+schemas, Codex review, patch application, and verification execution are not implemented.
+`scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
 ## Prerequisite — Evidence and diagnostics contract
@@ -90,15 +93,17 @@ Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
       and test text/JSON output and CLI exit semantics without claiming exhaustive unsupported-pattern detection.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
-current-source contract. The next core tasks are #28/#29; dependency and policy data will extend this
-foundation without claiming complete Python coverage or runtime registration certainty.
+current-source contract. Route-local declarations are implemented in #28; the next core task is #29.
+Inherited dependency and policy data will extend this foundation without claiming complete Python coverage
+or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
 
-1. [ ] Collect route-local declarations ([#28](https://github.com/casing1/authzest/issues/28)):
+1. [x] Collect route-local declarations ([#28](https://github.com/casing1/authzest/issues/28)):
        parameter defaults, supported inline `Annotated`, and decorator `dependencies`.
        Recognize actual `Depends`/`Security` imports, aliases, and shadowing. Record kind, target,
        source position, declaration level, resolution state, and statically known scopes.
+       `reference` identifies simple/dotted-name syntax, not callable/import resolution or protection.
 2. [ ] Propagate application/router/`include_router` evidence to each route registration
        ([#29](https://github.com/casing1/authzest/issues/29)), using #32's registration identity and retaining
        distinct repeated-mount contexts rather than grouping by path or handler alone.

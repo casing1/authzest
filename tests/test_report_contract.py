@@ -69,6 +69,7 @@ def test_legacy_custom_routes_keep_fields_without_inventing_registration(tmp_pat
         "line": 8,
         "registration_id": None,
         "registration": None,
+        "dependencies": [],
     }
 
 
@@ -284,7 +285,7 @@ def test_reports_without_known_diagnostics_are_bounded_not_security_passes(
         "codex_status",
         "diagnostics",
     }
-    assert payload["schema_version"] == "1.0"
+    assert payload["schema_version"] == "1.1"
     assert payload["analysis_status"] == "bounded"
     assert payload["root"] == str(tmp_path)
     assert payload["python_files"] == 3

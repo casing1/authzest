@@ -34,16 +34,20 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
-- 既存の JSON フィールドを保持し、スキーマ `1.0`、構造化された診断、bounded/partial 状態と、
+- 既存の JSON フィールドを保持し、スキーマ `1.1`、構造化された診断、bounded/partial 状態と、
   元の宣言・app・`include_router` の根拠を伴う区別可能な登録 ID を追加
+- ルートに直接宣言された `Depends`・`Security`、ソース位置と既知の scopes を収集。
+  通常の依存性注入を認証や認可と判断しない
 - 任意のローカル API・ダッシュボード、環境診断、独立した実行ファイルのパッケージング
 
 対応するデコレーターは `get`、`post`、`put`、`patch`、`delete`、`options`、`head` です。
-静的解析の対応範囲は限定され、未解決の宣言はルート一覧から省略される場合があります。
+静的解析の対応範囲は限定され、未解決のルート宣言は省略される場合があります。
+対応するルートで依存関係の根拠が未解決の場合、ルートは診断とともにレポートに残ります。
 構造化された診断は一部の未解決ケースとソース/読み取りエラーを扱いますが、すべての未対応パターンを
 網羅するものではありません。空のレポートや `bounded` 状態は endpoint の不在やアクセス制御の安全性を
 証明しません。[パーサーの対応範囲](../PARSER_SCOPE.md)と[レポート仕様](../REPORT_CONTRACT.md)を参照してください。
-依存関係の収集、認証・認可の分類、セキュリティ finding は未実装です。
+継承された依存関係の根拠、入れ子の依存関係グラフ、認証・認可の分類とセキュリティ finding は未実装です。
+構文上の依存関係参照を見つけても、その動作を証明したことにはなりません。
 
 `scan` は Codex adapter を無効にしたローカル静的解析を行います。Codex を呼び出さず、API key や
 ChatGPT へのログインも不要です。別コマンドの `doctor` は、後述のとおりインストール済み Codex CLI を
@@ -235,13 +239,13 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
 作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
 授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。
-[#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤は現在のソースに実装されています。
+[#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤と
+[#28](https://github.com/casing1/authzest/issues/28) のルート直接宣言の根拠は現在のソースに実装されています。
 次の順序は以下です。
 
-1. [#28: ルートに直接宣言された `Depends`・`Security` の根拠](https://github.com/casing1/authzest/issues/28)
-2. [#29: 継承された依存関係の根拠](https://github.com/casing1/authzest/issues/29)
-3. [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)
-4. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)
+1. [#29: 継承された依存関係の根拠](https://github.com/casing1/authzest/issues/29)
+2. [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)
+3. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)
 
 これらの機能はまだ実装されていません。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
 仮説です。コアは provider や特定の GPT モデルがなくても役立つものにします。
