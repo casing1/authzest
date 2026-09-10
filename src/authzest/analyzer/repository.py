@@ -47,4 +47,5 @@ class RepositoryAnalyzer:
             python_files=len(python_files),
             routes=result.routes,
             parse_errors=result.errors,
+            diagnostics=result.diagnostics,
         )

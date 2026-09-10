@@ -7,23 +7,154 @@
       "methods": ["GET"],
       "function": "health",
       "file": "app/main.py",
-      "line": 11
+      "line": 11,
+      "registration_id": "route-1c1199bab099e45e6f4d895af3c33a710b6536c5d0db59ad233f133fc3a288ef",
+      "registration": {
+        "declaration": {
+          "file": "app/main.py",
+          "line": 10,
+          "column": 2
+        },
+        "owner": {
+          "kind": "FastAPI",
+          "location": {
+            "file": "app/main.py",
+            "line": 7,
+            "column": 7
+          }
+        },
+        "application": {
+          "kind": "FastAPI",
+          "location": {
+            "file": "app/main.py",
+            "line": 7,
+            "column": 7
+          }
+        },
+        "include_chain": [],
+        "execution_scope": "module"
+      }
     },
     {
       "path": "/v1/catalog/items",
       "methods": ["GET"],
       "function": "list_items",
       "file": "app/routers/catalog.py",
-      "line": 9
+      "line": 9,
+      "registration_id": "route-697e9aea6f24d292c9f50e0fc7d320bb72acc1eff28de46f06f4a6806af7f079",
+      "registration": {
+        "declaration": {
+          "file": "app/routers/catalog.py",
+          "line": 8,
+          "column": 2
+        },
+        "owner": {
+          "kind": "APIRouter",
+          "location": {
+            "file": "app/routers/catalog.py",
+            "line": 5,
+            "column": 10
+          }
+        },
+        "application": {
+          "kind": "FastAPI",
+          "location": {
+            "file": "app/main.py",
+            "line": 7,
+            "column": 7
+          }
+        },
+        "include_chain": [
+          {
+            "location": {
+              "file": "app/main.py",
+              "line": 15,
+              "column": 1
+            },
+            "parent": {
+              "kind": "FastAPI",
+              "location": {
+                "file": "app/main.py",
+                "line": 7,
+                "column": 7
+              }
+            },
+            "router": {
+              "kind": "APIRouter",
+              "location": {
+                "file": "app/routers/catalog.py",
+                "line": 5,
+                "column": 10
+              }
+            },
+            "prefix": "/v1"
+          }
+        ],
+        "execution_scope": "module"
+      }
     },
     {
       "path": "/v2/catalog/items",
       "methods": ["GET"],
       "function": "list_items",
       "file": "app/routers/catalog.py",
-      "line": 9
+      "line": 9,
+      "registration_id": "route-aac8f2c09277a5933a7b2ed32faf89381b2e494234efeee1df79fa3612a7f654",
+      "registration": {
+        "declaration": {
+          "file": "app/routers/catalog.py",
+          "line": 8,
+          "column": 2
+        },
+        "owner": {
+          "kind": "APIRouter",
+          "location": {
+            "file": "app/routers/catalog.py",
+            "line": 5,
+            "column": 10
+          }
+        },
+        "application": {
+          "kind": "FastAPI",
+          "location": {
+            "file": "app/main.py",
+            "line": 7,
+            "column": 7
+          }
+        },
+        "include_chain": [
+          {
+            "location": {
+              "file": "app/main.py",
+              "line": 16,
+              "column": 1
+            },
+            "parent": {
+              "kind": "FastAPI",
+              "location": {
+                "file": "app/main.py",
+                "line": 7,
+                "column": 7
+              }
+            },
+            "router": {
+              "kind": "APIRouter",
+              "location": {
+                "file": "app/routers/catalog.py",
+                "line": 5,
+                "column": 10
+              }
+            },
+            "prefix": "/v2"
+          }
+        ],
+        "execution_scope": "module"
+      }
     }
   ],
   "parse_errors": [],
-  "codex_status": "disabled"
+  "codex_status": "disabled",
+  "schema_version": "1.0",
+  "analysis_status": "bounded",
+  "diagnostics": []
 }

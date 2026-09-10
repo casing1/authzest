@@ -15,20 +15,21 @@ English is the canonical language. Every repository-owned Markdown document has 
 the project README also has [Japanese](i18n/README.ja.md) and [Russian](i18n/README.ru.md) versions.
 Translations are grouped in `docs/i18n/`, leaving only the English project README at the repository root.
 
-| Document                                | English                                            | 한국어                                           |
-| --------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| Project overview and installation       | [README](../README.md)                             | [프로젝트 소개](i18n/README.ko.md)               |
-| Documentation index                     | [Index](README.md)                                 | [문서 목차](i18n/INDEX.ko.md)                    |
-| Development direction and TODO order    | [Development plan](DEVELOPMENT_PLAN.md)            | [개발 계획](i18n/DEVELOPMENT_PLAN.ko.md)         |
-| Supported source syntax and limitations | [Parser scope](PARSER_SCOPE.md)                    | [파서 범위](i18n/PARSER_SCOPE.ko.md)             |
-| Maintained source-only CLI demo         | [Examples](EXAMPLES.md)                            | [예제](i18n/EXAMPLES.ko.md)                      |
-| Replaceable models and measurable value | [Model strategy](MODEL_STRATEGY.md)                | [모델 전략](i18n/MODEL_STRATEGY.ko.md)           |
-| Contributions and commit conventions    | [Contributing](../CONTRIBUTING.md)                 | [기여 안내](i18n/CONTRIBUTING.ko.md)             |
-| Required checks and branch protection   | [Branch rules](BRANCH_RULES.md)                    | [브랜치 규칙](i18n/BRANCH_RULES.ko.md)           |
-| Versions, binaries, and release checks  | [Releasing](RELEASING.md)                          | [릴리스 가이드](i18n/RELEASING.ko.md)            |
-| Released and unreleased changes         | [Changelog](../CHANGELOG.md)                       | [변경 이력](i18n/CHANGELOG.ko.md)                |
-| Private reporting and safe-use policy   | [Security](../SECURITY.md)                         | [보안 정책](i18n/SECURITY.ko.md)                 |
-| Pull request fields and checklist       | [PR template](../.github/pull_request_template.md) | [PR 작성 안내](i18n/PULL_REQUEST_TEMPLATE.ko.md) |
+| Document                                        | English                                            | 한국어                                           |
+| ----------------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
+| Project overview and installation               | [README](../README.md)                             | [프로젝트 소개](i18n/README.ko.md)               |
+| Documentation index                             | [Index](README.md)                                 | [문서 목차](i18n/INDEX.ko.md)                    |
+| Development direction and TODO order            | [Development plan](DEVELOPMENT_PLAN.md)            | [개발 계획](i18n/DEVELOPMENT_PLAN.ko.md)         |
+| Supported source syntax and limitations         | [Parser scope](PARSER_SCOPE.md)                    | [파서 범위](i18n/PARSER_SCOPE.ko.md)             |
+| Maintained source-only CLI demo                 | [Examples](EXAMPLES.md)                            | [예제](i18n/EXAMPLES.ko.md)                      |
+| Replaceable models and measurable value         | [Model strategy](MODEL_STRATEGY.md)                | [모델 전략](i18n/MODEL_STRATEGY.ko.md)           |
+| Versioned diagnostics and registration evidence | [Report contract](REPORT_CONTRACT.md)              | [리포트 계약](i18n/REPORT_CONTRACT.ko.md)        |
+| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                 | [기여 안내](i18n/CONTRIBUTING.ko.md)             |
+| Required checks and branch protection           | [Branch rules](BRANCH_RULES.md)                    | [브랜치 규칙](i18n/BRANCH_RULES.ko.md)           |
+| Versions, binaries, and release checks          | [Releasing](RELEASING.md)                          | [릴리스 가이드](i18n/RELEASING.ko.md)            |
+| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                       | [변경 이력](i18n/CHANGELOG.ko.md)                |
+| Private reporting and safe-use policy           | [Security](../SECURITY.md)                         | [보안 정책](i18n/SECURITY.ko.md)                 |
+| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md) | [PR 작성 안내](i18n/PULL_REQUEST_TEMPLATE.ko.md) |
 
 ## Read the right version
 
@@ -37,9 +38,11 @@ router imports. Those improvements are listed under **Unreleased**; they are not
 `v0.1.0-alpha.1` preview binary. Package metadata remains `0.1.0a1` until a release-preparation change,
 so compare the changelog and commit/tag as well as `--version`.
 
-Current scans inventory source declarations; they do not collect dependency evidence, classify endpoints
+Current scans provide schema 1.0, structured diagnostics, and distinct source registration evidence;
+they do not collect dependency evidence, classify endpoints
 as securely authorized, or run AI/active tests. Unresolved source patterns may be omitted, so an empty
-report or successful exit is not a security guarantee. The [development plan](DEVELOPMENT_PLAN.md) separates
+report or successful exit is not a security guarantee. The [report contract](REPORT_CONTRACT.md) defines
+bounded/partial status and opt-in strict exits. The [development plan](DEVELOPMENT_PLAN.md) separates
 those planned capabilities from the current implementation.
 
 ## Updating documentation

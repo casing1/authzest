@@ -42,6 +42,11 @@ def main(
 def scan(
     path: Annotated[Path, typer.Argument(help="FastAPI repository to analyze.")],
     as_json: bool = typer.Option(False, "--json", help="Print the report as JSON."),
+    strict: bool = typer.Option(
+        False,
+        "--strict",
+        help="Exit with code 1 for known partial analysis (not a security verdict).",
+    ),
 ) -> None:
     """Scan a repository and summarize discovered FastAPI routes."""
     try:
@@ -52,20 +57,48 @@ def scan(
 
     if as_json:
         typer.echo(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+        if strict and report.analysis_status == "partial":
+            raise typer.Exit(code=1)
         return
 
     typer.echo(f"Repository: {report.root}")
     typer.echo(f"Python files: {report.python_files}")
     typer.echo(f"FastAPI routes: {len(report.routes)}")
     typer.echo(f"Codex analysis: {report.codex_status}")
+    typer.echo(
+        f"Analysis: {report.analysis_status} (supported static subset; not a security verdict)"
+    )
     for route in report.routes:
         methods = ",".join(route.methods)
-        source_file = route.to_dict(report.root)["file"]
+        serialized = route.to_dict(report.root)
+        source_file = serialized["file"]
         typer.echo(f"  {methods:7} {route.path}  ({source_file}:{route.line})")
+        if registration := serialized["registration"]:
+            typer.echo(f"    Registration: {serialized['registration_id']}")
+            if application := registration["application"]:
+                location = application["location"]
+                typer.echo(f"    App: {location['file']}:{location['line']}:{location['column']}")
+            typer.echo(f"    Scope: {registration['execution_scope']}")
+            for site in registration["include_chain"]:
+                location = site["location"]
+                typer.echo(
+                    f"    Include: {location['file']}:{location['line']}:{location['column']}"
+                    f" prefix={site['prefix']!r}"
+                )
     if report.parse_errors:
         typer.echo(f"Parse errors: {len(report.parse_errors)} (partial source inventory)", err=True)
         for error in report.parse_errors:
             typer.echo(f"  {error}", err=True)
+    for diagnostic in report.diagnostics:
+        location = diagnostic.location.to_dict(report.root)
+        typer.echo(
+            f"[{diagnostic.severity}:{diagnostic.code}] "
+            f"{location['file']}:{location['line'] or '?'}:{location['column'] or '?'} "
+            f"{diagnostic.message}",
+            err=True,
+        )
+    if strict and report.analysis_status == "partial":
+        raise typer.Exit(code=1)
 
 
 @app.command()

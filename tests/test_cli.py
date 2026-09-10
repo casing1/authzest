@@ -143,6 +143,9 @@ def test_scan_json_keeps_parse_errors_in_the_existing_contract(tmp_path: Path) -
         "routes",
         "parse_errors",
         "codex_status",
+        "schema_version",
+        "analysis_status",
+        "diagnostics",
     }
     assert payload["python_files"] == 1
     assert payload["route_count"] == 0

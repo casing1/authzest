@@ -8,6 +8,14 @@ type RouteResult = {
   function: string;
   file: string;
   line: number;
+  registration_id?: string | null;
+};
+
+type Diagnostic = {
+  code: string;
+  message: string;
+  severity: "warning" | "error";
+  location: { file: string; line: number | null; column: number | null };
 };
 
 type ScanReport = {
@@ -17,6 +25,9 @@ type ScanReport = {
   routes: RouteResult[];
   parse_errors: string[];
   codex_status: string;
+  schema_version?: string;
+  analysis_status?: "bounded" | "partial";
+  diagnostics?: Diagnostic[];
 };
 
 function App() {
@@ -60,23 +71,27 @@ function App() {
   }
 
   const hasParseErrors = (report?.parse_errors.length ?? 0) > 0;
+  const isPartial =
+    report?.analysis_status === "partial" ||
+    hasParseErrors ||
+    (report?.diagnostics?.length ?? 0) > 0;
   const scanStatus = scanning
     ? "Scanning"
     : error
       ? "Scan failed"
       : report === null
         ? "Not scanned"
-        : hasParseErrors
+        : isPartial
           ? "Partial inventory"
-          : "Scan complete";
+          : "Bounded inventory";
   const emptyMessage = scanning
     ? "선택된 저장소의 소스 선언을 수집하고 있습니다."
     : error
       ? "이번 스캔은 실패했습니다. 이전 결과를 표시하지 않습니다. 다시 실행해 주세요."
       : report === null
         ? "아직 스캔하지 않았습니다. Analyze repository를 눌러 라우트를 수집하세요."
-        : hasParseErrors
-          ? "일부 파일을 분석하지 못했고, 읽은 소스의 지원 범위에서는 라우트를 찾지 못했습니다."
+        : isPartial
+          ? "오류 또는 미해석 선언이 있으며, 지원 범위에서는 라우트를 찾지 못했습니다. 진단 내용을 확인하세요."
           : "스캔을 마쳤지만 지원 범위에서 라우트를 찾지 못했습니다. endpoint의 부재나 접근통제의 안전성을 뜻하지 않습니다.";
 
   return (
@@ -148,8 +163,12 @@ function App() {
             <strong>{report?.route_count ?? "—"}</strong>
           </article>
           <article>
-            <span>Parse errors</span>
-            <strong>{report?.parse_errors.length ?? "—"}</strong>
+            <span>Diagnostics</span>
+            <strong>
+              {report
+                ? report.diagnostics?.length || report.parse_errors.length
+                : "—"}
+            </strong>
           </article>
         </div>
 
@@ -162,17 +181,33 @@ function App() {
                 : scanStatus}
             </span>
           </div>
-          {report && hasParseErrors && (
+          {report && isPartial && (
             <div className="parse-errors" role="status">
               <p>
-                일부 파일을 분석하지 못했습니다. 표시된 라우트는 부분
-                결과입니다.
+                오류 또는 미해석 선언을 확인했습니다. 표시된 라우트는 부분
+                결과이며, 전체 endpoint나 접근통제의 안전성을 보장하지 않습니다.
               </p>
               <ul>
-                {report.parse_errors.map((parseError, index) => (
-                  <li key={`${index}:${parseError}`}>{parseError}</li>
+                {report.diagnostics?.map((diagnostic, index) => (
+                  <li key={`${index}:${diagnostic.code}`}>
+                    [{diagnostic.severity}:{diagnostic.code}]{" "}
+                    {diagnostic.location.file}:{diagnostic.location.line ?? "?"}
+                    :{diagnostic.location.column ?? "?"} {diagnostic.message}
+                  </li>
                 ))}
               </ul>
+              {report.parse_errors.length > 0 && (
+                <details>
+                  <summary>
+                    Legacy parse errors ({report.parse_errors.length})
+                  </summary>
+                  <ul>
+                    {report.parse_errors.map((parseError, index) => (
+                      <li key={`${index}:${parseError}`}>{parseError}</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </div>
           )}
           {report === null || report.routes.length === 0 ? (
@@ -184,7 +219,10 @@ function App() {
             <ul className="route-list">
               {report.routes.map((route, index) => (
                 <li
-                  key={`${route.file}:${route.line}:${route.path}:${route.methods.join(",")}:${index}`}
+                  key={
+                    route.registration_id ??
+                    `${route.file}:${route.line}:${route.path}:${route.methods.join(",")}:${index}`
+                  }
                 >
                   <code className="method">{route.methods.join(",")}</code>
                   <code>{route.path}</code>

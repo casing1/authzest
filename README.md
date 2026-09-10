@@ -13,14 +13,16 @@
 
 AuthZest is an installable, CLI-first open-source project for source-aware access-control analysis of
 FastAPI applications. Its current Python core inventories routes without importing or executing the target
-application. Authorization assessment and optional AI assistance are the next development stages.
+application. The core product goal is Codex-assisted review and defensive test/patch proposals, user
+approval or refusal, approved-only changes, and separately approved isolated verification with a change
+record. That workflow is planned, not implemented; static scans remain offline and Codex use will be opt-in.
 
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
 > [!IMPORTANT]
 > The published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
-> is the first executable scaffold. Route-owner recognition, prefix composition, and cross-file router
-> resolution described below are implemented on `main` but **not yet released** in those binaries.
+> is the first executable scaffold. Route-owner recognition, prefix composition, cross-file router
+> resolution, and the report contract described below are implemented on `main` but **not yet released** in those binaries.
 > The source package still reports `0.1.0a1`; use the checkout commit and [changelog](CHANGELOG.md) to
 > distinguish it from the published preview. Neither version is a complete vulnerability scanner.
 
@@ -30,11 +32,15 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
+- Adds schema `1.0`, structured diagnostics, bounded/partial status, and distinct registration IDs with
+  original declaration, application, and `include_router` evidence while retaining existing JSON fields.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
-This is a bounded static subset: dynamic or unresolved declarations are omitted, and an empty report does
-not establish that no endpoints exist or that access control is safe. See the [parser scope](docs/PARSER_SCOPE.md).
+This is a bounded static subset: unresolved declarations may be omitted from routes. Structured diagnostics
+cover selected unresolved cases and source/read errors, not every unsupported pattern. An empty report or
+`bounded` status does not establish that no endpoints exist or that access control is safe.
+See the [parser scope](docs/PARSER_SCOPE.md) and [report contract](docs/REPORT_CONTRACT.md).
 Dependency collection, authentication/authorization classification, and security findings are not implemented.
 
 `scan` uses local static analysis with the Codex adapter disabled. It does not invoke Codex or require an
@@ -54,12 +60,17 @@ pipx install --python 3.12 .
 authzest --help
 authzest scan /path/to/fastapi-project
 authzest scan /path/to/fastapi-project --json
+authzest scan /path/to/fastapi-project --json --strict
 ```
 
 Replace `/path/to/fastapi-project` with your project directory. If the command is not on your PATH, run
 `pipx ensurepath` and open a new terminal. A pipx-installed CLI does not require activating a project venv.
 The examples select Python 3.12; for another supported interpreter, replace `3.12` after `--python` with
 its version or executable path.
+
+By default, a returned report exits with code 0 even if analysis is partial. Add `--strict` to return 1
+for known partial analysis while still printing the report. Invalid repository input returns 2.
+These codes describe analysis execution, not a security verdict.
 
 To update this source installation, run the following from your clean `authzest` checkout on `main`:
 
@@ -125,7 +136,7 @@ authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The editable backend finds `frontend/dist` in the checkout.
 Without that build, `/` shows an API message rather than the dashboard.
-The dashboard distinguishes unstarted, empty, and partial scans and displays parse-error details.
+The dashboard distinguishes unstarted, empty, and partial scans and displays structured diagnostics and parse-error details.
 A failed rescan clears the previous result. These are inventory states, not access-control verdicts.
 
 For frontend development, run `authzest ui --workspace /path/to/fastapi-project --reload` in one activated
@@ -193,7 +204,7 @@ src/authzest/
 ├── analyzer/   # Repository analysis and aggregation
 ├── parser/     # AST route and import resolution
 ├── runner/     # Shared scan orchestration
-├── codex/      # Optional provider interface; scan adapter disabled
+├── codex/      # Codex interface; live integration planned, scan adapter disabled
 ├── cli.py      # Typer command-line interface
 ├── api/        # Optional FastAPI transport
 └── models.py   # Core report data
@@ -217,15 +228,19 @@ or a specific AI provider.
 Track a bounded task in an issue, develop it on a short-lived branch, and submit a pull request with
 meaningful commits and validation. Protected `main` requires the Python, frontend, and CodeQL checks.
 The open-topic course plan uses 7 development weeks, with a separate 4–5 weeks reserved for exams, delays,
-and final preparation. The planned order is:
+and final preparation. The report/evidence foundation in [#32](https://github.com/casing1/authzest/issues/32)
+is implemented in the current source. Next:
 
-1. [#32: report/evidence contract](https://github.com/casing1/authzest/issues/32)
-2. [#28: route-local `Depends`/`Security` evidence](https://github.com/casing1/authzest/issues/28)
-3. [#29: inherited dependency evidence](https://github.com/casing1/authzest/issues/29)
-4. [#33: evidence-linked offline AI evaluation](https://github.com/casing1/authzest/issues/33)
+1. [#28: route-local `Depends`/`Security` evidence](https://github.com/casing1/authzest/issues/28)
+2. [#29: inherited dependency evidence](https://github.com/casing1/authzest/issues/29)
+3. [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33)
+4. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
 These capabilities are not implemented yet. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
+The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution
+permissions. Exploit-PoC generation, autonomous offensive workflows, and arbitrary repository execution
+are out of scope.
 
 ## License and security
 
