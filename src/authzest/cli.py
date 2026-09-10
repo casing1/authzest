@@ -68,6 +68,7 @@ def scan(
     typer.echo(
         f"Analysis: {report.analysis_status} (supported static subset; not a security verdict)"
     )
+    typer.echo("Dependency evidence: route-local declarations, not access-control guarantees")
     for route in report.routes:
         methods = ",".join(route.methods)
         serialized = route.to_dict(report.root)
@@ -85,6 +86,24 @@ def scan(
                     f"    Include: {location['file']}:{location['line']}:{location['column']}"
                     f" prefix={site['prefix']!r}"
                 )
+        for dependency in serialized["dependencies"]:
+            location = dependency["location"]
+            target = dependency["target"] if dependency["target"] is not None else "<unresolved>"
+            parameter = f" parameter={dependency['parameter']}" if dependency["parameter"] else ""
+            typer.echo(
+                f"    {dependency['kind']}: {target}"
+                f" [{dependency['declaration_level']}{parameter}; {dependency['resolution']}]"
+                f" ({location['file']}:{location['line']}:{location['column']})"
+            )
+            if dependency["kind"] == "Security":
+                scopes = dependency["scopes"]
+                typer.echo(
+                    f"      Declared scopes: {json.dumps(scopes, ensure_ascii=False)}"
+                    if scopes is not None
+                    else "      Declared scopes: unknown"
+                )
+            if dependency["unresolved_reasons"]:
+                typer.echo(f"      Unresolved: {', '.join(dependency['unresolved_reasons'])}")
     if report.parse_errors:
         typer.echo(f"Parse errors: {len(report.parse_errors)} (partial source inventory)", err=True)
         for error in report.parse_errors:
