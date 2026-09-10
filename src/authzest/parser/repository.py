@@ -12,6 +12,7 @@ from authzest.parser.fastapi import (
     _bound_names,
     _ModuleRef,
     _Registrations,
+    _source_diagnostic,
 )
 
 
@@ -50,13 +51,16 @@ class _RepositoryParser:
                 self.trees[path] = ast.parse(path.read_bytes(), filename=str(path))
             except (OSError, SyntaxError, UnicodeError) as exc:
                 self.errors.append(f"{path}: {exc}")
+                self.registrations.diagnostics.append(_source_diagnostic(path, exc))
         self._index()
         self.cyclic = self._cyclic_modules()
 
     def parse(self) -> RepositoryParseResult:
         for path in self.paths:
             self._load(path)
-        return RepositoryParseResult(self.registrations.result(), tuple(self.errors))
+        return RepositoryParseResult(
+            self.registrations.result(), tuple(self.errors), tuple(self.registrations.diagnostics)
+        )
 
     def _index(self) -> None:
         roots = [self.root, self.root / "src"]

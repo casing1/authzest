@@ -5,7 +5,14 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Literal, Protocol
 
-from authzest.models import Route
+from authzest.models import (
+    Diagnostic,
+    IncludeSite,
+    OwnerEvidence,
+    RegistrationEvidence,
+    Route,
+    SourceLocation,
+)
 
 HTTP_METHODS = {"delete", "get", "head", "options", "patch", "post", "put"}
 CONSTRUCTORS = {"FastAPI", "APIRouter"}
@@ -17,6 +24,7 @@ class _Owner:
     kind: Constructor
     prefix: str | None
     source: Path | None = None
+    location: SourceLocation | None = None
     routes: list[Route] = field(default_factory=list)
     included: bool = False
     inherited: bool = False
@@ -43,6 +51,12 @@ class _ImportResolver(Protocol):
 @dataclass(slots=True)
 class _Registrations:
     entries: list[tuple[_Owner, Route]] = field(default_factory=list)
+    diagnostics: list[Diagnostic] = field(default_factory=list)
+
+    def diagnose(self, code: str, message: str, path: Path, node: ast.AST) -> None:
+        diagnostic = Diagnostic(code=code, message=message, location=_location(path, node))
+        if diagnostic not in self.diagnostics:
+            self.diagnostics.append(diagnostic)
 
     def add(self, owner: _Owner, route: Route) -> None:
         owner.routes.append(route)
@@ -61,12 +75,41 @@ class _Registrations:
 class ParseResult:
     routes: tuple[Route, ...]
     error: str | None = None
+    diagnostics: tuple[Diagnostic, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
 class RepositoryParseResult:
     routes: tuple[Route, ...]
     errors: tuple[str, ...] = ()
+    diagnostics: tuple[Diagnostic, ...] = ()
+
+
+def _location(path: Path, node: ast.AST) -> SourceLocation:
+    return SourceLocation(file=path, line=node.lineno, column=node.col_offset + 1)
+
+
+def _owner_evidence(owner: _Owner) -> OwnerEvidence:
+    assert owner.location is not None
+    return OwnerEvidence(kind=owner.kind, location=owner.location)
+
+
+def _source_diagnostic(path: Path, exc: OSError | SyntaxError | UnicodeError) -> Diagnostic:
+    line = None
+    column = None
+    if isinstance(exc, SyntaxError):
+        code = "source-parse-error"
+        line = exc.lineno if exc.lineno and exc.lineno > 0 else None
+        if line is not None and exc.text and exc.offset and exc.offset > 0:
+            column = len(exc.text[: exc.offset - 1].encode("utf-8")) + 1
+    else:
+        code = "source-read-error" if isinstance(exc, OSError) else "source-decode-error"
+    return Diagnostic(
+        code=code,
+        message=str(exc),
+        location=SourceLocation(file=path, line=line, column=column),
+        severity="error",
+    )
 
 
 class _BoundNames(ast.NodeVisitor):
@@ -181,6 +224,20 @@ class _IncludeCalls(ast.NodeVisitor):
                 self.visit(expression)
 
 
+class _ConditionalDecorators(_IncludeCalls):
+    """Inspect known-owner decorators in unsupported control flow, not function bodies."""
+
+    def visit_Call(self, node: ast.Call) -> None:
+        self.generic_visit(node)
+
+    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self.calls.extend(
+            decorator for decorator in node.decorator_list if isinstance(decorator, ast.Call)
+        )
+
+    visit_AsyncFunctionDef = visit_FunctionDef
+
+
 class FastAPIRouteParser:
     """Discover common FastAPI/APIRouter decorators without importing target code."""
 
@@ -188,11 +245,15 @@ class FastAPIRouteParser:
         try:
             tree = ast.parse(path.read_bytes(), filename=str(path))
         except (OSError, SyntaxError, UnicodeError) as exc:
-            return ParseResult(routes=(), error=f"{path}: {exc}")
+            return ParseResult(
+                routes=(), error=f"{path}: {exc}", diagnostics=(_source_diagnostic(path, exc),)
+            )
 
         registrations = _Registrations()
         self._parse_body(tree.body, {}, path, registrations)
-        return ParseResult(routes=registrations.result())
+        return ParseResult(
+            routes=registrations.result(), diagnostics=tuple(registrations.diagnostics)
+        )
 
     def parse_repository(self, root: Path, paths: list[Path]) -> RepositoryParseResult:
         from authzest.parser.repository import _RepositoryParser
@@ -230,8 +291,29 @@ class FastAPIRouteParser:
             attempts.visit(statement)
             for call in attempts.calls:
                 self._suppress_included_declarations(call, bindings, resolver)
+                if not (
+                    isinstance(statement, ast.Expr) and call is statement.value
+                ) and self._has_include_owner(call, bindings, resolver):
+                    registrations.diagnose(
+                        "unsupported-include-context",
+                        "Include outside a standalone statement; execution is not assumed.",
+                        file_path,
+                        call,
+                    )
             if isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Call):
                 self._include_router(statement.value, bindings, registrations, file_path, resolver)
+
+            if not isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                conditional = _ConditionalDecorators()
+                conditional.visit(statement)
+                for decorator in conditional.calls:
+                    if self._known_route_owner(decorator, bindings, resolver) is not None:
+                        registrations.diagnose(
+                            "conditional-registration",
+                            "Route declaration is outside the supported sequential scope.",
+                            file_path,
+                            decorator,
+                        )
 
             if isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 # Decorator/default expressions with assignment can change other receivers.
@@ -248,9 +330,16 @@ class FastAPIRouteParser:
                 )
                 for decorator in statement.decorator_list:
                     if dynamic:
-                        break
+                        if self._known_route_owner(decorator, bindings, resolver) is not None:
+                            registrations.diagnose(
+                                "unsupported-route-expression",
+                                "Assignment expressions make the route owner uncertain.",
+                                file_path,
+                                decorator,
+                            )
+                        continue
                     found = self._route_from_decorator(
-                        decorator, statement, file_path, bindings, resolver
+                        decorator, statement, file_path, bindings, registrations, resolver, deferred
                     )
                     if found is not None:
                         owner, route = found
@@ -283,6 +372,14 @@ class FastAPIRouteParser:
                 owner = self._constructor_owner(statement.value, bindings)
                 if owner is not None:
                     owner.source = file_path
+                    owner.location = _location(file_path, statement.value)
+                    if owner.prefix is None:
+                        registrations.diagnose(
+                            "unsupported-owner-construction",
+                            "Owner arguments or prefix cannot be resolved by the bounded parser.",
+                            file_path,
+                            statement.value,
+                        )
 
             # Annotation-only statements do not overwrite an existing module/local value.
             if isinstance(statement, ast.AnnAssign) and statement.value is None:
@@ -343,6 +440,7 @@ class FastAPIRouteParser:
                     binding.kind,
                     binding.prefix,
                     source=binding.source,
+                    location=binding.location,
                     inherited=True,
                     origin=binding.origin or binding,
                 ),
@@ -423,6 +521,24 @@ class FastAPIRouteParser:
                         child.included = True
 
     @staticmethod
+    def _has_include_owner(
+        call: ast.Call, bindings: dict[str, Binding], resolver: _ImportResolver | None
+    ) -> bool:
+        if not isinstance(call.func, ast.Attribute) or call.func.attr != "include_router":
+            return False
+        candidates = [
+            call.func.value,
+            *call.args,
+            *(keyword.value for keyword in call.keywords if keyword.arg in ("router", None)),
+        ]
+        return any(
+            isinstance(FastAPIRouteParser._binding(node, bindings, resolver), _Owner)
+            for candidate in candidates
+            for node in ast.walk(candidate)
+            if isinstance(node, (ast.Name, ast.Attribute))
+        )
+
+    @staticmethod
     def _include_router(
         call: ast.Call,
         bindings: dict[str, Binding],
@@ -430,12 +546,18 @@ class FastAPIRouteParser:
         file_path: Path,
         resolver: _ImportResolver | None = None,
     ) -> None:
-        if (
-            not isinstance(call.func, ast.Attribute)
-            or call.func.attr != "include_router"
-            or any(keyword.arg is None for keyword in call.keywords)
-            or any(isinstance(node, ast.NamedExpr) for node in ast.walk(call))
+        if not isinstance(call.func, ast.Attribute) or call.func.attr != "include_router":
+            return
+        if not FastAPIRouteParser._has_include_owner(call, bindings, resolver):
+            return
+
+        def unresolved(code: str, message: str) -> None:
+            registrations.diagnose(code, message, file_path, call)
+
+        if any(keyword.arg is None for keyword in call.keywords) or any(
+            isinstance(node, ast.NamedExpr) for node in ast.walk(call)
         ):
+            unresolved("unsupported-include-arguments", "Expanded or assigning include arguments.")
             return
         parent = FastAPIRouteParser._binding(call.func.value, bindings, resolver)
         arguments = [
@@ -443,6 +565,7 @@ class FastAPIRouteParser:
             *(keyword.value for keyword in call.keywords if keyword.arg == "router"),
         ]
         if len(arguments) != 1:
+            unresolved("unsupported-include-arguments", "Expected exactly one router argument.")
             return
         child = FastAPIRouteParser._binding(arguments[0], bindings, resolver)
         prefix = FastAPIRouteParser._literal_prefix(call)
@@ -450,31 +573,70 @@ class FastAPIRouteParser:
             not isinstance(parent, _Owner)
             or not isinstance(child, _Owner)
             or child.kind != "APIRouter"
-            or parent is child
-            or parent.inherited
-            or child.inherited
-            or parent.source != file_path
-            or parent.prefix is None
-            or child.prefix is None
-            or prefix is None
         ):
+            unresolved("unresolved-include-owner", "Parent or child router could not be resolved.")
+            return
+        if parent is child:
+            unresolved("include-cycle", "Self-inclusion is not composed.")
+            return
+        if parent.inherited or child.inherited or parent.source != file_path:
+            unresolved("unsupported-include-context", "Cross-scope owner mutation is not composed.")
+            return
+        if parent.prefix is None or child.prefix is None or prefix is None:
+            unresolved("dynamic-include-prefix", "Include or owner prefix is not a valid literal.")
             return
         # Supported composition uses declarations already present at this statement.
         # Later additions differ between FastAPI versions and remain out of scope.
         if not prefix and any(not route.path for route in child.routes):
+            unresolved("unsupported-include-arguments", "Empty prefix and path are not composed.")
             return
         pending = [child]
         seen: set[_Owner] = set()
         while pending:
             descendant = pending.pop()
             if descendant is parent:
+                unresolved("include-cycle", "Cyclic router inclusion is not composed.")
                 return
             if descendant not in seen:
                 seen.add(descendant)
                 pending.extend(descendant.children)
         parent.children.add(child)
         for route in tuple(child.routes):
-            registrations.add(parent, replace(route, path=parent.prefix + prefix + route.path))
+            registration = route.registration
+            assert registration is not None
+            include = IncludeSite(
+                location=_location(file_path, call),
+                parent=_owner_evidence(parent),
+                router=_owner_evidence(child),
+                prefix=prefix,
+            )
+            registration = replace(
+                registration,
+                application=_owner_evidence(parent) if parent.kind == "FastAPI" else None,
+                include_chain=(include, *registration.include_chain),
+            )
+            registrations.add(
+                parent,
+                replace(
+                    route,
+                    path=parent.prefix + prefix + route.path,
+                    registration=registration,
+                ),
+            )
+
+    @staticmethod
+    def _known_route_owner(
+        decorator: ast.expr, bindings: dict[str, Binding], resolver: _ImportResolver | None
+    ) -> _Owner | None:
+        if (
+            isinstance(decorator, ast.Call)
+            and isinstance(decorator.func, ast.Attribute)
+            and decorator.func.attr in HTTP_METHODS | {"api_route"}
+        ):
+            owner = FastAPIRouteParser._binding(decorator.func.value, bindings, resolver)
+            if isinstance(owner, _Owner):
+                return owner
+        return None
 
     @staticmethod
     def _route_from_decorator(
@@ -482,16 +644,31 @@ class FastAPIRouteParser:
         function: ast.FunctionDef | ast.AsyncFunctionDef,
         file_path: Path,
         bindings: dict[str, Binding],
+        registrations: _Registrations,
         resolver: _ImportResolver | None = None,
+        deferred: bool = False,
     ) -> tuple[_Owner, Route] | None:
         if not isinstance(decorator, ast.Call) or not isinstance(decorator.func, ast.Attribute):
             return None
 
-        receiver = decorator.func.value
-        owner = FastAPIRouteParser._binding(receiver, bindings, resolver)
-        if not isinstance(owner, _Owner) or owner.prefix is None or owner.source != file_path:
+        owner = FastAPIRouteParser._known_route_owner(decorator, bindings, resolver)
+        if owner is None:
+            return None
+        if owner.prefix is None or owner.source != file_path:
+            registrations.diagnose(
+                "unsupported-route-owner",
+                "Route owner prefix or cross-file mutation cannot be resolved.",
+                file_path,
+                decorator,
+            )
             return None
         if any(isinstance(node, ast.NamedExpr) for node in ast.walk(decorator)):
+            registrations.diagnose(
+                "unsupported-route-expression",
+                "Assignment expressions make the route declaration uncertain.",
+                file_path,
+                decorator,
+            )
             return None
 
         method = decorator.func.attr
@@ -500,10 +677,22 @@ class FastAPIRouteParser:
             or len(decorator.args) != 1
             or any(keyword.arg in (None, "path") for keyword in decorator.keywords)
         ):
+            registrations.diagnose(
+                "unsupported-route-arguments",
+                "Expected a supported HTTP decorator with one positional literal path.",
+                file_path,
+                decorator,
+            )
             return None
 
         route_path = decorator.args[0]
         if not isinstance(route_path, ast.Constant) or not isinstance(route_path.value, str):
+            registrations.diagnose(
+                "dynamic-route-path",
+                "Route path is not a string literal.",
+                file_path,
+                decorator,
+            )
             return None
 
         return owner, Route(
@@ -512,4 +701,10 @@ class FastAPIRouteParser:
             function=function.name,
             file=file_path,
             line=function.lineno,
+            registration=RegistrationEvidence(
+                declaration=_location(file_path, decorator),
+                owner=_owner_evidence(owner),
+                application=_owner_evidence(owner) if owner.kind == "FastAPI" else None,
+                execution_scope="deferred" if deferred else "module",
+            ),
         )
