@@ -9,9 +9,15 @@
 
 ## Product direction
 
-Build an installable, CLI-first, source-aware FastAPI access-control analysis tool for an OSS course.
-The core must produce useful, repeatable source evidence without an AI provider. Optional AI assistance
-can later explain that evidence and its limitations; it must not turn an assumption into a confirmed finding.
+Build an installable, CLI-first, source-aware FastAPI access-control review and improvement tool for an
+OSS course. The final demo must connect Codex to source evidence, reviewable defensive regression-test
+and patch proposals, an explicit approve/decline decision, approved-only patch application, and separately
+approved isolated verification with a change record. Codex integration is a core product goal, not a
+later optional explanation feature. These stages are planned, not implemented capabilities.
+
+The static core must still produce useful, repeatable evidence without an AI provider. Each Codex use
+is opt-in; external data sharing, applying a specific patch, and executing a verification plan require
+distinct permissions. An AI assumption must never become a confirmed finding merely because it is generated.
 
 The existing local API and dashboard are optional interfaces to the same core. Website deployment,
 a native desktop shell, and new UI features are not prerequisites for the CLI milestone. Keep the
@@ -33,21 +39,23 @@ only **seven development weeks**; leave **four to five weeks outside that plan**
 and final submission preparation. These are working-week estimates, not seven uninterrupted calendar
 weeks or a commitment to fill all remaining time. Pause development during exams and reduce scope if needed.
 
-| Development week | Bounded outcome                                                        | Completion gate                                                                                        |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1                | Reliability baseline and report contract (#31, #32)                    | Reproducible demo; versioned diagnostics and distinct registration evidence tested                     |
-| 2                | Route-local dependency evidence (#28)                                  | Supported declarations, ordinary DI, and unresolved cases have source-backed expectations              |
-| 3                | Inherited context (#29) and a small policy-labelled fixture set        | Repeated mounts remain distinct; public/authentication/authorization expectations are explicit         |
-| 4                | Offline explanation contract (#33)                                     | Mock responses, invalid references, failure paths, and frozen evaluation inputs tested                 |
-| 5                | One approved opt-in adapter and a small three-mode comparison          | Actual usage, repeated-run variation, citations, and limitations recorded; mocks if approval is absent |
-| 6                | Correct the highest-impact evaluation failures and verify installation | Scope and claims match evidence; installed CLI smoke checks work                                       |
-| 7                | Freeze a coherent CLI demo and submission evidence                     | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready          |
+| Development week | Bounded outcome                                                         | Completion gate                                                                                       |
+| ---------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1                | Reliability baseline and report contract (#31, #32)                     | Reproducible demo; versioned diagnostics and distinct registration evidence tested                    |
+| 2                | Route-local dependency evidence (#28)                                   | Supported declarations, ordinary DI, and unresolved cases have source-backed expectations             |
+| 3                | Inherited context (#29) and a small policy-labelled fixture set         | Repeated mounts remain distinct; public/authentication/authorization expectations are explicit        |
+| 4                | Offline proposal and approval contract after #33                        | Mock responses, invalid references, exact-diff approval, stale input, and decline paths tested        |
+| 5                | One opt-in Codex integration and a small owned-fixture improvement flow | Review → approve/decline → approved patch → separately approved isolated verification demonstrated    |
+| 6                | Failure/recovery cases, installation, and a small three-mode evaluation | Failed tests, stale approval, user edits, and recovery handled; actual usage and limitations recorded |
+| 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
 
 A new preview release is conditional on its checks, not required every week. Week 5 does not require
-finishing all deterministic findings first. Keep the first AI task to explanation, not autonomous
-execution. If the schedule slips, cut extra rules, UI work, additional integrations, and the optional
-runner; preserve the report contract, reviewable evidence, tests, and honest evaluation. Do not silently
-consume the exam/submission buffer to expand features.
+finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
+a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
+retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
+slips, cut extra rules, UI work, multiple integrations, and broader execution support; preserve the core
+approval flow, reviewable evidence, tests, and honest evaluation. Do not silently consume the exam/submission
+buffer to expand features.
 
 ## Current baseline
 
@@ -66,22 +74,24 @@ The latest source includes unreleased parser improvements; the published alpha b
 them. Package metadata still uses `0.1.0a1`, so a version string alone does not identify these source
 changes. Consult the [changelog](../CHANGELOG.md) and release tag.
 
-Basic JSON already exists. Versioned evidence/finding schemas, dependency analysis, authentication or
-authorization classification, AI analysis, and active testing do not. `scan` does not execute the target
-application or Codex. Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
+Current-source JSON uses schema `1.0`, structured diagnostics, bounded/partial status, and distinct
+source registration evidence; see the [report contract](REPORT_CONTRACT.md). Dependency analysis,
+authentication/authorization classification, finding schemas, Codex review, patch application, and
+verification execution are not implemented. `scan` does not execute the target application or Codex.
+Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
 ## Prerequisite — Evidence and diagnostics contract
 
-- [ ] Define a versioned report, compatibility policy, and deterministic ordering
+- [x] Define a versioned report, compatibility policy, and deterministic ordering
       ([#32](https://github.com/casing1/authzest/issues/32)).
-- [ ] Give route registrations distinct stable identities with original handler, application, and
+- [x] Give route registrations distinct stable identities with original handler, application, and
       include-site provenance, including identical-path repeated mounts.
-- [ ] Represent known unresolved reasons, source/read errors, and bounded analysis explicitly; document
+- [x] Represent known unresolved reasons, source/read errors, and bounded analysis explicitly; document
       and test text/JSON output and CLI exit semantics without claiming exhaustive unsupported-pattern detection.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
-contract. These are next tasks, not capabilities added by the planning update. Finish this checkpoint
-before dependency data grows the report in #28/#29.
+current-source contract. The next core tasks are #28/#29; dependency and policy data will extend this
+foundation without claiming complete Python coverage or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
 
@@ -119,9 +129,10 @@ Completion: a reviewer can explain every reported state from source evidence and
 The fixture corpus reports matches, false positives, false negatives, and unknown cases; unsupported
 application behavior is not silently declared safe or vulnerable.
 
-Current behavior is not the future contract: `scan` reports invalid repository paths with exit code 2,
-while returned parse errors can coexist with a successful exit. The CLI/API currently have no dedicated
-list of unresolved declarations. Those gaps must be addressed before security verdicts are introduced.
+The current [report contract](REPORT_CONTRACT.md) retains exit code 0 for a returned report by default,
+even when analysis is partial. Opt-in `--strict` returns 1 for known partial analysis; invalid repository
+input returns 2. Structured diagnostics record selected unresolved cases and source/read errors, not every
+unsupported declaration. Neither `bounded` status nor exit code 0 means complete analysis or a security pass.
 
 ## Milestone 3 — Explainable deterministic checks
 
@@ -135,25 +146,38 @@ list of unresolved declarations. Those gaps must be addressed before security ve
 Completion: every rule has matching, nonmatching, and unresolved fixtures and an explanation that can be
 reviewed without AI. Checks run locally on source code without generating or executing exploitation steps.
 
-## Milestone 4 — Optional AI-assisted explanation
+## Milestone 4 — Codex-assisted, user-approved improvement
 
-This follows a stable evidence/report contract and comes before any optional active test runner.
-A small, clearly labelled explanation demo can support the term project without requiring a complete
-vulnerability scanner first.
+This is the final-demo target after the evidence/report contract and initial dependency fixtures.
+Implement a bounded end-to-end flow before expanding rules or adding a second integration. The offline
+contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remain prerequisites;
+[#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
+and verification workflow. These are future tasks, not features enabled by the report contract.
 
 - [ ] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)); extend the disabled adapter with mock responses,
       invalid-reference cases, and failure tests.
-- [ ] Define the exact evidence payload, data minimization, secret redaction, approval, timeout, and
-      cancellation behavior before connecting any provider.
-- [ ] Add one explicit opt-in adapter behind the interface; evaluate CLI versus App Server separately.
-- [ ] Keep AI suggestions separate from deterministic results, attach evidence references, and preserve
-      the local report when AI is unavailable or wrong.
+- [ ] Define the permitted evidence payload, data minimization, secret handling, timeout, cancellation,
+      and separate data-sharing, patch-application, and verification-execution permissions before live calls.
+- [ ] Add one opt-in Codex adapter behind the interface; choose CLI or App Server, not both. Keep AI
+      suggestions separate from deterministic results and preserve the local report on adapter failure.
+- [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
+      an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
+- [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification
+      plan. Bind approval to that proposal; decline/cancel changes nothing, and changed inputs invalidate approval.
+- [ ] Apply only the approved diff after rechecking its preconditions. Preserve existing user edits,
+      record before/after content identities, and provide recoverable changes without resetting unrelated work.
+- [ ] Separately approve and run a bounded isolated verification plan for a maintained owned fixture.
+      Record commands, exit status, results, and failures; a patch applied or a test passed is not proof
+      of general authorization correctness. Never label failed or unrun verification as a successful fix.
 - [ ] Compare static-only, model-only, and evidence-assisted model modes on frozen, human-labelled fixtures,
       with held-out cases, repeated trials, actual usage, and limitations as described in the [model strategy](MODEL_STRATEGY.md).
 
-Completion: the same scan remains useful with no credentials, network, or AI. No source content is sent
-externally without explicit approval, and AI-generated assumptions are never promoted to confirmed findings.
+Completion: one maintained fixture demonstrates evidence → Codex review/proposal → approve or decline →
+approved patch → separately approved verification → change/result record. Tests cover invalid citations,
+provider failure, changed source or diff, pre-existing user edits, declined/cancelled requests, failed
+verification, and recovery conflicts. The default scan and CI remain offline and do not require credentials.
+Do not substitute Codex's settings-dependent tool approvals for AuthZest's exact-proposal approval gate.
 
 ## Milestone 5 — CLI release and OSS evaluation
 
@@ -176,17 +200,16 @@ Completion: the documented CLI demo works from a clean installation, release cla
 binary, and changes can be traced from issue to test to PR. Do not inflate commit counts or publish a new
 release for every documentation edit. See the [release guide](RELEASING.md).
 
-## Later, optional — Local regression execution
+## Execution scope and deliberate exclusions
 
-This is not a prerequisite for source discovery, AI-assisted explanation, or the initial CLI deliverable.
+The bounded verification in milestone 4 belongs to the core demo, but it is never an implicit part of
+`scan` or permission to execute an arbitrary repository. Start only with a maintained owned fixture and
+a reviewed defensive regression plan in an isolated environment with explicit input/output scope,
+timeouts, and protection against unintended data changes. Test drafts are untrusted until reviewed.
 
-- [ ] Generate reviewable regression-test plans for maintained, owned local fixtures without sending requests.
-- [ ] Consider an explicitly approved local test harness with isolation, fixture-only scope, timeouts,
-      request limits, and protection against unintended data changes.
-- [ ] Keep execution opt-in and separate from `scan`; record reproducible results and unresolved outcomes.
-
-Internet-target scanning, autonomous exploitation, and arbitrary repository execution are not part of this
-development milestone. Revisit any execution scope in its own design issue before implementation.
+Internet-target scanning, exploit-PoC generation or execution, autonomous offensive workflows, and arbitrary
+repository execution are out of scope. Broader runtime coverage or additional execution environments need
+a separate design issue; they are not a condition for the seven-week deliverable.
 
 ## Working checklist
 

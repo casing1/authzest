@@ -23,6 +23,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 | 지원 소스 구문과 한계          | [Parser scope](../PARSER_SCOPE.md)                    | [파서 범위](PARSER_SCOPE.ko.md)             |
 | 유지하는 소스 전용 CLI 데모    | [Examples](../EXAMPLES.md)                            | [예제](EXAMPLES.ko.md)                      |
 | 교체 가능한 모델과 측정할 가치 | [Model strategy](../MODEL_STRATEGY.md)                | [모델 전략](MODEL_STRATEGY.ko.md)           |
+| 버전이 있는 진단과 등록 근거   | [Report contract](../REPORT_CONTRACT.md)              | [리포트 계약](REPORT_CONTRACT.ko.md)        |
 | 기여와 커밋 규칙               | [Contributing](../../CONTRIBUTING.md)                 | [기여 안내](CONTRIBUTING.ko.md)             |
 | 필수 검사와 브랜치 보호        | [Branch rules](../BRANCH_RULES.md)                    | [브랜치 규칙](BRANCH_RULES.ko.md)           |
 | 버전·바이너리·릴리스 검사      | [Releasing](../RELEASING.md)                          | [릴리스 가이드](RELEASING.ko.md)            |
@@ -37,9 +38,10 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 포함되지 않습니다. 패키지 메타데이터는 릴리스 준비 변경 전까지 `0.1.0a1`이므로 `--version`뿐 아니라
 변경 이력과 커밋/태그도 비교하세요.
 
-현재 스캔은 소스 선언을 목록화합니다. 의존성 근거 수집, endpoint의 안전한 인가 여부 분류,
+현재 스캔은 스키마 1.0, 구조화된 진단과 구별되는 소스 등록 근거를 제공합니다. 의존성 근거 수집, endpoint의 안전한 인가 여부 분류,
 AI/능동 테스트는 하지 않습니다. 미해석 소스 패턴은 누락될 수 있으므로 빈 리포트나 성공 종료가
-보안 보장은 아닙니다. [개발 계획](DEVELOPMENT_PLAN.ko.md)은 계획한 기능과 현재 구현을 구분합니다.
+보안 보장은 아닙니다. [리포트 계약](REPORT_CONTRACT.ko.md)은 bounded/partial 상태와 opt-in strict 종료를
+정의합니다. [개발 계획](DEVELOPMENT_PLAN.ko.md)은 계획한 기능과 현재 구현을 구분합니다.
 
 ## 문서 갱신 규칙
 

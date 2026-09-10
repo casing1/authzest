@@ -13,7 +13,10 @@
 
 AuthZest は、FastAPI アプリケーションのソースコードに基づいてアクセス制御を分析するための、
 インストール可能な CLI 中心のオープンソースプロジェクトです。現在の Python コアは対象の
-アプリケーションを import・実行せずにルートを収集します。認可の評価と任意の AI 支援は今後の開発段階です。
+アプリケーションを import・実行せずにルートを収集します。中核となる製品目標は、Codex によるレビューと
+防御的テスト・パッチの提案、ユーザーの承認または拒否、承認された変更のみの適用、別途承認された
+隔離環境での検証と変更記録です。これは未実装の計画です。静的スキャンは引き続きオフラインで動作し、
+Codex の利用は明示的に選択する方式にします。
 
 React ダッシュボードは任意のローカルインターフェースです。AuthZest を使うために Web サイトを
 デプロイする必要はありません。
@@ -21,7 +24,7 @@ React ダッシュボードは任意のローカルインターフェースで�
 > [!IMPORTANT]
 > 公開済みの [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1) は、
 > 最初の実行可能なひな型です。以下に示すルート所有オブジェクトの認識、prefix の合成、ファイル間の
-> ルーター解決は `main` に実装されていますが、そのバイナリには**まだリリースされていません**。
+> ルーター解決とレポート仕様は `main` に実装されていますが、そのバイナリには**まだリリースされていません**。
 > ソースパッケージも引き続き `0.1.0a1` と表示するため、checkout のコミットと
 > [変更履歴](../../CHANGELOG.md)で公開済み preview と区別してください。どちらも完成した脆弱性スキャナーではありません。
 
@@ -31,12 +34,16 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
+- 既存の JSON フィールドを保持し、スキーマ `1.0`、構造化された診断、bounded/partial 状態と、
+  元の宣言・app・`include_router` の根拠を伴う区別可能な登録 ID を追加
 - 任意のローカル API・ダッシュボード、環境診断、独立した実行ファイルのパッケージング
 
 対応するデコレーターは `get`、`post`、`put`、`patch`、`delete`、`options`、`head` です。
-静的解析の対応範囲は限定されています。動的な宣言や解決できない宣言は省略されるため、空のレポートは
-endpoint が存在しないことやアクセス制御が安全であることを示しません。[パーサーの対応範囲](../PARSER_SCOPE.md)を
-参照してください。依存関係の収集、認証・認可の分類、セキュリティ finding は未実装です。
+静的解析の対応範囲は限定され、未解決の宣言はルート一覧から省略される場合があります。
+構造化された診断は一部の未解決ケースとソース/読み取りエラーを扱いますが、すべての未対応パターンを
+網羅するものではありません。空のレポートや `bounded` 状態は endpoint の不在やアクセス制御の安全性を
+証明しません。[パーサーの対応範囲](../PARSER_SCOPE.md)と[レポート仕様](../REPORT_CONTRACT.md)を参照してください。
+依存関係の収集、認証・認可の分類、セキュリティ finding は未実装です。
 
 `scan` は Codex adapter を無効にしたローカル静的解析を行います。Codex を呼び出さず、API key や
 ChatGPT へのログインも不要です。別コマンドの `doctor` は、後述のとおりインストール済み Codex CLI を
@@ -56,6 +63,7 @@ pipx install --python 3.12 .
 authzest --help
 authzest scan /path/to/fastapi-project
 authzest scan /path/to/fastapi-project --json
+authzest scan /path/to/fastapi-project --json --strict
 ```
 
 `/path/to/fastapi-project` を実際のプロジェクトディレクトリに置き換えてください。コマンドが PATH に
@@ -63,6 +71,10 @@ authzest scan /path/to/fastapi-project --json
 CLI を使うために、プロジェクトの venv を有効にする必要はありません。
 例では Python 3.12 を選択します。対応する別のインタープリターを使う場合は、`--python` の後の
 `3.12` をそのバージョンまたは実行ファイルのパスに置き換えてください。
+
+既定では部分的な解析でもレポートを返せば終了コードは 0 です。`--strict` を付けると、既知の部分解析では
+レポートを出力したうえで 1 を返します。無効なリポジトリ入力には 2 を返します。
+これらは解析の実行状態を示すコードであり、セキュリティの判定ではありません。
 
 このソースインストールを更新するには、未コミットの変更がない `authzest` checkout の `main` で実行します。
 
@@ -129,7 +141,7 @@ authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 [http://127.0.0.1:8000](http://127.0.0.1:8000) を開いてください。editable backend は checkout 内の
 `frontend/dist` を参照します。ビルドがない場合、`/` にはダッシュボードではなく API の案内が表示されます。
 
-ダッシュボードは未実行・空の結果・部分的なスキャンを区別し、parse-error の詳細を表示します。
+ダッシュボードは未実行・空の結果・部分的なスキャンを区別し、構造化された診断と parse-error の詳細を表示します。
 再スキャンに失敗すると前の結果を消去します。これらは収集状態であり、アクセス制御の判定ではありません。
 
 frontend 開発時は、venv が有効なターミナルで
@@ -199,7 +211,7 @@ src/authzest/
 ├── analyzer/   # リポジトリ解析と集約
 ├── parser/     # AST ルート・import の解決
 ├── runner/     # 共通のスキャン実行フロー
-├── codex/      # 任意の provider interface; scan adapter は無効
+├── codex/      # Codex interface; 実連携は計画中、scan adapter は無効
 ├── cli.py      # Typer コマンドラインインターフェース
 ├── api/        # 任意の FastAPI 接続層
 └── models.py   # コアのレポートデータ
@@ -222,15 +234,19 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
 作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
-授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。予定順序は以下です。
+授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。
+[#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤は現在のソースに実装されています。
+次の順序は以下です。
 
-1. [#32: レポート・根拠の仕様](https://github.com/casing1/authzest/issues/32)
-2. [#28: ルートに直接宣言された `Depends`・`Security` の根拠](https://github.com/casing1/authzest/issues/28)
-3. [#29: 継承された依存関係の根拠](https://github.com/casing1/authzest/issues/29)
-4. [#33: 根拠に結び付いたオフライン AI 評価](https://github.com/casing1/authzest/issues/33)
+1. [#28: ルートに直接宣言された `Depends`・`Security` の根拠](https://github.com/casing1/authzest/issues/28)
+2. [#29: 継承された依存関係の根拠](https://github.com/casing1/authzest/issues/29)
+3. [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)
+4. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)
 
 これらの機能はまだ実装されていません。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
 仮説です。コアは provider や特定の GPT モデルがなくても役立つものにします。
+最終デモは自ら所有・管理する fixture を対象とし、データ共有・パッチ・実行を別々に許可します。
+脆弱性を悪用する PoC の生成、自律的な攻撃フロー、任意のリポジトリの実行は対象外です。
 
 ## ライセンスとセキュリティ
 

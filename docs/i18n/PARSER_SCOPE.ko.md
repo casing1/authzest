@@ -2,7 +2,8 @@
 
 [문서](INDEX.ko.md) · [English](../PARSER_SCOPE.md) · 한국어
 
-이 문서는 현재 `main`의 소스를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import 해석은
+이 문서는 현재 `main`의 소스를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import 해석과
+버전이 있는 등록 근거는
 [`Unreleased`](CHANGELOG.ko.md#unreleased) 변경이며 배포된
 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에 포함되어 있지 않습니다.
 이 기능을 사용하려면 현재 소스를 checkout하세요. 패키지 버전은 아직 `0.1.0a1`에서 올리지 않았습니다.
@@ -176,6 +177,47 @@ import한 객체를 변경 가능한 부모 라우터로 사용하거나, 나중
 지원 문법은 [Python의 import 형태](https://docs.python.org/3.12/reference/import.html#package-relative-imports)를
 따르지만 AuthZest가 모든 런타임 import 동작을 재현하는 것은 아닙니다.
 
+## 등록 근거와 진단
+
+공통 리포트는 `schema_version: "1.0"`을 사용합니다. 이 리포트 스키마 버전은 Python 패키지 및
+릴리스 버전과 별개입니다. 기존 라우트 필드와 `parse_errors`를 유지하며, `analysis_status`,
+`diagnostics`, 각 라우트의 `registration_id`와 `registration`을 추가합니다.
+각 필드의 표현과 호환성 규칙은 [리포트 계약](REPORT_CONTRACT.ko.md)에 정의되어 있습니다.
+
+파서가 생성하는 모든 라우트에는 원본 데코레이터와 객체 생성자의 위치가 기록됩니다. 해석된 등록에는
+알려진 경우 애플리케이션 객체와 각 `include_router` 구문의 위치, 부모 객체, 자식 라우터, 리터럴
+include prefix도 기록합니다. include chain은 가장 바깥 등록(애플리케이션 또는 라우터)부터 가장 안쪽
+라우터 순서입니다. 독립 라우터에는 애플리케이션 객체 없이 비어 있지 않은 chain이 있을 수 있습니다.
+기존 라우트의 `file`과 `line`은 계속 등록 구문이 아닌 원래 handler 정의를 가리킵니다. 리포트 JSON의 새
+위치 필드는 저장소 상대 POSIX 경로, 1부터 시작하는 줄 번호, 1부터 시작하는 UTF-8 바이트 열 번호를
+사용합니다. 알 수 없는 위치 값은 `null`입니다.
+
+등록 ID는 같은 상대 디렉터리 구조에서 소스 근거가 바뀌지 않으면 일정하게 유지됩니다. 별도의
+애플리케이션, 여러 데코레이터, 반복 등록은 경로와 HTTP 메서드가 같아도 구별되며, 같은 줄의 여러
+등록 호출도 각각 구별합니다. ID는 소스 등록을 식별할 뿐 런타임 객체, 전체 소스 내용의 해시나 승인
+토큰이 아닙니다. 선언을 옮기거나 기록되는 등록 근거를 바꾸면 ID도 바뀔 수 있습니다.
+
+함수 본문의 목록은 `execution_scope: "deferred"`, 모듈 최상위 목록은 `"module"`로 표시합니다.
+상속해서 참조한 객체도 원래 생성자 위치를 유지합니다. 어느 표시도 실제 실행이 해당 선언에
+도달하거나 결과 라우트가 배포되었다는 증거는 아닙니다.
+
+진단에는 사유 `code`, 설명 `message`, 원본 `location`, `severity`가 포함됩니다. 제한된 파서는
+지원하는 탐색 문법을 확장하지 않고 다음과 같이 확인된 사례를 보고합니다.
+
+- `source-read-error`, `source-parse-error`, `source-decode-error`는 소스를 읽고 파싱하는 과정의
+  실패를 나타냅니다. 기존 `parse_errors` 텍스트도 이 오류 진단과 함께 유지합니다.
+- `unsupported-owner-construction`은 식별된 생성자의 인자나 prefix를 해석할 수 없음을 나타냅니다.
+- `dynamic-route-path`, `unsupported-route-arguments`, `unsupported-route-expression`,
+  `unsupported-route-owner`는 식별된 라우트 객체에서 해석되지 않은 선언을 설명합니다.
+- `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
+  `unresolved-include-owner`, `include-cycle`은 확인된 미지원 포함 시도를 설명합니다.
+- `conditional-registration`은 지원하지 않는 제어 흐름 안의 식별된 객체에 대한 라우트 선언을 표시합니다.
+
+예를 들어 순환 import 때문에 식별된 app의 `include_router`에서 자식 라우터를 해석하지 못할 수
+있습니다. 이때 진단은 import가 성공했다고 주장하지 않고 해당 include 호출을 가리킵니다. 알 수 없는
+임의의 `.get(...)` 객체나 무관한 import는 이름만을 이유로 프레임워크 진단을 만들지 않습니다.
+진단은 지원하지 않는 모든 Python 패턴의 완전한 목록이 아닙니다.
+
 ## 추후 지원할 패턴과 결과 해석
 
 - 런타임 import hook, 외부 패키지 해석, 와일드카드 import, 모호하거나 순환하는 모듈.
@@ -189,18 +231,22 @@ import한 객체를 변경 가능한 부모 라우터로 사용하거나, 나중
 - 키워드로만 전달한 `path=`, 계산된 경로, `api_route`, `add_api_route`, WebSocket 선언.
 - 의존성 수집, 인증·인가 판정, 보안 문제 발견 결과.
 
-지원하지 않거나 해석되지 않는 선언은 라우트 목록에서 빠집니다. 보호됨, 보호되지 않음, 취약함으로 분류하지
-않습니다. 보고서 스키마는 바뀌지 않았으며, 아직 미해석 선언 목록을 별도로 제공하지 않습니다. 따라서 결과가
-비어 있다고 endpoint가 없거나 접근통제가 안전하다고 해석하면 안 됩니다. 문법 오류가 있거나 읽을 수 없는
-소스는 계속 `parse_errors`에 나타납니다.
-텍스트 CLI는 각 파싱 오류를 stderr로 출력하고 부분 목록임을 표시하며, JSON은 `parse_errors` 배열을 유지합니다.
-이 변경으로 종료 코드가 바뀌지는 않습니다. 파싱 오류를 반환해도 종료 코드가 0일 수 있으며 잘못된
-저장소 경로는 종료 코드 2를 반환합니다. 종료 코드 0이나 빈 오류 배열은 모든 선언이 해석됐다는 증거가
-아닙니다. 버전이 있는 분석 완전성·종료 코드 계약은 추후 작업입니다.
+지원하지 않거나 해석되지 않는 선언은 라우트 목록에서 빠집니다. 보호됨, 보호되지 않음, 취약함으로
+분류하지 않습니다. 진단이나 파싱 오류가 있으면 `analysis_status: "partial"`, 없으면 `"bounded"`이며,
+어느 경우도 분석이 완전하다고 주장하지 않습니다. 빈 결과, 빈 진단 목록, 성공 종료는 endpoint가
+없거나 접근통제가 안전하다는 증거가 아닙니다.
+
+텍스트 CLI는 진단 상세를 stderr로 출력하고 부분 목록임을 표시하며, JSON은 기존 `parse_errors`
+배열과 구조화된 진단을 함께 제공합니다. 기본 스캔은 부분 리포트를 포함해 리포트를 생성했으면 계속
+종료 코드 0을 반환합니다. `--strict`를 사용하면 부분 리포트를 출력한 뒤 종료 코드 1을 반환합니다.
+잘못된 저장소 입력은 종료 코드 2를 반환합니다. 로컬 scan API는 생성된 부분 리포트에 HTTP 200을
+반환하므로 호출자는 `analysis_status`와 `diagnostics`를 확인해야 합니다. 전체 출력 및 종료 코드
+정책은 [리포트 계약](REPORT_CONTRACT.ko.md)을 참고하세요.
 
 회귀 테스트는 [`test_parser.py`](../../tests/test_parser.py),
 [`test_router_prefixes.py`](../../tests/test_router_prefixes.py),
 [`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py),
-[`test_source_encodings.py`](../../tests/test_source_encodings.py)에 있습니다. CLI, API, 저장소 runner
+[`test_source_encodings.py`](../../tests/test_source_encodings.py),
+[`test_report_parser.py`](../../tests/test_report_parser.py)에 있습니다. CLI, API, 저장소 runner
 fixture도 공통 보고서 계약을 검증합니다. 이 소스 문법 범위를 넘는 FastAPI 버전 호환성은 주장하지 않습니다.
 릴리스 절차는 [AuthZest 릴리스 관리](RELEASING.ko.md)를 참고하세요.

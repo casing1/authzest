@@ -2,8 +2,9 @@
 
 [Documentation](README.md) · English · [한국어](i18n/PARSER_SCOPE.ko.md)
 
-This guide describes the current source on `main`. Owner recognition, prefix composition, and
-repository-local imports are [`Unreleased`](../CHANGELOG.md#unreleased) changes and are not included in
+This guide describes the current source on `main`. Owner recognition, prefix composition,
+repository-local imports, and versioned registration evidence are [`Unreleased`](../CHANGELOG.md#unreleased)
+changes and are not included in
 the published [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1).
 Use a current source checkout to try these features; the package version has not yet been bumped from
 `0.1.0a1`.
@@ -182,6 +183,49 @@ continues in isolation. The standalone `parse_file` entry point remains a single
 The supported syntax follows [Python's import forms](https://docs.python.org/3.12/reference/import.html#package-relative-imports),
 but AuthZest does not simulate all runtime import behavior.
 
+## Registration evidence and diagnostics
+
+The shared report uses `schema_version: "1.0"`. This report-schema version is independent of the
+Python package and release version. Existing route fields and `parse_errors` remain available;
+`analysis_status`, `diagnostics`, and each route's `registration_id` and `registration` are additive.
+The [report contract](REPORT_CONTRACT.md) defines their representation and compatibility rules.
+
+Every route produced by the parser records its original decorator and owner-constructor locations.
+Resolved mounts also record the application owner when known and each `include_router` site, including
+the parent owner, child router, and literal include prefix. The include chain runs from the outermost
+registration (application or router) toward the innermost router. A standalone router can have a nonempty
+chain with no application owner. The existing route `file` and `line` still identify the original
+handler definition, not the mount site. New location fields use repository-relative POSIX paths in
+report JSON, one-based lines, and one-based UTF-8 byte columns; an unavailable position is `null`.
+
+Registration IDs are deterministic for unchanged source evidence within the same relative layout.
+Separate applications, stacked decorators, and repeated mounts remain distinct even when paths and
+HTTP methods match, including multiple mount calls on one line. IDs identify source registrations,
+not runtime objects, complete source-content hashes, or approval tokens. Moving a declaration or
+changing its recorded registration evidence can change its ID.
+
+Function-body inventory is marked `execution_scope: "deferred"`; module-level inventory uses
+`"module"`. An inherited owner keeps its original constructor location. Neither marker proves that
+execution reaches the declaration or that the resulting route is deployed.
+
+Diagnostics contain a reason `code`, explanatory `message`, original `location`, and `severity`.
+The bounded parser reports these known cases without expanding the supported discovery syntax:
+
+- `source-read-error`, `source-parse-error`, and `source-decode-error` identify source-loading failures.
+  Existing `parse_errors` text is retained alongside these error diagnostics.
+- `unsupported-owner-construction` identifies a recognized constructor whose arguments or prefix
+  cannot be resolved.
+- `dynamic-route-path`, `unsupported-route-arguments`, `unsupported-route-expression`, and
+  `unsupported-route-owner` describe unresolved declarations on recognized route owners.
+- `dynamic-include-prefix`, `unsupported-include-arguments`, `unsupported-include-context`,
+  `unresolved-include-owner`, and `include-cycle` describe known unsupported inclusion attempts.
+- `conditional-registration` marks a known-owner route declaration in unsupported control flow.
+
+For example, an import cycle can leave the child of a recognized app's `include_router` unresolved;
+the diagnostic points to that include call rather than claiming the import succeeded. Arbitrary
+unknown `.get(...)` receivers and unrelated imports do not produce framework diagnostics merely
+because of their names. Diagnostics are not an exhaustive list of every unsupported Python pattern.
+
 ## Deferred patterns and interpretation
 
 - Runtime import hooks, external package resolution, wildcard imports, and ambiguous or cyclic modules.
@@ -196,17 +240,22 @@ but AuthZest does not simulate all runtime import behavior.
 - Dependency collection, authentication or authorization decisions, and security findings.
 
 Unsupported or unresolved declarations are omitted from the route inventory. They are not labelled
-protected, unprotected, or vulnerable. The report schema is unchanged and does not yet expose an explicit
-unresolved-declaration list, so an empty result must not be interpreted as proof that no endpoints exist
-or that access control is safe. Malformed or unreadable source continues to appear in `parse_errors`.
-The text CLI prints each parse error to stderr and labels the inventory as partial; JSON retains the
-`parse_errors` array. This does not change exit-code behavior: returned parse errors can still accompany exit code 0,
-while an invalid repository path produces exit code 2. Neither exit code 0 nor an empty error array proves
-that every declaration was resolved. A versioned completeness/exit-code contract remains planned.
+protected, unprotected, or vulnerable. A report with diagnostics or parse errors has
+`analysis_status: "partial"`; otherwise its status is `"bounded"`, never a claim of complete analysis.
+An empty result, an empty diagnostic list, or a successful exit must not be interpreted as proof that
+no endpoints exist or that access control is safe.
+
+The text CLI prints diagnostic details to stderr and identifies partial inventory; JSON retains the
+legacy `parse_errors` array alongside structured diagnostics. Default scans still return exit code 0
+when a report is produced, including a partial report. With `--strict`, a partial report is still
+printed but returns exit code 1. Invalid repository input returns exit code 2. The local scan API
+returns HTTP 200 for a produced partial report; callers inspect `analysis_status` and `diagnostics`.
+See the [report contract](REPORT_CONTRACT.md) for the full output and exit-code policy.
 
 Regression cases live in [`test_parser.py`](../tests/test_parser.py),
 [`test_router_prefixes.py`](../tests/test_router_prefixes.py),
 [`test_cross_file_routes.py`](../tests/test_cross_file_routes.py), and
-[`test_source_encodings.py`](../tests/test_source_encodings.py), with CLI, API, and repository-runner
+[`test_source_encodings.py`](../tests/test_source_encodings.py), and
+[`test_report_parser.py`](../tests/test_report_parser.py), with CLI, API, and repository-runner
 fixtures covering the shared report contract. No FastAPI version compatibility claim beyond this
 source-syntax subset is made. For the release process, see [Releasing AuthZest](RELEASING.md).
