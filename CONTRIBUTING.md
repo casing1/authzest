@@ -96,6 +96,18 @@ npm --prefix frontend run format:check
 npm --prefix frontend run build
 ```
 
+For documentation changes, run these checks from the repository root after installing frontend dependencies:
+
+```bash
+node --test scripts/check_docs.test.mjs
+node scripts/check_docs.mjs
+git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+```
+
+The checker validates translation pairs, local links, and command parity without executing documentation
+examples. The formatting command covers tracked Markdown; stage new guides before the final check.
+The [included example](docs/EXAMPLES.md) provides a deterministic local CLI demonstration.
+
 After building the frontend above, verify the standalone executable from the repository root with the
 same virtual environment active:
 
@@ -106,7 +118,8 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 ```
 
 On Windows, use `dist\authzest.exe`. Explicitly running `doctor` can invoke an installed Codex CLI through
-`codex --version` and `codex login status`; it does not start an AI scan. See
+`codex --version` and `codex login status`; it does not start an AI scan. A successful login does not
+enable AI analysis, because that integration is not implemented. See
 [CLI diagnostics](README.md#cli-diagnostics).
 
 ## Change principles
@@ -121,6 +134,8 @@ On Windows, use `dist\authzest.exe`. Explicitly running `doctor` can invoke an i
 - Security findings must include source location, evidence, confidence, and a minimal reproducible test.
 - Add a real Codex integration as a `CodexAdapter` protocol implementation; do not expose SDK or process
   details to the core.
+- Treat improved results from AI as a hypothesis to evaluate, not an established advantage. Follow the
+  [model and evaluation strategy](docs/MODEL_STRATEGY.md), keeping provider and model choices outside the core.
 - Keep external process execution and network requests disabled by default. They require explicit user opt-in.
 
 ## Documentation and translations
@@ -151,6 +166,7 @@ A pull request is ready to merge when:
 - It satisfies the linked issue's acceptance criteria.
 - New or changed behavior is covered by tests.
 - Relevant Python and frontend checks pass locally.
+- Documentation checker tests, translation/link checks, and Markdown formatting pass for documentation changes.
 - User-facing behavior changes include appropriate documentation.
 - Documentation changes include the corresponding translations and working language links.
 - Security and backward-compatibility impact is recorded in the pull request.

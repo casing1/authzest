@@ -97,6 +97,18 @@ npm --prefix frontend run format:check
 npm --prefix frontend run build
 ```
 
+문서를 변경했다면 frontend 의존성을 설치한 뒤 저장소 루트에서 다음 검사를 실행합니다.
+
+```bash
+node --test scripts/check_docs.test.mjs
+node scripts/check_docs.mjs
+git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+```
+
+검사기는 문서 예제를 실행하지 않고 번역 쌍, 로컬 링크, 명령어의 일치 여부를 검증합니다.
+포맷 명령은 Git이 추적하는 Markdown을 검사하므로 새 안내 문서는 최종 확인 전에 staging에 포함합니다.
+[포함된 예제](EXAMPLES.ko.md)는 결정론적인 로컬 CLI 시연을 제공합니다.
+
 위에서 frontend를 빌드한 뒤, 같은 가상 환경을 활성화한 상태로 저장소 루트에서 독립 실행 파일을
 확인합니다.
 
@@ -108,6 +120,7 @@ python -m PyInstaller --clean --noconfirm authzest.spec
 
 Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor`를 실행하면 설치된 Codex CLI의
 `codex --version`과 `codex login status`를 호출할 수 있으며 AI 스캔을 시작하지는 않습니다.
+로그인에 성공해도 해당 연동이 구현되지 않았으므로 AI 분석이 활성화되지는 않습니다.
 [CLI 진단 안내](README.ko.md#cli-진단)를 참고하세요.
 
 ## 변경 원칙
@@ -122,6 +135,8 @@ Windows에서는 `dist\authzest.exe`를 사용합니다. 명시적으로 `doctor
 - 보안 finding에는 source 위치, 근거, 신뢰도와 재현 가능한 최소 테스트를 포함합니다.
 - 실제 Codex 연동은 `CodexAdapter` protocol 구현체로 추가하고 core에 SDK나 프로세스 세부사항을
   노출하지 않습니다.
+- AI가 결과를 개선한다는 주장은 입증된 장점이 아니라 평가할 가설로 다룹니다.
+  [모델 및 평가 전략](MODEL_STRATEGY.ko.md)을 따르고 provider·모델 선택은 core 바깥에서 처리합니다.
 - 외부 프로세스 실행과 네트워크 요청은 기본적으로 비활성화하며 사용자가 명시적으로 허용해야
   합니다.
 
@@ -154,6 +169,7 @@ Pull request를 병합하려면 다음 조건을 만족해야 합니다.
 - 연결된 issue의 완료 조건을 충족했습니다.
 - 새 동작 또는 수정된 동작을 검증하는 테스트가 있습니다.
 - Python과 frontend의 관련 로컬 검사가 통과했습니다.
+- 문서를 변경했다면 문서 검사기 테스트, 번역·링크 검사, Markdown 포맷 검사가 통과했습니다.
 - 사용자에게 보이는 동작이 바뀌었다면 관련 문서를 함께 수정했습니다.
 - 문서를 수정했다면 해당 번역과 정상 동작하는 언어 링크를 함께 반영했습니다.
 - 보안 영향과 하위 호환성 영향을 pull request에 기록했습니다.

@@ -19,6 +19,10 @@ in that preview binary, even though current Python package metadata still uses `
 
 ### Added
 
+- Added a project-owned, four-file FastAPI inventory example with three expected routes and a checked-in
+  report fixture; its regression test verifies source analysis without importing the example.
+- Added a tested documentation checker and CI checks for local links, language counterparts, matching
+  examples/checklists, and Markdown formatting.
 - Resolved repository-local absolute and relative router imports, aliases, and module references without
   executing target source, preserving cross-file registration paths and original source locations.
 - Composed literal same-file router and registration prefixes, preserving repeated registrations and
@@ -26,6 +30,9 @@ in that preview binary, even though current Python package metadata still uses `
 
 ### Changed
 
+- Organized a seven-week development plan around stable source-evidence contracts and evaluations that
+  can be repeated when AI models change, reserving the remaining four to five weeks for exams, delays,
+  and submission preparation.
 - Aligned the roadmap with a CLI-first evidence/report milestone, separate authentication and authorization
   interpretation, and optional AI explanation before optional local regression execution.
 - Refreshed all four project README languages, added Korean counterparts for the remaining project guides
@@ -35,6 +42,16 @@ in that preview binary, even though current Python package metadata still uses `
 
 ### Fixed
 
+- Applied ignored-directory names only below the explicitly selected scan root, so an eligible project
+  is not skipped because its root or an ancestor is named `dist`, `node_modules`, or `.venv`.
+- Parsed UTF-8 BOM and Python source-encoding declarations consistently in single-file and repository
+  scans, while retaining diagnostics for invalid bytes and unsupported encodings.
+- Printed repository-relative route locations and individual parse errors in the text CLI, preserving
+  the existing JSON schema and exit codes. Clarified that Codex installation/login diagnostics do not
+  enable AI analysis or become prerequisites for local scans.
+- Distinguished unscanned, running, failed, empty, and partial dashboard results, displayed parse-error
+  details, cleared stale results before a new attempt, and kept repeated route registrations distinct
+  through unique row keys.
 - Required statically recognized FastAPI or APIRouter owners before collecting route decorators,
   excluding unrelated objects and shadowed or reassigned names. See the [parser scope](docs/PARSER_SCOPE.md).
 - Provided explicit repository context to the GitHub Release publishing job.

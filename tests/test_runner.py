@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from authzest.runner import ScanRunner
 
 
@@ -45,3 +47,32 @@ def test_ignored_directories_are_not_local_import_candidates(tmp_path: Path) -> 
     assert report.python_files == 1
     assert report.parse_errors == ()
     assert [route.path for route in report.routes] == ["/health"]
+
+
+@pytest.mark.parametrize("excluded_name", ["dist", "node_modules", ".venv"])
+@pytest.mark.parametrize("placement", ["ancestor", "root"])
+def test_skip_rules_apply_only_below_the_explicit_scan_root(
+    tmp_path: Path, excluded_name: str, placement: str
+) -> None:
+    baseline_root = tmp_path / "ordinary" / "project"
+    selected_root = tmp_path / excluded_name
+    if placement == "ancestor":
+        selected_root /= "project"
+    source = (
+        'from fastapi import FastAPI\napp = FastAPI()\n@app.get("/health")\ndef health(): pass\n'
+    )
+    for root in (baseline_root, selected_root):
+        root.mkdir(parents=True)
+        (root / "main.py").write_text(source, encoding="utf-8")
+        ignored = root / "nested" / excluded_name
+        ignored.mkdir(parents=True)
+        (ignored / "ignored.py").write_bytes(b"\xff")
+
+    baseline = ScanRunner().run(baseline_root)
+    selected = ScanRunner().run(selected_root)
+
+    assert baseline.python_files == selected.python_files == 1
+    assert baseline.parse_errors == selected.parse_errors == ()
+    assert baseline.to_dict()["routes"] == selected.to_dict()["routes"]
+    assert [route.path for route in selected.routes] == ["/health"]
+    assert selected.routes[0].file == selected_root / "main.py"

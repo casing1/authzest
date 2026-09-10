@@ -9,6 +9,10 @@
 
 AuthZest는 Python 표준 라이브러리의 AST 파서로 Python 소스를 분석합니다. 분석 대상 애플리케이션을
 import하거나 객체를 생성하거나 코드를 실행하지 않습니다. 지원 문법은 Python 3.12에서 테스트합니다.
+단일 파일과 저장소 분석 모두 소스를 바이트로 읽어 Python이 UTF-8, UTF-8 byte order mark(BOM),
+`# coding: latin-1` 같은 PEP 263 소스 인코딩 선언을 해석하도록 합니다. 잘못된 바이트열, 알 수 없는
+인코딩, BOM과 인코딩 선언의 충돌은 파싱 오류로 보고합니다. 저장소 스캔은 나머지 읽을 수 있는
+유효한 소스 파일의 분석을 계속합니다.
 
 ## 지원하는 선언
 
@@ -108,10 +112,13 @@ prefix, `**kwargs` 전개를 추측하지 않습니다. `FastAPI(prefix=...)`를
 저장소 스캔은 선택한 소스 트리와 일반적인 `src/` 디렉터리에서 모듈 색인을 만듭니다. 색인에 포함된 Python
 파일만 참여합니다. Python 인터프리터의 import 기능, 설치된 패키지, `sys.path`, 네트워크를 이용하지 않으며
 심볼릭 링크 파일과 디렉터리는 제외합니다.
-일반 스캔은 `.git`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`, `.venv`, `__pycache__`, `dist`,
-`node_modules`, `venv`를 제외합니다. 다른 소스가 import한다고 해서 이 파일들이 후보에 추가되지 않습니다.
-색인에 포함된 소스 트리로 구성되는 namespace package도 지원하므로 모든 디렉터리에 `__init__.py`가 있어야
-하는 것은 아닙니다.
+일반 스캔은 선택한 루트 내부에서 `.git`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`, `.venv`,
+`__pycache__`, `dist`, `node_modules`, `venv`라는 이름의 하위 디렉터리에 속한 소스 파일을 제외합니다.
+명시적으로 선택한 스캔 루트와 그 상위 디렉터리는 이 이름 목록으로 제외하지 않습니다. 따라서 루트 이름이
+`dist`이거나 `dist`라는 상위 디렉터리 아래에 프로젝트가 있어도 대상 소스를 분석합니다. 해당 루트 안에
+있는 별도의 하위 `dist` 디렉터리는 계속 제외합니다. 다른 소스가 import한다고 해서 제외된 파일이 후보에
+추가되지는 않습니다. 색인에 포함된 소스 트리로 구성되는 namespace package도 지원하므로 모든
+디렉터리에 `__init__.py`가 있어야 하는 것은 아닙니다.
 
 예를 들어 `app/routers/users.py`의 라우터를:
 
@@ -186,9 +193,14 @@ import한 객체를 변경 가능한 부모 라우터로 사용하거나, 나중
 않습니다. 보고서 스키마는 바뀌지 않았으며, 아직 미해석 선언 목록을 별도로 제공하지 않습니다. 따라서 결과가
 비어 있다고 endpoint가 없거나 접근통제가 안전하다고 해석하면 안 됩니다. 문법 오류가 있거나 읽을 수 없는
 소스는 계속 `parse_errors`에 나타납니다.
+텍스트 CLI는 각 파싱 오류를 stderr로 출력하고 부분 목록임을 표시하며, JSON은 `parse_errors` 배열을 유지합니다.
+이 변경으로 종료 코드가 바뀌지는 않습니다. 파싱 오류를 반환해도 종료 코드가 0일 수 있으며 잘못된
+저장소 경로는 종료 코드 2를 반환합니다. 종료 코드 0이나 빈 오류 배열은 모든 선언이 해석됐다는 증거가
+아닙니다. 버전이 있는 분석 완전성·종료 코드 계약은 추후 작업입니다.
 
 회귀 테스트는 [`test_parser.py`](../../tests/test_parser.py),
 [`test_router_prefixes.py`](../../tests/test_router_prefixes.py),
-[`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py)에 있습니다. CLI, API, 저장소 runner
+[`test_cross_file_routes.py`](../../tests/test_cross_file_routes.py),
+[`test_source_encodings.py`](../../tests/test_source_encodings.py)에 있습니다. CLI, API, 저장소 runner
 fixture도 공통 보고서 계약을 검증합니다. 이 소스 문법 범위를 넘는 FastAPI 버전 호환성은 주장하지 않습니다.
 릴리스 절차는 [AuthZest 릴리스 관리](RELEASING.ko.md)를 참고하세요.

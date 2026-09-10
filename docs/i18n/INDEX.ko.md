@@ -21,6 +21,8 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 | 문서 목차                      | [Index](../README.md)                                 | [문서 목차](INDEX.ko.md)                    |
 | 개발 방향과 TODO 순서          | [Development plan](../DEVELOPMENT_PLAN.md)            | [개발 계획](DEVELOPMENT_PLAN.ko.md)         |
 | 지원 소스 구문과 한계          | [Parser scope](../PARSER_SCOPE.md)                    | [파서 범위](PARSER_SCOPE.ko.md)             |
+| 유지하는 소스 전용 CLI 데모    | [Examples](../EXAMPLES.md)                            | [예제](EXAMPLES.ko.md)                      |
+| 교체 가능한 모델과 측정할 가치 | [Model strategy](../MODEL_STRATEGY.md)                | [모델 전략](MODEL_STRATEGY.ko.md)           |
 | 기여와 커밋 규칙               | [Contributing](../../CONTRIBUTING.md)                 | [기여 안내](CONTRIBUTING.ko.md)             |
 | 필수 검사와 브랜치 보호        | [Branch rules](../BRANCH_RULES.md)                    | [브랜치 규칙](BRANCH_RULES.ko.md)           |
 | 버전·바이너리·릴리스 검사      | [Releasing](../RELEASING.md)                          | [릴리스 가이드](RELEASING.ko.md)            |

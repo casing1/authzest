@@ -47,7 +47,7 @@ class _RepositoryParser:
         self.registrations = _Registrations()
         for path in self.paths:
             try:
-                self.trees[path] = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+                self.trees[path] = ast.parse(path.read_bytes(), filename=str(path))
             except (OSError, SyntaxError, UnicodeError) as exc:
                 self.errors.append(f"{path}: {exc}")
         self._index()

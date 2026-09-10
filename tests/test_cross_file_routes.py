@@ -276,14 +276,14 @@ def test_shared_modules_are_read_once_per_scan_and_refreshed_on_the_next_scan(
         },
     )
     reads: Counter[Path] = Counter()
-    read_text = Path.read_text
+    read_bytes = Path.read_bytes
 
-    def counted_read(path: Path, *args: object, **kwargs: object) -> str:
+    def counted_read(path: Path) -> bytes:
         if path.suffix == ".py" and path.is_relative_to(tmp_path):
             reads[path] += 1
-        return read_text(path, *args, **kwargs)
+        return read_bytes(path)
 
-    monkeypatch.setattr(Path, "read_text", counted_read)
+    monkeypatch.setattr(Path, "read_bytes", counted_read)
     runner = ScanRunner()
 
     first = runner.run(tmp_path)
@@ -570,14 +570,14 @@ def test_broken_imported_module_is_reported_once_and_other_files_are_scanned(
     if failure == "encoding":
         broken.write_bytes(b"\xff")
     if failure == "read":
-        read_text = Path.read_text
+        read_bytes = Path.read_bytes
 
-        def unreadable(path: Path, *args: object, **kwargs: object) -> str:
+        def unreadable(path: Path) -> bytes:
             if path == broken:
                 raise PermissionError("unreadable fixture")
-            return read_text(path, *args, **kwargs)
+            return read_bytes(path)
 
-        monkeypatch.setattr(Path, "read_text", unreadable)
+        monkeypatch.setattr(Path, "read_bytes", unreadable)
 
     report = ScanRunner().run(tmp_path)
 
@@ -614,13 +614,13 @@ def test_symlinks_cannot_read_python_sources_outside_the_scan_root(
             (root / "external").symlink_to(outside, target_is_directory=True)
     except OSError:
         pytest.skip("Symbolic link creation is unavailable on this platform")
-    read_text = Path.read_text
+    read_bytes = Path.read_bytes
 
-    def confined_read(path: Path, *args: object, **kwargs: object) -> str:
+    def confined_read(path: Path) -> bytes:
         assert path.resolve().is_relative_to(root), f"Read outside the scan root: {path}"
-        return read_text(path, *args, **kwargs)
+        return read_bytes(path)
 
-    monkeypatch.setattr(Path, "read_text", confined_read)
+    monkeypatch.setattr(Path, "read_bytes", confined_read)
 
     report = ScanRunner().run(root)
 

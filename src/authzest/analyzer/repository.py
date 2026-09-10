@@ -35,7 +35,9 @@ class RepositoryAnalyzer:
         python_files = [
             path
             for path in resolved_root.rglob("*.py")
-            if not any(part in SKIPPED_DIRECTORIES for part in path.parts)
+            if not any(
+                part in SKIPPED_DIRECTORIES for part in path.relative_to(resolved_root).parts[:-1]
+            )
             and is_local_source(path, resolved_root)
         ]
         result = self._parser.parse_repository(resolved_root, python_files)

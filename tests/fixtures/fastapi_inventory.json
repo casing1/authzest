@@ -1,0 +1,29 @@
+{
+  "python_files": 4,
+  "route_count": 3,
+  "routes": [
+    {
+      "path": "/health",
+      "methods": ["GET"],
+      "function": "health",
+      "file": "app/main.py",
+      "line": 11
+    },
+    {
+      "path": "/v1/catalog/items",
+      "methods": ["GET"],
+      "function": "list_items",
+      "file": "app/routers/catalog.py",
+      "line": 9
+    },
+    {
+      "path": "/v2/catalog/items",
+      "methods": ["GET"],
+      "function": "list_items",
+      "file": "app/routers/catalog.py",
+      "line": 9
+    }
+  ],
+  "parse_errors": [],
+  "codex_status": "disabled"
+}

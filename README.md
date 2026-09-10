@@ -72,6 +72,19 @@ For a prebuilt executable, see [standalone binaries](#standalone-binaries). The 
 backend dependencies; it does not include built dashboard assets in a regular wheel/pipx installation.
 Use the editable source setup below for the optional dashboard.
 
+## Try the included example
+
+From the repository root, use the current source installation to scan the bundled local fixture:
+
+```bash
+authzest scan examples/fastapi_inventory
+authzest scan examples/fastapi_inventory --json
+```
+
+Expect 4 Python files and 3 `GET` routes: `/health`, `/v1/catalog/items`, and `/v2/catalog/items`.
+This demonstrates static discovery and repeated router registration, not vulnerability detection.
+See the [example guide](docs/EXAMPLES.md) for the fixture and expected evidence.
+
 ## CLI diagnostics
 
 ```bash
@@ -83,6 +96,7 @@ authzest doctor --json
 `doctor` checks the Python runtime. If it finds `codex` on PATH, it also runs `codex --version` and
 `codex login status` as subprocesses. It does not start an AI scan or read credential files itself.
 Missing Codex or login produces a warning and does not prevent static scans.
+A successful login does not enable AI analysis; that integration is not implemented.
 
 ## Development setup
 
@@ -96,7 +110,8 @@ python -m pip install -e '.[dev]'
 ```
 
 The editable install uses this checkout, and the `dev` extra includes the optional backend dependencies.
-Node.js/npm are needed only for frontend work or builds that bundle the dashboard; CI uses Node.js 22.
+Node.js/npm are needed for frontend work, documentation checks, or builds that bundle the dashboard;
+CI uses Node.js 22.
 
 ## Optional local dashboard
 
@@ -110,6 +125,8 @@ authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The editable backend finds `frontend/dist` in the checkout.
 Without that build, `/` shows an API message rather than the dashboard.
+The dashboard distinguishes unstarted, empty, and partial scans and displays parse-error details.
+A failed rescan clears the previous result. These are inventory states, not access-control verdicts.
 
 For frontend development, run `authzest ui --workspace /path/to/fastapi-project --reload` in one activated
 terminal and `npm --prefix frontend run dev` in another terminal at the repository root. Open
@@ -137,6 +154,17 @@ npm --prefix frontend run lint
 npm --prefix frontend run format:check
 npm --prefix frontend run build
 ```
+
+For documentation changes, install frontend dependencies as above, then run from the repository root:
+
+```bash
+node --test scripts/check_docs.test.mjs
+node scripts/check_docs.mjs
+git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+```
+
+The checker compares language pairs, local links, and commands without executing documentation examples.
+The formatting command covers tracked Markdown; include new guides in staging before the final check.
 
 ## Standalone binaries
 
@@ -183,11 +211,21 @@ or a specific AI provider.
 
 - [Documentation index](docs/README.md) — English guides and Korean translations
 - [Development checklist](docs/DEVELOPMENT_PLAN.md) and [roadmap issue #1](https://github.com/casing1/authzest/issues/1)
+- [Model and evaluation strategy](docs/MODEL_STRATEGY.md)
 - [Contribution and commit rules](CONTRIBUTING.md)
 
 Track a bounded task in an issue, develop it on a short-lived branch, and submit a pull request with
 meaningful commits and validation. Protected `main` requires the Python, frontend, and CodeQL checks.
-The next core milestone is collecting `Depends`/`Security` evidence before introducing access-control judgments.
+The open-topic course plan uses 7 development weeks, with a separate 4–5 weeks reserved for exams, delays,
+and final preparation. The planned order is:
+
+1. [#32: report/evidence contract](https://github.com/casing1/authzest/issues/32)
+2. [#28: route-local `Depends`/`Security` evidence](https://github.com/casing1/authzest/issues/28)
+3. [#29: inherited dependency evidence](https://github.com/casing1/authzest/issues/29)
+4. [#33: evidence-linked offline AI evaluation](https://github.com/casing1/authzest/issues/33)
+
+These capabilities are not implemented yet. Whether AI assistance improves results is a hypothesis to
+evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 
 ## License and security
 
