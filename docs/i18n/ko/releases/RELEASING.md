@@ -10,7 +10,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 Python
 패키지 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 커밋은 `7cc359acbb864ef6d31e3b536787857da4f7e09c`이며
 [준비 PR #40](https://github.com/casing1/authzest/pull/40), [완료된 릴리스 이슈 #39](https://github.com/casing1/authzest/issues/39)에
-연결됩니다. 안정화된 보안 제품이 아닌 알파 프리릴리스입니다. 이후 `main`의 문서 변경은 해당 태그나 산출물을 바꾸지 않습니다.
+연결됩니다. 안정화된 보안 제품이 아닌 알파 프리릴리스입니다. 이후 `main`의 소스/문서 변경은 해당 태그나 산출물을 바꾸지 않습니다.
 첫 [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)에는
 [파서 범위](../reference/PARSER_SCOPE.md)와 [alpha.2 변경 이력](../CHANGELOG.md#010-alpha2---2026-09-10)의
 파서·리포트·의존성 개선이 없습니다. 소스 빌드의 동작을 보고할 때는 `git rev-parse HEAD`로 커밋도 기록하세요.
@@ -36,6 +36,12 @@ Python 환경에서 로컬 격리 복사본 fixture 검사도 통과했습니다
 스캔 대상 앱 실행이나 사용자 소스 수정은 포함하지 않았습니다.
 
 ## 버전 정책
+
+릴리스 시점은 관리자 재량의 기능 단계 기준이며 이슈마다 태그를 만들거나 고정 달력 주기로 내지 않습니다.
+관리자는 2026-09-11에 시점 판단을 위임했지만 아래 릴리스 검사를 생략한다는 뜻은 아닙니다.
+#33/#46 같은 내부 계약은 사용자에게 의미 있는 기능 단위와 산출물/호환성 검증이 준비될 때까지
+`Unreleased`에 둡니다. 제한된 #35 흐름을 시연할 수 있는 시점이 다음 후보이며 날짜나 버전을 미리
+약속하지 않습니다. 개발 7주와 별도 시험/제출 여유를 지키며 활동량을 늘리기 위한 배포는 하지 않습니다.
 
 Semantic Versioning을 사용합니다. 초기 개발 단계인 `1.0.0` 미만에서는 호환성이 깨지는 변경이 생길 수
 있습니다.

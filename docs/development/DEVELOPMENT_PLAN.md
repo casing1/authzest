@@ -172,6 +172,9 @@ and verification workflow. These are future tasks, not features enabled by the r
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
       validation, mock lifecycle tests, and a frozen three-mode harness. Policy criteria are maintainer-approved;
       labels are assistant-authored/code-checked and mock scores do not establish live model performance.
+- [x] Implement the offline proposal/decision slice ([#46](https://github.com/casing1/authzest/issues/46)):
+      exact-content diff previews, bound explicit decisions, expiry and supplied stale-state checks.
+      The [contract](../reference/PROPOSAL_CONTRACT.md) does not apply files, execute checks, or authenticate consent.
 - [ ] Define the permitted evidence payload, data minimization, secret handling, timeout, cancellation,
       and separate data-sharing, patch-application, and verification-execution permissions before live calls.
 - [ ] Add one opt-in Codex adapter behind the interface; choose CLI or App Server, not both. Keep AI

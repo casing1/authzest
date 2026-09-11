@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #46's offline proposal/decision schema `1.0`, binding exact replacements, original hashes,
+  evidence, review identity, rationale and verification intent. Derive diffs from bound text and check
+  explicit decisions, expiry and supplied current source without writing or executing anything.
+  Include a caller-authored debug-configuration demo, not AI generation or a verified fix.
+  See the [proposal contract](docs/reference/PROPOSAL_CONTRACT.md). #35 remains incomplete.
 - Implement #33's offline AI schema `1.0`: selected, immutable source/registration evidence, exact-input
   approval checks, strict response/reference validation, configurable identity/provenance, and isolated
   mock review results. Disabled, invalid, failure, timeout, and cancellation paths preserve static scans.

@@ -255,6 +255,8 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 
 [오프라인 기반](reference/AI_CONTRACT.md)은 alpha.2 바이너리에 포함되지 않으며 #35의 실제 흐름은 아직 구현되지 않았습니다.
+#35의 첫 단계인 [#46 오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)은 소스에 구현했습니다.
+diff 미리보기와 모의 승인 검사를 제공하지만 파일 적용이나 검증 실행은 하지 않습니다.
 6개 사례·3개 모드의 mock 평가는 모델 성능이 아닌 계약을 검사합니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
 가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.
 최종 데모는 직접 소유·관리하는 fixture를 대상으로 하며 데이터 공유·패치·실행은 각각 별도로 허가받습니다.

@@ -18,7 +18,7 @@ to a model is a hypothesis to test, not an established advantage.
 Codex integration and the approve/decline improvement flow are core final-demo goals. They are not merely
 optional future explanations. Runtime use remains opt-in: an offline static scan must stay useful, and
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
-a design target, not a claim that an adapter, approval gate, or patch executor already exists.
+a design target, not a claim that a live adapter, user-facing consent flow, or patch executor already exists.
 
 The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
 and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
@@ -81,6 +81,10 @@ usage data. Keep sensitive source and credentials out of telemetry. CLI and App 
 options behind the interface, not parallel implementations required for this term project.
 
 ## Planned proposal, approval, and verification contract
+
+The [offline proposal/decision contract](../reference/PROPOSAL_CONTRACT.md) in #46 implements only
+bound artifacts, previews and in-memory decision checks. It neither generates code nor mutates source,
+and it does not replace the future current-filesystem/revocation/atomic-application checks below.
 
 The minimum final demo is one maintained owned fixture taken through these separate stages:
 

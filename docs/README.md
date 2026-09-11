@@ -48,6 +48,10 @@ docs/
 
 ## Read the right version
 
+The [offline proposal/decision contract](reference/PROPOSAL_CONTRACT.md), also available in
+[Korean](i18n/ko/reference/PROPOSAL_CONTRACT.md), implements only #46's preview and simulated-decision
+slice of #35. Actual application, live integration and verification remain unimplemented.
+
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
 with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). It is not a live integration or part of alpha.2.
 
