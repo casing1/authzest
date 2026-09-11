@@ -16,6 +16,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #48's [owned-fixture copy application](docs/guides/FIXTURE_APPLICATION.md): explicit terminal
+  approval, consumed live-session decisions, current-file checks, atomic single-file replacement,
+  retained snapshots/journal and separately confirmed conflict-aware restoration on supported POSIX.
+  Original checkouts, live providers and verification execution remain untouched; #35 is incomplete.
 - Add #46's offline proposal/decision schema `1.0`, binding exact replacements, original hashes,
   evidence, review identity, rationale and verification intent. Derive diffs from bound text and check
   explicit decisions, expiry and supplied current source without writing or executing anything.
@@ -32,7 +36,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 ### Changed
 
 - Replace the unused `CodexFinding` adapter placeholder with untrusted JSON responses. No live adapter,
-  CLI/API behavior, report schema, target execution, patching, or published alpha.2 artifact changes.
+  CLI/API behavior, report schema, target execution, existing-checkout patching, or published alpha.2 artifact changes.
 
 ### Documentation
 

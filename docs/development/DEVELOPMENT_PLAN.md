@@ -13,7 +13,7 @@ Build an installable, CLI-first, source-aware FastAPI access-control review and 
 OSS course. The final demo must connect Codex to source evidence, reviewable defensive regression-test
 and patch proposals, an explicit approve/decline decision, approved-only patch application, and separately
 approved isolated verification with a change record. Codex integration is a core product goal, not a
-later optional explanation feature. These stages are planned, not implemented capabilities.
+later optional explanation feature. The full flow remains planned; #33/#46/#48 implement offline slices only.
 
 The static core must still produce useful, repeatable evidence without an AI provider. Each Codex use
 is opt-in; external data sharing, applying a specific patch, and executing a verification plan require
@@ -86,7 +86,8 @@ source registration evidence, and route-local plus inherited dependency declarat
 The source-only [offline AI contract and mock evaluation](../reference/AI_CONTRACT.md) is implemented
 after alpha.2; the published binaries remain unchanged.
 Nested dependency graphs, authentication/authorization classification, finding
-schemas, Codex review, patch application, and verification execution are not implemented.
+schemas, live Codex review, existing-checkout patch application, and verification execution are not implemented.
+The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
@@ -166,7 +167,7 @@ This is the final-demo target after the evidence/report contract and initial dep
 Implement a bounded end-to-end flow before expanding rules or adding a second integration. The offline
 contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remain prerequisites;
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
-and verification workflow. These are future tasks, not features enabled by the report contract.
+and verification workflow. Only the offline slices below are implemented, not the complete workflow.
 
 - [x] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
@@ -175,6 +176,9 @@ and verification workflow. These are future tasks, not features enabled by the r
 - [x] Implement the offline proposal/decision slice ([#46](https://github.com/casing1/authzest/issues/46)):
       exact-content diff previews, bound explicit decisions, expiry and supplied stale-state checks.
       The [contract](../reference/PROPOSAL_CONTRACT.md) does not apply files, execute checks, or authenticate consent.
+- [x] Add [#48's owned-fixture copy application](../guides/FIXTURE_APPLICATION.md): explicit terminal
+      decisions, single-session consumption, POSIX file/state checks, atomic single-file replacement,
+      retained records and separately confirmed restoration. Existing checkouts and verification remain untouched.
 - [ ] Define the permitted evidence payload, data minimization, secret handling, timeout, cancellation,
       and separate data-sharing, patch-application, and verification-execution permissions before live calls.
 - [ ] Add one opt-in Codex adapter behind the interface; choose CLI or App Server, not both. Keep AI

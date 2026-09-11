@@ -16,11 +16,8 @@ from authzest.runner.approval import assess_decision, record_decision
 FIXTURE_ROOT = Path(__file__).resolve().parents[1] / "tests/fixtures/proposal_demo"
 
 
-def run_demo(decision: str = "decline", scenario: str = "current") -> dict:
-    if decision not in ("approve", "decline", "cancel"):
-        raise ValueError("Unsupported demonstration decision")
-    if scenario not in ("current", "stale-source", "expired"):
-        raise ValueError("Unsupported demonstration scenario")
+def build_demo_proposal():
+    """Read the maintained source-only fixture and package its fixed, caller-authored draft."""
     source = (FIXTURE_ROOT / "main.py").read_text(encoding="utf-8")
     report = ScanRunner().run(FIXTURE_ROOT)
     request = prepare_request(
@@ -48,6 +45,18 @@ def run_demo(decision: str = "decline", scenario: str = "current") -> dict:
         side_effects=("Framework debug diagnostics would no longer be enabled by this setting.",),
         checks=("fixture-static-inventory", "fixture-regression-tests"),
         expectations=("Preserve route inventory and review the changed debug setting.",),
+    )
+    return request, review, proposal
+
+
+def run_demo(decision: str = "decline", scenario: str = "current") -> dict:
+    if decision not in ("approve", "decline", "cancel"):
+        raise ValueError("Unsupported demonstration decision")
+    if scenario not in ("current", "stale-source", "expired"):
+        raise ValueError("Unsupported demonstration scenario")
+    request, review, proposal = build_demo_proposal()
+    source = next(
+        item["data"]["text"] for item in request.to_dict()["evidence"] if item["kind"] == "source"
     )
     # Relative demonstration times and a simulated choice, not a real user's consent receipt.
     recorded = record_decision(proposal, request, review, decision, now=0, valid_for_seconds=300)

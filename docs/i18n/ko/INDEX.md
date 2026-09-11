@@ -50,7 +50,11 @@ docs/
 
 [오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)과
 [영어 안내](../../reference/PROPOSAL_CONTRACT.md)는 #35 중 #46의 미리보기·모의 결정 단계만 구현합니다.
-실제 적용·실제 연동·검증 실행은 아직 없습니다.
+해당 순수 계약 자체는 파일 적용·제공자 호출·검증 실행을 하지 않습니다.
+
+후속 [소유 fixture 적용 데모](guides/FIXTURE_APPLICATION.md)
+([English](../../guides/FIXTURE_APPLICATION.md))는 #48의 터미널 승인·복구를 새 POSIX 복사본에만
+추가합니다. 기존 checkout은 편집하지 않으며 실제 연동과 검증 실행은 미완료입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
 [영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.

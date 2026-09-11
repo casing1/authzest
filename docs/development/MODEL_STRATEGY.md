@@ -86,6 +86,11 @@ The [offline proposal/decision contract](../reference/PROPOSAL_CONTRACT.md) in #
 bound artifacts, previews and in-memory decision checks. It neither generates code nor mutates source,
 and it does not replace the future current-filesystem/revocation/atomic-application checks below.
 
+[#48's copy-only demonstration](../guides/FIXTURE_APPLICATION.md) adds terminal decisions, consumption,
+file checks, application and restoration within a fresh POSIX fixture copy. It never edits the original
+checkout or executes checks. Exclusive-writer assumptions, no restart and no authenticated approval
+remain explicit limits; it does not finish the live workflow below.
+
 The minimum final demo is one maintained owned fixture taken through these separate stages:
 
 1. Collect source evidence and human-declared policy; explicitly select and approve the input shared with Codex.

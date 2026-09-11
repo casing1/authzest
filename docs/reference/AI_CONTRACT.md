@@ -104,7 +104,9 @@ remain requirements for a later approved live evaluation.
 
 The subsequent [proposal/decision contract](PROPOSAL_CONTRACT.md) (#46) implements in-memory
 proposal binding, previews and expiry/stale-state checks only. It is not a live adapter, consent UI,
-filesystem application service or verification executor; those #35 tasks remain open.
+filesystem application service or verification executor. The separate
+[#48 copy-only demo](../guides/FIXTURE_APPLICATION.md) adds terminal decisions and application/restoration
+inside a fresh POSIX fixture copy; live integration and verification in #35 remain open.
 
 Require separate approval for the exact source/policy snapshot, provider/model identity, privacy/data
 handling, and budget. Choose one transport and record actual returned identity/usage when available.
