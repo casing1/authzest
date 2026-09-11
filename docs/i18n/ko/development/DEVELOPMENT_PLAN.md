@@ -169,6 +169,9 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
       ([#33](https://github.com/casing1/authzest/issues/33)). 최소 불변 요청, 엄격한 응답/참조 검증,
       mock 실행 주기 테스트와 고정된 세 모드 평가 기반을 구현했습니다. 정책 기준은 관리자 승인,
       정답은 assistant 작성/코드 대조이며 mock 점수는 실제 모델 성능을 입증하지 않습니다.
+- [x] 오프라인 제안/결정 단계([#46](https://github.com/casing1/authzest/issues/46))를 구현합니다.
+      정확한 내용의 diff 미리보기, 연결된 명시적 결정, 만료·제공된 변경 상태를 검사합니다.
+      [계약](../reference/PROPOSAL_CONTRACT.md)은 파일 적용·검사 실행·동의 신원 인증을 하지 않습니다.
 - [ ] 실제 호출 전에 허용 근거 payload, 데이터 최소화, 비밀정보 처리, timeout, 취소와 데이터 공유·패치 적용·
       검증 실행의 별도 허가를 정의합니다.
 - [ ] 인터페이스 뒤에 opt-in Codex adapter 하나를 추가합니다. CLI와 App Server 중 하나만 선택합니다.

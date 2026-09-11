@@ -48,6 +48,10 @@ docs/
 
 ## 올바른 버전의 문서 읽기
 
+[오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)과
+[영어 안내](../../reference/PROPOSAL_CONTRACT.md)는 #35 중 #46의 미리보기·모의 결정 단계만 구현합니다.
+실제 적용·실제 연동·검증 실행은 아직 없습니다.
+
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
 [영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.
 

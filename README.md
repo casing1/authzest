@@ -251,6 +251,8 @@ Current source and next step:
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; #35's live workflow is not implemented yet.
+The first #35 slice, [#46's offline proposal/decision contract](docs/reference/PROPOSAL_CONTRACT.md),
+is implemented in source with diff previews and simulated approval checks; it never applies files or runs verification.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

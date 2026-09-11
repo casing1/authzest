@@ -11,7 +11,7 @@ the current release process. The binaries are not signed or notarized.
 with Python package `0.1.0a2` and report schema `1.2`, from commit
 `7cc359acbb864ef6d31e3b536787857da4f7e09c` ([preparation PR #40](https://github.com/casing1/authzest/pull/40),
 [completed release issue #39](https://github.com/casing1/authzest/issues/39)). This is an alpha prerelease,
-not a stable security product. Subsequent documentation changes on `main` do not modify its tag or assets.
+not a stable security product. Subsequent source/documentation changes on `main` do not modify its tag or assets.
 The original [v0.1.0-alpha.1 preview](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1)
 does not contain the parser/report/dependency improvements documented in the
 [parser scope](../reference/PARSER_SCOPE.md) and [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10).
@@ -39,6 +39,13 @@ every OS/Python/FastAPI version, signing/notarization, or authorization correctn
 application execution, or user-source modification was part of the smoke checks.
 
 ## Version policy
+
+Release timing is milestone-based at the maintainer's discretion, not one tag per issue or a fixed
+calendar cadence. The maintainer delegated timing decisions on 2026-09-11; this does not waive any
+release checks below. Keep internal-only contract slices such as #33/#46 in `Unreleased` until a
+coherent user-facing checkpoint is ready and artifact/compatibility checks pass. A bounded demonstrable
+#35 workflow is the next candidate checkpoint, not a promised date or reserved version. Preserve the
+seven development weeks and separate exam/submission buffer; do not publish to inflate activity.
 
 Use Semantic Versioning. Versions below `1.0.0` may introduce breaking changes while AuthZest is in initial
 development.
