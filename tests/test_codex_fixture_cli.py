@@ -9,6 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from authzest.cli import app
@@ -335,12 +336,14 @@ def test_waiting_adapter_is_cancelled_without_application(tmp_path, interrupt):
     assert list(tmp_path.iterdir()) == []
 
 
-def test_cli_command_requires_model_and_does_not_expose_broad_options():
+def test_cli_command_requires_model_and_does_not_expose_broad_options(monkeypatch):
+    monkeypatch.setenv("FORCE_COLOR", "1")
     help_result = runner.invoke(app, ["codex-fixture", "--help"])
     assert help_result.exit_code == 0
-    assert "--model" in help_result.stdout and "--timeout-seconds" in help_result.stdout
-    assert "--yes" not in help_result.stdout and "--api-key" not in help_result.stdout
-    assert "--path" not in help_result.stdout
+    help_text = unstyle(help_result.stdout)
+    assert "--model" in help_text and "--timeout-seconds" in help_text
+    assert "--yes" not in help_text and "--api-key" not in help_text
+    assert "--path" not in help_text
     assert runner.invoke(app, ["codex-fixture"]).exit_code == 2
     assert runner.invoke(app, ["codex-fixture", "--model", MODEL, "."]).exit_code == 2
 
