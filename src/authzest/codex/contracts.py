@@ -1,4 +1,9 @@
-"""Offline, source-minimized contracts. No filesystem, process, or provider access."""
+"""Source-minimized contracts. No filesystem, process, or provider access.
+
+AI_SCHEMA_VERSION remains the compatible numeric-temperature default, not the latest
+supported version. Schema 1.1 additionally represents provider-managed temperature as
+null; existing schema 1.0 payloads and their content identities remain unchanged.
+"""
 
 from __future__ import annotations
 
@@ -13,6 +18,8 @@ from typing import Any, Literal
 from authzest.models import REPORT_SCHEMA_VERSION, ScanReport
 
 AI_SCHEMA_VERSION = "1.0"
+PROVIDER_MANAGED_AI_SCHEMA_VERSION = "1.1"
+AI_SCHEMA_VERSIONS = (AI_SCHEMA_VERSION, PROVIDER_MANAGED_AI_SCHEMA_VERSION)
 MAX_JSON_BYTES = 262_144
 Mode = Literal["model-only", "evidence-plus-model"]
 
@@ -114,18 +121,20 @@ def decode(raw: str) -> dict[str, Any]:
 
 @dataclass(frozen=True, slots=True)
 class AdapterConfig:
+    """Requested settings; null temperature means not requested/provider-managed."""
+
     provider: str = "mock"
     model: str = "scripted-v1"
     adapter_version: str = "1.0"
     prompt_version: str = "review-v1"
-    temperature: float = 0.0
+    temperature: float | None = 0.0
     seed: int | None = None
 
     def __post_init__(self) -> None:
         for value in (self.provider, self.model, self.adapter_version, self.prompt_version):
             if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}", _text(value, 128)):
                 raise ContractError("Invalid adapter identity")
-        if (
+        if self.temperature is not None and (
             type(self.temperature) not in (float, int)
             or not math.isfinite(self.temperature)
             or not 0 <= self.temperature <= 2
@@ -190,13 +199,15 @@ class CodexAnalysisRequest:
                 "questions",
             },
         )
-        if payload["schema_version"] != AI_SCHEMA_VERSION:
+        if payload["schema_version"] not in AI_SCHEMA_VERSIONS:
             raise ContractError("Unsupported AI schema version")
         if payload["report_schema_version"] != REPORT_SCHEMA_VERSION:
             raise ContractError("Unsupported report schema version")
         if payload["mode"] not in ("model-only", "evidence-plus-model"):
             raise ContractError("Unsupported mode")
-        AdapterConfig(**_object(payload["config"], set(asdict(AdapterConfig()))))
+        config = AdapterConfig(**_object(payload["config"], set(asdict(AdapterConfig()))))
+        if payload["schema_version"] == AI_SCHEMA_VERSION and config.temperature is None:
+            raise ContractError("Schema 1.0 requires an explicit numeric temperature")
         if payload["source_revision"] is not None and not re.fullmatch(
             r"[a-f0-9]{40}|[a-f0-9]{64}", _text(payload["source_revision"], 64)
         ):
@@ -365,13 +376,18 @@ def prepare_request(
             }
         )
     items = [{"id": "ev-" + identity(item), **item} for item in evidence]
+    selected_config = config if config is not None else AdapterConfig()
     return CodexAnalysisRequest(
         canonical(
             {
-                "schema_version": AI_SCHEMA_VERSION,
+                "schema_version": (
+                    PROVIDER_MANAGED_AI_SCHEMA_VERSION
+                    if selected_config.temperature is None
+                    else AI_SCHEMA_VERSION
+                ),
                 "report_schema_version": REPORT_SCHEMA_VERSION,
                 "mode": mode,
-                "config": asdict(config if config is not None else AdapterConfig()),
+                "config": asdict(selected_config),
                 "source_revision": source_revision,
                 "source_identity": identity(sources),
                 "evidence": items,
@@ -394,9 +410,12 @@ class ValidatedResponse:
 def validate_response(raw: str, request: CodexAnalysisRequest) -> ValidatedResponse:
     data = decode(raw)
     _object(data, {"schema_version", "request_id", "identity", "answers", "usage"})
-    if data["schema_version"] != AI_SCHEMA_VERSION or data["request_id"] != request.request_id:
-        raise ContractError("Response version or request identity mismatch")
     payload = request.to_dict()
+    if (
+        data["schema_version"] != payload["schema_version"]
+        or data["request_id"] != request.request_id
+    ):
+        raise ContractError("Response version or request identity mismatch")
     expected_identity = {
         key: payload["config"][key]
         for key in ("provider", "model", "adapter_version", "prompt_version")

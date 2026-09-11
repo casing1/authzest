@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from authzest.codex.base import CodexUnavailableError
-from authzest.codex.contracts import AI_SCHEMA_VERSION, CodexAnalysisRequest, canonical
+from authzest.codex.contracts import CodexAnalysisRequest, canonical
 
 
 @dataclass(slots=True)
@@ -45,7 +45,7 @@ def scripted_response(request: CodexAnalysisRequest, answers: dict[str, str | No
     reference = next(item["id"] for item in payload["evidence"] if item["kind"] == "source")
     return canonical(
         {
-            "schema_version": AI_SCHEMA_VERSION,
+            "schema_version": payload["schema_version"],
             "request_id": request.request_id,
             "identity": {
                 key: payload["config"][key]

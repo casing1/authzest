@@ -54,7 +54,7 @@ def collect_diagnostics(
     which: ExecutableFinder = shutil.which,
     run: CommandRunner = subprocess.run,
 ) -> DoctorReport:
-    """Collect local readiness information without reading credential files."""
+    """Collect local version/login metadata, not a live AI check or credential-file read."""
     checks: list[DiagnosticCheck] = []
     python_version = sys.version_info[:3]
     python_detail = ".".join(str(part) for part in python_version)
@@ -77,7 +77,8 @@ def collect_diagnostics(
                 "Codex CLI",
                 "warning",
                 "not found; local static scans still work",
-                "AI analysis is not implemented; no Codex setup is needed for local scans.",
+                "Local scans remain offline; Codex is needed only for opt-in "
+                "'authzest codex-fixture'.",
             )
         )
         return DoctorReport(version=__version__, checks=tuple(checks))
@@ -90,7 +91,8 @@ def collect_diagnostics(
             DiagnosticCheck(
                 "Codex CLI",
                 version_status,
-                f"{version_text}; diagnostic only; AI analysis is not implemented",
+                f"{version_text}; version/login metadata only; no live AI check; "
+                "scan remains offline",
             )
         )
 
@@ -104,7 +106,8 @@ def collect_diagnostics(
                     "Codex login",
                     "warning",
                     "not authenticated; local static scans still work",
-                    "This is an optional diagnostic; logging in does not enable AI analysis.",
+                    "Login alone does not run AI. The separate 'authzest codex-fixture' command "
+                    "requires explicit sharing approval.",
                 )
             )
     except (OSError, subprocess.TimeoutExpired):
@@ -113,7 +116,7 @@ def collect_diagnostics(
                 "Codex CLI",
                 "warning",
                 "installed but could not be checked",
-                "AI analysis is not implemented; this optional check does not block local scans.",
+                "This version/login metadata check does not call a model or block local scans.",
             )
         )
 

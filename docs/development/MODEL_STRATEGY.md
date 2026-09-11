@@ -18,11 +18,12 @@ to a model is a hypothesis to test, not an established advantage.
 Codex integration and the approve/decline improvement flow are core final-demo goals. They are not merely
 optional future explanations. Runtime use remains opt-in: an offline static scan must stay useful, and
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
-a design target, not a claim that a live adapter, user-facing consent flow, or patch executor already exists.
+a complete design target, not a claim that the full flow is implemented. The separate
+[#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; live validation is pending.
 
 The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
 and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
-correctness, or run an AI adapter. The [source-only examples](../guides/EXAMPLES.md)
+correctness, or run AI as part of a scan. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
 ## Stable contracts, replaceable models
@@ -54,7 +55,7 @@ The [report contract](../reference/REPORT_CONTRACT.md) retains default exit code
 `bounded` is not complete analysis or a security pass. Registration IDs identify source registrations,
 not complete file contents, source revisions, runtime objects, or patch approvals.
 
-## Codex boundary before a live integration
+## Codex boundary and the selected fixture integration
 
 The source implements [#33: evidence-linked explanations and offline evaluation](https://github.com/casing1/authzest/issues/33).
 The [offline contract](../reference/AI_CONTRACT.md) defines minimized inputs, validated hypotheses,
@@ -65,7 +66,13 @@ proposal/approval contracts, the adapter, approved application, and isolated ver
 not implement that workflow. No provider call, credentials, subscription, or paid model is required by
 the default scan or CI.
 
-For a later opt-in adapter, require explicit data-sharing approval and inspect the permitted input scope.
+The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
+only. It requires exact-request sharing approval before starting a process, then separate apply/restore
+decisions for a fresh POSIX copy. Live validation is pending; no verification or general repository AI runs.
+One application-issued turn has no application retry/fallback; Codex internal transport retries can still
+occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
+
+For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
 Repository text is untrusted data, not instructions granting the model tools or access. Minimize source
 content, handle secrets, and define timeout, cancellation, malformed output, unavailable-provider, and
 unsupported-reference behavior. A local report must survive adapter failure.
@@ -74,11 +81,12 @@ Validate each explanation against the supplied evidence identifiers and keep inf
 from human-declared policy. Public endpoints and ordinary dependency injection are legitimate cases;
 missing recognizable authorization evidence is not by itself a vulnerability.
 
-Make provider/model selection configurable when an adapter exists. Record the exact returned model
+Keep the model choice explicit within a supported adapter. Record the exact returned model
 identifier, prompt/adapter/report versions, source revision or content identity, permitted input manifest,
 and actual usage and latency when available. Do not silently substitute a newer model or invent missing
-usage data. Keep sensitive source and credentials out of telemetry. CLI and App Server are integration
-options behind the interface, not parallel implementations required for this term project.
+usage data. Keep sensitive source and credentials out of telemetry. App Server is the selected fixture
+transport; a second CLI integration is not required for this term project. AI schema 1.1 records
+provider-managed temperature as null; numeric-temperature requests keep schema 1.0 and their identities.
 
 ## Planned proposal, approval, and verification contract
 
@@ -115,7 +123,8 @@ approval. No exploit-PoC generation, autonomous offensive workflow, or arbitrary
 App Server can request command/file-change approvals depending on Codex settings; it does not guarantee a
 prompt before every edit. Therefore AuthZest needs its own exact-proposal gate, separate from transport/tool
 permissions. The product must not require a blanket session-wide acceptance to work. This is our product
-design based on the documented approval behavior, not an App Server feature already implemented by AuthZest.
+design based on the documented approval behavior. The fixture adapter rejects model tool requests;
+its separate exact-diff gate is implemented by AuthZest, not delegated to App Server tool approvals.
 [Codex App Server approval documentation](https://learn.chatgpt.com/docs/app-server#approvals).
 
 ## Test the product hypothesis

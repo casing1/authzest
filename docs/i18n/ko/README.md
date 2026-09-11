@@ -14,8 +14,9 @@
 AuthZest는 FastAPI 애플리케이션의 소스 코드를 바탕으로 접근통제를 분석하기 위한 설치형 CLI 중심
 오픈소스 프로젝트입니다. 현재 Python core는 대상 애플리케이션을 import하거나 실행하지 않고
 라우트를 수집합니다. 핵심 제품 목표는 Codex 보조 검토와 방어적 테스트·패치 제안, 사용자 승인 또는
-거절, 승인된 변경만 적용, 별도 승인한 격리 검증과 변경 기록입니다. 아직 구현되지 않은 계획이며,
-정적 스캔은 계속 오프라인으로 동작하고 Codex 사용은 opt-in으로 제공할 예정입니다.
+거절, 승인된 변경만 적용, 별도 승인한 격리 검증과 변경 기록입니다. 완전한 흐름은 미완료입니다.
+현재 소스에는 opt-in 소유 fixture Codex 초안·복사본 승인 단계를 추가하며 실제 검증은 대기 중입니다.
+정적 스캔은 계속 오프라인으로 동작합니다.
 
 React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 사용하기 위해 웹사이트를 배포할 필요는
 없습니다.
@@ -41,6 +42,8 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 지원하는 app·router·`include_router` 의존성 선언을 각 등록의 적용 맥락 근거로 연결하면서
   라우트 직접 목록과 원본 소스 위치를 별도로 보존
 - 선택적인 로컬 API·대시보드, 환경 진단, 독립 실행 파일 패키징
+- 소스 전용 [Codex fixture 명령](guides/CODEX_FIXTURE.md): 명시적 공유, 버전 고정 App Server와
+  새 복사본에만 적용하는 정확한 diff 승인. 실제 검증은 대기 중이며 검증 실행은 하지 않음
 
 지원 데코레이터는 `get`, `post`, `put`, `patch`, `delete`, `options`, `head`입니다.
 정적 분석의 지원 범위는 제한되어 있으며 미해석 route 선언은 생략될 수 있습니다.
@@ -116,7 +119,8 @@ authzest doctor --json
 `doctor`는 Python 실행 환경을 확인합니다. PATH에서 `codex`를 찾으면 `codex --version`과
 `codex login status`도 subprocess로 실행합니다. AI 스캔을 시작하거나 자격 증명 파일을 직접 읽지는
 않습니다. Codex가 없거나 로그인하지 않은 경우 경고를 표시하지만 정적 스캔은 계속 사용할 수 있습니다.
-로그인에 성공해도 AI 분석이 활성화되지는 않습니다. 해당 연동은 아직 구현되지 않았습니다.
+로그인 성공이 AI 스캔을 켜거나 데이터 공유 동의를 대신하지 않습니다. 별도의
+[Codex fixture 명령](guides/CODEX_FIXTURE.md)은 명시적 공유 승인이 필요하고 소유 fixture만 지원합니다.
 
 ## 개발 환경
 
@@ -221,7 +225,7 @@ src/authzest/
 ├── analyzer/   # 저장소 분석과 집계
 ├── parser/     # AST 라우트·import 해석
 ├── runner/     # 공유 스캔 실행 흐름
-├── codex/      # Codex interface; 실제 연동 계획, scan adapter 비활성화
+├── codex/      # 오프라인 계약과 opt-in 소유 fixture adapter; scan은 오프라인
 ├── cli.py      # Typer 명령줄 인터페이스
 ├── api/        # 선택적 FastAPI 연결 계층
 └── models.py   # core 보고서 데이터
@@ -254,12 +258,15 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 
-[오프라인 기반](reference/AI_CONTRACT.md)은 alpha.2 바이너리에 포함되지 않으며 #35의 실제 흐름은 아직 구현되지 않았습니다.
+[오프라인 기반](reference/AI_CONTRACT.md)은 alpha.2 바이너리에 포함되지 않으며 완전한 #35 흐름은 미완료입니다.
 #35의 첫 단계인 [#46 오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)은 소스에 구현했습니다.
 diff 미리보기와 모의 승인 검사를 제공하지만 파일 적용이나 검증 실행은 하지 않습니다.
 후속 [#48 복사본 전용 적용 데모](guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본에
 명시적인 터미널 승인·충돌을 고려한 복구를 추가합니다. 원래 checkout은 수정하지 않으며 실제 AI 호출·
 검증 실행을 하지 않고 alpha.2 바이너리에도 포함되지 않습니다.
+후속 [#50 Codex fixture 단계](guides/CODEX_FIXTURE.md)는 명시적 공유 승인 후 모델 초안 한 번을
+요청하고 적용·복구를 별도로 결정합니다. 소스 전용이며 실제 검증은 대기 중입니다.
+검증 실행과 일반 저장소 AI는 아직 구현하지 않았습니다.
 6개 사례·3개 모드의 mock 평가는 모델 성능이 아닌 계약을 검사합니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
 가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.
 최종 데모는 직접 소유·관리하는 fixture를 대상으로 하며 데이터 공유·패치·실행은 각각 별도로 허가받습니다.

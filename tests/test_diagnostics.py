@@ -11,7 +11,8 @@ def test_doctor_allows_static_scans_when_codex_is_missing() -> None:
     assert report.ready is True
     assert report.checks[-1].name == "Codex CLI"
     assert report.checks[-1].status == "warning"
-    assert "AI analysis is not implemented" in (report.checks[-1].remedy or "")
+    assert "Local scans remain offline" in (report.checks[-1].remedy or "")
+    assert "opt-in 'authzest codex-fixture'" in (report.checks[-1].remedy or "")
 
 
 def test_doctor_checks_codex_version_and_login() -> None:
@@ -28,14 +29,15 @@ def test_doctor_checks_codex_version_and_login() -> None:
     assert report.ready is True
     assert [check.status for check in report.checks] == ["ok", "ok", "ok"]
     assert report.checks[-1].detail == "Logged in using ChatGPT"
-    assert "AI analysis is not implemented" in report.checks[1].detail
+    assert "version/login metadata only; no live AI check" in report.checks[1].detail
+    assert "scan remains offline" in report.checks[1].detail
     assert commands == [
         ("/usr/local/bin/codex", "--version"),
         ("/usr/local/bin/codex", "login", "status"),
     ]
 
 
-def test_doctor_login_warning_does_not_suggest_that_login_enables_analysis() -> None:
+def test_doctor_login_warning_requires_separate_opt_in_sharing() -> None:
     def fake_run(command: tuple[str, ...], **_: object) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(
             command, 0 if command[-1] == "--version" else 1, stdout="", stderr=""
@@ -45,7 +47,8 @@ def test_doctor_login_warning_does_not_suggest_that_login_enables_analysis() -> 
 
     assert report.ready is True
     assert report.checks[-1].status == "warning"
-    assert "does not enable AI analysis" in (report.checks[-1].remedy or "")
+    assert "Login alone does not run AI" in (report.checks[-1].remedy or "")
+    assert "requires explicit sharing approval" in (report.checks[-1].remedy or "")
 
 
 @pytest.mark.parametrize("timeout", [False, True])
@@ -59,4 +62,4 @@ def test_doctor_failed_optional_check_preserves_static_readiness(timeout: bool) 
 
     assert report.ready is True
     assert report.checks[-1].status == "warning"
-    assert "AI analysis is not implemented" in (report.checks[-1].remedy or "")
+    assert "does not call a model or block local scans" in (report.checks[-1].remedy or "")

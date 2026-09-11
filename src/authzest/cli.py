@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from pathlib import Path
@@ -126,7 +127,7 @@ def scan(
 def doctor(
     as_json: bool = typer.Option(False, "--json", help="Print diagnostics as JSON."),
 ) -> None:
-    """Check local scan readiness and optional Codex diagnostics; AI analysis is not implemented."""
+    """Check local scan readiness and optional Codex diagnostics."""
     report = collect_diagnostics()
     if as_json:
         typer.echo(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
@@ -140,6 +141,36 @@ def doctor(
         typer.echo("Ready for local scans." if report.ready else "Setup needs attention.")
     if not report.ready:
         raise typer.Exit(code=1)
+
+
+@app.command("codex-fixture")
+def codex_fixture(
+    model: Annotated[
+        str, typer.Option(help="Exact Codex model identifier; no automatic fallback.")
+    ],
+    timeout_seconds: Annotated[
+        float,
+        typer.Option(help="One adapter attempt timeout, greater than 0 and up to 120 seconds."),
+    ] = 120,
+) -> None:
+    """Opt into Codex review and separately approved edits of an owned fixture copy."""
+    from authzest.runner.codex_fixture import FixtureInputError, run_codex_fixture
+
+    try:
+        result = asyncio.run(
+            run_codex_fixture(model, timeout_seconds=timeout_seconds, emit=typer.echo)
+        )
+    except FixtureInputError as exc:
+        typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
+        raise typer.Exit(code=2) from exc
+    except KeyboardInterrupt:
+        typer.echo(json.dumps({"status": "cancelled", "verification_status": "not-run"}))
+        raise typer.Exit(code=0) from None
+    except Exception:
+        typer.echo(json.dumps({"status": "workflow-failed", "verification_status": "not-run"}))
+        raise typer.Exit(code=1) from None
+    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    raise typer.Exit(code=result["exit_code"])
 
 
 @app.command()
