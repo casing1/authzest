@@ -46,10 +46,12 @@ See the official [authentication guide](https://learn.chatgpt.com/docs/auth) for
 The [App Server documentation](https://learn.chatgpt.com/docs/app-server) describes its managed ChatGPT
 authentication; the restrictions here are AuthZest's narrower fixture workflow, not general Codex limits.
 
-## One model turn, separate file approval
+## At most one model turn, separate file approval
 
-After sharing approval, the adapter starts the supported local App Server for one application-issued
-turn. AuthZest performs no application retry, fallback, or model substitution. Codex's internal transport
+After sharing approval, the adapter uses the supported local App Server for at most one application-issued
+turn. The summary's `application_turn_attempts` counts adapter invocations, not dispatched model turns
+or billing events: preflight can fail before `turn/start`. AuthZest performs no application retry,
+fallback, or model substitution. Codex's internal transport
 retries may still occur. The timeout is not a hard token or monetary limit; usage may be incurred before
 a failure or cancellation, and missing usage measurements must remain unknown.
 
@@ -68,6 +70,17 @@ These controls assume a trusted Codex installation, not a sandbox for an untrust
 The requested model identity is checked against the model negotiated at thread start. The summary
 records `model_identity_basis: negotiated-thread-model; not independently served-model attestation`.
 This is not independent proof of which model served the response.
+
+Recognized generic `warning` notifications are bounded, non-authoritative metadata. The summary
+records the observed `provider_warning_count` only after a successfully validated draft, not warning
+text. Other paths retain `null` (unknown), not zero. A warning cannot change settings, authorize tools,
+approve sharing/application, or supply usage. Malformed warnings, `configWarning`, `guardianWarning`,
+errors, and unknown notification types still stop the flow.
+
+`thread/settings/updated` is checked separately against the agreed thread boundary: model/provider,
+working directory, approval policy/reviewer, read-only sandbox with network disabled, reasoning effort,
+and the collaboration-mode model, reasoning, and instruction settings. A mismatch stops the flow;
+an informational warning cannot waive these checks.
 
 A valid draft is shown for a separate exact-diff decision. Approval can change only a newly created,
 private fixture copy, never the original checkout. Type the displayed `apply <proposal_id>` phrase
@@ -88,19 +101,43 @@ the provider manages it. Existing numeric-temperature requests retain schema `1.
 and the existing `AdapterConfig` default of `0.0`. Null is not zero or deterministic generation.
 The scan report remains schema `1.2`; no package version or new release is implied by these changes.
 
-Live account/model availability, end-to-end results, token usage, and failure recovery evidence must be
-recorded after explicit live validation. They are not established by the offline mocks or this guide.
+Live attempts, end-to-end results, token usage, and failure recovery evidence must be recorded
+separately from offline mocks. Unknown usage is not zero; neither this guide nor successful mocks
+establishes live end-to-end success.
 
 ## Development validation — 2026-09-11
 
-Local Python 3.12 validation passed 957 tests, including 222 new tests. The transport subset includes
-85 offline tests with actual fake-server subprocesses and CLI approve/restore and decline flows.
+Local Python 3.12.7 validation passed 1,129 tests in 112.99 seconds, including 394 new tests. The transport
+subset includes 242 offline tests with actual fake-server subprocesses and CLI approve/restore and decline flows.
 Timeout and cancellation checks observed termination of the test wrapper and its descendant.
 Documentation checker tests (14), language/link checks, Ruff, and frontend lint/format/build passed.
-The wheel and macOS ARM64 development binary exposed the command and cancelled safely on EOF before
-sharing. These artifacts were not published and reused local build dependencies.
+The rebuilt wheel and macOS ARM64 development binary exposed the command and cancelled safely on EOF
+before sharing. The native inventory smoke passed 14 checks against the selected and relocated binary,
+without executing Codex or target source. These artifacts were not published and reused local build dependencies.
 
 A metadata-only preflight against Codex 0.153.0 confirmed ChatGPT login, disabled remote control,
 two disabled inherited MCP servers, and a fresh read-only thread with no instruction sources or
 runtime workspace roots. It issued **zero model turns** and sent no fixture source. Live model
 generation remains **PENDING**; these checks do not establish live end-to-end success or a verified fix.
+
+## Approved live attempts — 2026-09-11
+
+The user approved an initial maximum of three live attempts, then two additional attempts. All five
+approved host attempts were used; this does not prove five dispatched or billed model turns. None
+produced a validated draft. Attempts 1–4 stopped at warning/settings
+metadata interoperability checks. These were validation attempts within those explicit approval
+limits, not application retries or permission for further calls.
+
+Attempt 5 accepted the bounded generic warning as non-authoritative metadata, then received a Codex error
+with `codexErrorInfo: responseStreamDisconnected` and `willRetry: true`. The adapter stopped with the
+redacted `Unexpected Codex event` failure. Recorded local latency was `12357.580 ms`. The provider's
+retry indicator does not prove that a retry completed or give AuthZest permission for another call;
+Codex-internal retries have no AuthZest-enforced hard cap.
+
+Usage remains unknown for all five attempts, and no successful-draft warning count was recorded.
+No live human apply/restore flow was reached, no file
+application or restoration occurred, and the original checkout remained unchanged. The fake-server
+approval/restoration tests above are separate evidence, not a successful live demonstration.
+`verification_status` remains `not-run`, live end-to-end validation remains **PENDING**, and
+[PR #51](https://github.com/casing1/authzest/pull/51) remains a draft without a merge or release.
+There are no remaining approved live attempts; further calls require fresh user approval.

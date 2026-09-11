@@ -140,6 +140,7 @@ async def run_codex_fixture(
             "negotiated-thread-model; not independently served-model attestation"
         ),
         "usage": None,
+        "provider_warning_count": None,
         "latency_ms": None,
         "application": None,
         "restoration": None,
@@ -179,6 +180,9 @@ async def run_codex_fixture(
 
     result["returned_identity"] = review.to_dict()["identity"]
     result["usage"] = review.to_dict()["usage"]
+    warnings = getattr(adapter, "warnings_seen", None)
+    if type(warnings) is int and 0 <= warnings <= 4096:
+        result["provider_warning_count"] = warnings
     _emit_json(emit, {"kind": "codex-fixture-review", "review": review.to_dict()})
     session = None
     try:

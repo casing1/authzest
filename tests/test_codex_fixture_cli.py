@@ -131,6 +131,7 @@ def test_denial_never_constructs_adapter_or_apply_workspace(tmp_path, adapter_fa
     assert result["application_turn_attempts"] == 0
     assert result["application"] is None and result["returned_identity"] is None
     assert result["usage"] is None and result["latency_ms"] is None
+    assert result["provider_warning_count"] is None
     preview = json.loads(output[0])
     assert preview["request_id"] == result["request_id"]
     assert preview["request"]["config"]["model"] == MODEL
@@ -225,6 +226,7 @@ def test_full_fake_workflow_has_separate_choices_and_preserves_original(
     assert result["application_turn_attempts"] == 1
     assert result["returned_identity"]["model"] == MODEL
     assert result["usage"] == {"input_tokens": 101, "output_tokens": 45}
+    assert result["provider_warning_count"] is None  # This fake exposes no warning counter.
     assert result["original_checkout_modified"] is False
     assert result["verification_status"] == "not-run"
     assert result["latency_ms"] >= 0
@@ -292,6 +294,7 @@ def test_failures_and_invalid_drafts_are_sanitized_and_never_create_copy(tmp_pat
     )
     assert result["status"] == "draft-failed" and result["exit_code"] == 1
     assert result["application"] is None and result["returned_identity"] is None
+    assert result["provider_warning_count"] is None
     assert list(tmp_path.iterdir()) == []
     assert calls.count("draft") <= 1 and len(output) == 1
     assert "SECRET-PROVIDER-STDERR" not in json.dumps(result) + "".join(output)
@@ -363,6 +366,7 @@ def test_cli_denial_does_not_construct_adapter(monkeypatch):
     assert result.exit_code == 0
     assert '"status": "not-shared"' in result.stdout
     assert '"application_turn_attempts": 0' in result.stdout
+    assert '"provider_warning_count": null' in result.stdout
 
 
 @pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
@@ -410,4 +414,108 @@ def test_cli_transport_failure_is_generic_and_nonzero(monkeypatch):
     )
     assert result.exit_code == 1
     assert '"status": "draft-failed"' in result.stdout
+    assert '"provider_warning_count": null' in result.stdout
     assert "SECRET-PROVIDER-STDERR" not in result.output
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize(
+    "warning_count,expected",
+    [
+        (0, 0),
+        (5, 5),
+        (4096, 4096),
+        (None, None),
+        (True, None),
+        (False, None),
+        (-1, None),
+        (4097, None),
+        ("5", None),
+        (1.5, None),
+    ],
+)
+def test_runner_reports_only_valid_bounded_provider_warning_counts(
+    tmp_path, warning_count, expected
+):
+    request = build_fixture_request(MODEL)
+    answers = iter([f"share {request.request_id}", ""])
+
+    class WarningAdapter:
+        warnings_seen = warning_count
+
+        async def draft(self, request):
+            return fake_draft(request)
+
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL,
+            read=lambda _: next(answers),
+            emit=lambda _: None,
+            adapter_factory=lambda **kwargs: WarningAdapter(),
+            parent=tmp_path,
+        )
+    )
+    assert result["provider_warning_count"] == expected
+    assert result["status"] == "completed"
+    assert result["application"]["status"] == "declined"
+    assert result["usage"] == {"input_tokens": 101, "output_tokens": 45}
+    assert result["verification_status"] == "not-run"
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize("warning_count", [0, 7])
+def test_failed_runner_does_not_report_partial_provider_warning_counts(tmp_path, warning_count):
+    request = build_fixture_request(MODEL)
+
+    class FailingAdapter:
+        warnings_seen = warning_count
+
+        async def draft(self, request):
+            raise RuntimeError("SECRET-PROVIDER-STDERR")
+
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL,
+            read=lambda _: f"share {request.request_id}",
+            emit=lambda _: None,
+            adapter_factory=lambda **kwargs: FailingAdapter(),
+            parent=tmp_path,
+        )
+    )
+    assert result["status"] == "draft-failed"
+    assert result["provider_warning_count"] is None
+    assert result["usage"] is None and result["application"] is None
+    assert list(tmp_path.iterdir()) == []
+    assert "SECRET-PROVIDER-STDERR" not in json.dumps(result)
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize("warning_count", [0, 7, None])
+def test_cli_renders_provider_warning_count_without_inventing_usage(
+    tmp_path, monkeypatch, warning_count
+):
+    request = build_fixture_request(MODEL)
+    session_type = workflow.FixtureApplySession
+
+    class WarningAdapter:
+        warnings_seen = warning_count
+
+        async def draft(self, request):
+            return fake_draft(request)
+
+    monkeypatch.setattr(workflow, "_default_adapter_factory", lambda **kwargs: WarningAdapter())
+    monkeypatch.setattr(
+        workflow,
+        "FixtureApplySession",
+        lambda *args, **kwargs: session_type(*args, **{**kwargs, "parent": tmp_path}),
+    )
+    result = runner.invoke(
+        app, ["codex-fixture", "--model", MODEL], input=f"share {request.request_id}\n\n"
+    )
+    assert result.exit_code == 0, result.output
+    marker = '{\n  "kind": "codex-owned-fixture-workflow"'
+    summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
+    assert summary["provider_warning_count"] == warning_count
+    assert summary["usage"] == {"input_tokens": 101, "output_tokens": 45}
+    assert summary["application"]["status"] == "declined"
+    assert summary["verification_status"] == "not-run"

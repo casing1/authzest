@@ -38,6 +38,172 @@ def capability_request():
     time.sleep(3600)
 
 
+def metadata_notification(case, stage):
+    if not case.startswith("metadata:"):
+        return
+    _, method, selected_stage, mutation = case.split(":")
+    if stage != selected_stage:
+        return
+    identities = {"threadId": "thread-fixture", "turnId": "turn-fixture"}
+    payloads = {
+        "account/rateLimits/updated": {"rateLimits": {"planType": "plus", "primary": None}},
+        "model/verification": {**identities, "verifications": ["trustedAccessForCyber"]},
+        "model/safetyBuffering/updated": {
+            **identities,
+            "model": SETTINGS["model"],
+            "fasterModel": None,
+            "reasons": [],
+            "showBufferingUi": False,
+            "useCases": [],
+        },
+        "turn/moderationMetadata": {
+            **identities,
+            "metadata": {"input_tokens": 999999, "output_tokens": 999999, "approved": True},
+        },
+    }
+    payload = payloads[method]
+    if mutation == "wrong-thread":
+        payload["threadId"] = "another-thread"
+    if mutation == "wrong-turn":
+        payload["turnId"] = "another-turn"
+    if mutation == "missing-thread":
+        del payload["threadId"]
+    if mutation == "missing-turn":
+        del payload["turnId"]
+    notify(method, **payload)
+
+
+def warning_notification(case, stage):
+    if case.startswith("unrecognized-warning:"):
+        _, method, selected_stage = case.split(":")
+        if selected_stage == stage:
+            notify(method, message="FAKE_SECRET_WARNING", threadId="thread-fixture")
+
+
+def generic_warning(case, stage):
+    if not case.startswith("warning:"):
+        return
+    _, selected_stage, mutation = case.split(":")
+    if selected_stage != stage:
+        return
+    params = {
+        "message": (
+            'FAKE_SECRET_WARNING: {"usage": {"input_tokens": 999999}, '
+            '"model": "not-the-negotiated-model", "approved": true}'
+        ),
+        "threadId": "thread-fixture",
+    }
+    if mutation == "unscoped":
+        del params["threadId"]
+    if mutation == "null-thread":
+        params["threadId"] = None
+    if mutation == "wrong-thread":
+        params["threadId"] = "another-thread"
+    if mutation == "non-string-thread":
+        params["threadId"] = 42
+    if mutation == "missing-message":
+        del params["message"]
+    if mutation == "empty-message":
+        params["message"] = ""
+    if mutation == "non-string-message":
+        params["message"] = 42
+    if mutation == "null-message":
+        params["message"] = None
+    if mutation == "maximum-message":
+        params["message"] = "a" * 4096
+    if mutation == "overlong-message":
+        params["message"] = "a" * 4097
+    if mutation == "extra-properties":
+        params["usage"] = {"input_tokens": 999999}
+    if mutation == "non-object":
+        send({"method": "warning", "params": []})
+        return
+    notify("warning", **params)
+
+
+def disconnected_stream_error(case, stage):
+    if case != f"stream-disconnected:{stage}":
+        return
+    # Schema-valid representative of the observed event type and retry flag, not a raw capture.
+    event = {
+        "method": "error",
+        "params": {
+            "threadId": "thread-fixture",
+            "turnId": "turn-fixture",
+            "willRetry": True,
+            "error": {
+                "message": "Stream disconnected before completion",
+                "codexErrorInfo": {"responseStreamDisconnected": {"httpStatusCode": None}},
+                "additionalDetails": "FAKE_SECRET_ERROR_DETAIL",
+            },
+        },
+    }
+    record("injected-error", message=event)
+    send(event)
+
+
+def settings_notification(case, stage):
+    if not case.startswith("settings:"):
+        return
+    _, selected_stage, mutation = case.split(":")
+    if selected_stage != stage:
+        return
+    settings = {
+        "model": SETTINGS["model"],
+        "modelProvider": "openai",
+        "cwd": os.getcwd(),
+        "approvalPolicy": "on-request",
+        "approvalsReviewer": "user",
+        "sandboxPolicy": {"type": "readOnly", "networkAccess": False},
+        "effort": None if mutation == "null-effort" else "low",
+        "collaborationMode": {"mode": "default", "settings": {"model": SETTINGS["model"]}},
+    }
+    params = {"threadId": "thread-fixture", "threadSettings": settings}
+    replacements = {
+        "wrong-model": ("model", "different-model"),
+        "wrong-provider": ("modelProvider", "other-provider"),
+        "wrong-cwd": ("cwd", str(Path(os.getcwd()).parent)),
+        "wrong-policy": ("approvalPolicy", "never"),
+        "wrong-reviewer": ("approvalsReviewer", "guardian_subagent"),
+        "wrong-sandbox": ("sandboxPolicy", {"type": "dangerFullAccess"}),
+        "enabled-network": ("sandboxPolicy", {"type": "readOnly", "networkAccess": True}),
+        "wrong-effort": ("effort", "high"),
+    }
+    if mutation in replacements:
+        key, value = replacements[mutation]
+        settings[key] = value
+    if mutation == "wrong-thread":
+        params["threadId"] = "different-thread"
+    if mutation == "missing-settings":
+        del params["threadSettings"]
+    if mutation == "null-settings":
+        params["threadSettings"] = None
+    if mutation == "missing-sandbox":
+        del settings["sandboxPolicy"]
+    if mutation == "missing-model":
+        del settings["model"]
+    if mutation == "same-collaboration":
+        settings["collaborationMode"]["settings"].update(
+            reasoning_effort="low",
+            developer_instructions=SETTINGS["config"]["developer_instructions"],
+        )
+    if mutation == "wrong-collaboration-mode":
+        settings["collaborationMode"]["mode"] = "plan"
+    if mutation == "wrong-collaboration-model":
+        settings["collaborationMode"]["settings"]["model"] = "different-model"
+    if mutation == "wrong-collaboration-effort":
+        settings["collaborationMode"]["settings"]["reasoning_effort"] = "high"
+    if mutation == "extra-collaboration-instructions":
+        settings["collaborationMode"]["settings"]["developer_instructions"] = (
+            "FAKE_SECRET_UNREVIEWED_INSTRUCTIONS"
+        )
+    if mutation == "missing-collaboration-mode":
+        del settings["collaborationMode"]
+    if mutation == "missing-collaboration-settings":
+        del settings["collaborationMode"]["settings"]
+    notify("thread/settings/updated", **params)
+
+
 def finish(case):
     params = {"threadId": "thread-fixture", "turnId": "turn-fixture"}
     if case in {"hang", "descendant", "infinite-output"}:
@@ -60,6 +226,16 @@ def finish(case):
     if case == "wrong-turn":
         params["turnId"] = "different-turn"
     notify("turn/started", **params, turn={"id": "turn-fixture", "items": []})
+    settings_notification(case, "during-turn")
+    generic_warning(case, "during-turn")
+    disconnected_stream_error(case, "during-turn")
+    metadata_notification(case, "during-turn")
+    warning_notification(case, "during-turn")
+    if case == "metadata-only":
+        metadata_notification("metadata:model/verification:during-turn:valid", "during-turn")
+        metadata_notification("metadata:turn/moderationMetadata:during-turn:valid", "during-turn")
+    if case == "warning-only":
+        generic_warning("warning:during-turn:scoped", "during-turn")
     if case == "tool-item":
         notify("item/started", **params, item={"type": "commandExecution", "id": "command"})
     if case == "memory-item":
@@ -84,7 +260,7 @@ def finish(case):
         raw = json.dumps(changed)
     if case == "non-string-final":
         raw = 42
-    if case != "missing-final":
+    if case not in {"missing-final", "metadata-only", "warning-only"}:
         notify("item/completed", **params, item=item(raw))
     if case in {"ambiguous-final", "repeated-final"}:
         identity = "final-two" if case == "ambiguous-final" else "final-one"
@@ -138,6 +314,14 @@ def main():
         method = message.get("method")
         result = {}
         if method == "initialize":
+            if case == "warning-per-session":
+                notify("warning", message="Unscoped informational startup warning")
+            if case == "warning-burst":
+                for _ in range(130):
+                    notify("warning", message="Informational quota-independent warning")
+            if case == "quota-burst":
+                for _ in range(130):
+                    notify("account/rateLimits/updated", rateLimits={})
             if case == "missing-notification-method":
                 send({"notice": "not a notification"})
             if case == "malformed":
@@ -180,6 +364,12 @@ def main():
                     config["mcp_servers"][name] = {"enabled": False}
             if case == "bad-config":
                 config["web_search"] = "live"
+            if case == "unstable-warning-enabled":
+                config["suppress_unstable_features_warning"] = False
+            if case == "unstable-warning-string":
+                config["suppress_unstable_features_warning"] = "true"
+            if case == "unstable-warning-missing":
+                del config["suppress_unstable_features_warning"]
             if case == "external-context":
                 config["model_instructions_file"] = "/not-to-be-read/private.md"
             if case == "invalid-mcp-name":
@@ -222,10 +412,14 @@ def main():
             if case == "duplicate-model":
                 result["data"] *= 2
         elif method == "thread/start":
+            warning_notification(case, "before-response")
+            generic_warning(case, "before-thread-response")
+            settings_notification(case, "before-thread-response")
             result = {
                 "model": SETTINGS["model"],
                 "modelProvider": "openai",
                 "approvalPolicy": "on-request",
+                "approvalsReviewer": "user",
                 "sandbox": {"type": "readOnly"},
                 "cwd": os.getcwd(),
                 "instructionSources": [],
@@ -254,6 +448,10 @@ def main():
                 notification["id"] = "different-thread"
             notify("thread/started", thread=notification)
         elif method == "turn/start":
+            metadata_notification(case, "before-response")
+            generic_warning(case, "before-turn-response")
+            disconnected_stream_error(case, "before-turn-response")
+            settings_notification(case, "before-turn-response")
             result = {"turn": {"id": "turn-fixture", "items": []}}
             if case == "turn-result-tool":
                 result["turn"]["items"] = [{"type": "commandExecution", "id": "command"}]

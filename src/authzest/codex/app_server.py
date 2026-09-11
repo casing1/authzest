@@ -31,6 +31,12 @@ SUPPORTED_CODEX_VERSION = "0.153.0"
 MAX_STREAM_BYTES = 2 * 1024 * 1024
 MAX_EVENTS = 4096
 ALLOWED_EVENTS = {
+    "account/rateLimits/updated",
+    "model/verification",
+    "model/safetyBuffering/updated",
+    "turn/moderationMetadata",
+    "thread/settings/updated",
+    "warning",
     "remoteControl/status/changed",
     "thread/started",
     "thread/status/changed",
@@ -86,6 +92,7 @@ DISABLED_FEATURES = tuple(
 CONFIG = {
     **{f"features.{name}": False for name in DISABLED_FEATURES},
     "features.skip_host_skill_discovery": True,
+    "suppress_unstable_features_warning": True,
     "project_doc_max_bytes": 0,
     "web_search": "disabled",
     "notify": [],
@@ -174,6 +181,54 @@ class _Session:
         self.total_bytes = 0
         self.events = 0
         self.pending: deque[dict[str, Any]] = deque()
+        self.thread_boundary: dict[str, Any] | None = None
+        self.warnings_seen = 0
+
+    def check_warning(self, params: dict[str, Any]) -> None:
+        if (
+            set(params) - {"message", "threadId"}
+            or type(params.get("message")) is not str
+            or not 0 < len(params["message"]) <= 4096
+            or (params.get("threadId") is not None and type(params["threadId"]) is not str)
+        ):
+            raise AppServerError("Invalid Codex warning metadata")
+        if self.thread_boundary is not None and params.get("threadId") not in (
+            None,
+            self.thread_boundary["threadId"],
+        ):
+            raise AppServerError("Codex thread identity mismatch")
+
+    def check_settings(self, params: dict[str, Any]) -> None:
+        expected = self.thread_boundary
+        settings = params.get("threadSettings")
+        if expected is None or type(settings) is not dict:
+            raise AppServerError("Unexpected Codex settings update")
+        if params.get("threadId") != expected["threadId"]:
+            raise AppServerError("Codex thread identity mismatch")
+        for key in ("model", "modelProvider", "cwd", "approvalPolicy", "approvalsReviewer"):
+            if settings.get(key) != expected[key]:
+                raise AppServerError("Codex changed the negotiated thread boundary")
+        sandbox = settings.get("sandboxPolicy")
+        if (
+            type(sandbox) is not dict
+            or sandbox.get("type") != "readOnly"
+            or sandbox.get("networkAccess", False) is not False
+            or settings.get("effort") not in (None, expected["effort"])
+        ):
+            raise AppServerError("Codex changed the negotiated thread boundary")
+        collaboration = settings.get("collaborationMode")
+        if type(collaboration) is not dict or collaboration.get("mode") != "default":
+            raise AppServerError("Unexpected Codex collaboration context")
+        mode_settings = collaboration.get("settings")
+        if (
+            type(mode_settings) is not dict
+            or mode_settings.get("model") != expected["model"]
+            or mode_settings.get("reasoning_effort") not in (None, expected["effort"])
+            or mode_settings.get("developer_instructions") not in (None, BASE_INSTRUCTIONS)
+        ):
+            raise AppServerError("Unexpected Codex collaboration context")
+        # serviceTier is the persistent thread tier, not serviceTierForTurn.
+        # Each actual turn explicitly requests the standard tier without changing it.
 
     async def send(self, message: dict[str, Any]) -> None:
         assert self.process.stdin is not None
@@ -209,6 +264,11 @@ class _Session:
                 raise AppServerError("Unexpected Codex event")
             if method == "remoteControl/status/changed" and params.get("status") != "disabled":
                 raise AppServerError("Remote Codex control must remain disabled")
+            if method == "thread/settings/updated" and self.thread_boundary is not None:
+                self.check_settings(params)
+            if method == "warning":
+                self.check_warning(params)
+                self.warnings_seen += 1
             if method in {"item/started", "item/completed"}:
                 _check_item(params.get("item"))
             if method in {"turn/started", "turn/completed"}:
@@ -229,6 +289,8 @@ class _Session:
                     value.get("params"), dict
                 ):
                     raise AppServerError("Invalid Codex notification")
+                if value["method"] == "account/rateLimits/updated":
+                    continue  # Account quota metadata is not model output or an approval.
                 if len(self.pending) >= 128:
                     raise AppServerError("Too many pending Codex notifications")
                 self.pending.append(value)
@@ -313,6 +375,13 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
         method, params = message.get("method"), message.get("params")
         if method not in ALLOWED_EVENTS or type(params) is not dict:
             raise AppServerError("Unexpected Codex event")
+        if method == "account/rateLimits/updated":
+            continue
+        if method == "warning":
+            session.check_warning(params)
+            if params.get("threadId") not in (None, thread_id):
+                raise AppServerError("Codex thread identity mismatch")
+            continue  # Informational only; cannot alter settings, output, consent or usage.
         if method == "remoteControl/status/changed":
             if params.get("status") != "disabled":
                 raise AppServerError("Remote Codex control must remain disabled")
@@ -323,6 +392,15 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
             continue
         if params.get("threadId") != thread_id:
             raise AppServerError("Codex thread identity mismatch")
+        if method == "thread/settings/updated":
+            session.check_settings(params)
+            continue
+        if (
+            method
+            in {"model/verification", "model/safetyBuffering/updated", "turn/moderationMetadata"}
+            and params.get("turnId") != turn_id
+        ):
+            raise AppServerError("Codex turn identity mismatch")
         if "turnId" in params and params["turnId"] != turn_id:
             raise AppServerError("Codex turn identity mismatch")
         if method in {"item/started", "item/completed"}:
@@ -390,6 +468,7 @@ class CodexAppServerAdapter:
         self.timeout_seconds = timeout_seconds
         self.executable = executable
         self.consumed = False
+        self.warnings_seen: int | None = None
 
     async def analyze(self, request: CodexAnalysisRequest) -> str:
         """Satisfy the review-only adapter protocol without extending its JSON shape."""
@@ -408,10 +487,14 @@ class CodexAppServerAdapter:
                     # No thread is created by discovery. Empty TOML maps merge, so enumerate
                     # inherited MCP names without logging settings, then disable each on restart.
                     async with _process(_arguments(self.executable, ()), cwd) as process:
-                        config = await _Session(process).initialize()
+                        discovery = _Session(process)
+                        config = await discovery.initialize()
                         servers = _check_config(config, require_disabled_mcp=False)
                     async with _process(_arguments(self.executable, servers), cwd) as process:
                         session = _Session(process)
+                        session.total_bytes = discovery.total_bytes
+                        session.events = discovery.events
+                        session.warnings_seen = discovery.warnings_seen
                         config = await session.initialize()
                         _check_config(config, require_disabled_mcp=True)
                         remote = await session.request("remoteControl/status/read", {})
@@ -463,6 +546,20 @@ class CodexAppServerAdapter:
                         ):
                             raise AppServerError("Codex thread boundary or model mismatch")
                         thread_id = _identifier(started.get("thread", {}).get("id"))
+                        session.thread_boundary = {
+                            "threadId": thread_id,
+                            "model": model,
+                            "modelProvider": "openai",
+                            "cwd": str(cwd),
+                            "approvalPolicy": "on-request",
+                            "approvalsReviewer": started.get("approvalsReviewer"),
+                            "effort": effort,
+                        }
+                        for event in session.pending:
+                            if event["method"] == "thread/settings/updated":
+                                session.check_settings(event["params"])
+                            if event["method"] == "warning":
+                                session.check_warning(event["params"])
                         turn_result = await session.request(
                             "turn/start",
                             {
@@ -482,6 +579,7 @@ class CodexAppServerAdapter:
                         for item in turn_result.get("turn", {}).get("items", []):
                             _check_item(item)
                         raw, usage = await _finish(session, thread_id, turn_id)
+                        self.warnings_seen = session.warnings_seen
                         return validate_fixture_draft(raw, request, usage=usage)
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
             raise AppServerError("Codex fixture request failed; no proposal was applied") from exc

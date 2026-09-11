@@ -121,7 +121,9 @@ def assert_descendant_stopped(fake):
 
 def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(context, fake_factory):
     fake = fake_factory()
-    result = asyncio.run(adapter(context, fake).draft(context))
+    transport = adapter(context, fake)
+    result = asyncio.run(transport.draft(context))
+    assert transport.warnings_seen == 0
     assert result.proposal.to_dict()["changes"][0]["after_text"] == FIXTURE_AFTER
     assert result.review.to_dict()["usage"] == {"input_tokens": 123, "output_tokens": 45}
     assert fake.methods() == [
@@ -139,6 +141,7 @@ def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(con
     ]
     starts = fake.starts()
     assert len(starts) == 2
+    assert all("suppress_unstable_features_warning=true" in event["arguments"] for event in starts)
     assert "mcp_servers.inherited-server.enabled=false" not in starts[0]["arguments"]
     assert "mcp_servers.inherited-server.enabled=false" in starts[1]["arguments"]
     calls = {
@@ -225,6 +228,9 @@ def test_invalid_timeout_rejected(timeout):
         "boolean-rpc-id",
         "rpc-error",
         "bad-config",
+        "unstable-warning-enabled",
+        "unstable-warning-string",
+        "unstable-warning-missing",
         "missing-config",
         "external-context",
         "invalid-mcp-name",
@@ -472,3 +478,246 @@ def test_real_cli_declined_sharing_starts_no_codex_process(context, fake_factory
     assert summary["verification_status"] == "not-run"
     assert not fake.log.exists()
     assert list(temporary_root.iterdir()) == []
+
+
+@pytest.mark.parametrize(
+    "method",
+    [
+        "account/rateLimits/updated",
+        "model/verification",
+        "model/safetyBuffering/updated",
+        "turn/moderationMetadata",
+    ],
+)
+@pytest.mark.parametrize("stage", ["before-response", "during-turn"])
+def test_known_read_only_metadata_preserves_output_usage_and_proposal(
+    context, fake_factory, method, stage
+):
+    fake = fake_factory(f"metadata:{method}:{stage}:valid")
+    draft = asyncio.run(adapter(context, fake).draft(context))
+    expected = validate_fixture_draft(
+        canonical(response_data(context)), context, usage={"input_tokens": 123, "output_tokens": 45}
+    )
+    assert draft.review.payload_json == expected.review.payload_json
+    assert draft.proposal.proposal_id == expected.proposal.proposal_id
+    assert draft.proposal.to_dict()["changes"][0]["after_text"] == FIXTURE_AFTER
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "method", ["model/verification", "model/safetyBuffering/updated", "turn/moderationMetadata"]
+)
+@pytest.mark.parametrize("stage", ["before-response", "during-turn"])
+@pytest.mark.parametrize(
+    "mutation", ["wrong-thread", "wrong-turn", "missing-thread", "missing-turn"]
+)
+def test_scoped_metadata_requires_exact_thread_and_turn_identity(
+    context, fake_factory, method, stage, mutation
+):
+    fake = fake_factory(f"metadata:{method}:{stage}:{mutation}")
+    with pytest.raises(AppServerError, match="identity mismatch"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("method", ["configWarning", "guardianWarning", "error", "unknownWarning"])
+@pytest.mark.parametrize("stage", ["before-response", "during-turn"])
+def test_unrecognized_warnings_remain_fail_closed(context, fake_factory, method, stage):
+    fake = fake_factory(f"unrecognized-warning:{method}:{stage}")
+    with pytest.raises(AppServerError, match="Unexpected Codex event") as error:
+        asyncio.run(adapter(context, fake).draft(context))
+    assert "FAKE_SECRET_WARNING" not in str(error.value)
+    assert fake.methods().count("turn/start") == (0 if stage == "before-response" else 1)
+    assert_stopped(fake)
+
+
+def test_metadata_cannot_substitute_for_a_final_answer(context, fake_factory):
+    fake = fake_factory("metadata-only")
+    with pytest.raises(AppServerError, match="Missing or ambiguous Codex final output"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert_stopped(fake)
+
+
+def test_ignored_quota_metadata_still_consumes_stream_budget(context, fake_factory, monkeypatch):
+    monkeypatch.setattr(app_server, "MAX_EVENTS", 20)
+    fake = fake_factory("quota-burst")
+    with pytest.raises(AppServerError, match="oversized Codex stream"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert "turn/start" not in fake.methods()
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("stage", ["before-thread-response", "before-turn-response", "during-turn"])
+@pytest.mark.parametrize("effort", ["same-effort", "null-effort", "same-collaboration"])
+def test_unchanged_settings_notifications_preserve_the_bound_draft(
+    context, fake_factory, stage, effort
+):
+    fake = fake_factory(f"settings:{stage}:{effort}")
+    draft = asyncio.run(adapter(context, fake).draft(context))
+    expected = validate_fixture_draft(
+        canonical(response_data(context)), context, usage={"input_tokens": 123, "output_tokens": 45}
+    )
+    assert draft.review.payload_json == expected.review.payload_json
+    assert draft.proposal.proposal_id == expected.proposal.proposal_id
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("stage", ["before-thread-response", "before-turn-response", "during-turn"])
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "wrong-model",
+        "wrong-provider",
+        "wrong-cwd",
+        "wrong-policy",
+        "wrong-reviewer",
+        "wrong-sandbox",
+        "enabled-network",
+        "wrong-effort",
+        "wrong-thread",
+        "missing-settings",
+        "null-settings",
+        "missing-sandbox",
+        "missing-model",
+        "wrong-collaboration-mode",
+        "wrong-collaboration-model",
+        "wrong-collaboration-effort",
+        "extra-collaboration-instructions",
+        "missing-collaboration-mode",
+        "missing-collaboration-settings",
+    ],
+)
+def test_changed_or_incomplete_thread_settings_fail_closed(context, fake_factory, stage, mutation):
+    fake = fake_factory(f"settings:{stage}:{mutation}")
+    with pytest.raises(
+        AppServerError, match="settings update|boundary|identity mismatch|collaboration context"
+    ) as error:
+        asyncio.run(adapter(context, fake).draft(context))
+    assert "FAKE_SECRET" not in str(error.value)
+    # A queued pre-thread-response change must be rejected before the generation RPC.
+    assert fake.methods().count("turn/start") == (0 if stage == "before-thread-response" else 1)
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("stage", ["before-thread-response", "before-turn-response", "during-turn"])
+@pytest.mark.parametrize("scope", ["scoped", "unscoped", "null-thread", "maximum-message"])
+def test_generic_warnings_are_counted_without_altering_authoritative_results(
+    context, fake_factory, stage, scope
+):
+    fake = fake_factory(f"warning:{stage}:{scope}")
+    transport = adapter(context, fake)
+    draft = asyncio.run(transport.draft(context))
+    expected = validate_fixture_draft(
+        canonical(response_data(context)), context, usage={"input_tokens": 123, "output_tokens": 45}
+    )
+    assert transport.warnings_seen == 1
+    assert draft.review.payload_json == expected.review.payload_json
+    assert draft.proposal.proposal_id == expected.proposal.proposal_id
+    assert "FAKE_SECRET_WARNING" not in draft.review.payload_json + draft.proposal.payload_json
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("stage", ["before-thread-response", "before-turn-response", "during-turn"])
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "wrong-thread",
+        "non-string-thread",
+        "missing-message",
+        "empty-message",
+        "non-string-message",
+        "null-message",
+        "overlong-message",
+        "extra-properties",
+        "non-object",
+    ],
+)
+def test_malformed_or_unrelated_warning_metadata_is_rejected(
+    context, fake_factory, stage, mutation
+):
+    fake = fake_factory(f"warning:{stage}:{mutation}")
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(adapter(context, fake).draft(context))
+    assert "FAKE_SECRET_WARNING" not in str(error.value)
+    assert fake.methods().count("turn/start") == (0 if stage == "before-thread-response" else 1)
+    assert_stopped(fake)
+
+
+def test_warning_metadata_cannot_substitute_for_final_model_output(context, fake_factory):
+    fake = fake_factory("warning-only")
+    with pytest.raises(AppServerError, match="Missing or ambiguous Codex final output"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert_stopped(fake)
+
+
+def test_informational_warnings_still_consume_stream_budget(context, fake_factory, monkeypatch):
+    monkeypatch.setattr(app_server, "MAX_EVENTS", 20)
+    fake = fake_factory("warning-burst")
+    with pytest.raises(AppServerError, match="oversized Codex stream"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert "turn/start" not in fake.methods()
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("budget", ["bytes", "events"])
+def test_two_preflight_sessions_share_one_stream_budget(context, fake_factory, monkeypatch, budget):
+    fake = fake_factory()
+    if budget == "events":
+        monkeypatch.setattr(app_server, "MAX_EVENTS", 3)
+    else:
+        discovery_config = nested_config()
+        discovery_config["mcp_servers"] = {"inherited-server": {"enabled": True}}
+        discovery_responses = [
+            {"id": 1, "result": {"userAgent": "authzest/0.153.0"}},
+            {"id": 2, "result": {"config": discovery_config}},
+        ]
+        first_session_bytes = sum(
+            len((json.dumps(message) + "\n").encode()) for message in discovery_responses
+        )
+        # Enough for either session's initial metadata independently, not both combined.
+        monkeypatch.setattr(app_server, "MAX_STREAM_BYTES", first_session_bytes + 100)
+    with pytest.raises(AppServerError, match="oversized Codex stream"):
+        asyncio.run(adapter(context, fake).draft(context))
+    assert len(fake.starts()) == 2
+    assert fake.methods() == [
+        "initialize",
+        "initialized",
+        "config/read",
+        "initialize",
+        "initialized",
+        "config/read",
+    ]
+    assert_stopped(fake)
+
+
+def test_warning_count_includes_discovery_and_generation_sessions(context, fake_factory):
+    fake = fake_factory("warning-per-session")
+    transport = adapter(context, fake)
+    result = asyncio.run(transport.draft(context))
+    assert transport.warnings_seen == 2
+    assert result.review.to_dict()["usage"] == {"input_tokens": 123, "output_tokens": 45}
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("stage", ["before-turn-response", "during-turn"])
+def test_observed_stream_disconnect_event_type_and_retry_flag_remain_fatal(
+    context, fake_factory, stage
+):
+    fake = fake_factory(f"stream-disconnected:{stage}")
+    transport = adapter(context, fake)
+    with pytest.raises(AppServerError, match="Unexpected Codex event") as error:
+        asyncio.run(transport.draft(context))
+    injected = next(
+        event["message"] for event in fake.events() if event["event"] == "injected-error"
+    )
+    assert injected["params"]["willRetry"] is True
+    assert set(injected["params"]["error"]["codexErrorInfo"]) == {"responseStreamDisconnected"}
+    assert "FAKE_SECRET_ERROR_DETAIL" not in str(error.value)
+    assert fake.methods().count("turn/start") == 1
+    assert len(fake.starts()) == 2
+    assert transport.consumed is True
+    assert_stopped(fake)
