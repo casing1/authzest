@@ -17,6 +17,10 @@ The library packages explicit caller-authored replacement text and validates a p
 It does not call Codex, synthesize code, write a draft workspace, apply a patch, execute tests, or
 recover files. #35 remains open for those later, separately approved integration stages.
 
+The separate [#48 fixture-copy service](../guides/FIXTURE_APPLICATION.md) now demonstrates actual
+approved application/restoration in a fresh POSIX copy only. This contract module remains pure; neither
+it nor that bounded copy demo provides arbitrary-checkout writes, live AI or verification execution.
+
 ## Proposal contents and preview
 
 `prepare_proposal` takes a #33 request, its validated review, selected existing-file replacements,

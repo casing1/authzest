@@ -253,6 +253,9 @@ Current source and next step:
 The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; #35's live workflow is not implemented yet.
 The first #35 slice, [#46's offline proposal/decision contract](docs/reference/PROPOSAL_CONTRACT.md),
 is implemented in source with diff previews and simulated approval checks; it never applies files or runs verification.
+The subsequent [#48 copy-only application demo](docs/guides/FIXTURE_APPLICATION.md) adds explicit
+terminal approval and conflict-aware restoration of a fresh POSIX fixture copy, not the original checkout.
+It performs no live AI call or verification execution and is not included in alpha.2 binaries.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution
