@@ -56,7 +56,7 @@ def _command() -> list[str]:
 def _environment(directory: Path) -> dict[str, str]:
     # No account, HOME, provider, Python injection, proxy, or ambient tool settings.
     # This is a reduced environment for trusted code, not network/OS confinement.
-    return {
+    environment = {
         "PATH": "/usr/bin:/bin",
         "LANG": "C.UTF-8",
         "LC_ALL": "C.UTF-8",
@@ -67,6 +67,36 @@ def _environment(directory: Path) -> dict[str, str]:
         "NO_COLOR": "1",
         "TERM": "dumb",
     }
+    if getattr(sys, "frozen", False):
+        # Same-executable PyInstaller workers must retain their parent's existing
+        # archive/unpack context; dropping it forces a second cold extraction.
+        # Preserve these values unchanged, never manufacture bootloader state.
+        # This checks consistency, not executable or environment attestation.
+        # https://pyinstaller.org/en/stable/advanced-topics.html#private-environment-variables
+        archive = os.environ.get("_PYI_ARCHIVE_FILE")
+        application_home = os.environ.get("_PYI_APPLICATION_HOME_DIR")
+        parent_level = os.environ.get("_PYI_PARENT_PROCESS_LEVEL")
+        unpacked = getattr(sys, "_MEIPASS", None)
+        if (
+            type(archive) is not str
+            or archive != sys.executable
+            or not Path(archive).is_absolute()
+            or not Path(archive).is_file()
+            or type(application_home) is not str
+            or application_home != unpacked
+            or not Path(application_home).is_absolute()
+            or not Path(application_home).is_dir()
+            or parent_level != "1"  # PyInstaller's main application process.
+        ):
+            raise ValueError("Inconsistent frozen worker context")
+        environment.update(
+            {
+                "_PYI_ARCHIVE_FILE": archive,
+                "_PYI_APPLICATION_HOME_DIR": application_home,
+                "_PYI_PARENT_PROCESS_LEVEL": parent_level,
+            }
+        )
+    return environment
 
 
 async def _stop(process: asyncio.subprocess.Process) -> None:

@@ -102,6 +102,10 @@ def test_no_ambient_credentials_or_python_settings_in_child(monkeypatch, tmp_pat
         "HTTPS_PROXY",
         "PYTHONPATH",
         "PYTHONSTARTUP",
+        "_PYI_ARCHIVE_FILE",
+        "_PYI_APPLICATION_HOME_DIR",
+        "_PYI_PARENT_PROCESS_LEVEL",
+        "PYINSTALLER_RESET_ENVIRONMENT",
     ):
         monkeypatch.setenv(name, "private-dummy-sentinel")
     environment = check._environment(tmp_path)
@@ -119,6 +123,91 @@ def test_no_ambient_credentials_or_python_settings_in_child(monkeypatch, tmp_pat
         "NO_COLOR",
         "TERM",
     }
+
+
+@pytest.fixture
+def frozen_context(monkeypatch, tmp_path):
+    executable = tmp_path / "authzest"
+    executable.touch()
+    unpacked = tmp_path / "unpacked"
+    unpacked.mkdir()
+    values = {
+        "_PYI_ARCHIVE_FILE": str(executable),
+        "_PYI_APPLICATION_HOME_DIR": str(unpacked),
+        "_PYI_PARENT_PROCESS_LEVEL": "1",
+    }
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "executable", str(executable))
+    monkeypatch.setattr(sys, "_MEIPASS", str(unpacked), raising=False)
+    for key, value in values.items():
+        monkeypatch.setenv(key, value)
+    return values
+
+
+def test_frozen_environment_preserves_only_matching_bootloader_values(
+    monkeypatch, tmp_path, frozen_context
+):
+    for key in (
+        "HOME",
+        "CODEX_HOME",
+        "OPENAI_API_KEY",
+        "HTTPS_PROXY",
+        "PYTHONPATH",
+        "_PYI_UNRECOGNIZED",
+        "PYINSTALLER_RESET_ENVIRONMENT",
+    ):
+        monkeypatch.setenv(key, "private-dummy-sentinel")
+    environment = check._environment(tmp_path)
+    assert {key: environment[key] for key in frozen_context} == frozen_context
+    assert {key for key in environment if key.startswith("_PYI_")} == set(frozen_context)
+    assert "private-dummy-sentinel" not in environment.values()
+    assert environment["TMPDIR"] == str(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("key", "value"),
+    [
+        ("_PYI_ARCHIVE_FILE", None),
+        ("_PYI_ARCHIVE_FILE", "/different/archive"),
+        ("_PYI_APPLICATION_HOME_DIR", None),
+        ("_PYI_APPLICATION_HOME_DIR", "/different/unpacked"),
+        ("_PYI_PARENT_PROCESS_LEVEL", None),
+        ("_PYI_PARENT_PROCESS_LEVEL", "0"),
+        ("_PYI_PARENT_PROCESS_LEVEL", "2"),
+        ("_PYI_PARENT_PROCESS_LEVEL", "01"),
+    ],
+)
+def test_frozen_context_mismatch_never_starts_worker(monkeypatch, frozen_context, key, value):
+    if value is None:
+        monkeypatch.delenv(key)
+    else:
+        monkeypatch.setenv(key, value)
+
+    async def forbidden(*args, **kwargs):
+        pytest.fail("Inconsistent frozen context must not create a process")
+
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", forbidden)
+    outcome = asyncio.run(check.run_configuration_check(AFTER))
+    assert (outcome.status, outcome.reason, outcome.exit_code) == (
+        "failed",
+        "worker-process-error",
+        None,
+    )
+    assert "/different/" not in repr(outcome)
+
+
+@pytest.mark.parametrize("target", ["executable", "unpacked", "missing-meipass"])
+def test_frozen_context_requires_existing_matching_runtime_paths(
+    monkeypatch, tmp_path, frozen_context, target
+):
+    if target == "executable":
+        (tmp_path / "authzest").unlink()
+    elif target == "unpacked":
+        (tmp_path / "unpacked").rmdir()
+    else:
+        monkeypatch.delattr(sys, "_MEIPASS")
+    with pytest.raises(ValueError, match="Inconsistent frozen worker context"):
+        check._environment(tmp_path)
 
 
 def test_frozen_command_is_hidden_entry_not_python_module(monkeypatch):
