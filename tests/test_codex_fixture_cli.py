@@ -132,6 +132,7 @@ def test_denial_never_constructs_adapter_or_apply_workspace(tmp_path, adapter_fa
     assert result["application"] is None and result["returned_identity"] is None
     assert result["usage"] is None and result["latency_ms"] is None
     assert result["provider_warning_count"] is None
+    assert result["provider_retry_notification_count"] is None
     preview = json.loads(output[0])
     assert preview["request_id"] == result["request_id"]
     assert preview["request"]["config"]["model"] == MODEL
@@ -147,6 +148,7 @@ def test_denial_never_constructs_adapter_or_apply_workspace(tmp_path, adapter_fa
     assert preview["limits"]["timeout_seconds"] == 120
     assert preview["limits"]["max_application_turn_attempts"] == 1
     assert preview["limits"]["application_retries"] == 0
+    assert preview["limits"]["max_accepted_retry_notifications"] == 3
     assert preview["limits"]["codex_internal_transport_retries_hard_capped"] is False
     assert preview["limits"]["token_hard_cap"] is None
     assert preview["limits"]["dollar_hard_cap"] is None
@@ -227,6 +229,7 @@ def test_full_fake_workflow_has_separate_choices_and_preserves_original(
     assert result["returned_identity"]["model"] == MODEL
     assert result["usage"] == {"input_tokens": 101, "output_tokens": 45}
     assert result["provider_warning_count"] is None  # This fake exposes no warning counter.
+    assert result["provider_retry_notification_count"] is None
     assert result["original_checkout_modified"] is False
     assert result["verification_status"] == "not-run"
     assert result["latency_ms"] >= 0
@@ -295,6 +298,7 @@ def test_failures_and_invalid_drafts_are_sanitized_and_never_create_copy(tmp_pat
     assert result["status"] == "draft-failed" and result["exit_code"] == 1
     assert result["application"] is None and result["returned_identity"] is None
     assert result["provider_warning_count"] is None
+    assert result["provider_retry_notification_count"] is None
     assert list(tmp_path.iterdir()) == []
     assert calls.count("draft") <= 1 and len(output) == 1
     assert "SECRET-PROVIDER-STDERR" not in json.dumps(result) + "".join(output)
@@ -519,3 +523,64 @@ def test_cli_renders_provider_warning_count_without_inventing_usage(
     assert summary["usage"] == {"input_tokens": 101, "output_tokens": 45}
     assert summary["application"]["status"] == "declined"
     assert summary["verification_status"] == "not-run"
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize(
+    "count,expected", [(0, 0), (2, 2), (3, 3), (None, None), (-1, None), (True, None), (4, None)]
+)
+def test_cli_retry_notification_summary_is_bounded(tmp_path, monkeypatch, count, expected):
+    request = build_fixture_request(MODEL)
+    session_type = workflow.FixtureApplySession
+
+    class RetryAdapter:
+        retry_notifications_seen = count
+
+        async def draft(self, request):
+            return fake_draft(request)
+
+    monkeypatch.setattr(workflow, "_default_adapter_factory", lambda **kwargs: RetryAdapter())
+    monkeypatch.setattr(
+        workflow,
+        "FixtureApplySession",
+        lambda *args, **kwargs: session_type(*args, **{**kwargs, "parent": tmp_path}),
+    )
+    result = runner.invoke(
+        app, ["codex-fixture", "--model", MODEL], input=f"share {request.request_id}\n\n"
+    )
+    assert result.exit_code == 0, result.output
+    marker = '{\n  "kind": "codex-owned-fixture-workflow"'
+    summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
+    assert summary["provider_retry_notification_count"] == expected
+    assert summary["limits"]["max_accepted_retry_notifications"] == 3
+    assert summary["limits"]["application_retries"] == 0
+    assert summary["limits"]["codex_internal_transport_retries_hard_capped"] is False
+    assert summary["usage"] == {"input_tokens": 101, "output_tokens": 45}
+    assert summary["application"]["status"] == "declined"
+    assert summary["verification_status"] == "not-run"
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+def test_failed_retry_summary_does_not_expose_partial_count(tmp_path):
+    request = build_fixture_request(MODEL)
+
+    class FailedRetryAdapter:
+        retry_notifications_seen = 2
+
+        async def draft(self, request):
+            raise RuntimeError("SECRET-PROVIDER-STDERR")
+
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL,
+            read=lambda _: f"share {request.request_id}",
+            emit=lambda _: None,
+            adapter_factory=lambda **kwargs: FailedRetryAdapter(),
+            parent=tmp_path,
+        )
+    )
+    assert result["status"] == "draft-failed"
+    assert result["provider_retry_notification_count"] is None
+    assert result["usage"] is None and result["application"] is None
+    assert list(tmp_path.iterdir()) == []
+    assert "SECRET-PROVIDER-STDERR" not in json.dumps(result)

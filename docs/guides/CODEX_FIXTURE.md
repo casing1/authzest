@@ -55,6 +55,22 @@ fallback, or model substitution. Codex's internal transport
 retries may still occur. The timeout is not a hard token or monetary limit; usage may be incurred before
 a failure or cancellation, and missing usage measurements must remain unknown.
 
+Only a same-thread, same-turn `error` with `willRetry: true` and a recognized
+`responseStreamConnectionFailed` or `responseStreamDisconnected` variant may wait for recovery within
+the existing deadline, byte, and event limits. Its HTTP status must be absent/null, `200`, `408`, or
+`500`–`599`. The preview's `max_accepted_retry_notifications: 3` limits observed eligible notifications,
+not provider attempts or cost. A fourth notice, other/fatal errors, authentication/policy failures,
+malformed data, and identity/tool/context violations stop the flow. No new turn, application retry,
+or model change is issued.
+
+Each accepted retry notice discards prior buffered final output and usage. Success requires a fresh
+validated final response and successful turn completion; usage remains unknown without a new usage
+notice. `provider_retry_notification_count` records observed notices only after a validated draft;
+failure leaves it `null`, not zero or a provider-attempt/billing count. The official
+[App Server errors page](https://learn.chatgpt.com/docs/app-server#errors) lists broad error categories,
+but does not document `willRetry`. Its wire shape is taken from the installed Codex 0.153.0-generated
+`ErrorNotification` schema; AuthZest's narrower acceptance rules are application policy.
+
 The model receives no tools or environment access; tool requests are rejected. Output is untrusted JSON.
 Host validation binds identity and source references and accepts only the exact maintained replacement.
 Valid JSON or a correct source citation does not prove that the explanation is true. The host creates
@@ -75,7 +91,7 @@ Recognized generic `warning` notifications are bounded, non-authoritative metada
 records the observed `provider_warning_count` only after a successfully validated draft, not warning
 text. Other paths retain `null` (unknown), not zero. A warning cannot change settings, authorize tools,
 approve sharing/application, or supply usage. Malformed warnings, `configWarning`, `guardianWarning`,
-errors, and unknown notification types still stop the flow.
+non-eligible errors, and unknown notification types still stop the flow.
 
 `thread/settings/updated` is checked separately against the agreed thread boundary: model/provider,
 working directory, approval policy/reviewer, read-only sandbox with network disabled, reasoning effort,
@@ -105,7 +121,7 @@ Live attempts, end-to-end results, token usage, and failure recovery evidence mu
 separately from offline mocks. Unknown usage is not zero; neither this guide nor successful mocks
 establishes live end-to-end success.
 
-## Development validation — 2026-09-11
+## Historical development validation — 2026-09-11
 
 Local Python 3.12.7 validation passed 1,129 tests in 112.99 seconds, including 394 new tests. The transport
 subset includes 242 offline tests with actual fake-server subprocesses and CLI approve/restore and decline flows.
@@ -122,6 +138,7 @@ generation remains **PENDING**; these checks do not establish live end-to-end su
 
 ## Approved live attempts — 2026-09-11
 
+This is the historical record through `807ada2`, before the bounded same-turn recovery change.
 The user approved an initial maximum of three live attempts, then two additional attempts. All five
 approved host attempts were used; this does not prove five dispatched or billed model turns. None
 produced a validated draft. Attempts 1–4 stopped at warning/settings
@@ -141,3 +158,20 @@ approval/restoration tests above are separate evidence, not a successful live de
 `verification_status` remains `not-run`, live end-to-end validation remains **PENDING**, and
 [PR #51](https://github.com/casing1/authzest/pull/51) remains a draft without a merge or release.
 There are no remaining approved live attempts; further calls require fresh user approval.
+
+## Offline follow-up — 2026-09-12
+
+The bounded same-turn recovery change makes **zero live calls**. Python 3.12.7 passed 1,171 tests in
+153.54 seconds, adding 42 tests since the historical 1,129-test run. Transport tests total 276 (+34),
+and CLI tests total 66 (+8). Ruff, frontend lint/format/build, 14 documentation checker tests, and
+language/link checks passed.
+
+The rebuilt native binary passed all 14 inventory checks at the existing 45-second per-command limit,
+including the relocated copy. Independent wheel/native artifact checks passed at the unchanged
+30-second limit: command help, pre-sharing EOF cancellation, retry-notification limit `3`, and an
+unknown (`null`) retry counter. An earlier parallel artifact run hit the 30-second timeout; the cause
+was not established. These checks executed neither Codex nor target source. The original fixture hash
+and clean main checkout were unchanged; no artifacts were published.
+
+These offline results do not convert the five historical failures into successes or grant another live
+attempt. Live end-to-end validation remains **PENDING** and PR #51 remains a draft.

@@ -124,6 +124,7 @@ def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(con
     transport = adapter(context, fake)
     result = asyncio.run(transport.draft(context))
     assert transport.warnings_seen == 0
+    assert transport.retry_notifications_seen == 0
     assert result.proposal.to_dict()["changes"][0]["after_text"] == FIXTURE_AFTER
     assert result.review.to_dict()["usage"] == {"input_tokens": 123, "output_tokens": 45}
     assert fake.methods() == [
@@ -420,10 +421,11 @@ def cli_process(fake, tmp_path, answer):
     return result, summary, temporary_root
 
 
+@pytest.mark.parametrize("case", ["happy", "retry:partial-reset"])
 def test_real_cli_share_draft_apply_restore_uses_only_exact_decisions(
-    context, fake_factory, tmp_path
+    context, fake_factory, tmp_path, case
 ):
-    fake = fake_factory()
+    fake = fake_factory(case)
     original = tmp_path / "main.py"
     original.write_text(FIXTURE_SOURCE, encoding="utf-8")
     original_hash = sha256(original.read_bytes()).hexdigest()
@@ -443,6 +445,7 @@ def test_real_cli_share_draft_apply_restore_uses_only_exact_decisions(
     assert summary["status"] == "completed"
     assert summary["sharing_decision"] == "approve"
     assert summary["application_turn_attempts"] == 1
+    assert summary["provider_retry_notification_count"] == (0 if case == "happy" else 1)
     assert summary["application"]["status"] == "applied"
     assert summary["application"]["applied"] is True
     assert summary["restoration"]["status"] == "restored"
@@ -526,7 +529,7 @@ def test_scoped_metadata_requires_exact_thread_and_turn_identity(
 @pytest.mark.parametrize("stage", ["before-response", "during-turn"])
 def test_unrecognized_warnings_remain_fail_closed(context, fake_factory, method, stage):
     fake = fake_factory(f"unrecognized-warning:{method}:{stage}")
-    with pytest.raises(AppServerError, match="Unexpected Codex event") as error:
+    with pytest.raises(AppServerError) as error:
         asyncio.run(adapter(context, fake).draft(context))
     assert "FAKE_SECRET_WARNING" not in str(error.value)
     assert fake.methods().count("turn/start") == (0 if stage == "before-response" else 1)
@@ -704,20 +707,130 @@ def test_warning_count_includes_discovery_and_generation_sessions(context, fake_
 
 
 @pytest.mark.parametrize("stage", ["before-turn-response", "during-turn"])
-def test_observed_stream_disconnect_event_type_and_retry_flag_remain_fatal(
+def test_observed_stream_disconnect_notice_recovers_only_with_fresh_same_turn_output(
     context, fake_factory, stage
 ):
     fake = fake_factory(f"stream-disconnected:{stage}")
     transport = adapter(context, fake)
-    with pytest.raises(AppServerError, match="Unexpected Codex event") as error:
-        asyncio.run(transport.draft(context))
+    draft = asyncio.run(transport.draft(context))
     injected = next(
         event["message"] for event in fake.events() if event["event"] == "injected-error"
     )
     assert injected["params"]["willRetry"] is True
     assert set(injected["params"]["error"]["codexErrorInfo"]) == {"responseStreamDisconnected"}
-    assert "FAKE_SECRET_ERROR_DETAIL" not in str(error.value)
+    assert "FAKE_SECRET_ERROR_DETAIL" not in draft.review.payload_json + draft.proposal.payload_json
+    assert transport.retry_notifications_seen == 1
+    assert draft.review.to_dict()["usage"] == {"input_tokens": 123, "output_tokens": 45}
+    assert draft.proposal.to_dict()["changes"][0]["after_text"] == FIXTURE_AFTER
     assert fake.methods().count("turn/start") == 1
     assert len(fake.starts()) == 2
     assert transport.consumed is True
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "connection-failed",
+        "missing-http-status",
+        "partial-reset",
+        "no-refreshed-usage",
+        "three-notices",
+    ],
+)
+def test_bounded_retry_notices_reset_old_results_without_starting_another_turn(
+    context, fake_factory, scenario
+):
+    fake = fake_factory(f"retry:{scenario}")
+    transport = adapter(context, fake)
+    draft = asyncio.run(transport.draft(context))
+    assert transport.retry_notifications_seen == (3 if scenario == "three-notices" else 1)
+    assert draft.proposal.to_dict()["changes"][0]["after_text"] == FIXTURE_AFTER
+    expected_usage = (
+        None if scenario == "no-refreshed-usage" else {"input_tokens": 123, "output_tokens": 45}
+    )
+    assert draft.review.to_dict()["usage"] == expected_usage
+    assert fake.methods().count("turn/start") == 1 and len(fake.starts()) == 2
+    assert transport.consumed is True
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "fatal-flag",
+        "string-flag",
+        "wrong-thread",
+        "wrong-turn-before-response",
+        "other-error",
+        "extra-error-field",
+        "extra-info-variant",
+        "extra-params",
+        "misalignment",
+        "boolean-http",
+        "unauthorized-http",
+        "rate-limit-http",
+        "non-string-message",
+        "long-message",
+        "long-details",
+    ],
+)
+def test_fatal_malformed_or_unrelated_retry_notices_are_rejected(context, fake_factory, scenario):
+    fake = fake_factory(f"retry:{scenario}")
+    transport = adapter(context, fake)
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.draft(context))
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == 1 and len(fake.starts()) == 2
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "four-notices",
+        "no-fresh-final",
+        "old-final-replay",
+        "bad-final-source",
+        "failed-turn",
+        "eof",
+        "timeout",
+        "tool-request",
+        "before-turn-dispatch",
+    ],
+)
+def test_retry_does_not_relax_completion_capability_or_lifecycle_boundaries(
+    context, fake_factory, scenario
+):
+    fake = fake_factory(f"retry:{scenario}")
+    transport = CodexAppServerAdapter(
+        context.request_id, executable=str(fake.executable), timeout_seconds=2
+    )
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.draft(context))
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == (0 if scenario == "before-turn-dispatch" else 1)
+    assert len(fake.starts()) == 2
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "queued-terminal-before-error",
+        "missing-start-turn-id",
+        "missing-final-turn-id",
+        "missing-usage-turn-id",
+    ],
+)
+def test_retry_cannot_hide_queued_recovery_or_accept_unscoped_turn_evidence(
+    context, fake_factory, scenario
+):
+    fake = fake_factory(f"retry:{scenario}")
+    transport = adapter(context, fake)
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.draft(context))
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == 1
+    assert len(fake.starts()) == 2
     assert_stopped(fake)

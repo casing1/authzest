@@ -21,6 +21,7 @@ from typing import Any
 from authzest.codex.contracts import MAX_JSON_BYTES, CodexAnalysisRequest, canonical, decode
 from authzest.codex.fixture_draft import (
     HOST_INSTRUCTIONS,
+    MAX_RETRY_NOTIFICATIONS,
     FixtureDraft,
     fixture_output_schema,
     fixture_prompt,
@@ -31,6 +32,7 @@ SUPPORTED_CODEX_VERSION = "0.153.0"
 MAX_STREAM_BYTES = 2 * 1024 * 1024
 MAX_EVENTS = 4096
 ALLOWED_EVENTS = {
+    "error",
     "account/rateLimits/updated",
     "model/verification",
     "model/safetyBuffering/updated",
@@ -183,6 +185,59 @@ class _Session:
         self.pending: deque[dict[str, Any]] = deque()
         self.thread_boundary: dict[str, Any] | None = None
         self.warnings_seen = 0
+        self.retry_notifications_seen = 0
+        self.turn_requested = False
+        self.turn_id: str | None = None
+        self.request_method: str | None = None
+
+    def check_retry(self, params: dict[str, Any]) -> None:
+        if (
+            self.thread_boundary is None
+            or not self.turn_requested
+            or self.request_method not in (None, "turn/start")
+        ):
+            raise AppServerError("Unexpected Codex recovery notification")
+        if set(params) != {"error", "threadId", "turnId", "willRetry"}:
+            raise AppServerError("Invalid Codex recovery notification")
+        if _identifier(params["threadId"]) != self.thread_boundary["threadId"]:
+            raise AppServerError("Codex thread identity mismatch")
+        turn_id = _identifier(params["turnId"])
+        if self.turn_id is not None and turn_id != self.turn_id:
+            raise AppServerError("Codex turn identity mismatch")
+        error = params["error"]
+        if (
+            params["willRetry"] is not True
+            or type(error) is not dict
+            or set(error) - {"message", "codexErrorInfo", "additionalDetails", "misalignment"}
+            or error.get("misalignment") is not None
+        ):
+            raise AppServerError("Codex reported a non-recoverable error")
+        message, details = error.get("message"), error.get("additionalDetails")
+        if (
+            type(message) is not str
+            or not 0 < len(message) <= 4096
+            or (details is not None and (type(details) is not str or len(details) > 4096))
+        ):
+            raise AppServerError("Invalid Codex recovery metadata")
+        info = error.get("codexErrorInfo")
+        if (
+            type(info) is not dict
+            or len(info) != 1
+            or next(iter(info))
+            not in {
+                "responseStreamConnectionFailed",
+                "responseStreamDisconnected",
+            }
+        ):
+            raise AppServerError("Codex reported a non-recoverable error")
+        status_info = next(iter(info.values()))
+        if type(status_info) is not dict or set(status_info) - {"httpStatusCode"}:
+            raise AppServerError("Invalid Codex recovery metadata")
+        status = status_info.get("httpStatusCode")
+        if status is not None and (
+            type(status) is not int or not (status in (200, 408) or 500 <= status <= 599)
+        ):
+            raise AppServerError("Codex reported a non-recoverable HTTP status")
 
     def check_warning(self, params: dict[str, Any]) -> None:
         if (
@@ -262,6 +317,11 @@ class _Session:
             method, params = value["method"], value.get("params")
             if method not in ALLOWED_EVENTS or type(params) is not dict:
                 raise AppServerError("Unexpected Codex event")
+            if method == "error":
+                self.check_retry(params)
+                self.retry_notifications_seen += 1
+                if self.retry_notifications_seen > MAX_RETRY_NOTIFICATIONS:
+                    raise AppServerError("Codex recovery notification limit exceeded")
             if method == "remoteControl/status/changed" and params.get("status") != "disabled":
                 raise AppServerError("Remote Codex control must remain disabled")
             if method == "thread/settings/updated" and self.thread_boundary is not None:
@@ -281,25 +341,31 @@ class _Session:
     async def request(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
         self.sequence += 1
         request_id = self.sequence
-        await self.send({"id": request_id, "method": method, "params": params})
-        while True:
-            value = await self.receive()
-            if "id" not in value:
-                if not isinstance(value.get("method"), str) or not isinstance(
-                    value.get("params"), dict
-                ):
-                    raise AppServerError("Invalid Codex notification")
-                if value["method"] == "account/rateLimits/updated":
-                    continue  # Account quota metadata is not model output or an approval.
-                if len(self.pending) >= 128:
-                    raise AppServerError("Too many pending Codex notifications")
-                self.pending.append(value)
-                continue
-            if type(value["id"]) is not int or value["id"] != request_id:
-                raise AppServerError("Unexpected Codex response identity")
-            if "error" in value or type(value.get("result")) is not dict:
-                raise AppServerError("Codex request failed")
-            return value["result"]
+        self.request_method = method
+        if method == "turn/start":
+            self.turn_requested = True
+        try:
+            await self.send({"id": request_id, "method": method, "params": params})
+            while True:
+                value = await self.receive()
+                if "id" not in value:
+                    if not isinstance(value.get("method"), str) or not isinstance(
+                        value.get("params"), dict
+                    ):
+                        raise AppServerError("Invalid Codex notification")
+                    if value["method"] == "account/rateLimits/updated":
+                        continue  # Account quota metadata is not output or an approval.
+                    if len(self.pending) >= 128:
+                        raise AppServerError("Too many pending Codex notifications")
+                    self.pending.append(value)
+                    continue
+                if type(value["id"]) is not int or value["id"] != request_id:
+                    raise AppServerError("Unexpected Codex response identity")
+                if "error" in value or type(value.get("result")) is not dict:
+                    raise AppServerError("Codex request failed")
+                return value["result"]
+        finally:
+            self.request_method = None
 
     async def initialize(self) -> dict[str, Any]:
         initialized = await self.request(
@@ -370,6 +436,8 @@ def _check_item(item: Any) -> None:
 async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str, dict | None]:
     usage = None
     final_messages: dict[str, str] = {}
+    completed_final_ids: set[str] = set()
+    consumed_retries = 0
     while True:
         message = session.pending.popleft() if session.pending else await session.receive()
         method, params = message.get("method"), message.get("params")
@@ -397,12 +465,27 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
             continue
         if (
             method
-            in {"model/verification", "model/safetyBuffering/updated", "turn/moderationMetadata"}
+            in {
+                "model/verification",
+                "model/safetyBuffering/updated",
+                "turn/moderationMetadata",
+                "item/started",
+                "item/completed",
+                "thread/tokenUsage/updated",
+            }
             and params.get("turnId") != turn_id
         ):
             raise AppServerError("Codex turn identity mismatch")
         if "turnId" in params and params["turnId"] != turn_id:
             raise AppServerError("Codex turn identity mismatch")
+        if method == "error":
+            session.check_retry(params)
+            # Consume in arrival order, not receive-time: older queued items must
+            # not be resurrected after recovery. Keep IDs retired across resets.
+            final_messages.clear()
+            usage = None
+            consumed_retries += 1
+            continue
         if method in {"item/started", "item/completed"}:
             item = params.get("item")
             _check_item(item)
@@ -415,8 +498,9 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
                 if type(text) is not str or len(text.encode("utf-8")) > MAX_JSON_BYTES:
                     raise AppServerError("Invalid Codex final output")
                 item_id = _identifier(item.get("id"))
-                if item_id in final_messages:
+                if item_id in completed_final_ids:
                     raise AppServerError("Duplicate Codex final output")
+                completed_final_ids.add(item_id)
                 final_messages[item_id] = text
         elif method == "thread/tokenUsage/updated":
             last = params.get("tokenUsage", {}).get("last", {})
@@ -433,6 +517,8 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
             for item in turn.get("items", []):
                 _check_item(item)
             if method == "turn/completed":
+                if consumed_retries != session.retry_notifications_seen:
+                    raise AppServerError("Codex recovery notification ordering mismatch")
                 if turn.get("status") != "completed" or turn.get("error") is not None:
                     raise AppServerError("Codex turn did not complete successfully")
                 if len(final_messages) != 1:
@@ -469,6 +555,7 @@ class CodexAppServerAdapter:
         self.executable = executable
         self.consumed = False
         self.warnings_seen: int | None = None
+        self.retry_notifications_seen: int | None = None
 
     async def analyze(self, request: CodexAnalysisRequest) -> str:
         """Satisfy the review-only adapter protocol without extending its JSON shape."""
@@ -576,10 +663,16 @@ class CodexAppServerAdapter:
                             },
                         )
                         turn_id = _identifier(turn_result.get("turn", {}).get("id"))
+                        session.turn_id = turn_id
+                        for event in session.pending:
+                            if event["method"] == "error":
+                                session.check_retry(event["params"])
                         for item in turn_result.get("turn", {}).get("items", []):
                             _check_item(item)
                         raw, usage = await _finish(session, thread_id, turn_id)
+                        draft = validate_fixture_draft(raw, request, usage=usage)
                         self.warnings_seen = session.warnings_seen
-                        return validate_fixture_draft(raw, request, usage=usage)
+                        self.retry_notifications_seen = session.retry_notifications_seen
+                        return draft
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
             raise AppServerError("Codex fixture request failed; no proposal was applied") from exc

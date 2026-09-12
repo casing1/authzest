@@ -22,6 +22,7 @@ from authzest.codex.contracts import (
 from authzest.codex.fixture_draft import (
     FIXTURE_AFTER,
     HOST_INSTRUCTIONS,
+    MAX_RETRY_NOTIFICATIONS,
     build_fixture_request,
     fixture_output_schema,
     fixture_prompt,
@@ -96,6 +97,7 @@ async def run_codex_fixture(
         "max_response_bytes": MAX_JSON_BYTES,
         "max_application_turn_attempts": 1,
         "application_retries": 0,
+        "max_accepted_retry_notifications": MAX_RETRY_NOTIFICATIONS,
         "codex_internal_transport_retries_hard_capped": False,
         "token_hard_cap": None,
         "dollar_hard_cap": None,
@@ -114,7 +116,10 @@ async def run_codex_fixture(
                 "through local Codex App Server (which also adds its own harness context) "
                 "to OpenAI using your existing Codex session. Account data handling applies. "
                 "No API-key input, arbitrary repository source, source execution or model tools. "
-                "Codex internal transport retries are not hard-capped; token and dollar hard "
+                f"At most {MAX_RETRY_NOTIFICATIONS} validated same-turn recovery notices "
+                "are accepted; this is "
+                "not a count or hard cap of provider attempts. Codex internal transport "
+                "retries are not hard-capped; token and dollar hard "
                 "caps are unsupported. Sharing does not approve a file edit or verification."
             ),
             "request": request.to_dict(),
@@ -141,6 +146,7 @@ async def run_codex_fixture(
         ),
         "usage": None,
         "provider_warning_count": None,
+        "provider_retry_notification_count": None,
         "latency_ms": None,
         "application": None,
         "restoration": None,
@@ -183,6 +189,9 @@ async def run_codex_fixture(
     warnings = getattr(adapter, "warnings_seen", None)
     if type(warnings) is int and 0 <= warnings <= 4096:
         result["provider_warning_count"] = warnings
+    retries = getattr(adapter, "retry_notifications_seen", None)
+    if type(retries) is int and 0 <= retries <= MAX_RETRY_NOTIFICATIONS:
+        result["provider_retry_notification_count"] = retries
     _emit_json(emit, {"kind": "codex-fixture-review", "review": review.to_dict()})
     session = None
     try:

@@ -142,6 +142,90 @@ def disconnected_stream_error(case, stage):
     send(event)
 
 
+def retry_notice(scenario):
+    params = {
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "willRetry": True,
+        "error": {
+            "message": "Stream disconnected before completion",
+            "codexErrorInfo": {"responseStreamDisconnected": {"httpStatusCode": None}},
+            "additionalDetails": None,
+            "misalignment": None,
+        },
+    }
+    error = params["error"]
+    info = error["codexErrorInfo"]
+    if scenario == "connection-failed":
+        error["codexErrorInfo"] = {"responseStreamConnectionFailed": {"httpStatusCode": 503}}
+    if scenario == "missing-http-status":
+        info["responseStreamDisconnected"] = {}
+    if scenario == "fatal-flag":
+        params["willRetry"] = False
+    if scenario == "string-flag":
+        params["willRetry"] = "true"
+    if scenario == "integer-flag":
+        params["willRetry"] = 1
+    if scenario == "wrong-thread":
+        params["threadId"] = "different-thread"
+    if scenario == "wrong-turn":
+        params["turnId"] = "different-turn"
+    if scenario == "other-error":
+        error["codexErrorInfo"] = "serverOverloaded"
+    if scenario == "extra-error-field":
+        error["approved"] = True
+    if scenario == "extra-info-variant":
+        info["responseStreamConnectionFailed"] = {}
+    if scenario == "misalignment":
+        error["misalignment"] = {"message": "not transport retry metadata"}
+    if scenario in {
+        "boolean-http",
+        "negative-http",
+        "overlong-http",
+        "unauthorized-http",
+        "rate-limit-http",
+    }:
+        info["responseStreamDisconnected"]["httpStatusCode"] = {
+            "boolean-http": True,
+            "negative-http": -1,
+            "overlong-http": 65536,
+            "unauthorized-http": 401,
+            "rate-limit-http": 429,
+        }[scenario]
+    if scenario == "non-string-message":
+        error["message"] = 12
+    if scenario == "long-message":
+        error["message"] = "m" * 4097
+    if scenario == "long-details":
+        error["additionalDetails"] = "d" * 4097
+    if scenario == "extra-params":
+        params["approved"] = True
+    record("retry-notice", params=params)
+    notify("error", **params)
+
+
+def retry_flow(case):
+    if not case.startswith("retry:"):
+        return
+    scenario = case.split(":", 1)[1]
+    params = {"threadId": "thread-fixture", "turnId": "turn-fixture"}
+    if scenario in {"partial-reset", "no-refreshed-usage", "no-fresh-final", "old-final-replay"}:
+        notify("item/completed", **params, item=item(SETTINGS["raw"]))
+        notify(
+            "thread/tokenUsage/updated",
+            **params,
+            tokenUsage={"last": {"inputTokens": 9999, "outputTokens": 8888}},
+        )
+    for _ in range({"three-notices": 3, "four-notices": 4}.get(scenario, 1)):
+        retry_notice(scenario)
+    if scenario == "eof":
+        raise SystemExit(0)
+    if scenario == "timeout":
+        time.sleep(3600)
+    if scenario == "tool-request":
+        capability_request()
+
+
 def settings_notification(case, stage):
     if not case.startswith("settings:"):
         return
@@ -226,6 +310,13 @@ def finish(case):
     if case == "wrong-turn":
         params["turnId"] = "different-turn"
     notify("turn/started", **params, turn={"id": "turn-fixture", "items": []})
+    if case == "retry:missing-start-turn-id":
+        notify(
+            "item/started",
+            threadId="thread-fixture",
+            item={"type": "reasoning", "id": "unscoped-item"},
+        )
+    retry_flow(case)
     settings_notification(case, "during-turn")
     generic_warning(case, "during-turn")
     disconnected_stream_error(case, "during-turn")
@@ -254,18 +345,26 @@ def finish(case):
     raw = SETTINGS["raw"]
     if case == "bad-final-json":
         raw = "not JSON"
-    if case == "bad-final-source":
+    if case in {"bad-final-source", "retry:bad-final-source"}:
         changed = json.loads(raw)
         changed["after_text"] += "# unrelated change\n"
         raw = json.dumps(changed)
     if case == "non-string-final":
         raw = 42
-    if case not in {"missing-final", "metadata-only", "warning-only"}:
-        notify("item/completed", **params, item=item(raw))
+    if case not in {"missing-final", "metadata-only", "warning-only", "retry:no-fresh-final"}:
+        final_id = (
+            "final-after-retry"
+            if case in {"retry:partial-reset", "retry:no-refreshed-usage"}
+            else "final-one"
+        )
+        final_params = (
+            {"threadId": "thread-fixture"} if case == "retry:missing-final-turn-id" else params
+        )
+        notify("item/completed", **final_params, item=item(raw, final_id))
     if case in {"ambiguous-final", "repeated-final"}:
         identity = "final-two" if case == "ambiguous-final" else "final-one"
         notify("item/completed", **params, item=item(raw, identity))
-    if case != "missing-usage":
+    if case not in {"missing-usage", "retry:no-refreshed-usage"}:
         usage = {"inputTokens": 123, "outputTokens": 45}
         if case == "negative-usage":
             usage["inputTokens"] = -1
@@ -273,7 +372,10 @@ def finish(case):
             usage["outputTokens"] = True
         if case == "null-usage":
             usage["inputTokens"] = None
-        notify("thread/tokenUsage/updated", **params, tokenUsage={"last": usage})
+        usage_params = (
+            {"threadId": "thread-fixture"} if case == "retry:missing-usage-turn-id" else params
+        )
+        notify("thread/tokenUsage/updated", **usage_params, tokenUsage={"last": usage})
     turn = {
         "id": "turn-fixture",
         "items": [{"type": "reasoning", "id": "reasoning-one"}],
@@ -282,7 +384,7 @@ def finish(case):
     }
     if case == "completed-turn-id":
         turn["id"] = "different-turn"
-    if case == "failed-turn":
+    if case in {"failed-turn", "retry:failed-turn"}:
         turn["status"] = "failed"
         turn["error"] = {"message": "FAKE_SECRET_RESPONSE"}
     if case == "interrupted-turn":
@@ -412,6 +514,8 @@ def main():
             if case == "duplicate-model":
                 result["data"] *= 2
         elif method == "thread/start":
+            if case == "retry:before-turn-dispatch":
+                retry_notice("normal")
             warning_notification(case, "before-response")
             generic_warning(case, "before-thread-response")
             settings_notification(case, "before-thread-response")
@@ -448,6 +552,17 @@ def main():
                 notification["id"] = "different-thread"
             notify("thread/started", thread=notification)
         elif method == "turn/start":
+            if case == "retry:queued-terminal-before-error":
+                scoped = {"threadId": "thread-fixture", "turnId": "turn-fixture"}
+                notify("item/completed", **scoped, item=item(SETTINGS["raw"]))
+                notify(
+                    "turn/completed",
+                    **scoped,
+                    turn={"id": "turn-fixture", "items": [], "status": "completed", "error": None},
+                )
+                retry_notice("normal")
+            if case == "retry:wrong-turn-before-response":
+                retry_notice("wrong-turn")
             metadata_notification(case, "before-response")
             generic_warning(case, "before-turn-response")
             disconnected_stream_error(case, "before-turn-response")

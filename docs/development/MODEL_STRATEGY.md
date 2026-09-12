@@ -69,7 +69,7 @@ the default scan or CI.
 The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
 only. It requires exact-request sharing approval before starting a process, then separate apply/restore
 decisions for a fresh POSIX copy. Live validation is pending; no verification or general repository AI runs.
-One application-issued turn has no application retry/fallback; Codex internal transport retries can still
+At most one application-issued turn has no application retry/fallback; Codex internal transport retries can still
 occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
 
 For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
