@@ -17,7 +17,9 @@ allows `temperature: null` for provider-managed sampling. These are separate fro
 The contract itself performs no provider call or file application. The separate
 [#50 owned-fixture command](../guides/CODEX_FIXTURE.md) uses the nullable schema for a pinned App Server
 draft; one owned-fixture live draft/apply/restore check passed. Ordinary scan JSON/exits remain unchanged and offline. The complete
-#35 flow, general repository AI and runtime verification remain unfinished.
+#35 flow, general repository AI and broader application validation remain unfinished. The separate
+[#54 runtime check](../guides/RUNTIME_VERIFICATION.md) is limited to the maintained fixture and requires
+its own exact-plan approval; it does not change this offline contract.
 The old unused `CodexFinding` placeholder is removed; adapters now return untrusted JSON, not findings.
 
 ## Input and identity
@@ -114,11 +116,18 @@ filesystem application service or verification executor. The separate
 [#48 copy-only demo](../guides/FIXTURE_APPLICATION.md) adds terminal decisions and application/restoration
 inside a fresh POSIX fixture copy. #50's separate version-pinned App Server command adds explicit sharing
 and an owned-fixture model draft; it does not run the offline evaluation against a real model, accept a
-general repository, or execute runtime verification. Its one live fixture check used assistant-entered approval
+general repository, or execute model-proposed tests. Its recorded #50 live fixture check did not run
+runtime verification and used assistant-entered approval
 phrases under user authorization, not independent human review; parent #35 remains open.
 The command's later #52 optional fixed-source check uses a separate approved plan and subprocess to
 check the applied fixture's AST configuration with pinned source hashes. It executes no target source
 and does not change AI response contracts.
+The later #54 `--runtime-check` option instead selects a separately approved, fixed runtime plan.
+It executes only the byte-identical bundled fixture, observes `app.debug` and one in-memory ASGI
+`GET /health`, and records bounded dependency-version observations. No arbitrary source path, generated
+command, or general test suite is accepted. See the [runtime guide](../guides/RUNTIME_VERIFICATION.md)
+for process/dependency trust limits and failure semantics. Neither this feature nor its offline tests
+establish model quality, general authorization correctness, or a verified security fix.
 
 Require separate approval for the exact source/policy snapshot, provider/model identity, privacy/data
 handling, and budget. Choose one transport and record actual returned identity/usage when available.

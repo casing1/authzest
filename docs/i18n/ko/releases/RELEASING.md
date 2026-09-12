@@ -101,6 +101,7 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md
    python -m PyInstaller --clean --noconfirm authzest.spec
    python scripts/smoke_release.py --binary dist/authzest
+   python scripts/smoke_fixture_runtime.py --binary dist/authzest
    ```
 
    [`verify_release.py`](../../../../scripts/verify_release.py)는 정확한 태그/패키지 버전 대응, 영한 변경 이력마다
@@ -113,6 +114,12 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    환경에서 이동한 임시 복사본을 검사합니다. Windows에서는 `--binary dist/authzest.exe`를 사용합니다.
    명령별 timeout 기본값은 45초이며 `--expected-version`으로 `pyproject.toml` 대신 예상 PEP 440 버전을
    지정할 수 있습니다.
+
+   별도 [런타임 smoke](../guides/RUNTIME_VERIFICATION.md)는 실제 native 부모·worker와 이동한
+   복사본에서 고정 내장 AFTER fixture를 검사합니다. POSIX는 정확한 debug/ASGI health 관찰에
+   성공해야 하며 Windows는 worker 없이 지원 불가를 반환해야 합니다. Codex를 호출하거나
+   사용자 소스를 받지 않습니다. 외부 제한은 45초이고 worker 시작·I/O는 5초와 별도 정리 1초
+   제한을 유지합니다. 이는 OS sandbox가 아닙니다.
 
 7. PR을 만들고 필수 CI와 CodeQL 검사가 통과한 뒤 병합합니다.
 8. 배포 전에 `main`에서 릴리스 워크플로를 실행하여 세 플랫폼의 빌드를 검증합니다.
@@ -130,6 +137,7 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
 
    ```bash
    python scripts/smoke_release.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
+   python scripts/smoke_fixture_runtime.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
    ```
 
    artifact 모드는 실행 파일 하나와 대응 `.sha256` manifest를 요구하고 checksum 확인 뒤 이동한 임시

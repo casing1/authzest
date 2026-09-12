@@ -69,11 +69,17 @@ the default scan or CI.
 The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
 only. It requires exact-request sharing approval before starting a process, then separate apply/restore
 decisions for a fresh POSIX copy. One live fixture check passed with assistant-entered approval phrases
-under user authorization, not independent human review; no runtime verification or general repository AI runs.
+under user authorization, not independent human review. That recorded #50 run did not execute runtime
+verification; general repository AI remains unsupported.
 At most one application-issued turn has no application retry/fallback; Codex internal transport retries can still
 occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
 The later #52 extension separately approves a fixed-source check in a bounded subprocess. It checks
 AST configuration with pinned source hashes, executes no target source or model command, and adds no live-model evidence.
+The [#54 runtime option](../guides/RUNTIME_VERIFICATION.md) keeps that static default and selects one
+different, separately approved plan with `--runtime-check`. Only identical bundled fixture code runs;
+the check observes `app.debug`, one in-memory ASGI `GET /health`, and dependency versions. It accepts
+no arbitrary repository, generated command or regression suite, and makes no model-quality or
+verified-security-fix claim. Process isolation is not an OS/network or dependency sandbox.
 
 For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
 Repository text is untrusted data, not instructions granting the model tools or access. Minimize source
@@ -102,8 +108,11 @@ file checks, application and restoration within a fresh POSIX fixture copy. It n
 checkout or executes checks. Exclusive-writer assumptions, no restart and no authenticated approval
 remain explicit limits; it does not finish the live workflow below.
 
-#52's source-configuration result is separate from runtime verification, which remains `not-run`.
-A matching configuration file does not establish behavior or a security fix, or complete the #35 gate.
+#52's default source-configuration result leaves runtime verification `not-run`. In the opt-in #54
+mode, the separately approved runtime result is `passed`, `failed`, or `not-run` and retains the exact
+checked-content identity after restoration. Missing dependencies and unconfirmed outcomes are not
+successful checks. Neither a matching file nor the fixed health probe establishes a general security
+fix or completes the broader #35 gate. Live, mock, and packaged acceptance evidence must remain distinct.
 
 The minimum final demo is one maintained owned fixture taken through these separate stages:
 
