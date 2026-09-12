@@ -27,6 +27,10 @@ into a provider client or verification executor, and is not a general repository
 The command's later #52 fixed-source check is a separate, plan-approved runner; it checks only the
 applied fixture's AST configuration with pinned source hashes, not runtime behavior, and does not
 change this pure contract's `not-run` results.
+The separate [#54 runtime check](../guides/RUNTIME_VERIFICATION.md) can be selected with
+`--runtime-check`; this is not approval. Its own exact-plan decision permits only the identical bundled
+fixture to run for `app.debug` and an in-memory ASGI health check. It neither executes arbitrary
+proposal contents nor changes the pure contract's `not-run` results or proposal/decision schemas.
 
 ## Proposal contents and preview
 
@@ -53,6 +57,8 @@ missing source citations, malformed/extra fields, duplicate targets, and unchang
 Checks are non-executable identifiers: `fixture-static-inventory` and `fixture-regression-tests`.
 They describe future verification intent, not existing executors or a command allowlist that grants
 execution. The contract accepts no shell command, executable, argument, environment or install-hook fields.
+The #54 runner has a distinct `owned-fixture-runtime-debug-health-v1` check identity; it does not
+execute either of these proposal identifiers or any model-proposed test.
 Expectations and prose remain untrusted data. A future implementation must resolve checks through a
 reviewed fixed implementation and obtain separate execution approval.
 
@@ -109,5 +115,5 @@ the fixture unchanged and tests unrun. JSON escapes control/non-ASCII characters
 
 Tests cover exact/multifile diffs, newline handling, source/review/plan changes, unsafe targets, refusal,
 cancellation, expiry, missing source, malformed records and explicit no-network/no-write behavior.
-The fixture-specific application and provider slices have separate scope guides; the complete provider,
-runtime verification failure and recovery acceptance gate remains later #35 work.
+The fixture-specific application, provider and fixed runtime slices have separate scope guides.
+Their bounded results do not complete the broader #35 acceptance gate or authorize a release.

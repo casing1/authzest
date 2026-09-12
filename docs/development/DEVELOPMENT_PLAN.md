@@ -87,13 +87,16 @@ source registration evidence, and route-local plus inherited dependency declarat
 The source-only [offline AI contract and mock evaluation](../reference/AI_CONTRACT.md) is implemented
 after alpha.2; the published binaries remain unchanged.
 Nested dependency graphs, authentication/authorization classification, finding
-schemas, general repository AI review, existing-checkout patch application, and runtime verification are not implemented.
+schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
 The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) uses pinned Codex 0.153.0 and at most one
 application-issued turn after sharing approval; one owned-fixture live check passed. It only accepts the maintained
 debug-setting change and retains separate copy-application/restoration decisions. That live check did not
 run verification. #52 adds an optional, separately approved fixed-source check of the applied copy;
-runtime verification remains `not-run`, and this addition supplies no new live-model evidence.
+that static-only mode leaves runtime verification `not-run` and supplies no new live-model evidence.
+#54 adds a separate opt-in [runtime plan](../guides/RUNTIME_VERIFICATION.md) for the exact bundled
+configuration/health fixture, not arbitrary source or authorization testing. End-to-end acceptance
+and release gates remain distinct from implementing the checker.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
@@ -175,7 +178,8 @@ contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remai
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
 and verification workflow. The offline slices and the narrowly scoped #50 adapter do not complete it;
 one owned-fixture live draft/apply/restore check passed for #50. #52's source-configuration check does
-not complete the remaining runtime verification and broader proposal scope.
+not complete runtime verification. #54 supplies the bounded runtime implementation; complete its
+end-to-end acceptance before declaring the core demonstration ready. Broader proposal scope is separate work.
 
 - [x] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
@@ -203,8 +207,9 @@ not complete the remaining runtime verification and broader proposal scope.
       plan. Bind approval to that proposal; decline/cancel changes nothing, and changed inputs invalidate approval.
 - [ ] Apply only the approved diff after rechecking its preconditions. Preserve existing user edits,
       record before/after content identities, and provide recoverable changes without resetting unrelated work.
-- [ ] Separately approve and run a bounded isolated runtime verification plan for a maintained owned fixture.
-      Record commands, exit status, results, and failures; a patch applied or a test passed is not proof
+- [x] Implement a separately approved bounded runtime plan for the exact maintained configuration/health
+      fixture (#54); source mode remains the default. Record fixed checks, exits, results, and failures.
+      Applying a patch or passing a test is not proof
       of general authorization correctness. Never label failed or unrun verification as a successful fix.
 - [ ] Compare static-only, model-only, and evidence-assisted model modes on frozen, human-labelled fixtures,
       with held-out cases, repeated trials, actual usage, and limitations as described in the [model strategy](MODEL_STRATEGY.md).

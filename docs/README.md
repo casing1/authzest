@@ -30,22 +30,23 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| Document                                        | English                                             | 한국어                                               |
-| ----------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
-| Project overview and installation               | [README](../README.md)                              | [프로젝트 소개](i18n/ko/README.md)                   |
-| Documentation index                             | [Index](README.md)                                  | [문서 목차](i18n/ko/INDEX.md)                        |
-| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md) | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md) |
-| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)           | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)       |
-| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                      | [예제](i18n/ko/guides/EXAMPLES.md)                   |
-| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)            | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)     |
-| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)     | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)   |
-| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)     | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)  |
-| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                  | [기여 안내](i18n/ko/CONTRIBUTING.md)                 |
-| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)         | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)   |
-| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                  | [릴리스 가이드](i18n/ko/releases/RELEASING.md)       |
-| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                        | [변경 이력](i18n/ko/CHANGELOG.md)                    |
-| Private reporting and safe-use policy           | [Security](../SECURITY.md)                          | [보안 정책](i18n/ko/SECURITY.md)                     |
-| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)  | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)     |
+| Document                                        | English                                                | 한국어                                                |
+| ----------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------- |
+| Project overview and installation               | [README](../README.md)                                 | [프로젝트 소개](i18n/ko/README.md)                    |
+| Documentation index                             | [Index](README.md)                                     | [문서 목차](i18n/ko/INDEX.md)                         |
+| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)    | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)  |
+| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)              | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)        |
+| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                         | [예제](i18n/ko/guides/EXAMPLES.md)                    |
+| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)               | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)      |
+| Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md) | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md) |
+| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)        | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)    |
+| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)        | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)   |
+| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                     | [기여 안내](i18n/ko/CONTRIBUTING.md)                  |
+| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)            | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)    |
+| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                     | [릴리스 가이드](i18n/ko/releases/RELEASING.md)        |
+| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                           | [변경 이력](i18n/ko/CHANGELOG.md)                     |
+| Private reporting and safe-use policy           | [Security](../SECURITY.md)                             | [보안 정책](i18n/ko/SECURITY.md)                      |
+| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)     | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)      |
 
 ## Read the right version
 
@@ -62,8 +63,11 @@ adds an opt-in, version-pinned App Server draft followed by separate copy-applic
 One owned-fixture live draft/apply/restore check passed, with assistant-entered approval phrases under
 user authorization, not independent human review. #52 adds an optional, separately approved subprocess
 AST configuration check of the applied fixture with pinned source hashes, not runtime behavior or a verified security fix.
-Runtime verification and general repository AI remain unimplemented;
-the complete #35 workflow is still open and alpha.2 binaries are unchanged.
+#54 adds an opt-in [owned-fixture runtime plan](guides/RUNTIME_VERIFICATION.md)
+([한국어](i18n/ko/guides/RUNTIME_VERIFICATION.md)) through `--runtime-check`; static checking remains the default.
+The selector is not execution approval. Only the exact bundled fixture may execute, with a separate
+decision and no automatic dependency installation. #54's bounded live source acceptance passed; final
+PR/release gates are pending. General repository AI and the complete #35 workflow remain open, and alpha.2 binaries are unchanged.
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
 with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). It is not a live integration or part of alpha.2.

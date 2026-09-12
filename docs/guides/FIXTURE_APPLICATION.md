@@ -84,5 +84,8 @@ accepted model draft before these copy-only decisions. One owned-fixture live dr
 passed with user-authorized, assistant-entered approval phrases, not independent human review. This #48 demo remains
 offline and scripted, with verification still `not-run`. #52 adds an optional, separately approved
 fixed-source check to the Codex fixture flow, not this demo; it does not execute target source.
-General repository integration and separately approved isolated runtime verification remain later #35
-work. These slices do not complete the final acceptance gate or justify a release by themselves.
+The later [#54 runtime option](RUNTIME_VERIFICATION.md) adds a different, separately approved fixed
+plan to the Codex fixture flow and `python -m scripts.demo_verify --runtime-check`, not this #48 demo. It runs
+only the identical bundled fixture and observes `app.debug` and one in-memory ASGI health response;
+selection alone never approves execution. General repository integration, generated regression suites
+and the broader #35 acceptance gate remain separate work. These slices do not justify a release by themselves.

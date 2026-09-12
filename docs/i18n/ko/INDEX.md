@@ -30,22 +30,23 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| 문서                           | English                                                   | 한국어                                       |
-| ------------------------------ | --------------------------------------------------------- | -------------------------------------------- |
-| 프로젝트 소개와 설치           | [README](../../../README.md)                              | [프로젝트 소개](README.md)                   |
-| 문서 목차                      | [Index](../../README.md)                                  | [문서 목차](INDEX.md)                        |
-| 개발 방향과 TODO 순서          | [Development plan](../../development/DEVELOPMENT_PLAN.md) | [개발 계획](development/DEVELOPMENT_PLAN.md) |
-| 지원 소스 구문과 한계          | [Parser scope](../../reference/PARSER_SCOPE.md)           | [파서 범위](reference/PARSER_SCOPE.md)       |
-| 유지하는 소스 전용 CLI 데모    | [Examples](../../guides/EXAMPLES.md)                      | [예제](guides/EXAMPLES.md)                   |
-| opt-in 소유 fixture Codex 초안 | [Codex fixture](../../guides/CODEX_FIXTURE.md)            | [Codex fixture](guides/CODEX_FIXTURE.md)     |
-| 교체 가능한 모델과 측정할 가치 | [Model strategy](../../development/MODEL_STRATEGY.md)     | [모델 전략](development/MODEL_STRATEGY.md)   |
-| 버전이 있는 진단과 등록 근거   | [Report contract](../../reference/REPORT_CONTRACT.md)     | [리포트 계약](reference/REPORT_CONTRACT.md)  |
-| 기여와 커밋 규칙               | [Contributing](../../../CONTRIBUTING.md)                  | [기여 안내](CONTRIBUTING.md)                 |
-| 필수 검사와 브랜치 보호        | [Branch rules](../../development/BRANCH_RULES.md)         | [브랜치 규칙](development/BRANCH_RULES.md)   |
-| 버전·바이너리·릴리스 검사      | [Releasing](../../releases/RELEASING.md)                  | [릴리스 가이드](releases/RELEASING.md)       |
-| 출시·미출시 변경               | [Changelog](../../../CHANGELOG.md)                        | [변경 이력](CHANGELOG.md)                    |
-| 비공개 신고와 안전한 사용 정책 | [Security](../../../SECURITY.md)                          | [보안 정책](SECURITY.md)                     |
-| PR 항목과 체크리스트           | [PR template](../../../.github/pull_request_template.md)  | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)     |
+| 문서                                   | English                                                      | 한국어                                        |
+| -------------------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
+| 프로젝트 소개와 설치                   | [README](../../../README.md)                                 | [프로젝트 소개](README.md)                    |
+| 문서 목차                              | [Index](../../README.md)                                     | [문서 목차](INDEX.md)                         |
+| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)    | [개발 계획](development/DEVELOPMENT_PLAN.md)  |
+| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)              | [파서 범위](reference/PARSER_SCOPE.md)        |
+| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                         | [예제](guides/EXAMPLES.md)                    |
+| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)               | [Codex fixture](guides/CODEX_FIXTURE.md)      |
+| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md) | [런타임 검증](guides/RUNTIME_VERIFICATION.md) |
+| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)        | [모델 전략](development/MODEL_STRATEGY.md)    |
+| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)        | [리포트 계약](reference/REPORT_CONTRACT.md)   |
+| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                     | [기여 안내](CONTRIBUTING.md)                  |
+| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)            | [브랜치 규칙](development/BRANCH_RULES.md)    |
+| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                     | [릴리스 가이드](releases/RELEASING.md)        |
+| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                           | [변경 이력](CHANGELOG.md)                     |
+| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                             | [보안 정책](SECURITY.md)                      |
+| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)     | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)      |
 
 ## 올바른 버전의 문서 읽기
 
@@ -62,7 +63,11 @@ opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 �
 초안·적용·복구 확인 1회가 성공했으며 승인 문구는 사용자 허가 아래 assistant가 입력했습니다.
 독립적인 사람 검토는 아닙니다. #52는 별도 승인하는 선택적 자식 프로세스 검사로 적용된 fixture의
 소스 해시를 고정한 fixture의 AST 설정만 확인하며 런타임 동작이나 보안 수정 효과를 검증하지 않습니다.
-런타임 검증과 일반 저장소 AI는 미구현이며 완전한 #35 흐름은 미완료입니다. alpha.2 바이너리는 그대로입니다.
+#54는 `--runtime-check`로 [소유 fixture 런타임 계획](guides/RUNTIME_VERIFICATION.md)
+([English](../../guides/RUNTIME_VERIFICATION.md))을 선택적으로 추가하며 정적 검사를 기본값으로 유지합니다.
+선택 자체는 실행 승인이 아닙니다. 별도 결정 뒤 정확히 고정한 번들 fixture만 실행할 수 있고
+의존성을 자동 설치하지 않습니다. #54의 제한된 실제 소스 환경 인수 검증은 통과했으며 최종
+PR·릴리스 게이트는 대기 중입니다. 일반 저장소 AI와 완전한 #35 흐름은 미완료이며 alpha.2 바이너리는 그대로입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
 [영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.

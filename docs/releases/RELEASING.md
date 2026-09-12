@@ -106,6 +106,7 @@ checking a local build.
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md
    python -m PyInstaller --clean --noconfirm authzest.spec
    python scripts/smoke_release.py --binary dist/authzest
+   python scripts/smoke_fixture_runtime.py --binary dist/authzest
    ```
 
    [`verify_release.py`](../../scripts/verify_release.py) validates the exact tag/package-version match,
@@ -119,6 +120,12 @@ checking a local build.
    relocated temporary copy with an isolated working directory and sanitized Python environment.
    On Windows use `--binary dist/authzest.exe`. The per-command timeout defaults to 45 seconds;
    `--expected-version` can explicitly select the expected PEP 440 version instead of `pyproject.toml`.
+
+   The separate [runtime smoke](../guides/RUNTIME_VERIFICATION.md) checks the actual native parent
+   and its worker on the fixed bundled AFTER fixture, plus a relocated copy. POSIX must pass exact
+   debug/ASGI health observations; Windows must return unsupported without a worker. It makes no
+   Codex call and accepts no user source. The outer deadline is 45 seconds; worker startup/I/O
+   remains five seconds with a separate one-second cleanup allowance. This is not an OS sandbox.
 
 7. Open a pull request and merge it only after the required CI and CodeQL checks pass.
 8. Run the release workflow on `main` to verify all three platform builds before publishing:
@@ -136,6 +143,7 @@ checking a local build.
 
    ```bash
    python scripts/smoke_release.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
+   python scripts/smoke_fixture_runtime.py --artifact-dir /path/to/ONE_PLATFORM_ARTIFACT_DIRECTORY
    ```
 
    Artifact mode requires exactly one executable and its matching `.sha256` manifest, validates the

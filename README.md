@@ -43,7 +43,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
 - Adds the source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): explicit sharing, a pinned
   App Server, and exact-diff approval for a fresh copy only. One fixture live check passed.
-- Adds optional, separately approved source-configuration verification of that copy; runtime verification is not run.
+- Keeps separately approved, source-configuration verification as the default; this AST check does not execute fixture source.
+- Adds opt-in [`--runtime-check`](docs/guides/RUNTIME_VERIFICATION.md) for only the exact maintained
+  fixture: execute its bundled code and check `app.debug` and in-memory ASGI `GET /health`.
+  Selecting the option does not approve execution. #54's bounded live source acceptance passed; final PR/release gates are pending.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
 This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
@@ -264,10 +267,14 @@ It performs no live AI call or verification execution and is not included in alp
 The next [#50 Codex fixture slice](docs/guides/CODEX_FIXTURE.md) requests one model draft after explicit
 sharing approval, with separate apply/restore decisions. One owned-fixture live draft/apply/restore check
 passed on `42ff108`, with the original preserved. The assistant entered approval phrases under user
-authorization; this was not independent human review. It remains source-only and outside alpha.2;
-runtime verification and general repository AI remain unimplemented. #52 adds an optional, fixed AST
+authorization; this was not independent human review. That historical run did not execute runtime
+verification. These additions remain outside alpha.2. #52 adds an optional, fixed AST
 configuration check of the known-hash source between application and restoration, with separate approval and a bounded
 subprocess. It executes no target source and adds no live-model evidence or verified-security-fix claim.
+#54 adds the [owned-fixture runtime plan](docs/guides/RUNTIME_VERIFICATION.md) through `--runtime-check`,
+with a separate exact verification decision, bounded worker, optional dependencies and no automatic
+installation. Its bounded live source acceptance passed; final PR/release gates are pending. General
+repository AI and the complete #35 workflow remain open. No new release is claimed.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

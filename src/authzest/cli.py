@@ -152,13 +152,23 @@ def codex_fixture(
         float,
         typer.Option(help="One adapter attempt timeout, greater than 0 and up to 120 seconds."),
     ] = 120,
+    runtime_check: Annotated[
+        bool,
+        typer.Option(
+            "--runtime-check",
+            help="Select the fixed owned-fixture runtime plan; "
+            "separate verification approval required.",
+        ),
+    ] = False,
 ) -> None:
-    """Separately approve Codex review, fixture-copy edits, configuration checks and restore."""
+    """Separately approve Codex review, fixture-copy edits, fixed checks and restore."""
     from authzest.runner.codex_fixture import FixtureInputError, run_codex_fixture
 
     try:
         result = asyncio.run(
-            run_codex_fixture(model, timeout_seconds=timeout_seconds, emit=typer.echo)
+            run_codex_fixture(
+                model, timeout_seconds=timeout_seconds, runtime_check=runtime_check, emit=typer.echo
+            )
         )
     except FixtureInputError as exc:
         typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
@@ -168,7 +178,7 @@ def codex_fixture(
             json.dumps(
                 {
                     "status": "cancelled",
-                    "runtime_verification_status": "not-run",
+                    **({} if runtime_check else {"runtime_verification_status": "not-run"}),
                     "detail": "Interrupted; inspect the retained workspace record if created.",
                 }
             )
@@ -179,7 +189,7 @@ def codex_fixture(
             json.dumps(
                 {
                     "status": "workflow-failed",
-                    "runtime_verification_status": "not-run",
+                    **({} if runtime_check else {"runtime_verification_status": "not-run"}),
                     "detail": "Inspect the retained workspace record if created.",
                 }
             )
@@ -195,6 +205,29 @@ def _configuration_worker() -> None:
     from authzest.runner._configuration_worker import worker_main
 
     raise typer.Exit(code=worker_main())
+
+
+@app.command("_runtime-worker", hidden=True)
+def _runtime_worker() -> None:
+    """Internal fixed owned-fixture worker for the packaged executable."""
+    from authzest.runner._runtime_worker import worker_main
+
+    raise typer.Exit(code=worker_main())
+
+
+@app.command("_runtime-smoke", hidden=True)
+def _runtime_smoke() -> None:
+    """Internal fixed-fixture packaging check; no target paths or generated commands."""
+    from authzest.runner.runtime_smoke import run_runtime_smoke
+
+    try:
+        result = asyncio.run(run_runtime_smoke())
+    except KeyboardInterrupt:
+        result = {"status": "cancelled", "exit_code": 130}
+    except Exception:
+        result = {"status": "runtime-smoke-failed", "exit_code": 1}
+    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    raise typer.Exit(code=result["exit_code"])
 
 
 @app.command()

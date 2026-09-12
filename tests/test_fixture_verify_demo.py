@@ -220,7 +220,7 @@ def test_demo_rejects_general_source_commands_and_automatic_approval(monkeypatch
 def test_main_prints_summary_and_preserves_workflow_exit_code(monkeypatch, capsys, exit_code):
     monkeypatch.setattr(sys, "argv", ["demo_verify"])
 
-    async def result():
+    async def result(**kwargs):
         return {"exit_code": exit_code, "runtime_verification_status": "not-run"}
 
     monkeypatch.setattr(demo_verify, "run_demo", result)
@@ -232,7 +232,7 @@ def test_main_prints_summary_and_preserves_workflow_exit_code(monkeypatch, capsy
 def test_main_sanitizes_unhandled_interruption_and_error(monkeypatch, capsys, failure, expected):
     monkeypatch.setattr(sys, "argv", ["demo_verify"])
 
-    async def fail():
+    async def fail(**kwargs):
         raise failure("PRIVATE-LOCAL-STDERR")
 
     monkeypatch.setattr(demo_verify, "run_demo", fail)

@@ -56,7 +56,11 @@ class FixtureApplySession:
         *,
         parent: Path | None = None,
         clock: Callable[[], float] = time.monotonic,
+        runtime_check: bool = False,
     ):
+        if type(runtime_check) is not bool:
+            raise ContractError("Runtime check selection must be an explicit boolean")
+        self._runtime_check = runtime_check
         self._proposal = validate_proposal(proposal.payload_json, request, review)
         sources = source_snapshots(request)
         changes = self._proposal.to_dict()["changes"]
@@ -112,7 +116,7 @@ class FixtureApplySession:
     def _record(self, event: str) -> None:
         self._events.append({"event": event, "generation": self._generation})
         data = {
-            "schema_version": "1.1",
+            "schema_version": "1.2" if self._runtime_check else "1.1",
             "proposal": self.preview(),
             "phase": self._phase,
             "decision": self._decision.to_dict() if self._decision else None,
@@ -124,8 +128,8 @@ class FixtureApplySession:
             "applied": self._applied,
             "restored": self._restored,
             "verification_status": self._verification_status(),
-            "verification_scope": "source-configuration",
-            "runtime_verification_status": "not-run",
+            "verification_scope": self._verification_scope(),
+            "runtime_verification_status": self._runtime_status(),
             "verification": self._verification,
             "verification_plan": self._verification_plan,
             "verification_decision": (
@@ -145,13 +149,30 @@ class FixtureApplySession:
             self._restored,
             verification_status=self._verification_status(),
             error=error,
+            verification_scope=self._verification_scope(),
+            runtime_verification_status=self._runtime_status(),
         )
+
+    def _verification_scope(self) -> str:
+        return "owned-fixture-runtime" if self._runtime_check else "source-configuration"
+
+    def _runtime_status(self) -> str:
+        return self._verification_status() if self._runtime_check else "not-run"
+
+    def _checker(self):
+        if self._runtime_check:
+            from authzest.runner import fixture_runtime
+
+            return fixture_runtime
+        from authzest.runner import fixture_check
+
+        return fixture_check
 
     def _verification_status(self) -> str:
         return self._verification["status"] if self._verification else "not-run"
 
     def verification_preview(self) -> dict:
-        """Describe one fixed source-only check; does not grant permission or start a worker."""
+        """Describe the selected fixed check; selection is not permission to start a worker."""
         if (
             self._phase != "applied"
             or self._verification_running
@@ -163,7 +184,8 @@ class FixtureApplySession:
 
     def _verification_payload(self) -> dict:
         from authzest.codex.fixture_draft import FIXTURE_AFTER, FIXTURE_SOURCE
-        from authzest.runner import fixture_check
+
+        fixture_check = self._checker()
 
         if self._phase != "applied":
             raise WorkspaceError("Verification requires the applied fixture")
@@ -173,9 +195,13 @@ class FixtureApplySession:
         if current != self._current:
             raise WorkspaceError("Applied fixture state changed")
         if self._before != FIXTURE_SOURCE.encode() or self._after != FIXTURE_AFTER.encode():
-            raise WorkspaceError("Only the maintained source-configuration fixture is supported")
+            raise WorkspaceError("Only the exact maintained configuration fixture is supported")
         data = {
-            "kind": "fixture-configuration-verification-plan",
+            "kind": (
+                "fixture-runtime-verification-plan"
+                if self._runtime_check
+                else "fixture-configuration-verification-plan"
+            ),
             "schema_version": "1.0",
             "proposal_id": self._proposal.proposal_id,
             "workspace": str(self.workspace),
@@ -191,7 +217,7 @@ class FixtureApplySession:
             "max_input_bytes": fixture_check.MAX_INPUT_BYTES,
             "max_output_bytes": fixture_check.MAX_OUTPUT_BYTES,
             "max_worker_attempts": 1,
-            "verification_scope": "source-configuration",
+            "verification_scope": self._verification_scope(),
             "runtime_verification_status": "not-run",
             "limitations": (
                 "Fixed source configuration check only; no source import/execution, "
@@ -200,6 +226,25 @@ class FixtureApplySession:
                 "Caller-entered decisions are not authenticated human approval."
             ),
         }
+        if self._runtime_check:
+            data["expected_checks"] = {
+                "debug": False,
+                "method": "GET",
+                "path": "/health",
+                "health_status": 200,
+                "health_body": {"status": "ok"},
+            }
+            data["limitations"] = (
+                "Runs only the byte-identical bundled owned fixture constant, never arbitrary "
+                "input code or a source path. Observes app.debug and one in-process ASGI "
+                "health response; no TCP/UDP listener or HTTP client, no exploit reproduction. "
+                "Internal event-loop IPC and framework threads may be used. Trusted installed "
+                "Python/FastAPI dependencies and site startup hooks are not sandboxed. "
+                "A separate process is not OS/network confinement or executable attestation. "
+                "No generated commands/tests, installs or model calls. Does not establish "
+                "authorization correctness, general application compatibility or a verified "
+                "security fix. Caller-entered decisions are not authenticated human approval."
+            )
         return {**data, "plan_id": "verification-" + sha256(canonical(data).encode()).hexdigest()}
 
     def decide_verification(
@@ -224,7 +269,7 @@ class FixtureApplySession:
         if type(plan_id) is not str or plan_id != preview["plan_id"]:
             raise ContractError("Verification plan changed; review a fresh preview")
         decision = {
-            "purpose": "source-configuration-verification",
+            "purpose": self._verification_scope() + "-verification",
             "plan_id": plan_id,
             "choice": choice,
             "created_at": now,
@@ -240,6 +285,10 @@ class FixtureApplySession:
         return decision
 
     def _save_verification(self, result: dict) -> dict:
+        result = {
+            **result,
+            "runtime_verification_status": result["status"] if self._runtime_check else "not-run",
+        }
         self._verification = {**result, "journal_status": "recorded"}
         try:
             self._record("verification-" + result["reason"])
@@ -251,6 +300,7 @@ class FixtureApplySession:
                 "reason": "journal-unavailable",
                 "journal_status": "unconfirmed",
             }
+            self._verification["runtime_verification_status"] = self._runtime_status()
             # Replacement may have committed before fsync failed. Best-effort correction
             # prevents a stale passed record when writes recover; no durability claim is
             # made if this second write also fails. Retained files are not a restart receipt.
@@ -260,7 +310,7 @@ class FixtureApplySession:
 
     async def verify(self) -> dict:
         """Run the approved fixed check once, retaining its historical checked-content result."""
-        from authzest.runner import fixture_check
+        fixture_check = self._checker()
 
         result = {
             "status": "not-run",
@@ -273,9 +323,11 @@ class FixtureApplySession:
             "elapsed_ms": None,
             "exit_code": None,
             "execution_attempted": False,
-            "verification_scope": "source-configuration",
+            "verification_scope": self._verification_scope(),
             "runtime_verification_status": "not-run",
         }
+        if self._runtime_check:
+            result["runtime_evidence"] = None
         if self._verification_used:
             return {**result, "reason": "decision-consumed"}
         if self._verification_blocked or self._phase != "applied":
@@ -311,9 +363,26 @@ class FixtureApplySession:
         self._verification_running = True
         try:
             result["execution_attempted"] = True
-            outcome = asdict(await fixture_check.run_configuration_check(current.data))
+            check = (
+                fixture_check.run_runtime_check
+                if self._runtime_check
+                else fixture_check.run_configuration_check
+            )
+            outcome = asdict(await check(current.data))
+            expected_fields = {
+                "status",
+                "reason",
+                "check_id",
+                "source_sha256",
+                "worker_sha256",
+                "elapsed_ms",
+                "exit_code",
+            }
+            if self._runtime_check:
+                expected_fields.add("runtime_evidence")
             if (
-                outcome["status"] not in ("passed", "failed", "not-run")
+                set(outcome) != expected_fields
+                or outcome["status"] not in ("passed", "failed", "not-run")
                 or outcome["source_sha256"] != preview["source_sha256"]
                 or outcome["worker_sha256"] != preview["worker_sha256"]
                 or outcome["check_id"] != preview["check_id"]
@@ -324,9 +393,19 @@ class FixtureApplySession:
                 or (
                     outcome["status"] == "passed"
                     and (
-                        outcome["reason"] != "debug-disabled"
+                        outcome["reason"]
+                        != ("runtime-check-passed" if self._runtime_check else "debug-disabled")
                         or type(outcome["exit_code"]) is not int
                         or outcome["exit_code"] != 0
+                    )
+                )
+                or (
+                    self._runtime_check
+                    and (
+                        outcome["status"] == "passed" or outcome.get("runtime_evidence") is not None
+                    )
+                    and not fixture_check.validate_runtime_evidence(
+                        outcome.get("runtime_evidence"), current.data
                     )
                 )
             ):
@@ -430,8 +509,8 @@ class FixtureApplySession:
             "from_sha256": sha256(self._after).hexdigest(),
             "to_sha256": sha256(self._before).hexdigest(),
             "verification_status": self._verification_status(),
-            "verification_scope": "source-configuration",
-            "runtime_verification_status": "not-run",
+            "verification_scope": self._verification_scope(),
+            "runtime_verification_status": self._runtime_status(),
         }
 
     def restore(self, choice: str) -> FixtureResult:

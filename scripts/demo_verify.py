@@ -17,16 +17,23 @@ def _emit(emit, value: dict) -> None:
     emit(json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False))
 
 
-async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dict:
+async def run_demo(
+    *, runtime_check: bool = False, read=input, emit=print, parent: Path | None = None
+) -> dict:
     """Use a caller-authored mock draft; each copy operation requires its own choice.
 
-    This development-checkout example does not call a provider or execute fixture
-    source. Only an approved, fixed configuration checker runs in a child process.
+    This development-checkout example does not call a provider. A fixed source check
+    is the default; ``runtime_check`` selects (but does not approve) the owned-fixture
+    runtime plan. Only an independently approved fixed checker runs in a child process.
     ``parent`` and injected I/O are test helpers, not command-line path options.
     Files and their audit record are retained; no automatic restoration is implied.
     """
+    if type(runtime_check) is not bool:
+        raise ValueError("Runtime check selection must be a boolean")
+    verification_scope = "owned-fixture-runtime" if runtime_check else "source-configuration"
+    kind = "runtime" if runtime_check else "configuration"
     result = {
-        "kind": "offline-owned-fixture-configuration-workflow",
+        "kind": f"offline-owned-fixture-{kind}-workflow",
         "status": "not-started",
         "exit_code": 0,
         "draft_provenance": "caller-authored-mock",
@@ -39,7 +46,8 @@ async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dic
         "restoration": None,
         "original_checkout_modified": False,
         "verification_status": "not-run",
-        "verification_scope": "source-configuration",
+        "runtime_check_requested": runtime_check,
+        "verification_scope": verification_scope,
         "runtime_verification_status": "not-run",
     }
     session = None
@@ -48,20 +56,32 @@ async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dic
             emit,
             {
                 **result,
-                "kind": "offline-owned-fixture-configuration-preview",
+                "kind": f"offline-owned-fixture-{kind}-preview",
                 "limitations": [
                     "The review and defensive draft are caller-authored mock data, not AI output.",
-                    "Apply, configuration verification and restore require separate exact choices.",
+                    "Apply, verification and restore require separate exact choices; "
+                    "the runtime selector is not approval.",
                     "Only a fresh fixture copy is changed; its files and record are retained.",
-                    "The fixed checker reads source as data; no fixture import or execution.",
-                    "No regression tests, runtime authorization check or verified security fix.",
+                    (
+                        "An approved fixed harness executes only the exact maintained fixture "
+                        "and checks app.debug and in-memory ASGI GET /health. "
+                        "No arbitrary repository, generated commands "
+                        "or automatic dependency install."
+                        if runtime_check
+                        else "The fixed checker reads source as data; "
+                        "no fixture import or execution."
+                    ),
+                    "No arbitrary regression suite, authorization guarantee "
+                    "or general verified fix.",
                     "A separate process is not an OS/network sandbox "
                     "or human approval attestation.",
                 ],
             },
         )
         request, review, proposal = build_demo_proposal()
-        session = FixtureApplySession(proposal, request, review, parent=parent)
+        session = FixtureApplySession(
+            proposal, request, review, parent=parent, runtime_check=runtime_check
+        )
         result["workspace"] = str(session.workspace)
         _emit(emit, session.preview())
         session.decide(_choice(read, "apply", proposal.proposal_id))
@@ -79,11 +99,18 @@ async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dic
                 verification = {
                     "status": "failed",
                     "reason": "verification-unavailable",
-                    "verification_scope": "source-configuration",
-                    "runtime_verification_status": "not-run",
+                    "verification_scope": verification_scope,
                 }
+                if not runtime_check:
+                    verification["runtime_verification_status"] = "not-run"
             result["verification"] = verification
             result["verification_status"] = verification["status"]
+            if runtime_check:
+                result.pop("runtime_verification_status", None)
+                if "runtime_verification_status" in verification:
+                    result["runtime_verification_status"] = verification[
+                        "runtime_verification_status"
+                    ]
             _emit(emit, verification)
             _emit(emit, session.restoration_preview())
             result["restoration"] = asdict(
@@ -118,10 +145,14 @@ async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dic
     except (asyncio.CancelledError, KeyboardInterrupt):
         result.update(status="cancelled", exit_code=130)
         result.pop("verification_status", None)
+        if runtime_check:
+            result.pop("runtime_verification_status", None)
         result["detail"] = "Interrupted; inspect the retained workspace record if created."
     except Exception:
         result.update(status="workflow-failed", exit_code=1)
         result.pop("verification_status", None)
+        if runtime_check:
+            result.pop("runtime_verification_status", None)
         result["detail"] = "Inspect the retained workspace record if created."
     finally:
         if session is not None:
@@ -130,21 +161,27 @@ async def run_demo(*, read=input, emit=print, parent: Path | None = None) -> dic
 
 
 def main() -> int:
-    argparse.ArgumentParser(description=__doc__).parse_args()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--runtime-check",
+        action="store_true",
+        help="Select the fixed runtime plan; an exact verify confirmation is still required.",
+    )
+    args = parser.parse_args()
     try:
-        result = asyncio.run(run_demo())
+        result = asyncio.run(run_demo(runtime_check=args.runtime_check))
     except (asyncio.CancelledError, KeyboardInterrupt):
         result = {
             "status": "cancelled",
             "exit_code": 130,
-            "runtime_verification_status": "not-run",
+            **({} if args.runtime_check else {"runtime_verification_status": "not-run"}),
             "detail": "Interrupted; inspect the retained workspace record if created.",
         }
     except Exception:
         result = {
             "status": "workflow-failed",
             "exit_code": 1,
-            "runtime_verification_status": "not-run",
+            **({} if args.runtime_check else {"runtime_verification_status": "not-run"}),
             "detail": "Inspect the retained workspace record if created.",
         }
     _emit(print, result)

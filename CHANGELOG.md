@@ -16,6 +16,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #54's separately approved [owned-fixture runtime check](docs/guides/RUNTIME_VERIFICATION.md).
+  `--runtime-check` selects the exact-plan gate; the default remains source-only configuration.
+  Only byte-identical bundled constants execute, checking `app.debug` and one in-process ASGI health
+  response. Retain five-second execution and separate one-second cleanup limits, scoped runtime
+  evidence, conflict-aware restoration and journal schema `1.2` for runtime sessions.
+  Add explicit optional `fixture` dependencies and native/downloaded-artifact runtime smoke gates.
+  No arbitrary source/commands, exploit reproduction, automatic installs or security-fix claim.
+  One newly approved source-CLI live draft/apply/runtime/restore check passed on `ce2834c` on
+  2026-09-12, with the assistant entering exact phrases under bounded user authorization.
 - Add #52's optional, separately approved source-configuration check between fixture-copy application
   and restoration: exact-plan approval, a fixed AST configuration worker with pinned source hashes, a 5-second timeout and 4 KiB
   output limit. Report `passed`/`failed`/`not-run` separately from restoration, while runtime verification
@@ -26,7 +35,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   validated debug-setting draft with separate apply/restore decisions for a fresh POSIX copy.
   One owned-fixture live draft/apply/restore check passed on `42ff108` on 2026-09-12, preserving the original.
   The assistant entered approval phrases under user authorization, not independent human review.
-  General repository AI and runtime verification remain unimplemented.
+  General repository AI remains unimplemented; that historical check did not run verification.
   The default scan stays offline and parent #35 remains open. No new release is included.
 - Handle narrowly validated same-turn Codex stream-recovery notifications without issuing another turn.
   Accept at most three observed notices within the existing time/byte/event limits; discard pre-recovery

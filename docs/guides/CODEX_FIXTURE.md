@@ -21,9 +21,11 @@ other character. This is a configuration demonstration, not an authorization fin
 generated regression test, or verified security fix. There is no arbitrary repository/path input.
 
 The ordinary `scan` command stays offline. The existing offline proposal and copy demos remain scripted,
-not AI-generated. General repository AI review, arbitrary patching, and runtime verification are not
-implemented by this command. #52 adds only an optional, separately approved source-configuration check
-of the applied fixture copy, described below; it does not add another model call.
+not AI-generated. General repository AI review and arbitrary patching remain unsupported. #52's optional,
+separately approved source-configuration check is the default. #54 adds an opt-in fixed runtime plan
+selected by `--runtime-check`, described in the [runtime guide](RUNTIME_VERIFICATION.md). Neither check
+adds a model call. #54's bounded live source acceptance passed, as recorded in the runtime guide;
+final PR/release gates are pending. #35 stays open and alpha.2 is unchanged.
 
 ## Run from current source
 
@@ -111,14 +113,15 @@ an informational warning cannot waive these checks.
 
 A valid draft is shown for a separate exact-diff decision. Approval can change only a newly created,
 private fixture copy, never the original checkout. Type the displayed `apply <proposal_id>` phrase
-exactly; decline/cancel does not apply the draft. After application, source-configuration verification
-is optional and separately approved. Restoration requires `restore <proposal_id>` and
+exactly; decline/cancel does not apply the draft. After application, the selected check—default
+source-configuration or opt-in owned-fixture runtime—is optional and separately approved.
+Restoration requires `restore <proposal_id>` and
 refuses detected intervening edits; it does not overwrite user work. The copy, before/after snapshots,
 and `record.json` are retained for inspection; the workflow JSON summary includes request/proposal IDs
 and available usage. The file-operation limits
 and failure meanings in the [copy application guide](FIXTURE_APPLICATION.md) still apply.
 
-## Optional source-configuration verification
+## Optional source-configuration verification (default)
 
 After copy application and before restoration, #52 displays a fixed plan and requires the exact
 `verify <plan_id>` phrase. Sharing or applying does not approve this step. The plan binds the proposal,
@@ -142,8 +145,8 @@ It never manufactures bootloader state. This is private-value consistency, not e
 attestation; source-mode workers still drop those ambient values. The 5-second deadline and separate
 1-second cleanup limit are unchanged.
 
-The workflow reports `verification_scope: source-configuration` and `verification_status` as `passed`,
-`failed`, or `not-run`; `runtime_verification_status` always remains `not-run`. A normally produced,
+This default mode reports `verification_scope: source-configuration` and `verification_status` as `passed`,
+`failed`, or `not-run`; its `runtime_verification_status` always remains `not-run`. A normally produced,
 plan-bound `verification` record carries the scope, plan/check/worker/source identities, reason, elapsed
 time, and exit status. Unexpected workflow failures may omit result details; inspect the retained
 record instead of assuming a missing result means success or `not-run`.
@@ -160,8 +163,33 @@ record; if correction also fails, the retained record may be uncertain. Inspect 
 reported failure rather than trusting an earlier success entry. The journal cannot restart or resume
 the session and is not a replay-proof approval receipt.
 
-The existing `scripts.demo_apply` flow is unchanged and remains `not-run`. This source-only addition
-does not complete #35's separately approved runtime verification and failure/recovery acceptance gate.
+The existing `scripts.demo_apply` flow is unchanged and remains `not-run`. #52's source-only addition
+does not itself complete #35's separately approved runtime verification and failure/recovery acceptance gate.
+
+## Opt-in owned-fixture runtime verification
+
+Select #54's runtime plan explicitly, after setting up the optional dependencies described in the
+[runtime guide](RUNTIME_VERIFICATION.md):
+
+```bash
+authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
+```
+
+The selector is not approval to share source, apply a change, or execute verification. The same separate
+`verify <plan_id>` decision is required after application. The fixed worker accepts only the exact
+maintained fixture variants and executes the matching bundled constant. It observes `app.debug` and
+an in-memory ASGI `GET /health`, with dependency versions recorded as observations. It accepts no
+arbitrary source path or model-generated command and starts no TCP/UDP server. This is not an
+OS/network sandbox, authorization test, exploit reproduction, or verified security fix.
+
+Runtime sessions use `verification_scope: owned-fixture-runtime` and journal schema `1.2`.
+`runtime_verification_status` reflects the recorded check; an unexpected interruption may omit an
+uncertain status rather than imply no execution. Missing dependencies are not installed automatically:
+`runtime-dependency-unavailable` is `not-run` with CLI exit `1`, unlike an intentional decline/cancel.
+Restoration remains independent, and a retained result describes the checked applied hash, not the
+restored file. #54's bounded live source acceptance passed, with evidence in the
+[runtime guide](RUNTIME_VERIFICATION.md); final PR/release gates are pending. No release or completion
+of #35 is claimed.
 
 ## Offline configuration-check demo
 
@@ -176,6 +204,16 @@ separate exact `apply <proposal_id>`, `verify <plan_id>`, and `restore <proposal
 private fixture copy and uses the same fixed configuration worker. Follow the displayed IDs; no step
 is approved by default. Passing this demo is offline workflow evidence, not live-model performance,
 target-code execution, or security-fix verification. Copies and records remain available for inspection.
+
+To select the runtime worker in the same offline, caller-authored mock workflow:
+
+```bash
+python -m scripts.demo_verify --runtime-check
+```
+
+This variant still makes zero provider calls, but executes the exact maintained fixture after separate
+verification approval. It requires the optional dependencies and has the boundaries in the
+[runtime guide](RUNTIME_VERIFICATION.md); it is not evidence of a new live-model check.
 
 ## Contract compatibility
 
@@ -317,8 +355,8 @@ count of billed/dispatched provider turns. There was no application retry or add
 The first post-routing-correction attempt passed without the prior 401; this supports the routing
 diagnosis but does not independently trace the earlier HTTP requests. The approval is exhausted.
 No release is implied. This recorded #51 run retained `verification_status: not-run`; it did not
-exercise the later #52 source-configuration check. Source/test execution, security-fix verification,
-arbitrary repository AI and the remaining #35 work are still unimplemented.
+exercise the later #52 source-configuration check. In that historical snapshot, source/test execution,
+security-fix verification, arbitrary repository AI and the remaining #35 work were unimplemented.
 
 Development wheel and macOS ARM64 artifacts were rebuilt from a fixed `42ff108` runtime snapshot.
 Both passed help, full preview and pre-sharing EOF cancellation with zero Codex processes/model turns;
@@ -357,5 +395,5 @@ The same final binary passed 14 inventory-only smoke checks (7 selected, 7 reloc
 check evidence covers the applied `debug=False` source, not a native before-change failure check.
 
 These are unpublished local development artifacts, not clean-device, cross-platform, signing, upgrade,
-or live-model package acceptance. #52's source-configuration acceptance is complete; runtime verification
-remains `not-run`, #35 stays open, and no new release or verified security fix is claimed.
+or live-model package acceptance. #52's source-configuration acceptance is complete; that historical
+run retained runtime verification `not-run`. #35 stays open, and no new release or verified security fix is claimed.
