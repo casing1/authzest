@@ -16,6 +16,7 @@ from scripts.verify_release import (
 def test_expected_tag_converts_pep440_prerelease_to_semver() -> None:
     assert expected_tag("0.1.0a1") == "v0.1.0-alpha.1"
     assert expected_tag("0.1.0a2") == "v0.1.0-alpha.2"
+    assert expected_tag("0.1.0a3") == "v0.1.0-alpha.3"
     assert expected_tag("1.2.3b2") == "v1.2.3-beta.2"
     assert expected_tag("2.0.0rc3") == "v2.0.0-rc.3"
     assert expected_tag("2.0.0") == "v2.0.0"

@@ -14,6 +14,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] - 2026-09-12
+
+Prepared as a bounded Codex workflow checkpoint; publication and assets must be verified separately.
+Scan report schema remains `1.2`; this release does not enable arbitrary repository execution.
+
 ### Added
 
 - Add #54's separately approved [owned-fixture runtime check](docs/guides/RUNTIME_VERIFICATION.md).
@@ -36,7 +41,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   One owned-fixture live draft/apply/restore check passed on `42ff108` on 2026-09-12, preserving the original.
   The assistant entered approval phrases under user authorization, not independent human review.
   General repository AI remains unimplemented; that historical check did not run verification.
-  The default scan stays offline and parent #35 remains open. No new release is included.
+  The default scan stays offline and parent #35 remains open for broader acceptance.
 - Handle narrowly validated same-turn Codex stream-recovery notifications without issuing another turn.
   Accept at most three observed notices within the existing time/byte/event limits; discard pre-recovery
   output and usage, require a fresh validated final response, and keep fatal errors fail-closed.
@@ -169,6 +174,7 @@ These improvements are included in alpha.2, not the alpha.1 binaries.
 - Restricted the HTTP scan endpoint to the workspace selected by the local process owner.
 - Removed caller-controlled filesystem paths from the HTTP API contract.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.2...main
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.3...main
+[0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1
