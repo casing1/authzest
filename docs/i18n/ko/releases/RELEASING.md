@@ -7,18 +7,54 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 
 ## 배포된 preview와 현재 소스
 
-### Alpha.3 준비 (아직 미발행)
+### 발행된 alpha.3
 
-[#56](https://github.com/casing1/authzest/issues/56)은 [PR #55](https://github.com/casing1/authzest/pull/55)
-이후 패키지 `0.1.0a3` / 태그 `v0.1.0-alpha.3`를 준비합니다. 오프라인 근거/제안 계약, opt-in
-버전 고정 Codex fixture 초안, 승인형 복사본 변경, 소스 설정 검사와 별도 승인한 고정 런타임 검사를
-묶은 중간 배포이며 scan report schema는 `1.2`입니다. [제한적 완료 검사](../guides/RUNTIME_VERIFICATION.md)는
-로컬에서 통과했지만 정확한 main의 세 플랫폼 빌드·새 다운로드 artifact·공개 산출물 검증은
-게시 전에 통과해야 합니다. Windows 런타임은 미지원이고 기존 Windows scan 지원은 유지하며
-릴리스 준비가 새 실제 Codex 호출을 승인하지 않습니다. 별도 발행 후 문서 PR로 새 배포를 확인할
-때까지 아래 alpha.2 다운로드 기록을 유지하며 기존 태그/산출물을 이동하거나 교체하지 않습니다.
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 2026-09-12
+09:00:49 UTC에 프리릴리스로 발행됐습니다. 패키지는 `0.1.0a3`, scan report schema는 기존 `1.2`이며
+커밋은 `99be6f5614d283befa2a421b64f84958b680f92f`입니다
+([기능 PR #55](https://github.com/casing1/authzest/pull/55),
+[준비 PR #57](https://github.com/casing1/authzest/pull/57),
+[릴리스 이슈 #56](https://github.com/casing1/authzest/issues/56)).
+오프라인 근거/제안 계약, opt-in 버전 고정 Codex fixture 초안, 승인형 복사본 변경, 기본 소스 설정
+검사와 별도 승인한 고정 런타임 검사를 묶었습니다. 제한된 fixture 중간 단계이며 더 넓은
+[#35](https://github.com/casing1/authzest/issues/35) 완료나 안정화된 보안 제품을 뜻하지 않습니다.
+Windows 런타임은 미지원이며 기존 Windows scan 지원은 유지합니다.
 
-### 발행된 alpha.2
+### Alpha.3 검증 기록
+
+[main 사전 실행 34684062102](https://github.com/casing1/authzest/actions/runs/34684062102)과
+[태그 발행 실행 34684547525](https://github.com/casing1/authzest/actions/runs/34684547525)은 위의 정확한
+커밋에서 통과했습니다. 태그 실행은 태그/패키지/변경 이력 날짜와 현재 원격 `main`도 확인했습니다.
+두 실행 모두 Python 테스트 1,548개, 문서 검사기 테스트 14개, Ruff와 frontend 검사를 통과했습니다.
+세 플랫폼 빌드 모두 선택/이동 scan 14개, native 부모 런타임 경계 2개, 패키징 체크섬 기반
+scan/runtime 7/1개 검사를 통과했습니다. 별도 새 동일 OS job에서 AuthZest를 설치하지 않고 각
+산출물을 내려받아 격리 모드 scan/runtime 7/1개 검사를 통과했습니다. POSIX 런타임 검사는 고정
+내장 AFTER fixture만 실행하며 Windows는 worker 없는 명시적 unsupported/not-run을 확인합니다.
+Windows 런타임 기능 지원을 뜻하지 않습니다.
+
+| 플랫폼      | 공개 실행 파일                           | SHA-256                                                            |
+| ----------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| Linux x64   | `authzest-0.1.0-alpha.3-linux-x64`       | `346484e4c755eeb25cfa91a10d09c77c2393e892605823c092617b9a53b0f0b5` |
+| macOS arm64 | `authzest-0.1.0-alpha.3-macos-arm64`     | `8c75e299e9699c0a08dc30924478013c05f918d33e35bc874178dbe027a782c6` |
+| Windows x64 | `authzest-0.1.0-alpha.3-windows-x64.exe` | `7f4c4ee2c7c208459ca9aebc7ff99bf858ff8ef60694b0f51c4c04298d32ff0e` |
+
+각 실행 파일에는 대응하는 `.sha256` manifest가 있어 공개 파일은 총 6개입니다. 모두 다시 내려받아
+체크섬을 통과했고 별도로 내려받은 태그 실행 산출물과 6개 파일 모두 바이트 단위로 일치했습니다.
+공개 macOS 파일은 Python `-I -S`의 표준 라이브러리 제어 스크립트로 로컬 이동 복사본 scan 7개와
+runtime 1개도 통과했습니다. Linux/Windows 실행 근거는 동일 OS CI에서 얻었으며 공개 다운로드
+파일이 그 검사 산출물과 일치함을 확인했습니다.
+
+빌드 로그의 관찰 버전은 Linux Python 3.12.14, macOS/Windows 3.12.10이며 FastAPI 0.141.1,
+Starlette 1.6.0, Pydantic 2.13.5, PyInstaller 6.22.2입니다. 빌드 관찰값이지 버전 증명이나 광범위한
+호환성 보장이 아닙니다. 로컬 native 검사는 도구 sandbox 밖의 내부 IPC 권한이 필요했으며 timeout이나
+검사 조건은 완화하지 않았습니다. 릴리스 검사에는 Codex 호출이 없습니다. 별도 승인한 소스 실제
+연동과 가짜 transport native 근거는 [런타임 가이드](../guides/RUNTIME_VERIFICATION.md)에서 구분합니다.
+
+일반 사용자 기기 설치/업그레이드, 서명/공증, 임의 저장소 실행, 인가 정확성이나 보안 수정 효과를
+입증하지 않습니다. [후속 문서 이슈 #58](https://github.com/casing1/authzest/issues/58)은 `Unreleased`에서
+현재 안내를 갱신하며 불변 태그나 공개 산출물을 바꾸지 않습니다.
+
+### 이전에 발행된 alpha.2
 
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 Python
 패키지 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 커밋은 `7cc359acbb864ef6d31e3b536787857da4f7e09c`이며
@@ -52,9 +88,10 @@ Python 환경에서 로컬 격리 복사본 fixture 검사도 통과했습니다
 
 릴리스 시점은 관리자 재량의 기능 단계 기준이며 이슈마다 태그를 만들거나 고정 달력 주기로 내지 않습니다.
 관리자는 2026-09-11에 시점 판단을 위임했지만 아래 릴리스 검사를 생략한다는 뜻은 아닙니다.
-#33/#46 같은 내부 계약은 사용자에게 의미 있는 기능 단위와 산출물/호환성 검증이 준비될 때까지
-`Unreleased`에 둡니다. 제한된 #35 흐름을 시연할 수 있는 시점이 다음 후보이며 날짜나 버전을 미리
-약속하지 않습니다. 개발 7주와 별도 시험/제출 여유를 지키며 활동량을 늘리기 위한 배포는 하지 않습니다.
+내부 계약은 산출물/호환성 검사를 통과한 뒤 사용자에게 의미 있는 기능 단위로 묶습니다.
+Alpha.3에는 #35의 제한된 fixture 부분을 담았으며 더 넓은 완료 조건은 남아 있습니다. 다음 중간
+배포는 검증된 진척에 따라 결정하며 날짜나 버전을 미리 약속하지 않습니다. 개발 7주와 별도
+시험/제출 여유를 지키며 활동량을 늘리기 위한 배포는 하지 않습니다.
 
 Semantic Versioning을 사용합니다. 초기 개발 단계인 `1.0.0` 미만에서는 호환성이 깨지는 변경이 생길 수
 있습니다.
@@ -71,7 +108,7 @@ Python 패키지 메타데이터에는 PEP 440 표기를, Git 태그에는 SemVe
 
 Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../../../pyproject.toml)입니다. `private: true`로 설정된
 frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리스마다 사용하지 않은 새 버전을
-선택하세요. 이미 배포한 `v0.1.0-alpha.1`과 `v0.1.0-alpha.2`는 모두 다시 발행하면 안 됩니다.
+선택하세요. 이미 배포한 `v0.1.0-alpha.1`, `v0.1.0-alpha.2`, `v0.1.0-alpha.3`는 다시 발행하면 안 됩니다.
 
 ## 릴리스 준비
 

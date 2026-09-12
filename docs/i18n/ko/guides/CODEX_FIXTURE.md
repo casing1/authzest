@@ -9,11 +9,12 @@
 
 ## 범위와 현재 근거
 
-[#50](https://github.com/casing1/authzest/issues/50)은 유지하는 설정 fixture 하나를 위한 소스 checkout
-명령을 추가합니다. 2026-09-12 `42ff108`에서 승인된 실제 CLI 검사 1회가 **PASSED**했습니다.
+[#50](https://github.com/casing1/authzest/issues/50)은 유지하는 설정 fixture 하나를 위한 명령을
+도입했습니다. 2026-09-12 `42ff108`에서 승인된 실제 CLI 검사 1회가 **PASSED**했습니다.
 초안 검증, 별도의 정확한 문구 결정, 복사본 적용과 복구를 확인했습니다. 사용자 승인 범위에서
-assistant가 문구를 입력했으며 독립적인 인간 승인 증명은 아닙니다. 배포된 alpha.2 바이너리에는
-없으며 이 기능만으로 [#35](https://github.com/casing1/authzest/issues/35)를 완료하지 않습니다.
+assistant가 문구를 입력했으며 독립적인 인간 승인 증명은 아닙니다. 발행된
+[alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) POSIX 바이너리와 소스에서
+제공하며 이전 alpha.2 바이너리에는 없습니다. 이 기능만으로 [#35](https://github.com/casing1/authzest/issues/35)를 완료하지 않습니다.
 
 AuthZest의 작업·소스 payload에는 미리 보여 주는 패키지 내 `main.py` 스냅샷, 소스 근거, 선언 정책과
 질문 하나를 포함합니다.
@@ -25,10 +26,16 @@ AuthZest의 작업·소스 payload에는 미리 보여 주는 패키지 내 `mai
 사용합니다. 일반 저장소 AI 검토와 임의 패치는 지원하지 않습니다. #52의 선택적·별도 승인 소스 설정
 검사가 기본값입니다. #54는 `--runtime-check`로 선택하는 고정 런타임 계획을 추가하며,
 [런타임 안내](RUNTIME_VERIFICATION.md)에서 설명합니다. 어느 검사도 모델을 추가로 호출하지 않습니다.
-#54의 제한된 실제 소스 환경 인수 검증은 통과했고 런타임 안내에 기록했으며 최종 PR·릴리스 게이트는
-대기 중입니다. #35는 계속 열어두고 alpha.2는 바뀌지 않습니다.
+#54의 제한된 실제 소스 환경 인수 검증은 통과했고 런타임 안내에 기록했습니다.
+Alpha.3 발행과 공개 파일 검사는 별도로 통과했으며 [릴리스 기록](../releases/RELEASING.md)에 있습니다.
+#35는 계속 열어두며 기존 alpha.2 태그·파일은 바뀌지 않습니다.
 
-## 현재 소스에서 실행
+## 소스 또는 독립 실행 파일로 실행
+
+설치한 소스 checkout 또는 [릴리스 안내](../releases/RELEASING.md#검증과-복구)에 따라 체크섬을
+확인한 alpha.3 POSIX 실행 파일을 사용합니다. 내려받은 실행 파일이 PATH에 없으면 아래 `authzest`를
+정확한 파일 경로로 바꾸세요. 바이너리는 Python 런타임과 fixture 의존성을 포함하지만 Codex나
+계정 자격 증명은 포함하지 않습니다. 오프라인 `scripts.demo_*` 흐름에는 여전히 checkout이 필요합니다.
 
 Codex가 관리하는 기존 ChatGPT 로그인과 신뢰하는 로컬 Codex **0.153.0** 설치본을 사용합니다.
 adapter는 버전을 고정하며 다른 버전과의 호환성을 주장하지 않습니다. 실제 복사본 흐름은 POSIX
@@ -165,8 +172,8 @@ journal 스키마 `1.1`은 기록에 성공하면 전체 `verification_plan` 미
 
 ## 명시적으로 선택하는 소유 fixture 런타임 검증
 
-[런타임 안내](RUNTIME_VERIFICATION.md)의 선택 의존성을 설치한 뒤 #54 런타임 계획을 명시적으로
-선택합니다.
+#54 런타임 계획을 명시적으로 선택합니다. 소스 설치에는 [런타임 안내](RUNTIME_VERIFICATION.md)의
+선택 의존성이 필요하며 alpha.3 POSIX 바이너리에는 포함되어 있습니다.
 
 ```bash
 authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
@@ -184,7 +191,8 @@ sandbox, 인가 검사, exploit 재현이나 검증된 보안 수정이 아닙�
 `runtime-dependency-unavailable`은 `not-run`이며 의도적인 거절·취소와 달리 CLI 종료 `1`입니다.
 복구는 여전히 독립적이고 보존된 결과는 복구한 파일이 아닌 검사한 적용 해시를 설명합니다.
 #54의 제한된 실제 소스 환경 인수 검증은 통과했으며 근거는 [런타임 안내](RUNTIME_VERIFICATION.md)에
-기록했습니다. 최종 PR·릴리스 게이트는 대기 중이며 릴리스나 #35 완료를 주장하지 않습니다.
+기록했습니다. 별도로 검증한 alpha.3 발행은 [릴리스 안내](../releases/RELEASING.md)에 있으며
+일반 저장소 지원이나 #35 완료의 근거는 아닙니다.
 
 ## 오프라인 설정 검사 데모
 

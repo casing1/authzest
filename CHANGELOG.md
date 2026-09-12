@@ -14,9 +14,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Documentation
+
+- Synchronize all four README languages and English/Korean guides after verified alpha.3 publication
+  in #58. Record immutable source, main/tag workflows, public asset hashes and observed checks; preserve
+  historical evidence and the remaining broader #35 scope. No tag, asset or package-version change.
+
 ## [0.1.0-alpha.3] - 2026-09-12
 
-Prepared as a bounded Codex workflow checkpoint; publication and assets must be verified separately.
+Published as [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3), with package
+`0.1.0a3`, from commit `99be6f5614d283befa2a421b64f84958b680f92f`. The
+[release record](docs/releases/RELEASING.md) documents three-platform gates and public-asset verification.
 Scan report schema remains `1.2`; this release does not enable arbitrary repository execution.
 
 ### Added
@@ -35,7 +43,8 @@ Scan report schema remains `1.2`; this release does not enable arbitrary reposit
   output limit. Report `passed`/`failed`/`not-run` separately from restoration, while runtime verification
   stays `not-run`. No target source, model-generated command, or provider is executed by this check;
   this offline addition is not runtime/security-fix verification or new live-model evidence.
-- Add #50's source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): pinned App Server 0.153.0,
+- Add #50's [Codex fixture command](docs/guides/CODEX_FIXTURE.md), introduced in source and now included
+  in alpha.3's supported POSIX binaries: pinned App Server 0.153.0,
   exact-request sharing approval before process launch, at most one application-issued turn, and a narrowly
   validated debug-setting draft with separate apply/restore decisions for a fresh POSIX copy.
   One owned-fixture live draft/apply/restore check passed on `42ff108` on 2026-09-12, preserving the original.

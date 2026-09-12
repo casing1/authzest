@@ -15,18 +15,18 @@ AuthZest is an installable, CLI-first open-source project for source-aware acces
 FastAPI applications. Its current Python core inventories routes without importing or executing the target
 application. The core product goal is Codex-assisted review and defensive test/patch proposals, user
 approval or refusal, approved-only changes, and separately approved isolated verification with a change
-record. The complete workflow remains unfinished. Current source adds an opt-in, owned-fixture Codex
-draft/copy-approval slice; one owned-fixture live draft/apply/restore check has passed. Static scans remain offline.
+record. The broader workflow remains unfinished. Alpha.3 includes the opt-in owned-fixture path;
+one live source-CLI draft/apply/runtime-check/restore check has passed. Static scans remain offline.
 
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
 > [!IMPORTANT]
-> [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on
-> 2026-09-10 with Python package version `0.1.0a2` and report schema `1.2`. Its binaries include the
-> source-inventory, report, and local/inherited dependency features described below.
+> [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published on
+> 2026-09-12 with Python package version `0.1.0a3` and report schema `1.2`. It retains static inventory
+> and adds the bounded Codex fixture/copy/check workflow on supported POSIX systems; Windows scan remains supported.
 > See the [changelog](CHANGELOG.md) and [release record](docs/releases/RELEASING.md) for the exact
 > commit and validation evidence. A checkout of `main` can advance beyond that tag.
-> This is still an alpha source-analysis tool, not a complete vulnerability scanner or a working Codex repair loop.
+> This is still an alpha tool, not a complete vulnerability scanner or a general repository repair loop.
 
 ## What the current source supports
 
@@ -41,12 +41,12 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Carries supported application, router, and `include_router` dependency declarations into each
   registration's effective evidence, preserving the separate route-local list and original source positions.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
-- Adds the source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): explicit sharing, a pinned
+- Provides the [Codex fixture command](docs/guides/CODEX_FIXTURE.md) in source and POSIX binaries: explicit sharing, a pinned
   App Server, and exact-diff approval for a fresh copy only. One fixture live check passed.
 - Keeps separately approved, source-configuration verification as the default; this AST check does not execute fixture source.
 - Adds opt-in [`--runtime-check`](docs/guides/RUNTIME_VERIFICATION.md) for only the exact maintained
   fixture: execute its bundled code and check `app.debug` and in-memory ASGI `GET /health`.
-  Selecting the option does not approve execution. #54's bounded live source acceptance passed; final PR/release gates are pending.
+  Selecting the option does not approve execution. Bounded live source acceptance and alpha.3 publication checks passed.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
 This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
@@ -194,14 +194,20 @@ The formatting command covers tracked Markdown; include new guides in staging be
 
 ## Standalone binaries
 
-The [alpha.2 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) provides Linux x64,
+The [alpha.3 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) provides Linux x64,
 macOS arm64, and Windows x64 executables with matching SHA-256 manifests. They include the source-analysis
 features above and report schema `1.2`. They are standalone CLI programs, not graphical installers;
-running a prebuilt binary does not require installing Python or Node.js.
+running a prebuilt binary does not require installing Python or Node.js. POSIX binaries also include
+the owned-fixture workflow and its runtime dependencies. Codex remains a separate trusted installation
+with its own login; source sharing and each change/check need separate approval. Windows fixture
+application/runtime checking is unsupported, not a passing runtime result.
 
 Download the file for your OS/architecture and its `.sha256` manifest. Follow the
 [checksum and execution instructions](docs/releases/RELEASING.md#verify-and-recover) before running it.
-Three-platform CI builds and downloaded-artifact smoke checks passed; consumer-device clean installation,
+Three-platform CI builds and fresh-artifact smoke checks passed, and all six public assets were
+downloaded and matched to the checked artifacts. The public macOS binary also passed local scan/runtime
+smokes through standard-library controllers under Python `-I -S`, without importing project dependencies.
+No live Codex call was part of these package checks. Consumer-device clean installation,
 upgrades, and compatibility with every OS version have not been established. The binaries are unsigned
 and unnotarized, so an operating system may warn about an unverified publisher.
 
@@ -253,28 +259,31 @@ and final preparation. The report/evidence foundation in [#32](https://github.co
 and route-local/inherited evidence in [#28](https://github.com/casing1/authzest/issues/28) and
 [#29](https://github.com/casing1/authzest/issues/29) are included in alpha.2.
 Release preparation and publication [#39](https://github.com/casing1/authzest/issues/39) are complete.
+The later [alpha.3 checkpoint](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) is also published and verified.
 Current source and next step:
 
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
-The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; the complete #35 workflow remains open.
+The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
+its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.
 The first #35 slice, [#46's offline proposal/decision contract](docs/reference/PROPOSAL_CONTRACT.md),
 is implemented in source with diff previews and simulated approval checks; it never applies files or runs verification.
 The subsequent [#48 copy-only application demo](docs/guides/FIXTURE_APPLICATION.md) adds explicit
 terminal approval and conflict-aware restoration of a fresh POSIX fixture copy, not the original checkout.
-It performs no live AI call or verification execution and is not included in alpha.2 binaries.
+It performs no live AI call or verification execution and remains a checkout-only script; its copy helper
+also supports alpha.3's product command.
 The next [#50 Codex fixture slice](docs/guides/CODEX_FIXTURE.md) requests one model draft after explicit
 sharing approval, with separate apply/restore decisions. One owned-fixture live draft/apply/restore check
 passed on `42ff108`, with the original preserved. The assistant entered approval phrases under user
 authorization; this was not independent human review. That historical run did not execute runtime
-verification. These additions remain outside alpha.2. #52 adds an optional, fixed AST
+verification. These product additions ship in alpha.3, not alpha.2. #52 adds an optional, fixed AST
 configuration check of the known-hash source between application and restoration, with separate approval and a bounded
 subprocess. It executes no target source and adds no live-model evidence or verified-security-fix claim.
 #54 adds the [owned-fixture runtime plan](docs/guides/RUNTIME_VERIFICATION.md) through `--runtime-check`,
 with a separate exact verification decision, bounded worker, optional dependencies and no automatic
-installation. Its bounded live source acceptance passed; final PR/release gates are pending. General
-repository AI and the complete #35 workflow remain open. No new release is claimed.
+installation. Its bounded live source acceptance passed, and alpha.3's public assets passed the separate
+release checks. General repository AI and the complete #35 workflow remain open.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

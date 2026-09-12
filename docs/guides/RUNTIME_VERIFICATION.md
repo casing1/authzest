@@ -10,7 +10,9 @@
 ## Scope
 
 [#54](https://github.com/casing1/authzest/issues/54) adds an opt-in runtime check to the maintained
-configuration demonstration. It is not included in the published alpha.2 binaries. The ordinary
+configuration demonstration. It is available in published
+[alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) POSIX binaries and source,
+not the earlier alpha.2 binaries. The ordinary
 `scan` remains offline and source-only. The existing source-configuration verification stays the
 default; `--runtime-check` selects a different plan, not permission to execute it.
 
@@ -26,10 +28,19 @@ lifespan hooks, a real HTTP server, other routes, or general FastAPI compatibili
 
 ## Run
 
-From a trusted Python 3.12 source environment, install the optional dependency explicitly:
+For a source installation, use a trusted Python 3.12 environment and install the optional dependency explicitly:
 
 ```bash
 python -m pip install -e '.[fixture]'
+```
+
+Alternatively, use a checksum-verified alpha.3 POSIX binary following the
+[release instructions](../releases/RELEASING.md#verify-and-recover); it bundles Python and the fixture
+dependencies, so that install step is unnecessary. Neither distribution bundles Codex or credentials.
+With either installation, run the command below; replace `authzest` with the exact downloaded path if
+the executable is not on PATH:
+
+```bash
 authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
 ```
 
@@ -145,3 +156,23 @@ used zero real provider calls; fake model/usage values are scripted test data. I
 original hashes and recorded journal 1.2 with the historical passed AFTER digest after restoration.
 PyInstaller's local semaphore required execution outside the restrictive tool sandbox; no deadline
 or success condition was weakened. Three-platform release/download verification remains a separate gate.
+
+## Published alpha.3 artifact acceptance — 2026-09-12
+
+[Alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published at
+2026-09-12T09:00:49Z from `99be6f5614d283befa2a421b64f84958b680f92f`, with package `0.1.0a3`.
+Three-platform builds and fresh matching-platform artifact jobs passed. All six public files were
+downloaded, their three SHA-256 manifests checked, and every file matched to the checked tag artifacts.
+The public macOS binary SHA-256 is
+`8c75e299e9699c0a08dc30924478013c05f918d33e35bc874178dbe027a782c6`, distinct from the development build above.
+
+The public macOS executable passed seven relocated scan checks and one fixed runtime check through
+standard-library controllers under Python `-I -S`, without importing project dependencies. This does
+not assert that those dependencies were absent from the controller's environment. Linux/Windows execution evidence comes
+from matching-platform CI and identical public bytes, not local macOS execution. Windows checked an
+explicit unsupported/not-run outcome without a worker, not runtime feature support. The external
+45-second and worker five-second plus one-second cleanup bounds were unchanged; local macOS IPC
+needed permission outside the restrictive tool sandbox. These package checks made no model/auth calls
+and do not establish live-model package acceptance, clean-device installation/upgrades, signing,
+general repository support or security-fix efficacy. See the [release record](../releases/RELEASING.md)
+for the exact workflow and public-download evidence; it does not alter the historical live/local results above.

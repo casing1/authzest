@@ -9,11 +9,12 @@
 
 ## Scope and current evidence
 
-[#50](https://github.com/casing1/authzest/issues/50) adds a source-checkout command for one maintained
+[#50](https://github.com/casing1/authzest/issues/50) introduced a command for one maintained
 configuration fixture. One approved live CLI check on `42ff108` **PASSED** on 2026-09-12: validated
 draft, separate exact-phrase decisions, copy application, and restoration. The assistant entered the
 phrases within the user-approved test; this is not independent human-approval attestation. This feature
-is not in the published alpha.2 binaries and does not complete [#35](https://github.com/casing1/authzest/issues/35).
+is available in the published [alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)
+POSIX binaries and source, not the earlier alpha.2 binaries. It does not complete [#35](https://github.com/casing1/authzest/issues/35).
 
 AuthZest's task/source payload contains a previewed, packaged `main.py` snapshot, its source evidence,
 a declared policy, and one question. The only accepted source draft changes `debug=True` to `debug=False`, preserving every
@@ -24,10 +25,16 @@ The ordinary `scan` command stays offline. The existing offline proposal and cop
 not AI-generated. General repository AI review and arbitrary patching remain unsupported. #52's optional,
 separately approved source-configuration check is the default. #54 adds an opt-in fixed runtime plan
 selected by `--runtime-check`, described in the [runtime guide](RUNTIME_VERIFICATION.md). Neither check
-adds a model call. #54's bounded live source acceptance passed, as recorded in the runtime guide;
-final PR/release gates are pending. #35 stays open and alpha.2 is unchanged.
+adds a model call. #54's bounded live source acceptance passed, as recorded in the runtime guide.
+Alpha.3 publication and public-asset checks passed separately; see the [release record](../releases/RELEASING.md).
+#35 stays open, and existing alpha.2 tags/assets are unchanged.
 
-## Run from current source
+## Run from source or a standalone binary
+
+Use an installed source checkout or a checksum-verified alpha.3 POSIX executable from the
+[release instructions](../releases/RELEASING.md#verify-and-recover). For a downloaded executable not on
+PATH, replace `authzest` below with its exact path. The binary bundles its Python runtime and fixture
+dependencies, not Codex or account credentials. The offline `scripts.demo_*` flows still require a checkout.
 
 Use a trusted local Codex **0.153.0** installation with an existing ChatGPT login managed by Codex.
 This adapter is version-pinned; other versions are not declared compatible. The live copy workflow is
@@ -168,8 +175,8 @@ does not itself complete #35's separately approved runtime verification and fail
 
 ## Opt-in owned-fixture runtime verification
 
-Select #54's runtime plan explicitly, after setting up the optional dependencies described in the
-[runtime guide](RUNTIME_VERIFICATION.md):
+Select #54's runtime plan explicitly. Source installations need the optional dependencies in the
+[runtime guide](RUNTIME_VERIFICATION.md); alpha.3 POSIX binaries bundle them:
 
 ```bash
 authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
@@ -188,8 +195,8 @@ uncertain status rather than imply no execution. Missing dependencies are not in
 `runtime-dependency-unavailable` is `not-run` with CLI exit `1`, unlike an intentional decline/cancel.
 Restoration remains independent, and a retained result describes the checked applied hash, not the
 restored file. #54's bounded live source acceptance passed, with evidence in the
-[runtime guide](RUNTIME_VERIFICATION.md); final PR/release gates are pending. No release or completion
-of #35 is claimed.
+[runtime guide](RUNTIME_VERIFICATION.md). Alpha.3's separately verified publication is recorded in the
+[release guide](../releases/RELEASING.md), not proof of general repository support or completion of #35.
 
 ## Offline configuration-check demo
 

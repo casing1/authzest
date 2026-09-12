@@ -7,19 +7,55 @@ the current release process. The binaries are not signed or notarized.
 
 ## Published preview and current source
 
-### Alpha.3 preparation (not yet published)
+### Published alpha.3
 
-[#56](https://github.com/casing1/authzest/issues/56) prepares package `0.1.0a3` / tag
-`v0.1.0-alpha.3` after [PR #55](https://github.com/casing1/authzest/pull/55). This checkpoint combines
-the offline evidence/proposal contracts, opt-in pinned Codex fixture draft, approved copy changes,
-source-configuration checks and separately approved fixed runtime verification. The scan report
-schema stays `1.2`. [Bounded acceptance](../guides/RUNTIME_VERIFICATION.md) passed locally; exact-main
-three-platform builds, fresh downloaded artifacts and public assets must still pass before publication.
-Windows runtime is unsupported, existing Windows scan support is unchanged, and no new live Codex
-request is authorized by release preparation. Keep the alpha.2 download record below until a separate
-post-publication documentation PR confirms the new release; do not move or replace existing tags/assets.
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published on
+2026-09-12 at 09:00:49 UTC as a prerelease, with package `0.1.0a3` and unchanged scan report schema
+`1.2`, from commit `99be6f5614d283befa2a421b64f84958b680f92f`
+([feature PR #55](https://github.com/casing1/authzest/pull/55),
+[preparation PR #57](https://github.com/casing1/authzest/pull/57),
+[release issue #56](https://github.com/casing1/authzest/issues/56)).
+It combines offline evidence/proposal contracts, the opt-in pinned Codex fixture draft, approved copy
+changes, default source-configuration checks and separately approved fixed runtime verification.
+This is a bounded fixture checkpoint, not completion of broader [#35](https://github.com/casing1/authzest/issues/35)
+or a stable security product. Windows runtime is unsupported; existing Windows scan support remains.
 
-### Published alpha.2
+### Alpha.3 validation record
+
+The [manual main run 34684062102](https://github.com/casing1/authzest/actions/runs/34684062102) and
+[tag publishing run 34684547525](https://github.com/casing1/authzest/actions/runs/34684547525) passed on
+the exact commit above. The tag run also checked tag/package/changelog dates and current remote `main`.
+Both runs passed 1,548 Python tests, 14 documentation-checker tests, Ruff and frontend checks. All three
+platform builds passed selected/relocated scan checks (14), native-parent runtime boundary checks (2),
+and packaged checksum-aware scan/runtime checks (7/1). Separate fresh matching-OS jobs downloaded each
+artifact without installing AuthZest and passed isolated-mode scan/runtime checks (7/1).
+POSIX runtime checks exercise only the fixed bundled AFTER fixture; Windows checks explicit
+unsupported/not-run behavior without a worker, not runtime feature support.
+
+| Platform    | Published executable                     | SHA-256                                                            |
+| ----------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| Linux x64   | `authzest-0.1.0-alpha.3-linux-x64`       | `346484e4c755eeb25cfa91a10d09c77c2393e892605823c092617b9a53b0f0b5` |
+| macOS arm64 | `authzest-0.1.0-alpha.3-macos-arm64`     | `8c75e299e9699c0a08dc30924478013c05f918d33e35bc874178dbe027a782c6` |
+| Windows x64 | `authzest-0.1.0-alpha.3-windows-x64.exe` | `7f4c4ee2c7c208459ca9aebc7ff99bf858ff8ef60694b0f51c4c04298d32ff0e` |
+
+Each executable has a matching `.sha256` manifest: six public assets in total. All were downloaded
+again; every checksum passed and all six files were byte-identical to the separately downloaded tag-run
+artifacts. The public macOS executable additionally passed local relocated scan (7) and runtime (1)
+checks with standard-library controllers under Python `-I -S`. Linux/Windows execution evidence comes
+from matching-OS CI; their downloaded public bytes matched those checked artifacts.
+
+Build logs observed Python 3.12.14 on Linux and 3.12.10 on macOS/Windows, with FastAPI 0.141.1,
+Starlette 1.6.0, Pydantic 2.13.5 and PyInstaller 6.22.2. These are build observations, not version
+attestations or broad compatibility guarantees. Local native checks required permission for internal
+IPC outside the tool sandbox; no timeout or assertion was relaxed. Release checks made no Codex call.
+The separately approved source live run and fake-transport native evidence remain distinct in the
+[runtime guide](../guides/RUNTIME_VERIFICATION.md).
+
+These checks do not establish consumer-device installation/upgrades, signing/notarization, arbitrary
+repository execution, authorization correctness or security-fix efficacy. [Documentation follow-up #58](https://github.com/casing1/authzest/issues/58)
+updates current guidance in `Unreleased`; it does not change the immutable tag or public assets.
+
+### Previous published alpha.2
 
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10,
 with Python package `0.1.0a2` and report schema `1.2`, from commit
@@ -56,9 +92,9 @@ application execution, or user-source modification was part of the smoke checks.
 
 Release timing is milestone-based at the maintainer's discretion, not one tag per issue or a fixed
 calendar cadence. The maintainer delegated timing decisions on 2026-09-11; this does not waive any
-release checks below. Keep internal-only contract slices such as #33/#46 in `Unreleased` until a
-coherent user-facing checkpoint is ready and artifact/compatibility checks pass. A bounded demonstrable
-#35 workflow is the next candidate checkpoint, not a promised date or reserved version. Preserve the
+release checks below. Group internal contract slices into a coherent user-facing checkpoint only after
+artifact/compatibility checks pass. Alpha.3 includes the bounded fixture part of #35; broader acceptance
+remains open. Choose the next checkpoint from verified progress, not a promised date or reserved version. Preserve the
 seven development weeks and separate exam/submission buffer; do not publish to inflate activity.
 
 Use Semantic Versioning. Versions below `1.0.0` may introduce breaking changes while AuthZest is in initial
@@ -76,7 +112,7 @@ the mapping; they do not reserve the next release version:
 
 [`pyproject.toml`](../../pyproject.toml) is the source of truth for the Python runtime and API version. The
 frontend package marked `private: true` is not versioned independently. Choose a new, unused version for
-each new release; neither the published `v0.1.0-alpha.1` nor `v0.1.0-alpha.2` may be issued again.
+each new release; the published `v0.1.0-alpha.1`, `v0.1.0-alpha.2` and `v0.1.0-alpha.3` may not be issued again.
 
 ## Prepare a release
 

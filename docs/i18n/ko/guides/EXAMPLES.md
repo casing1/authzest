@@ -9,10 +9,11 @@
 
 직접 관리하는 예제에는 고정된 공개 샘플 데이터만 있습니다.
 서버 시작, 애플리케이션 import, endpoint 접속이나 Codex 호출 없이 소스 탐색을 보여줍니다.
-이 예제는 alpha.1 스캐폴딩이 아니라
-[alpha.2 실행 파일](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)과 대응 소스에서 검증했습니다.
-fixture가 있는 checkout에서 실행하세요. 독립 실행 파일은 예제 디렉터리를 설치하지 않습니다.
-정확한 릴리스 fixture는 [태그 소스 압축 파일](https://github.com/casing1/authzest/archive/refs/tags/v0.1.0-alpha.2.zip)에 있습니다.
+공개된 [alpha.3 실행 파일](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)
+(2026-09-12, 패키지 `0.1.0a3`)과 대응 소스 fixture를 사용하세요. 이전 alpha.2 검증은 과거 근거로
+유지하며 alpha.1 스캐폴딩은 이 목록화 동작을 제공하지 않습니다. fixture가 있는 checkout에서 실행하세요.
+독립 실행 파일은 예제 디렉터리를 설치하지 않습니다. 정확한 릴리스 fixture는
+[태그 소스 압축 파일](https://github.com/casing1/authzest/archive/refs/tags/v0.1.0-alpha.3.zip)에 있습니다.
 아래 명령은 `authzest`가 PATH에 있다는 가정이며, 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
 검증 근거와 한계는 [릴리스 기록](../releases/RELEASING.md)을 참고하세요.
 
@@ -51,7 +52,7 @@ python -m pytest tests/test_examples.py
 ## 라우트 직접 의존성 예제
 
 [의존성 예제](../../../../examples/fastapi_dependencies/)는 지원하는 선언 위치 세 가지를 보여줍니다.
-alpha.2 CLI 또는 대응 소스 설치를 사용하여 저장소 루트에서 실행합니다.
+alpha.3 CLI 또는 대응 소스 설치를 사용하여 저장소 루트에서 실행합니다.
 
 ```bash
 authzest scan examples/fastapi_dependencies

@@ -2,8 +2,9 @@
 
 [문서](../INDEX.md) · [English](../../../reference/PARSER_SCOPE.md) · 한국어
 
-이 문서는 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), 패키지
-`0.1.0a2`로 배포한 파서의 지원 범위를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import,
+이 문서는 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)에 도입하고
+공개된 [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3), 패키지
+`0.1.0a3`에도 변경 없이 유지한 파서 범위를 설명합니다. FastAPI 객체 식별, prefix 합성, 저장소 내부 import,
 버전이 있는 등록 근거와 직접·상속 의존성 선언은 해당 실행 파일에 포함되며
 [alpha.2 변경 이력](../CHANGELOG.md#010-alpha2---2026-09-10)에 기록되어 있습니다. alpha.1 스캐폴딩에는 없습니다.
 [릴리스 기록](../releases/RELEASING.md)에 정확한 커밋과 검증 범위를 남겼습니다.
