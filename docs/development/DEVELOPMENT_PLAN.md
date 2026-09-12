@@ -14,7 +14,7 @@ OSS course. The final demo must connect Codex to source evidence, reviewable def
 and patch proposals, an explicit approve/decline decision, approved-only patch application, and separately
 approved isolated verification with a change record. Codex integration is a core product goal, not a
 later optional explanation feature. The full flow remains unfinished. #33/#46/#48 are offline slices;
-[#50](../guides/CODEX_FIXTURE.md) adds an opt-in owned-fixture App Server draft, with live validation pending.
+[#50](../guides/CODEX_FIXTURE.md) adds an opt-in owned-fixture App Server draft; one live draft/apply/restore check passed.
 
 The static core must still produce useful, repeatable evidence without an AI provider. Each Codex use
 is opt-in; external data sharing, applying a specific patch, and executing a verification plan require
@@ -89,8 +89,8 @@ after alpha.2; the published binaries remain unchanged.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review, existing-checkout patch application, and verification execution are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
-The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) uses pinned Codex 0.153.0 and one
-application-issued turn after sharing approval; live validation is pending. It only accepts the maintained
+The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) uses pinned Codex 0.153.0 and at most one
+application-issued turn after sharing approval; one owned-fixture live check passed. It only accepts the maintained
 debug-setting change and retains separate copy-application/restoration decisions with verification not run.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
@@ -172,7 +172,7 @@ Implement a bounded end-to-end flow before expanding rules or adding a second in
 contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remain prerequisites;
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
 and verification workflow. The offline slices and the narrowly scoped #50 adapter do not complete it;
-live validation of #50 is pending and verification execution remains a separate next slice.
+one owned-fixture live draft/apply/restore check passed for #50, while verification execution remains a separate next slice.
 
 - [x] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
@@ -184,11 +184,13 @@ live validation of #50 is pending and verification execution remains a separate 
 - [x] Add [#48's owned-fixture copy application](../guides/FIXTURE_APPLICATION.md): explicit terminal
       decisions, single-session consumption, POSIX file/state checks, atomic single-file replacement,
       retained records and separately confirmed restoration. Existing checkouts and verification remain untouched.
-- [ ] Finish validation of [#50's fixed-fixture sharing and adapter boundary](../guides/CODEX_FIXTURE.md):
+- [x] Validate [#50's fixed-fixture sharing and adapter boundary](../guides/CODEX_FIXTURE.md):
       exact-request approval, minimized input, timeout/cancellation and separate copy-application decisions.
       Broader input sharing and verification permissions need their own design and acceptance evidence.
-- [ ] Complete live validation of the selected, version-pinned Codex App Server adapter; do not add a
-      second transport. The source-only fixture command keeps suggestions separate from static reports.
+- [x] Complete one owned-fixture live draft/apply/restore check of the selected, version-pinned Codex
+      App Server adapter. The assistant entered approval phrases under user authorization, not independent
+      human review. The source-only fixture command keeps suggestions separate from static reports;
+      no second transport or verification executor was added.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

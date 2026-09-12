@@ -10,8 +10,10 @@
 ## Scope and current evidence
 
 [#50](https://github.com/casing1/authzest/issues/50) adds a source-checkout command for one maintained
-configuration fixture. Live end-to-end verification is **PENDING**. This feature is not in the published
-alpha.2 binaries and does not complete [#35](https://github.com/casing1/authzest/issues/35).
+configuration fixture. One approved live CLI check on `42ff108` **PASSED** on 2026-09-12: validated
+draft, separate exact-phrase decisions, copy application, and restoration. The assistant entered the
+phrases within the user-approved test; this is not independent human-approval attestation. This feature
+is not in the published alpha.2 binaries and does not complete [#35](https://github.com/casing1/authzest/issues/35).
 
 AuthZest's task/source payload contains a previewed, packaged `main.py` snapshot, its source evidence,
 a declared policy, and one question. The only accepted source draft changes `debug=True` to `debug=False`, preserving every
@@ -126,8 +128,9 @@ and the existing `AdapterConfig` default of `0.0`. Null is not zero or determini
 The scan report remains schema `1.2`; no package version or new release is implied by these changes.
 
 Live attempts, end-to-end results, token usage, and failure recovery evidence must be recorded
-separately from offline mocks. Unknown usage is not zero; neither this guide nor successful mocks
-establishes live end-to-end success.
+separately from offline mocks. Unknown usage is not zero; successful mocks alone do not establish live
+end-to-end success. The dated history below preserves the state at each step, including superseded
+pending/Draft records. The latest successful check is recorded at the end.
 
 ## Historical development validation — 2026-09-11
 
@@ -224,3 +227,45 @@ or assertion was relaxed. Earlier wheel/native artifact checks predate this corr
 
 There has been no model generation after this routing correction. The one-attempt approval is
 exhausted; no eighth attempt, merge, or release was made. PR #51 remains draft and #35 stays open.
+
+## Successful approved CLI check — 2026-09-12
+
+After fresh approval for one attempt with the same public fixture, managed ChatGPT account,
+`gpt-6-astra`, and 120-second deadline, runtime commit
+`42ff1082d6059516b865c2db1b0ebce7ce997763` returned a validated draft. The draft phase took
+`13580.995 ms`; reported usage was `input_tokens: 5573` and `output_tokens: 315`, with
+`provider_warning_count: 1` and `provider_retry_notification_count: 0`. This is provider-reported usage
+for this success, not a total for earlier failures or an independently verified billing record.
+Model identity remains negotiated-thread metadata, not served-model attestation.
+
+The assistant inspected the host-derived one-line diff, entered the separate exact application and
+restoration phrases within the user-approved E2E test, and observed `status: completed` / exit `0`.
+The application result was `applied: true`; the restoration result was `restored: true` for the same
+proposal and fresh private copy. These CLI choices demonstrate the decision flow, not independent
+human review or authenticated user-approval receipts.
+
+- Request: `request-a04278a94923c955b1e807ee2cd81a1b8b4a062da58f3e7e371b3e2a4ffce34a`.
+- Proposal: `proposal-ce153ad1b2ba0b6b427e324403bb127c07aca830ad728e00c68e77a20c34ea04`.
+- Before/restored SHA256: `c10770594e77cd1c1ec93c19ef2b810aea34ed873d8dbf392b57e50a1c2729df`.
+- Applied SHA256: `e010818e7259ad5c1ebfc5dfcb6dc046100376c778a70d0657d7ebb1ed7fdcfe`.
+
+A direct hash check before restoration observed the applied bytes. Independent read-only inspection
+then matched the restored file and before/after snapshots, journal phase and decisions, and the
+unchanged original/worktree fixture hashes. The journal recorded applied then restored; it and the
+snapshots remain in the host-created private temporary workspace. No credentials or account profile
+were included in this record.
+
+This is the eighth approved host attempt overall: seven earlier failures and this one success, not a
+count of billed/dispatched provider turns. There was no application retry or additional model call.
+The first post-routing-correction attempt passed without the prior 401; this supports the routing
+diagnosis but does not independently trace the earlier HTTP requests. The approval is exhausted.
+No release is implied. All results retain `verification_status: not-run`: source/test execution,
+security-fix verification, arbitrary repository AI and the remaining #35 work are still unimplemented.
+
+Development wheel and macOS ARM64 artifacts were rebuilt from a fixed `42ff108` runtime snapshot.
+Both passed help, full preview and pre-sharing EOF cancellation with zero Codex processes/model turns;
+selected/relocated native inventory smoke passed 14 checks. Existing 30-second artifact and 45-second
+inventory per-command limits were retained. A native check initially hit the host sandbox semaphore
+restriction, then passed unchanged with the needed local permission. These unpublished builds reused
+local dependencies; they do not establish clean-device installation, upgrades, signing, notarization,
+other-OS support or a live model run from the packaged artifacts.

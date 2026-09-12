@@ -58,7 +58,9 @@ docs/
 추가합니다. 기존 checkout은 편집하지 않으며 고정 응답을 쓰는 오프라인 데모를 유지합니다.
 
 [#50 Codex fixture 명령](guides/CODEX_FIXTURE.md)([English](../../guides/CODEX_FIXTURE.md))은
-opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 추가합니다. 실제 검증은 대기 중입니다.
+opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 추가합니다. 한 소유 fixture의 실제
+초안·적용·복구 확인 1회가 성공했으며 승인 문구는 사용자 허가 아래 assistant가 입력했습니다.
+독립적인 사람 검토는 아닙니다.
 검증 실행과 일반 저장소 AI는 미구현이며 완전한 #35 흐름은 미완료입니다. alpha.2 바이너리는 그대로입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며

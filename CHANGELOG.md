@@ -19,12 +19,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Add #50's source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): pinned App Server 0.153.0,
   exact-request sharing approval before process launch, at most one application-issued turn, and a narrowly
   validated debug-setting draft with separate apply/restore decisions for a fresh POSIX copy.
-  Live validation is pending; general repository AI and verification execution remain unimplemented.
+  One owned-fixture live draft/apply/restore check passed on `42ff108` on 2026-09-12, preserving the original.
+  The assistant entered approval phrases under user authorization, not independent human review.
+  General repository AI and verification execution remain unimplemented.
   The default scan stays offline and parent #35 remains open. No new release is included.
 - Handle narrowly validated same-turn Codex stream-recovery notifications without issuing another turn.
   Accept at most three observed notices within the existing time/byte/event limits; discard pre-recovery
   output and usage, require a fresh validated final response, and keep fatal errors fail-closed.
-  The notice count is not a provider-attempt or billing cap. Live end-to-end validation remains pending.
+  The notice count is not a provider-attempt or billing cap. The live check observed zero retry notices;
+  stream recovery remains offline-tested only.
 - Add AI schema `1.1` for provider-managed nullable temperature while preserving numeric-temperature
   schema `1.0`, existing request identities and the numeric default. No token or monetary cap is implied.
 - Add #48's [owned-fixture copy application](docs/guides/FIXTURE_APPLICATION.md): explicit terminal

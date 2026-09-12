@@ -80,6 +80,7 @@ no restart/resume, automatic crash recovery, filesystem-wide transaction, arbitr
 multi-file apply or persisted approval revocation service. Reopening a receipt cannot resume this session.
 
 The separate [#50 Codex fixture command](CODEX_FIXTURE.md) adds opt-in source sharing and a narrowly
-accepted model draft before these copy-only decisions; live validation is pending. This #48 demo remains
+accepted model draft before these copy-only decisions. One owned-fixture live draft/apply/restore check
+passed with user-authorized, assistant-entered approval phrases, not independent human review. This #48 demo remains
 offline and scripted. General repository integration and separately approved isolated verification
 remain later #35 work. Neither slice completes the final acceptance gate or justifies a release by itself.

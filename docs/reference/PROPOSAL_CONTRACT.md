@@ -21,7 +21,8 @@ The separate [#48 fixture-copy service](../guides/FIXTURE_APPLICATION.md) now de
 approved application/restoration in a fresh POSIX copy only. This contract module remains pure; neither
 it nor that bounded copy demo provides arbitrary-checkout writes, live AI or verification execution.
 The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) supplies a narrowly validated model
-draft to these host-bound contracts; live validation is pending. It does not change these pure functions
+draft to these host-bound contracts. One owned-fixture live draft/apply/restore check passed with
+user-authorized, assistant-entered approval phrases, not independent human review. It does not change these pure functions
 into a provider client or verification executor, and is not a general repository patch workflow.
 
 ## Proposal contents and preview

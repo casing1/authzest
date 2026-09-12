@@ -19,7 +19,7 @@ Codex integration and the approve/decline improvement flow are core final-demo g
 optional future explanations. Runtime use remains opt-in: an offline static scan must stay useful, and
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
 a complete design target, not a claim that the full flow is implemented. The separate
-[#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; live validation is pending.
+[#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; one owned-fixture live draft/apply/restore check passed.
 
 The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
 and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
@@ -68,7 +68,8 @@ the default scan or CI.
 
 The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
 only. It requires exact-request sharing approval before starting a process, then separate apply/restore
-decisions for a fresh POSIX copy. Live validation is pending; no verification or general repository AI runs.
+decisions for a fresh POSIX copy. One live fixture check passed with assistant-entered approval phrases
+under user authorization, not independent human review; no verification or general repository AI runs.
 At most one application-issued turn has no application retry/fallback; Codex internal transport retries can still
 occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
 

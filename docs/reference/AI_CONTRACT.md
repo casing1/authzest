@@ -16,7 +16,7 @@ allows `temperature: null` for provider-managed sampling. These are separate fro
 `AdapterConfig` temperature default remains `0.0`. Null does not mean zero or deterministic output.
 The contract itself performs no provider call or file application. The separate
 [#50 owned-fixture command](../guides/CODEX_FIXTURE.md) uses the nullable schema for a pinned App Server
-draft; live validation is pending. Ordinary scan JSON/exits remain unchanged and offline. The complete
+draft; one owned-fixture live draft/apply/restore check passed. Ordinary scan JSON/exits remain unchanged and offline. The complete
 #35 flow, general repository AI and verification execution remain unfinished.
 The old unused `CodexFinding` placeholder is removed; adapters now return untrusted JSON, not findings.
 
@@ -114,7 +114,8 @@ filesystem application service or verification executor. The separate
 [#48 copy-only demo](../guides/FIXTURE_APPLICATION.md) adds terminal decisions and application/restoration
 inside a fresh POSIX fixture copy. #50's separate version-pinned App Server command adds explicit sharing
 and an owned-fixture model draft; it does not run the offline evaluation against a real model, accept a
-general repository, or execute verification. Live validation is pending and the parent #35 remains open.
+general repository, or execute verification. Its one live fixture check used assistant-entered approval
+phrases under user authorization, not independent human review; parent #35 remains open.
 
 Require separate approval for the exact source/policy snapshot, provider/model identity, privacy/data
 handling, and budget. Choose one transport and record actual returned identity/usage when available.

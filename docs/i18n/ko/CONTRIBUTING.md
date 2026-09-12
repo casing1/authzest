@@ -146,7 +146,7 @@ Windows에서는 `--binary dist/authzest.exe`를 사용합니다. 이 제한된 
 설치·업그레이드 지원까지 입증하지는 않습니다. 선택 사항인 `doctor`를 명시적으로 실행하면 설치된 Codex CLI의
 `codex --version`과 `codex login status`를 호출할 수 있으며 AI 스캔을 시작하지는 않습니다.
 로그인 성공이 AI 스캔을 활성화하거나 소스 공유를 승인하지 않습니다. 별도의
-[소유 fixture Codex 명령](guides/CODEX_FIXTURE.md)은 opt-in·버전 고정 방식이며 실제 검증은 대기 중이고
+[소유 fixture Codex 명령](guides/CODEX_FIXTURE.md)은 opt-in·버전 고정 방식이며 한 소유 fixture의 실제 확인은 성공했지만
 일반 저장소 AI는 구현되지 않았습니다.
 [CLI 진단 안내](README.md#cli-진단)를 참고하세요.
 

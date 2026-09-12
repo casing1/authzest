@@ -59,7 +59,8 @@ in a fresh POSIX copy only. It never edits an existing checkout and remains an o
 
 [#50's Codex fixture command](guides/CODEX_FIXTURE.md) ([한국어](i18n/ko/guides/CODEX_FIXTURE.md))
 adds an opt-in, version-pinned App Server draft followed by separate copy-application decisions.
-Live validation is pending. Verification execution and general repository AI remain unimplemented;
+One owned-fixture live draft/apply/restore check passed, with assistant-entered approval phrases under
+user authorization, not independent human review. Verification execution and general repository AI remain unimplemented;
 the complete #35 workflow is still open and alpha.2 binaries are unchanged.
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout

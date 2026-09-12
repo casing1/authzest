@@ -16,7 +16,7 @@ FastAPI applications. Its current Python core inventories routes without importi
 application. The core product goal is Codex-assisted review and defensive test/patch proposals, user
 approval or refusal, approved-only changes, and separately approved isolated verification with a change
 record. The complete workflow remains unfinished. Current source adds an opt-in, owned-fixture Codex
-draft/copy-approval slice; live validation is pending. Static scans remain offline.
+draft/copy-approval slice; one owned-fixture live draft/apply/restore check has passed. Static scans remain offline.
 
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
@@ -42,7 +42,7 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   registration's effective evidence, preserving the separate route-local list and original source positions.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
 - Adds the source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): explicit sharing, a pinned
-  App Server, and exact-diff approval for a fresh copy only. Live validation is pending; verification is not run.
+  App Server, and exact-diff approval for a fresh copy only. One fixture live check passed; verification is not run.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
 This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
@@ -261,8 +261,10 @@ The subsequent [#48 copy-only application demo](docs/guides/FIXTURE_APPLICATION.
 terminal approval and conflict-aware restoration of a fresh POSIX fixture copy, not the original checkout.
 It performs no live AI call or verification execution and is not included in alpha.2 binaries.
 The next [#50 Codex fixture slice](docs/guides/CODEX_FIXTURE.md) requests one model draft after explicit
-sharing approval, with separate apply/restore decisions. It is source-only; live validation is pending,
-and verification execution and general repository AI remain unimplemented.
+sharing approval, with separate apply/restore decisions. One owned-fixture live draft/apply/restore check
+passed on `42ff108`, with the original preserved. The assistant entered approval phrases under user
+authorization; this was not independent human review. It remains source-only and outside alpha.2;
+verification execution and general repository AI remain unimplemented.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution
