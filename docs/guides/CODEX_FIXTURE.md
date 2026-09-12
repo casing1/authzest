@@ -83,6 +83,14 @@ protocol output to 256 KiB per line and 2 MiB in total and cleans up its own pro
 errors are redacted; raw stderr, account email, and conversation transcripts are not saved by AuthZest.
 These controls assume a trusted Codex installation, not a sandbox for an untrusted executable.
 
+Model routing is left to Codex's built-in provider for managed ChatGPT login; AuthZest does not force
+the API-key endpoint through `openai_base_url`. Both preflight passes reject any non-null effective
+`openai_base_url`, including an official URL or an empty string, before creating a thread or turn.
+`OPENAI_BASE_URL` is not forwarded. An inherited override is a configuration incompatibility, not
+proof of expired credentials; AuthZest does not edit the user's Codex settings. The official
+[configuration guide](https://learn.chatgpt.com/docs/config-file/config-advanced) documents the provider
+URL override separately from ChatGPT login settings. This check is not network-route attestation.
+
 The requested model identity is checked against the model negotiated at thread start. The summary
 records `model_identity_basis: negotiated-thread-model; not independently served-model attestation`.
 This is not independent proof of which model served the response.
@@ -189,3 +197,30 @@ not establish credential expiry, quota exhaustion, or model unavailability. No l
 API-key change, or further attempt was performed. The fresh one-attempt approval is exhausted: six
 approved host attempts in total have failed before a validated draft, not proof of six billed turns.
 Live validation remains **PENDING**; PR #51 stays draft, with no merge or new call authorization.
+
+## After user reauthentication — 2026-09-12
+
+The user completed login again. CLI login status and a read-only App Server `account/rateLimits/read`
+succeeded without a model turn or fixture-source transmission. The user then approved one additional
+attempt with the same fixture, `gpt-6-astra`, managed ChatGPT account, and 120-second limit.
+On `573f7a3` (runtime unchanged from `ca97ab1`), it failed after `11086.934 ms` with
+`responseStreamDisconnected`, nested HTTP `401`, and `willRetry: true`. The adapter stopped;
+`status: draft-failed`, exit `1`, null identity/usage/warning/retry/application/restoration fields, and
+`verification_status: not-run` were preserved. The original fixture hash remained unchanged.
+All seven approved host attempts have ended before a validated draft; that is not a billed-turn count.
+
+Inspection found that AuthZest had forced the built-in model provider to `https://api.openai.com/v1`
+despite requiring ChatGPT login. Account-query success and generation failure are consistent with a
+routing mismatch, but the exact cause of the 401 is **not established**. The forced override was
+removed and inherited overrides now fail preflight. The installed 0.153.0 App Server accepted the
+revised boundary and its account/limits metadata reads succeeded, again with zero model turns and
+no fixture source sent. No credentials or user settings were changed by AuthZest.
+
+The corrected source passed all 1,203 offline Python tests, including 32 new endpoint cases
+(308 transport cases in total), plus Ruff and the 14 documentation checker tests. A separate
+restricted transport run could not execute `ps` in two existing descendant-cleanup checks; both
+passed unchanged with the required local process permission, as did the full suite. No test timeout
+or assertion was relaxed. Earlier wheel/native artifact checks predate this correction.
+
+There has been no model generation after this routing correction. The one-attempt approval is
+exhausted; no eighth attempt, merge, or release was made. PR #51 remains draft and #35 stays open.

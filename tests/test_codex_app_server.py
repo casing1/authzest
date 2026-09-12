@@ -24,6 +24,18 @@ from test_fixture_draft import response_data
 
 pytestmark = pytest.mark.skipif(os.name != "posix", reason="App Server transport requires POSIX")
 
+NON_NULL_ENDPOINT_OVERRIDES = [
+    pytest.param("", id="empty-string"),
+    pytest.param(True, id="true"),
+    pytest.param(False, id="false"),
+    pytest.param(0, id="zero"),
+    pytest.param({}, id="empty-object"),
+    pytest.param([], id="empty-array"),
+    pytest.param("https://api.openai.com/v1", id="api-url"),
+    pytest.param("https://chatgpt.com/backend-api", id="chatgpt-url"),
+    pytest.param("https://FAKE_SECRET_ENDPOINT.example.invalid/path", id="other-url"),
+]
+
 
 @dataclass
 class Fake:
@@ -60,12 +72,31 @@ def nested_config():
     return result
 
 
+@pytest.mark.parametrize("present", [False, True], ids=["missing", "null"])
+@pytest.mark.parametrize("require_disabled_mcp", [False, True], ids=["discovery", "generation"])
+def test_no_explicit_model_endpoint_is_valid_config(present, require_disabled_mcp):
+    config = nested_config()
+    assert "openai_base_url" not in config
+    if present:
+        config["openai_base_url"] = None
+    assert app_server._check_config(config, require_disabled_mcp=require_disabled_mcp) == ()
+
+
+@pytest.mark.parametrize("value", NON_NULL_ENDPOINT_OVERRIDES)
+def test_every_non_null_model_endpoint_override_is_rejected(value):
+    config = nested_config()
+    config["openai_base_url"] = value
+    with pytest.raises(AppServerError) as error:
+        app_server._check_config(config, require_disabled_mcp=True)
+    assert str(error.value) == "A model endpoint override is unsupported for ChatGPT login"
+
+
 @pytest.fixture
 def fake_factory(tmp_path, context):
     count = 0
     children = []
 
-    def create(case="happy"):
+    def create(case="happy", *, endpoint_overrides=None):
         nonlocal count
         count += 1
         directory = tmp_path / str(count)
@@ -76,6 +107,7 @@ def fake_factory(tmp_path, context):
             "case": case,
             "log": str(log),
             "config": nested_config(),
+            "endpoint_overrides": endpoint_overrides or {},
             "model": context.to_dict()["config"]["model"],
             "raw": canonical(response_data(context)),
         }
@@ -119,8 +151,11 @@ def assert_descendant_stopped(fake):
     assert not status.stdout.strip() or status.stdout.strip().startswith("Z")
 
 
-def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(context, fake_factory):
-    fake = fake_factory()
+@pytest.mark.parametrize("endpoint_overrides", [{}, {1: None, 2: None}], ids=["missing", "null"])
+def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(
+    context, fake_factory, endpoint_overrides
+):
+    fake = fake_factory(endpoint_overrides=endpoint_overrides)
     transport = adapter(context, fake)
     result = asyncio.run(transport.draft(context))
     assert transport.warnings_seen == 0
@@ -142,6 +177,11 @@ def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(con
     ]
     starts = fake.starts()
     assert len(starts) == 2
+    assert all(
+        not argument.startswith("openai_base_url=")
+        for event in starts
+        for argument in event["arguments"]
+    )
     assert all("suppress_unstable_features_warning=true" in event["arguments"] for event in starts)
     assert "mcp_servers.inherited-server.enabled=false" not in starts[0]["arguments"]
     assert "mcp_servers.inherited-server.enabled=false" in starts[1]["arguments"]
@@ -158,6 +198,27 @@ def test_actual_jsonl_subprocess_draft_has_two_preflight_passes_and_one_turn(con
     assert calls["turn/start"]["environments"] == []
     assert calls["turn/start"]["serviceTierForTurn"] == "default"
     assert calls["turn/start"]["outputSchema"]["additionalProperties"] is False
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("generation", [1, 2], ids=["discovery", "generation"])
+@pytest.mark.parametrize("value", NON_NULL_ENDPOINT_OVERRIDES)
+def test_inherited_model_endpoint_fails_each_preflight_before_thread_and_turn(
+    context, fake_factory, generation, value
+):
+    overrides = {1: None, 2: None}
+    overrides[generation] = value
+    fake = fake_factory(endpoint_overrides=overrides)
+    transport = adapter(context, fake)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    assert str(error.value) == "A model endpoint override is unsupported for ChatGPT login"
+    assert fake.methods() == ["initialize", "initialized", "config/read"] * generation
+    assert "thread/start" not in fake.methods()
+    assert "turn/start" not in fake.methods()
+    assert len(fake.starts()) == generation
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
     assert_stopped(fake)
 
 

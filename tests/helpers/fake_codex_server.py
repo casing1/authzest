@@ -457,6 +457,9 @@ def main():
             result = {"userAgent": "authzest/" + version}
         elif method == "config/read":
             config = json.loads(json.dumps(SETTINGS["config"]))
+            endpoint_overrides = SETTINGS.get("endpoint_overrides", {})
+            if generation in endpoint_overrides:
+                config["openai_base_url"] = endpoint_overrides[generation]
             config["mcp_servers"] = {"inherited-server": {"enabled": True}}
             for argument in sys.argv:
                 prefix = "mcp_servers."

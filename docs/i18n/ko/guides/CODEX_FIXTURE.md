@@ -82,6 +82,14 @@ transport는 깨끗한 빈 작업 디렉터리에서 시작하고 ChatGPT 인증
 계정 이메일이나 대화 transcript를 저장하지 않습니다. 이 제어는 신뢰하는 Codex 설치본을 전제로
 하며 비신뢰 실행 파일을 격리하는 sandbox가 아닙니다.
 
+관리형 ChatGPT 로그인의 모델 경로 선택은 Codex 내장 제공자에 맡기며, AuthZest가
+`openai_base_url`로 API-key용 주소를 강제하지 않습니다. 두 사전 검사 모두 유효
+`openai_base_url`이 null이 아닌 경우 공식 URL이나 빈 문자열도 거부하고 thread·turn 생성 전에
+중단합니다. `OPENAI_BASE_URL` 환경변수도 전달하지 않습니다. 상속된 재지정은 설정 비호환이지
+자격 증명 만료의 증거가 아니며, AuthZest가 사용자 Codex 설정을 편집하지 않습니다. 공식
+[설정 안내](https://learn.chatgpt.com/docs/config-file/config-advanced)는 제공자 URL 재지정을
+ChatGPT 로그인 설정과 별도로 설명합니다. 이 검사가 실제 네트워크 경로를 입증하지는 않습니다.
+
 요청한 모델 식별값을 thread 시작 시 협의된 모델과 대조합니다. 요약에는
 `model_identity_basis: negotiated-thread-model; not independently served-model attestation`을
 기록합니다. 이는 응답을 실제 처리한 모델의 정체를 독립적으로 입증한 것이 아닙니다.
@@ -183,3 +191,30 @@ Codex나 대상 소스를 실행하지 않았습니다. 원본 fixture 해시와
 추가 시도도 하지 않았습니다. 새 1회 승인은 소진되었으며 총 6회의 승인된 호스트 시도가 초안 검증 전에
 실패했습니다. 이것이 6회 과금을 입증하지는 않습니다. 실제 검증은 **PENDING**, PR #51은 draft이며
 병합이나 새 호출 승인은 없습니다.
+
+## 사용자 재인증 이후 — 2026-09-12
+
+사용자가 다시 로그인했습니다. CLI 로그인 상태와 읽기 전용 App Server `account/rateLimits/read`
+조회는 모델 turn이나 fixture 소스 전송 없이 성공했습니다. 이후 사용자가 같은 fixture,
+`gpt-6-astra`, 관리형 ChatGPT 계정과 120초 제한으로 추가 1회를 승인했습니다.
+`573f7a3`(실행 코드는 `ca97ab1`과 동일)에서 `11086.934 ms` 후
+`responseStreamDisconnected`, 중첩 HTTP `401`, `willRetry: true`로 실패했습니다. 어댑터는 중단했고
+`status: draft-failed`, 종료 `1`, 식별값·사용량·경고·재시도·적용·복구 필드의 null과
+`verification_status: not-run`을 유지했습니다. 원본 fixture 해시도 그대로입니다.
+총 7회의 승인된 호스트 시도가 모두 초안 검증 전에 끝났으며, 이는 과금된 turn 횟수가 아닙니다.
+
+점검 결과 AuthZest가 ChatGPT 로그인을 요구하면서 내장 모델 제공자 주소를
+`https://api.openai.com/v1`로 강제하고 있었습니다. 계정 조회 성공과 생성 실패는 경로 불일치와
+부합하지만, 401의 정확한 원인은 **확정하지 않았습니다**. 강제 재지정을 제거하고 상속된 재지정은
+사전 검사에서 거부하도록 수정했습니다. 설치된 0.153.0 App Server가 수정된 경계를 수용했고
+계정·한도 메타데이터 조회도 성공했으며, 이때도 모델 turn은 0회이고 fixture 소스는 보내지
+않았습니다. AuthZest가 자격 증명이나 사용자 설정을 변경하지 않았습니다.
+
+수정된 소스는 새 주소 관련 사례 32개를 포함한 오프라인 Python 검사 1,203개
+(transport 합계 308개), Ruff와 문서 검사 14개를 통과했습니다. 별도의 제한된 transport 실행에서
+기존 하위 프로세스 정리 검사 2개가 `ps`를 실행하지 못했으나, 필요한 로컬 프로세스 권한으로
+조건을 바꾸지 않고 재검사하여 통과했고 전체 검사도 통과했습니다. 테스트 timeout이나 assertion을
+완화하지 않았습니다. 이전 wheel/native 산출물 검사는 이번 수정 이전의 결과입니다.
+
+이 경로 수정 이후 모델 생성은 수행하지 않았습니다. 추가 1회 승인은 소진되었으며 8번째 시도,
+병합·릴리스는 하지 않았습니다. PR #51은 draft, #35는 열린 상태를 유지합니다.

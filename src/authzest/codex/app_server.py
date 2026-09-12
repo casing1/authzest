@@ -101,7 +101,9 @@ CONFIG = {
     "developer_instructions": BASE_INSTRUCTIONS,
     "instructions": "",
     "model_provider": "openai",
-    "openai_base_url": "https://api.openai.com/v1",
+    # Let Codex choose the built-in route for managed ChatGPT login instead of
+    # forcing an API-key endpoint through the provider's URL override.
+    # Inherited overrides are rejected by _check_config, not silently reused.
     "chatgpt_base_url": "https://chatgpt.com/backend-api",
     "approval_policy": "on-request",
     "sandbox_mode": "read-only",
@@ -389,6 +391,10 @@ class _Session:
 
 
 def _check_config(config: dict[str, Any], *, require_disabled_mcp: bool) -> tuple[str, ...]:
+    # Absence/null means no explicit model endpoint override. Reject all other
+    # values, including empty strings and official URLs, for this narrow workflow.
+    if config.get("openai_base_url") is not None:
+        raise AppServerError("A model endpoint override is unsupported for ChatGPT login")
     for path, expected in CONFIG.items():
         value: Any = config
         for part in path.split("."):
