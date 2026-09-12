@@ -7,6 +7,20 @@ the current release process. The binaries are not signed or notarized.
 
 ## Published preview and current source
 
+### Alpha.3 preparation (not yet published)
+
+[#56](https://github.com/casing1/authzest/issues/56) prepares package `0.1.0a3` / tag
+`v0.1.0-alpha.3` after [PR #55](https://github.com/casing1/authzest/pull/55). This checkpoint combines
+the offline evidence/proposal contracts, opt-in pinned Codex fixture draft, approved copy changes,
+source-configuration checks and separately approved fixed runtime verification. The scan report
+schema stays `1.2`. [Bounded acceptance](../guides/RUNTIME_VERIFICATION.md) passed locally; exact-main
+three-platform builds, fresh downloaded artifacts and public assets must still pass before publication.
+Windows runtime is unsupported, existing Windows scan support is unchanged, and no new live Codex
+request is authorized by release preparation. Keep the alpha.2 download record below until a separate
+post-publication documentation PR confirms the new release; do not move or replace existing tags/assets.
+
+### Published alpha.2
+
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10,
 with Python package `0.1.0a2` and report schema `1.2`, from commit
 `7cc359acbb864ef6d31e3b536787857da4f7e09c` ([preparation PR #40](https://github.com/casing1/authzest/pull/40),

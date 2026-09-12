@@ -7,6 +7,19 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 
 ## 배포된 preview와 현재 소스
 
+### Alpha.3 준비 (아직 미발행)
+
+[#56](https://github.com/casing1/authzest/issues/56)은 [PR #55](https://github.com/casing1/authzest/pull/55)
+이후 패키지 `0.1.0a3` / 태그 `v0.1.0-alpha.3`를 준비합니다. 오프라인 근거/제안 계약, opt-in
+버전 고정 Codex fixture 초안, 승인형 복사본 변경, 소스 설정 검사와 별도 승인한 고정 런타임 검사를
+묶은 중간 배포이며 scan report schema는 `1.2`입니다. [제한적 완료 검사](../guides/RUNTIME_VERIFICATION.md)는
+로컬에서 통과했지만 정확한 main의 세 플랫폼 빌드·새 다운로드 artifact·공개 산출물 검증은
+게시 전에 통과해야 합니다. Windows 런타임은 미지원이고 기존 Windows scan 지원은 유지하며
+릴리스 준비가 새 실제 Codex 호출을 승인하지 않습니다. 별도 발행 후 문서 PR로 새 배포를 확인할
+때까지 아래 alpha.2 다운로드 기록을 유지하며 기존 태그/산출물을 이동하거나 교체하지 않습니다.
+
+### 발행된 alpha.2
+
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 Python
 패키지 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 커밋은 `7cc359acbb864ef6d31e3b536787857da4f7e09c`이며
 [준비 PR #40](https://github.com/casing1/authzest/pull/40), [완료된 릴리스 이슈 #39](https://github.com/casing1/authzest/issues/39)에

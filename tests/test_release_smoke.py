@@ -8,19 +8,21 @@ from pathlib import Path
 
 import pytest
 from scripts import smoke_release
+from scripts.verify_release import read_project_version
 
 
 class FakeBinary:
     """Exercise the smoke driver without launching an arbitrary executable in unit tests."""
 
-    def __init__(self) -> None:
+    def __init__(self, version: str = "0.1.0a2") -> None:
+        self.version = version
         self.calls: list[tuple[list[str], dict[str, object]]] = []
 
     def __call__(self, arguments: list[str], **options: object) -> subprocess.CompletedProcess[str]:
         self.calls.append((arguments, options))
         command = arguments[1:]
         if command == ["--version"]:
-            return subprocess.CompletedProcess(arguments, 0, "authzest 0.1.0a2\n", "")
+            return subprocess.CompletedProcess(arguments, 0, f"authzest {self.version}\n", "")
         if command == ["--help"]:
             return subprocess.CompletedProcess(
                 arguments, 0, "Usage: authzest [--version] scan\n", ""
@@ -281,7 +283,7 @@ def test_cli_defaults_to_checkout_version_and_reports_relocation_limitations(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     binary = write_binary(tmp_path)
-    fake = FakeBinary()
+    fake = FakeBinary(read_project_version(smoke_release.CHECKOUT / "pyproject.toml"))
     monkeypatch.setattr(subprocess, "run", fake)
     monkeypatch.setattr("sys.argv", ["smoke_release.py", "--binary", str(binary)])
 

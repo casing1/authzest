@@ -14,6 +14,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] - 2026-09-12
+
+제한적 Codex 워크플로의 중간 배포로 준비하며 게시와 산출물 검증은 별도로 확인해야 합니다.
+scan report schema는 `1.2`를 유지하고 임의 저장소 실행을 활성화하지 않습니다.
+
 ### 추가
 
 - #54의 별도 승인 [소유 fixture 런타임 검사](guides/RUNTIME_VERIFICATION.md)를 추가했습니다.
@@ -35,7 +40,7 @@ AuthZest의 주요 변경사항을 기록합니다.
   새 POSIX 복사본의 별도 적용·복구 결정으로 연결합니다. 2026-09-12의 `42ff108`에서 한 소유 fixture의
   실제 초안·복사본 적용·복구 확인 1회가 성공했고 원본은 보존했습니다. 승인 문구는 사용자 허가 아래
   assistant가 입력했으며 독립적인 사람 검토는 아닙니다. 일반 저장소 AI는 미구현이며 해당 과거 확인에서는 검증을 실행하지 않았습니다.
-  기본 스캔은 오프라인을 유지하고 상위 #35는 열어둡니다. 새 릴리스는 없습니다.
+  기본 스캔은 오프라인을 유지하고 상위 #35의 더 넓은 완료 조건은 계속 추적합니다.
 - 새 턴을 요청하지 않고 엄격히 검증한 같은 턴의 Codex 스트림 복구 알림을 처리합니다.
   기존 시간·바이트·이벤트 제한 안에서 관찰 알림을 최대 세 개 수용하며 복구 이전 출력·사용량은
   폐기하고 새로 검증한 최종 응답을 요구합니다. 최종 오류는 계속 차단합니다.
@@ -161,6 +166,7 @@ Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은
 - HTTP scan endpoint의 대상을 로컬 프로세스 소유자가 선택한 workspace로 제한했습니다.
 - HTTP API 계약에서 호출자가 지정하는 파일시스템 경로를 제거했습니다.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.2...main
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.3...main
+[0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1
