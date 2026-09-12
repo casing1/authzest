@@ -161,7 +161,7 @@ There are no remaining approved live attempts; further calls require fresh user 
 
 ## Offline follow-up — 2026-09-12
 
-The bounded same-turn recovery change makes **zero live calls**. Python 3.12.7 passed 1,171 tests in
+The implementation and tests in this offline follow-up made **zero live calls**. Python 3.12.7 passed 1,171 tests in
 153.54 seconds, adding 42 tests since the historical 1,129-test run. Transport tests total 276 (+34),
 and CLI tests total 66 (+8). Ruff, frontend lint/format/build, 14 documentation checker tests, and
 language/link checks passed.
@@ -175,3 +175,17 @@ and clean main checkout were unchanged; no artifacts were published.
 
 These offline results do not convert the five historical failures into successes or grant another live
 attempt. Live end-to-end validation remains **PENDING** and PR #51 remains a draft.
+
+## Fresh approved live attempt — 2026-09-12
+
+On `ca97ab1`, one newly approved host attempt (maximum 120 seconds, same fixture/login) returned
+`draft-failed`/exit `1` in `11610.537 ms`. A diagnostic observer identified `responseStreamDisconnected`
+with nested HTTP `401` and `willRetry: true`; production correctly stopped with
+`Codex reported a non-recoverable HTTP status`. A retry flag cannot override authentication rejection.
+Returned identity, usage, warning/retry counts, application, and restoration were all `null`;
+`verification_status` stayed `not-run`, and an independent hash check confirmed the original unchanged.
+Codex 0.153.0 subsequently reported a stored ChatGPT login, not proof of server acceptance. This does
+not establish credential expiry, quota exhaustion, or model unavailability. No logout, reauthentication,
+API-key change, or further attempt was performed. The fresh one-attempt approval is exhausted: six
+approved host attempts in total have failed before a validated draft, not proof of six billed turns.
+Live validation remains **PENDING**; PR #51 stays draft, with no merge or new call authorization.
