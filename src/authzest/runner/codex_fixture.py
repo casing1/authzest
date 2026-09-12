@@ -64,6 +64,7 @@ async def run_codex_fixture(
     model: str,
     *,
     timeout_seconds: float = 120,
+    runtime_check: bool = False,
     read: Callable[[str], str] = input,
     emit: Callable[[str], Any] = print,
     adapter_factory: Callable[..., Any] | None = None,
@@ -72,11 +73,15 @@ async def run_codex_fixture(
     """Run only the packaged owned fixture, never an arbitrary checkout or generated test.
 
     One application-level drafting attempt is allowed. Source-sharing permission does
-    not authorize application, configuration verification or restoration. The adapter
+    not authorize application, verification or restoration. ``runtime_check`` selects
+    a fixed owned-fixture plan, never approves running it. The adapter
     and fixed verification worker own their child-process cleanup;
     cancellation propagates through its await. No token or dollar hard cap is claimed.
     ``parent`` and injected I/O/adapter factory exist for offline tests, not CLI options.
     """
+    if type(runtime_check) is not bool:
+        raise FixtureInputError("Runtime check selection must be a boolean")
+    verification_scope = "owned-fixture-runtime" if runtime_check else "source-configuration"
     if (
         type(timeout_seconds) not in (int, float)
         or not math.isfinite(timeout_seconds)
@@ -109,6 +114,8 @@ async def run_codex_fixture(
             "kind": "codex-fixture-sharing-preview",
             "request_id": request.request_id,
             "source_scope": "packaged-owned-fixture/main.py",
+            "runtime_check_requested": runtime_check,
+            "verification_scope": verification_scope,
             "config": request.to_dict()["config"],
             "limits": limits,
             "limits_sha256": sha256(canonical(limits).encode("utf-8")).hexdigest(),
@@ -116,7 +123,8 @@ async def run_codex_fixture(
                 "Send the displayed task/source payload, host instructions and output schema "
                 "through local Codex App Server (which also adds its own harness context) "
                 "to OpenAI using your existing Codex session. Account data handling applies. "
-                "No API-key input, arbitrary repository source, source execution or model tools. "
+                "No API-key input or arbitrary repository source. The drafting step does not "
+                "execute source or model tools. "
                 f"At most {MAX_RETRY_NOTIFICATIONS} validated same-turn recovery notices "
                 "are accepted; this is "
                 "not a count or hard cap of provider attempts. Codex internal transport "
@@ -154,7 +162,8 @@ async def run_codex_fixture(
         "restoration": None,
         "original_checkout_modified": False,
         "verification_status": "not-run",
-        "verification_scope": "source-configuration",
+        "runtime_check_requested": runtime_check,
+        "verification_scope": verification_scope,
         "runtime_verification_status": "not-run",
     }
     if sharing != "approve":
@@ -199,7 +208,9 @@ async def run_codex_fixture(
     _emit_json(emit, {"kind": "codex-fixture-review", "review": review.to_dict()})
     session = None
     try:
-        session = FixtureApplySession(proposal, request, review, parent=parent)
+        session = FixtureApplySession(
+            proposal, request, review, parent=parent, runtime_check=runtime_check
+        )
         _emit_json(emit, session.preview())
         session.decide(_choice(read, "apply", proposal.proposal_id))
         applied = session.apply()
@@ -218,11 +229,20 @@ async def run_codex_fixture(
                 verification = {
                     "status": "failed",
                     "reason": "verification-unavailable",
-                    "verification_scope": "source-configuration",
-                    "runtime_verification_status": "not-run",
+                    "verification_scope": verification_scope,
                 }
+                if not runtime_check:
+                    verification["runtime_verification_status"] = "not-run"
             result["verification"] = verification
             result["verification_status"] = verification["status"]
+            if runtime_check:
+                result.pop("runtime_verification_status", None)
+                if "runtime_verification_status" in verification:
+                    result["runtime_verification_status"] = verification[
+                        "runtime_verification_status"
+                    ]
+                else:
+                    result["detail"] = "Inspect the retained workspace record if created."
             _emit_json(emit, verification)
             _emit_json(emit, session.restoration_preview())
             restored = session.restore(_choice(read, "restore", proposal.proposal_id))
@@ -253,6 +273,9 @@ async def run_codex_fixture(
         result.update(status=status, exit_code=0 if success and not verification_failed else 1)
     except (OSError, WorkspaceError, ContractError):
         result.update(status="application-failed", exit_code=1)
+        if runtime_check:
+            result.pop("runtime_verification_status", None)
+            result["detail"] = "Inspect the retained workspace record if created."
     finally:
         if session is not None:
             session.close()
