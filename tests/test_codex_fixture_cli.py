@@ -133,6 +133,9 @@ def test_denial_never_constructs_adapter_or_apply_workspace(tmp_path, adapter_fa
     assert result["usage"] is None and result["latency_ms"] is None
     assert result["provider_warning_count"] is None
     assert result["provider_retry_notification_count"] is None
+    assert result["verification"] is None and result["verification_status"] == "not-run"
+    assert result["verification_scope"] == "source-configuration"
+    assert result["runtime_verification_status"] == "not-run"
     preview = json.loads(output[0])
     assert preview["request_id"] == result["request_id"]
     assert preview["request"]["config"]["model"] == MODEL
@@ -202,7 +205,11 @@ def test_full_fake_workflow_has_separate_choices_and_preserves_original(
                 raise EOFError()
             if action == "edit-before-apply":
                 (workspace / "main.py").write_text("# later user edit\n")
+        elif "'verify " in prompt:
+            # This existing edit lifecycle test declines the new independent check.
+            return ""
         else:
+            assert "'restore " in prompt
             assert json.loads(output[-1])["from_text"] == FIXTURE_AFTER
             if action == "apply":
                 return ""
@@ -232,6 +239,7 @@ def test_full_fake_workflow_has_separate_choices_and_preserves_original(
     assert result["provider_retry_notification_count"] is None
     assert result["original_checkout_modified"] is False
     assert result["verification_status"] == "not-run"
+    assert result["runtime_verification_status"] == "not-run"
     assert result["latency_ms"] >= 0
     changed = Path(result["application"]["workspace"]) / "main.py"
     if action.startswith("edit-"):
@@ -244,8 +252,10 @@ def test_full_fake_workflow_has_separate_choices_and_preserves_original(
         assert changed.read_text() == FIXTURE_SOURCE
     if action in ("decline", "cancel", "edit-before-apply"):
         assert len(prompts) == 2 and result["restoration"] is None
+        assert result["verification"] is None
     elif action == "restore":
-        assert len(prompts) == 3 and result["restoration"]["restored"] is True
+        assert len(prompts) == 4 and result["restoration"]["restored"] is True
+        assert result["verification"]["status"] == "not-run"
     if not action.startswith("edit-"):
         assert result["exit_code"] == 0
 
@@ -351,6 +361,9 @@ def test_cli_command_requires_model_and_does_not_expose_broad_options(monkeypatc
     assert "--model" in help_text and "--timeout-seconds" in help_text
     assert "--yes" not in help_text and "--api-key" not in help_text
     assert "--path" not in help_text
+    assert "--check" not in help_text and "--command" not in help_text
+    assert "--test" not in help_text
+    assert "_configuration-worker" not in unstyle(runner.invoke(app, ["--help"]).stdout)
     assert runner.invoke(app, ["codex-fixture"]).exit_code == 2
     assert runner.invoke(app, ["codex-fixture", "--model", MODEL, "."]).exit_code == 2
 
@@ -392,6 +405,7 @@ def test_cli_full_fake_cycle_uses_exact_sharing_and_separate_edit_decisions(
         ["codex-fixture", "--model", MODEL],
         input=(
             f"share {request.request_id}\napply {draft.proposal.proposal_id}\n"
+            "\n"  # Decline configuration verification independently.
             f"restore {draft.proposal.proposal_id}\n"
         ),
     )
@@ -584,3 +598,371 @@ def test_failed_retry_summary_does_not_expose_partial_count(tmp_path):
     assert result["usage"] is None and result["application"] is None
     assert list(tmp_path.iterdir()) == []
     assert "SECRET-PROVIDER-STDERR" not in json.dumps(result)
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize(
+    "choice",
+    [
+        "approve",
+        "failed",
+        "worker-error",
+        "decline",
+        "cancel",
+        "eof",
+        "keyboard",
+        "wrong-plan",
+        "apply-token",
+        "share-token",
+    ],
+)
+def test_configuration_check_requires_its_own_exact_choice_and_keeps_restore_available(
+    tmp_path, monkeypatch, adapter_factory, choice
+):
+    from authzest.runner import fixture_check
+
+    factory, calls = adapter_factory
+    checks = []
+    output = []
+    prompts = []
+    original = tmp_path / "main.py"
+    original.write_text(FIXTURE_SOURCE, encoding="utf-8", newline="")
+
+    async def fixed_check(source):
+        checks.append(source)
+        if choice == "worker-error":
+            raise RuntimeError("SECRET-WORKER-STDERR")
+        failed = choice == "failed"
+        return fixture_check.VerificationOutcome(
+            "failed" if failed else "passed",
+            "check-failed" if failed else "debug-disabled",
+            fixture_check.CHECK_ID,
+            sha256(source).hexdigest(),
+            fixture_check.WORKER_SHA256,
+            1.0,
+            0,
+        )
+
+    monkeypatch.setattr(fixture_check, "run_configuration_check", fixed_check)
+
+    def read(prompt):
+        prompts.append(prompt)
+        if "'verify " not in prompt:
+            return exact_choice(prompt)
+        preview = json.loads(output[-1])
+        assert exact_choice(prompt) == f"verify {preview['plan_id']}"
+        assert preview["check_id"] == fixture_check.CHECK_ID
+        assert preview["source_sha256"] == sha256(FIXTURE_AFTER.encode()).hexdigest()
+        assert checks == []  # Sharing and application did not authorize execution.
+        if choice in ("approve", "failed", "worker-error"):
+            return exact_choice(prompt)
+        if choice == "eof":
+            raise EOFError()
+        if choice == "keyboard":
+            raise KeyboardInterrupt()
+        return {
+            "decline": "",
+            "cancel": "cancel",
+            "wrong-plan": "verify plan-unrelated",
+            "apply-token": exact_choice(prompts[1]),
+            "share-token": exact_choice(prompts[0]),
+        }[choice]
+
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL, read=read, emit=output.append, adapter_factory=factory, parent=tmp_path
+        )
+    )
+    assert [prompt.split("'")[1].split()[0] for prompt in prompts] == [
+        "share",
+        "apply",
+        "verify",
+        "restore",
+    ]
+    assert len(calls) == 2  # Exactly one scripted draft, no provider or model retry.
+    assert result["application"]["applied"] is True
+    assert result["restoration"]["restored"] is True
+    assert result["verification_scope"] == "source-configuration"
+    assert result["runtime_verification_status"] == "not-run"
+    assert result["verification"]["runtime_verification_status"] == "not-run"
+    if choice in ("approve", "failed", "worker-error"):
+        assert checks == [FIXTURE_AFTER.encode()]
+        expected_status = "passed" if choice == "approve" else "failed"
+        assert result["verification_status"] == expected_status
+        assert result["verification"]["status"] == expected_status
+        assert result["status"] == ("completed" if choice == "approve" else "verification-failed")
+        assert result["exit_code"] == (0 if choice == "approve" else 1)
+        if choice == "approve":
+            assert (
+                result["verification"]["source_sha256"]
+                == sha256(FIXTURE_AFTER.encode()).hexdigest()
+            )
+    else:
+        assert checks == []
+        assert result["verification_status"] == result["verification"]["status"] == "not-run"
+        assert result["status"] == "completed" and result["exit_code"] == 0
+    workspace = Path(result["application"]["workspace"])
+    assert workspace.joinpath("main.py").read_text() == FIXTURE_SOURCE
+    assert original.read_text() == FIXTURE_SOURCE
+    # A passed result describes the checked AFTER snapshot, not the now-restored file.
+    if choice == "approve":
+        assert (
+            sha256(workspace.joinpath("main.py").read_bytes()).hexdigest()
+            != result["verification"]["source_sha256"]
+        )
+    assert "SECRET-WORKER-STDERR" not in json.dumps(result) + "".join(output)
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize("stage", ["verification_preview", "decide_verification", "verify"])
+def test_local_verification_stage_exception_is_sanitized_and_does_not_skip_restore(
+    tmp_path, monkeypatch, adapter_factory, stage
+):
+    factory, _ = adapter_factory
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("SECRET-WORKER-STDERR")
+
+    async def async_fail(*args, **kwargs):
+        fail()
+
+    monkeypatch.setattr(
+        workflow.FixtureApplySession, stage, async_fail if stage == "verify" else fail
+    )
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=factory, parent=tmp_path
+        )
+    )
+    assert result["status"] == "verification-failed" and result["exit_code"] == 1
+    assert result["verification"]["reason"] == "verification-unavailable"
+    assert result["verification_status"] == "failed"
+    assert result["runtime_verification_status"] == "not-run"
+    assert result["application"]["applied"] is True
+    assert result["restoration"]["restored"] is True
+    assert "SECRET-WORKER-STDERR" not in json.dumps(result)
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+def test_stale_verification_source_is_not_checked_or_overwritten_on_restore(
+    tmp_path, monkeypatch, adapter_factory
+):
+    from authzest.runner import fixture_check
+
+    factory, _ = adapter_factory
+    output = []
+
+    async def forbidden(source):
+        pytest.fail("Source changed after the application; no verification worker may start")
+
+    monkeypatch.setattr(fixture_check, "run_configuration_check", forbidden)
+
+    def read(prompt):
+        if "'verify " in prompt:
+            preview = next(item for item in map(json.loads, output) if "changes" in item)
+            Path(preview["workspace"]).joinpath("main.py").write_text("# unapproved later edit\n")
+        return exact_choice(prompt)
+
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL, read=read, emit=output.append, adapter_factory=factory, parent=tmp_path
+        )
+    )
+    assert result["verification_status"] == "failed"
+    assert result["status"] == "application-failed" and result["exit_code"] == 1
+    assert result["restoration"]["restored"] is False
+    assert result["runtime_verification_status"] == "not-run"
+    workspace = Path(result["application"]["workspace"])
+    assert workspace.joinpath("main.py").read_text() == "# unapproved later edit\n"
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+@pytest.mark.parametrize("reason", ["expired", "precondition-failed", "journal-unavailable"])
+def test_verification_prevented_by_failure_is_nonzero_even_when_worker_was_not_run(
+    tmp_path, monkeypatch, adapter_factory, reason
+):
+    factory, _ = adapter_factory
+
+    async def not_run(self):
+        return {
+            "status": "not-run",
+            "reason": reason,
+            "execution_attempted": False,
+            "verification_scope": "source-configuration",
+            "runtime_verification_status": "not-run",
+        }
+
+    monkeypatch.setattr(workflow.FixtureApplySession, "verify", not_run)
+    result = asyncio.run(
+        workflow.run_codex_fixture(
+            MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=factory, parent=tmp_path
+        )
+    )
+    assert result["status"] == "verification-failed" and result["exit_code"] == 1
+    assert result["verification_status"] == "not-run"
+    assert result["verification"]["execution_attempted"] is False
+    assert result["restoration"]["restored"] is True
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+def test_cli_renders_historical_configuration_pass_after_separately_confirmed_restore(
+    tmp_path, monkeypatch, adapter_factory
+):
+    from authzest.runner import fixture_check
+
+    factory, calls = adapter_factory
+    request = build_fixture_request(MODEL)
+    draft = fake_draft(request)
+    checks = []
+    previews = []
+    answers = []
+    real_workflow = workflow.run_codex_fixture
+
+    async def fixed_check(source):
+        checks.append(source)
+        return fixture_check.VerificationOutcome(
+            "passed",
+            "debug-disabled",
+            fixture_check.CHECK_ID,
+            sha256(source).hexdigest(),
+            fixture_check.WORKER_SHA256,
+            1.0,
+            0,
+        )
+
+    monkeypatch.setattr(fixture_check, "run_configuration_check", fixed_check)
+
+    def read(prompt):
+        if "'share " in prompt:
+            answer = f"share {request.request_id}"
+        elif "'apply " in prompt:
+            answer = f"apply {draft.proposal.proposal_id}"
+        elif "'verify " in prompt:
+            preview = previews[-1]
+            assert preview["kind"] == "fixture-configuration-verification-plan"
+            answer = f"verify {preview['plan_id']}"
+        else:
+            answer = f"restore {draft.proposal.proposal_id}"
+        assert f"'{answer}'" in prompt
+        answers.append(answer)
+        return answer
+
+    async def offline_workflow(model, *, emit, **kwargs):
+        def capture(text):
+            previews.append(json.loads(text))
+            emit(text)
+
+        return await real_workflow(
+            model, read=read, emit=capture, adapter_factory=factory, parent=tmp_path, **kwargs
+        )
+
+    monkeypatch.setattr(workflow, "run_codex_fixture", offline_workflow)
+    result = runner.invoke(app, ["codex-fixture", "--model", MODEL])
+    assert result.exit_code == 0, result.output
+    marker = '{\n  "kind": "codex-owned-fixture-workflow"'
+    summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
+    assert summary["verification_status"] == "passed"
+    assert summary["verification_scope"] == "source-configuration"
+    assert summary["runtime_verification_status"] == "not-run"
+    assert summary["verification"]["source_sha256"] == sha256(FIXTURE_AFTER.encode()).hexdigest()
+    assert summary["restoration"]["restored"] is True
+    assert [answer.split()[0] for answer in answers] == ["share", "apply", "verify", "restore"]
+    assert checks == [FIXTURE_AFTER.encode()] and len(calls) == 2
+    workspace = Path(summary["application"]["workspace"])
+    journal = json.loads(workspace.joinpath("record.json").read_text())
+    assert journal["verification_status"] == "passed" and journal["restored"] is True
+    assert journal["verification"]["source_sha256"] == sha256(FIXTURE_AFTER.encode()).hexdigest()
+    assert workspace.joinpath("main.py").read_text() == FIXTURE_SOURCE
+
+
+@pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
+def test_verification_cancellation_propagates_and_retains_truthful_applied_record(
+    tmp_path, monkeypatch, adapter_factory
+):
+    from authzest.runner import fixture_check
+
+    factory, _ = adapter_factory
+    state = []
+
+    async def waiting_check(source):
+        assert source == FIXTURE_AFTER.encode()
+        state.append("started")
+        try:
+            await asyncio.Event().wait()
+        finally:
+            state.append("finished")
+
+    monkeypatch.setattr(fixture_check, "run_configuration_check", waiting_check)
+
+    async def run():
+        task = asyncio.create_task(
+            workflow.run_codex_fixture(
+                MODEL,
+                read=exact_choice,
+                emit=lambda _: None,
+                adapter_factory=factory,
+                parent=tmp_path,
+            )
+        )
+        while not state:
+            await asyncio.sleep(0)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+    asyncio.run(run())
+    assert state == ["started", "finished"]
+    workspace = next(tmp_path.iterdir())
+    journal = json.loads(workspace.joinpath("record.json").read_text())
+    assert journal["applied"] is True and journal["restored"] is False
+    assert journal["verification_status"] == "failed"
+    assert journal["verification"]["reason"] == "cancelled"
+    assert journal["verification"]["execution_attempted"] is True
+    assert journal["runtime_verification_status"] == "not-run"
+    assert workspace.joinpath("main.py").read_text() == FIXTURE_AFTER
+
+
+@pytest.mark.parametrize("exit_code", [0, 2])
+def test_hidden_configuration_worker_dispatches_only_fixed_entry(monkeypatch, exit_code):
+    from authzest.runner import _configuration_worker
+
+    calls = []
+
+    def worker_main():
+        calls.append("fixed-worker")
+        return exit_code
+
+    monkeypatch.setattr(_configuration_worker, "worker_main", worker_main)
+    result = runner.invoke(app, ["_configuration-worker"])
+    assert result.exit_code == exit_code
+    assert calls == ["fixed-worker"]
+
+
+@pytest.mark.parametrize("argument", ["main.py", "--path=main.py", "--command=echo", "--yes"])
+def test_hidden_worker_rejects_external_source_and_execution_options(monkeypatch, argument):
+    from authzest.runner import _configuration_worker
+
+    monkeypatch.setattr(
+        _configuration_worker,
+        "worker_main",
+        lambda: pytest.fail("Arguments must be rejected before entering the fixed worker"),
+    )
+    assert runner.invoke(app, ["_configuration-worker", argument]).exit_code == 2
+
+
+@pytest.mark.parametrize("failure", [KeyboardInterrupt, RuntimeError])
+def test_cli_interrupted_or_unknown_workflow_does_not_claim_verification_never_started(
+    monkeypatch, failure
+):
+    async def fail(*args, **kwargs):
+        raise failure("SECRET-LOCAL-EXCEPTION")
+
+    monkeypatch.setattr(workflow, "run_codex_fixture", fail)
+    result = runner.invoke(app, ["codex-fixture", "--model", MODEL])
+    assert result.exit_code == (0 if failure is KeyboardInterrupt else 1)
+    summary = json.loads(result.stdout)
+    assert summary["status"] == ("cancelled" if failure is KeyboardInterrupt else "workflow-failed")
+    assert summary["runtime_verification_status"] == "not-run"
+    assert "verification_status" not in summary
+    assert "retained workspace record" in summary["detail"]
+    assert "SECRET-LOCAL-EXCEPTION" not in result.output

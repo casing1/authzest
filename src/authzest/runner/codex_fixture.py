@@ -1,4 +1,4 @@
-"""Opt-in, one-turn Codex drafting followed by separately approved fixture-copy edits."""
+"""Opt-in Codex drafting with separate fixture-copy edit, check and restore choices."""
 
 from __future__ import annotations
 
@@ -72,7 +72,8 @@ async def run_codex_fixture(
     """Run only the packaged owned fixture, never an arbitrary checkout or generated test.
 
     One application-level drafting attempt is allowed. Source-sharing permission does
-    not authorize application or restoration. The adapter owns child-process cleanup;
+    not authorize application, configuration verification or restoration. The adapter
+    and fixed verification worker own their child-process cleanup;
     cancellation propagates through its await. No token or dollar hard cap is claimed.
     ``parent`` and injected I/O/adapter factory exist for offline tests, not CLI options.
     """
@@ -149,9 +150,12 @@ async def run_codex_fixture(
         "provider_retry_notification_count": None,
         "latency_ms": None,
         "application": None,
+        "verification": None,
         "restoration": None,
         "original_checkout_modified": False,
         "verification_status": "not-run",
+        "verification_scope": "source-configuration",
+        "runtime_verification_status": "not-run",
     }
     if sharing != "approve":
         return result
@@ -202,6 +206,24 @@ async def run_codex_fixture(
         result["application"] = asdict(applied)
         _emit_json(emit, result["application"])
         if applied.status == "applied":
+            try:
+                verification_preview = session.verification_preview()
+                _emit_json(emit, verification_preview)
+                plan_id = verification_preview["plan_id"]
+                session.decide_verification(_choice(read, "verify", plan_id), plan_id)
+                verification = await session.verify()
+            except Exception:
+                # Keep restoration available after a local verification failure. Neither
+                # worker output nor exception text is evidence or safe terminal output.
+                verification = {
+                    "status": "failed",
+                    "reason": "verification-unavailable",
+                    "verification_scope": "source-configuration",
+                    "runtime_verification_status": "not-run",
+                }
+            result["verification"] = verification
+            result["verification_status"] = verification["status"]
+            _emit_json(emit, verification)
             _emit_json(emit, session.restoration_preview())
             restored = session.restore(_choice(read, "restore", proposal.proposal_id))
             result["restoration"] = asdict(restored)
@@ -213,9 +235,22 @@ async def run_codex_fixture(
                 "restoration-decline",
                 "restoration-cancel",
             )
-        result.update(
-            status="completed" if success else "application-failed", exit_code=0 if success else 1
+        verification = result["verification"]
+        verification_failed = verification is not None and (
+            verification["status"] == "failed"
+            or (
+                verification["status"] == "not-run"
+                and verification["reason"] not in ("declined", "cancelled")
+            )
         )
+        status = (
+            "application-failed"
+            if not success
+            else "verification-failed"
+            if verification_failed
+            else "completed"
+        )
+        result.update(status=status, exit_code=0 if success and not verification_failed else 1)
     except (OSError, WorkspaceError, ContractError):
         result.update(status="application-failed", exit_code=1)
     finally:

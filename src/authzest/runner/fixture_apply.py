@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
+import json
+import math
 import time
 from collections.abc import Callable
-from dataclasses import dataclass
+from contextlib import suppress
+from dataclasses import asdict, dataclass
 from hashlib import sha256
 from pathlib import Path
 
@@ -33,6 +37,8 @@ class FixtureResult:
     restored: bool | None = False
     verification_status: str = "not-run"
     error: str | None = None
+    verification_scope: str = "source-configuration"
+    runtime_verification_status: str = "not-run"
 
 
 class FixtureApplySession:
@@ -73,6 +79,12 @@ class FixtureApplySession:
         self._restore_used = False
         self._restore_choice: str | None = None
         self._events: list[dict] = []
+        self._verification_decision: str | None = None
+        self._verification_plan: dict | None = None
+        self._verification_used = False
+        self._verification_running = False
+        self._verification_blocked = False
+        self._verification: dict | None = None
         self._workspace = FixtureWorkspace(self._before, self._after, parent=parent)
         try:
             self._original = self._workspace.read_main()
@@ -100,7 +112,7 @@ class FixtureApplySession:
     def _record(self, event: str) -> None:
         self._events.append({"event": event, "generation": self._generation})
         data = {
-            "schema_version": "1.0",
+            "schema_version": "1.1",
             "proposal": self.preview(),
             "phase": self._phase,
             "decision": self._decision.to_dict() if self._decision else None,
@@ -111,7 +123,15 @@ class FixtureApplySession:
             "after_sha256": sha256(self._after).hexdigest(),
             "applied": self._applied,
             "restored": self._restored,
-            "verification_status": "not-run",
+            "verification_status": self._verification_status(),
+            "verification_scope": "source-configuration",
+            "runtime_verification_status": "not-run",
+            "verification": self._verification,
+            "verification_plan": self._verification_plan,
+            "verification_decision": (
+                json.loads(self._verification_decision) if self._verification_decision else None
+            ),
+            "verification_decision_consumed": self._verification_used,
             "restart_supported": False,
         }
         self._workspace.write_record(canonical(data).encode("utf-8"))
@@ -123,8 +143,206 @@ class FixtureApplySession:
             str(self.workspace),
             self._applied,
             self._restored,
+            verification_status=self._verification_status(),
             error=error,
         )
+
+    def _verification_status(self) -> str:
+        return self._verification["status"] if self._verification else "not-run"
+
+    def verification_preview(self) -> dict:
+        """Describe one fixed source-only check; does not grant permission or start a worker."""
+        if (
+            self._phase != "applied"
+            or self._verification_running
+            or self._verification_used
+            or self._verification_blocked
+        ):
+            raise WorkspaceError("Verification requires an unused, applied fixture session")
+        return self._verification_payload()
+
+    def _verification_payload(self) -> dict:
+        from authzest.codex.fixture_draft import FIXTURE_AFTER, FIXTURE_SOURCE
+        from authzest.runner import fixture_check
+
+        if self._phase != "applied":
+            raise WorkspaceError("Verification requires the applied fixture")
+        if sha256(fixture_check.WORKER_SOURCE.encode()).hexdigest() != fixture_check.WORKER_SHA256:
+            raise WorkspaceError("Checker identity changed")
+        current = self._workspace.read_main()
+        if current != self._current:
+            raise WorkspaceError("Applied fixture state changed")
+        if self._before != FIXTURE_SOURCE.encode() or self._after != FIXTURE_AFTER.encode():
+            raise WorkspaceError("Only the maintained source-configuration fixture is supported")
+        data = {
+            "kind": "fixture-configuration-verification-plan",
+            "schema_version": "1.0",
+            "proposal_id": self._proposal.proposal_id,
+            "workspace": str(self.workspace),
+            "path": "main.py",
+            "source_text": current.data.decode("utf-8"),
+            "source_sha256": sha256(current.data).hexdigest(),
+            "file_identity": list(current.identity),
+            "check_id": fixture_check.CHECK_ID,
+            "worker_source": fixture_check.WORKER_SOURCE,
+            "worker_sha256": fixture_check.WORKER_SHA256,
+            "timeout_seconds": fixture_check.TIMEOUT_SECONDS,
+            "max_cleanup_seconds": fixture_check.MAX_CLEANUP_SECONDS,
+            "max_input_bytes": fixture_check.MAX_INPUT_BYTES,
+            "max_output_bytes": fixture_check.MAX_OUTPUT_BYTES,
+            "max_worker_attempts": 1,
+            "verification_scope": "source-configuration",
+            "runtime_verification_status": "not-run",
+            "limitations": (
+                "Fixed source configuration check only; no source import/execution, "
+                "regression-test execution or security-fix verification. A separate process, "
+                "not an OS/network sandbox. No model-proposed command is executed. "
+                "Caller-entered decisions are not authenticated human approval."
+            ),
+        }
+        return {**data, "plan_id": "verification-" + sha256(canonical(data).encode()).hexdigest()}
+
+    def decide_verification(
+        self, choice: str, plan_id: str, *, valid_for_seconds: float = 300
+    ) -> dict:
+        """Latest in-memory decision, bound to the displayed plan, consumed at most once."""
+        if choice not in ("approve", "decline", "cancel"):
+            raise ContractError("Explicit verification choice required")
+        now = self._clock()
+        if (
+            type(now) not in (int, float)
+            or not math.isfinite(now)
+            or not 0 <= now <= 1e12
+            or type(valid_for_seconds) not in (int, float)
+            or not math.isfinite(valid_for_seconds)
+            or not 0 < valid_for_seconds <= 300
+        ):
+            raise ContractError(
+                "Verification decision requires a finite lifetime up to 300 seconds"
+            )
+        preview = self.verification_preview()
+        if type(plan_id) is not str or plan_id != preview["plan_id"]:
+            raise ContractError("Verification plan changed; review a fresh preview")
+        decision = {
+            "purpose": "source-configuration-verification",
+            "plan_id": plan_id,
+            "choice": choice,
+            "created_at": now,
+            "expires_at": now + valid_for_seconds,
+        }
+        self._verification_decision = canonical(decision)
+        self._verification_plan = preview
+        try:
+            self._record("verification-decision-recorded")
+        except (OSError, WorkspaceError):
+            self._verification_blocked = True
+            raise
+        return decision
+
+    def _save_verification(self, result: dict) -> dict:
+        self._verification = {**result, "journal_status": "recorded"}
+        try:
+            self._record("verification-" + result["reason"])
+        except (OSError, WorkspaceError):
+            self._verification_blocked = True
+            self._verification = {
+                **result,
+                "status": "failed" if result["execution_attempted"] else "not-run",
+                "reason": "journal-unavailable",
+                "journal_status": "unconfirmed",
+            }
+            # Replacement may have committed before fsync failed. Best-effort correction
+            # prevents a stale passed record when writes recover; no durability claim is
+            # made if this second write also fails. Retained files are not a restart receipt.
+            with suppress(OSError, WorkspaceError):
+                self._record("verification-journal-unavailable")
+        return dict(self._verification)
+
+    async def verify(self) -> dict:
+        """Run the approved fixed check once, retaining its historical checked-content result."""
+        from authzest.runner import fixture_check
+
+        result = {
+            "status": "not-run",
+            "reason": "pending",
+            "plan_id": None,
+            "proposal_id": self._proposal.proposal_id,
+            "check_id": fixture_check.CHECK_ID,
+            "source_sha256": sha256(self._after).hexdigest(),
+            "worker_sha256": fixture_check.WORKER_SHA256,
+            "elapsed_ms": None,
+            "exit_code": None,
+            "execution_attempted": False,
+            "verification_scope": "source-configuration",
+            "runtime_verification_status": "not-run",
+        }
+        if self._verification_used:
+            return {**result, "reason": "decision-consumed"}
+        if self._verification_blocked or self._phase != "applied":
+            return {**result, "reason": "verification-unavailable"}
+        if self._verification_decision is None:
+            return result
+        decision = json.loads(self._verification_decision)
+        result["plan_id"] = decision["plan_id"]
+        if decision["choice"] != "approve":
+            self._verification_used = True
+            reason = "declined" if decision["choice"] == "decline" else "cancelled"
+            return self._save_verification({**result, "reason": reason})
+        try:
+            preview = self.verification_preview()
+            if preview["plan_id"] != decision["plan_id"]:
+                raise WorkspaceError("Verification plan changed")
+            self._verification_used = True
+            self._record("verification-intent")
+            # Recheck after the journal write, immediately before handing immutable bytes off.
+            if self._verification_payload()["plan_id"] != preview["plan_id"]:
+                raise WorkspaceError("Verification plan changed before execution")
+            current = self._workspace.read_main()
+            if current != self._current:
+                raise WorkspaceError("Applied fixture changed before verification")
+            now = self._clock()
+            if type(now) not in (int, float) or not math.isfinite(now):
+                raise WorkspaceError("Verification clock unavailable")
+            if now < decision["created_at"] or now >= decision["expires_at"]:
+                return self._save_verification({**result, "reason": "expired"})
+        except (OSError, WorkspaceError, ContractError):
+            self._verification_used = True
+            return self._save_verification({**result, "reason": "precondition-failed"})
+        self._verification_running = True
+        try:
+            result["execution_attempted"] = True
+            outcome = asdict(await fixture_check.run_configuration_check(current.data))
+            if (
+                outcome["status"] not in ("passed", "failed", "not-run")
+                or outcome["source_sha256"] != preview["source_sha256"]
+                or outcome["worker_sha256"] != preview["worker_sha256"]
+                or outcome["check_id"] != preview["check_id"]
+                or type(outcome["elapsed_ms"]) not in (int, float)
+                or not math.isfinite(outcome["elapsed_ms"])
+                or outcome["elapsed_ms"] < 0
+                or (outcome["exit_code"] is not None and type(outcome["exit_code"]) is not int)
+                or (
+                    outcome["status"] == "passed"
+                    and (
+                        outcome["reason"] != "debug-disabled"
+                        or type(outcome["exit_code"]) is not int
+                        or outcome["exit_code"] != 0
+                    )
+                )
+            ):
+                result.update(status="failed", reason="invalid-check-result")
+            else:
+                result.update(outcome)
+            if self._workspace.read_main() != current:
+                result.update(status="failed", reason="source-changed-during-check")
+            return self._save_verification(result)
+        except asyncio.CancelledError:
+            self._save_verification({**result, "status": "failed", "reason": "cancelled"})
+            raise
+        except Exception:
+            return self._save_verification({**result, "status": "failed", "reason": "check-failed"})
+        finally:
+            self._verification_running = False
 
     def decide(self, choice: str, *, valid_for_seconds: float = 300) -> ProposalDecision:
         if self._phase != "prepared":
@@ -211,13 +429,15 @@ class FixtureApplySession:
             "to_text": self._before.decode("utf-8"),
             "from_sha256": sha256(self._after).hexdigest(),
             "to_sha256": sha256(self._before).hexdigest(),
-            "verification_status": "not-run",
+            "verification_status": self._verification_status(),
+            "verification_scope": "source-configuration",
+            "runtime_verification_status": "not-run",
         }
 
     def restore(self, choice: str) -> FixtureResult:
         if choice not in ("approve", "decline", "cancel"):
             raise ContractError("Explicit restoration choice required")
-        if self._phase != "applied" or self._restore_used:
+        if self._phase != "applied" or self._restore_used or self._verification_running:
             return self._result("restoration-unavailable")
         self._restore_choice = choice
         try:
