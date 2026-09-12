@@ -9,9 +9,12 @@
 
 ## 상태와 범위
 
-소스 checkout에 #33의 오프라인 기반을 구현했습니다. alpha.2 바이너리에는 포함되지 않습니다.
+#33의 오프라인 기반은 공개된
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)의 fixture 명령에
+사용됩니다. alpha.2 이후 도입됐으며 아래 평가 스크립트·corpus는 계속 소스 checkout이 필요합니다.
+독립 실행 파일의 명령이나 설치된 fixture 자료가 아닙니다.
 AI 스키마 `1.0`은 숫자 temperature 요청의 호환 기본값입니다. 스키마 `1.1`은 제공자 관리 sampling을
-위한 `temperature: null`을 추가로 허용합니다. 스캔 리포트 스키마 `1.2`, 패키지 버전 `0.1.0a2`와는
+위한 `temperature: null`을 추가로 허용합니다. 스캔 리포트 스키마 `1.2`, 패키지 버전 `0.1.0a3`와는
 별개입니다. 기존 숫자 요청과 식별값은 유지하고 `AdapterConfig` temperature 기본값은 `0.0`입니다.
 null은 0이나 결정론적 출력을 뜻하지 않습니다. 계약 자체는 제공자 호출이나 파일 적용을 하지 않습니다.
 별도의 [#50 소유 fixture 명령](../guides/CODEX_FIXTURE.md)은 고정 App Server 초안에 nullable 스키마를

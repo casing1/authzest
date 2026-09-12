@@ -9,15 +9,19 @@
 
 ## Scope and availability
 
-#48 adds the next offline slice of #35 after #46. A source-checkout demo presents a fixed,
+#48 introduced the next offline slice of #35 after #46. A source-checkout demo presents a fixed,
 caller-authored `debug=True` → `debug=False` proposal and applies it only after an explicit decision.
 It changes a **new private copy** of the maintained fixture, never the original checkout. This is not
 AI-generated code, an authorization test, or a verified fix. The complete #35 workflow remains open.
 
 The application helper currently requires supported POSIX file operations (tested locally on macOS
 and in Python CI on Linux). Windows fails closed before creating a copy; this does not change existing
-Windows scan/binary support. No product CLI/API command, version, dependency, report schema or alpha.2
-release artifact changes. The older `scripts/demo_proposal.py` remains a no-application simulation.
+Windows scan/binary support. That #48 slice introduced no product CLI/API command, version, dependency
+or report schema change and did not alter alpha.2 release artifacts.
+The helper now underlies the POSIX `codex-fixture` command in published
+[alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3); `scripts.demo_apply` remains
+a source-checkout demo, not an installed command. The older `scripts/demo_proposal.py` remains a
+no-application simulation.
 
 ## Run the interactive demo
 
@@ -88,4 +92,5 @@ The later [#54 runtime option](RUNTIME_VERIFICATION.md) adds a different, separa
 plan to the Codex fixture flow and `python -m scripts.demo_verify --runtime-check`, not this #48 demo. It runs
 only the identical bundled fixture and observes `app.debug` and one in-memory ASGI health response;
 selection alone never approves execution. General repository integration, generated regression suites
-and the broader #35 acceptance gate remain separate work. These slices do not justify a release by themselves.
+and the broader #35 acceptance gate remain separate work. Alpha.3 publication is backed by the separate
+[release gates](../releases/RELEASING.md), not completion of the broader #35 workflow.

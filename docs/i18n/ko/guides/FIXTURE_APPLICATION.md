@@ -9,14 +9,17 @@
 
 ## 범위와 지원 환경
 
-#48은 #46 다음에 진행하는 #35의 오프라인 하위 단계입니다. 소스 checkout 데모에서 호출자가 작성한
+#48은 #46 다음에 도입한 #35의 오프라인 하위 단계입니다. 소스 checkout 데모에서 호출자가 작성한
 고정 `debug=True` → `debug=False` 제안을 보여주고 명시적인 결정 후에만 적용합니다. 변경 대상은
 관리하는 fixture의 **새 비공개 복사본**이며 원래 checkout은 수정하지 않습니다. AI 코드 생성·인가 테스트·
 검증된 보안 수정이 아닙니다. #35의 전체 흐름은 아직 미완료입니다.
 
 적용 도우미는 현재 지원 POSIX 파일 연산이 필요합니다. 로컬 macOS와 Linux Python CI에서 검사하며
 Windows는 복사본 생성 전에 거부합니다. 기존 Windows scan/바이너리 지원은 바뀌지 않습니다.
-제품 CLI/API 명령·버전·의존성·리포트 스키마·alpha.2 배포 파일도 그대로입니다.
+당시 #48 단계는 제품 CLI/API 명령·버전·의존성·리포트 스키마를 변경하지 않았으며 alpha.2 배포 파일도
+수정하지 않았습니다. 이 도우미는 현재 공개된
+[alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)의 POSIX `codex-fixture` 명령에
+사용됩니다. `scripts.demo_apply`는 설치된 명령이 아닌 소스 checkout 전용 데모이며,
 기존 `scripts/demo_proposal.py`는 계속 파일을 적용하지 않는 모의 실행입니다.
 
 ## 대화형 데모 실행
@@ -83,4 +86,4 @@ core의 `FixtureApplySession`은 요청/검토/제안을 다시 검증합니다.
 `python -m scripts.demo_verify --runtime-check`에 다른 고정 계획의 별도 승인을 추가합니다. 동일한 번들 fixture만
 실행해 `app.debug`와 메모리 내 ASGI health 응답 한 번을 확인하며, 옵션 선택만으로 실행을 승인하지
 않습니다. 일반 저장소 연동·생성 회귀 테스트 모음·더 넓은 #35 완료 조건은 별도 작업입니다.
-이 단계들만으로 새 릴리스를 정당화하지 않습니다.
+alpha.3 공개는 더 넓은 #35 흐름의 완료가 아닌 별도의 [릴리스 검증](../releases/RELEASING.md)을 근거로 합니다.

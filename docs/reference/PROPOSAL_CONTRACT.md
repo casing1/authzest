@@ -10,8 +10,11 @@
 ## Implemented scope
 
 #46 implements the first offline slice of #35, after #33. Proposal and decision schemas are `1.0`,
-independent of report schema `1.2` and package version `0.1.0a2`. These source-checkout modules are not
-part of the alpha.2 binaries. There is no new product CLI/API command or changed scan behavior.
+independent of report schema `1.2` and package version `0.1.0a3`. Introduced after alpha.2, these pure
+modules now support the fixture command in published
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3).
+The original #46 contract change added no product CLI/API command or changed scan behavior.
+The demonstration scripts below still require a source checkout; they are not native CLI commands.
 
 The library packages explicit caller-authored replacement text and validates a proposal/decision.
 It does not call Codex, synthesize code, write a draft workspace, apply a patch, execute tests, or

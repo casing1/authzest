@@ -10,7 +10,8 @@
 ## 범위
 
 [#54](https://github.com/casing1/authzest/issues/54)는 관리하는 설정 예제에 opt-in 런타임 검사를
-추가합니다. 발행된 alpha.2 바이너리에는 포함되지 않습니다. 일반 `scan`은 계속 오프라인 소스
+추가합니다. 발행된 [alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)
+POSIX 바이너리와 소스에서 제공하며 이전 alpha.2 바이너리에는 없습니다. 일반 `scan`은 계속 오프라인 소스
 검사이며 기존 소스 설정 검증이 기본값입니다. `--runtime-check`는 다른 검사 계획을 선택할 뿐,
 실행 권한을 부여하지 않습니다.
 
@@ -25,10 +26,18 @@
 
 ## 실행
 
-신뢰하는 Python 3.12 소스 환경에서 선택 의존성을 명시적으로 설치합니다.
+소스 설치에는 신뢰하는 Python 3.12 환경에서 선택 의존성을 명시적으로 설치합니다.
 
 ```bash
 python -m pip install -e '.[fixture]'
+```
+
+또는 [릴리스 안내](../releases/RELEASING.md#검증과-복구)에 따라 체크섬을 확인한 alpha.3 POSIX
+바이너리를 사용합니다. Python과 fixture 의존성이 포함되어 위 설치 단계가 필요하지 않습니다.
+어느 배포 방식도 Codex나 자격 증명을 포함하지 않습니다. 어느 설치에서든 아래 명령을 실행하되,
+실행 파일이 PATH에 없으면 `authzest`를 내려받은 파일의 정확한 경로로 바꾸세요.
+
+```bash
 authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
 ```
 
@@ -142,3 +151,23 @@ macOS ARM64 개발 바이너리 SHA-256은
 검사한 AFTER digest의 과거 성공 결과를 journal 1.2에 보존했습니다. PyInstaller 내부 세마포어에
 필요한 권한 때문에 제한적인 도구 sandbox 밖에서 실행했으며 제한 시간이나 성공 조건을 낮추지
 않았습니다. 세 플랫폼 릴리스/다운로드 검증은 별도 완료 기준입니다.
+
+## 공개 alpha.3 산출물 검증 — 2026-09-12
+
+[Alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는
+2026-09-12T09:00:49Z에 커밋 `99be6f5614d283befa2a421b64f84958b680f92f`, 패키지 `0.1.0a3`로
+발행됐습니다. 세 플랫폼 빌드와 새 작업에서의 일치 플랫폼 산출물 검사가 통과했습니다. 공개 파일
+6개를 모두 내려받아 SHA-256 manifest 3개를 확인하고 각 파일을 검사된 태그 산출물과 대조했습니다.
+공개 macOS 바이너리의 SHA-256은
+`8c75e299e9699c0a08dc30924478013c05f918d33e35bc874178dbe027a782c6`이며 위 개발 빌드와 다릅니다.
+
+공개 macOS 실행 파일은 Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 의존성을
+import하지 않고 이동된 복사본의 스캔 검사 7개와 고정 런타임 검사 1개를 통과했습니다. 해당 의존성이
+제어 환경에 설치되지 않았다는 주장은 아닙니다. Linux·Windows 실행 근거는
+일치 플랫폼 CI와 동일한 공개 바이트에서 얻었으며 macOS에서 로컬 실행했다는 뜻이 아닙니다.
+Windows는 worker 없는 명시적 미지원/not-run 결과를 확인했으며 런타임 기능 지원이 아닙니다.
+외부 45초와 worker 5초·별도 정리 1초 제한은 그대로이며 로컬 macOS IPC에는 제한적인 도구
+sandbox 밖의 권한이 필요했습니다. 이 패키지 검사에서는 모델·인증 호출을 하지 않았고 실제 모델
+패키지 검증, 새 기기 설치·업그레이드, 서명, 일반 저장소 지원이나 보안 수정 효과를 입증하지 않습니다.
+정확한 workflow와 공개 다운로드 근거는 [릴리스 기록](../releases/RELEASING.md)을 참고하세요.
+위의 과거 실제 모델·로컬 결과를 변경하는 기록이 아닙니다.

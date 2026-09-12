@@ -9,10 +9,13 @@
 
 ## Status and scope
 
-The source checkout implements #33's offline foundation; alpha.2 binaries do not include it.
+#33's offline foundation is used by the fixture command in published
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3).
+It was introduced after alpha.2. The evaluation scripts and corpus below still require a source
+checkout; they are not standalone binary commands or installed fixture resources.
 AI schema `1.0` remains the compatible default for numeric-temperature requests. Schema `1.1` additionally
 allows `temperature: null` for provider-managed sampling. These are separate from scan report schema
-`1.2` and package version `0.1.0a2`. Existing numeric requests and identities remain unchanged; the
+`1.2` and package version `0.1.0a3`. Existing numeric requests and identities remain unchanged; the
 `AdapterConfig` temperature default remains `0.0`. Null does not mean zero or deterministic output.
 The contract itself performs no provider call or file application. The separate
 [#50 owned-fixture command](../guides/CODEX_FIXTURE.md) uses the nullable schema for a pinned App Server

@@ -66,13 +66,23 @@ AST configuration check of the applied fixture with pinned source hashes, not ru
 #54 adds an opt-in [owned-fixture runtime plan](guides/RUNTIME_VERIFICATION.md)
 ([한국어](i18n/ko/guides/RUNTIME_VERIFICATION.md)) through `--runtime-check`; static checking remains the default.
 The selector is not execution approval. Only the exact bundled fixture may execute, with a separate
-decision and no automatic dependency installation. #54's bounded live source acceptance passed; final
-PR/release gates are pending. General repository AI and the complete #35 workflow remain open, and alpha.2 binaries are unchanged.
+decision and no automatic dependency installation. #54's bounded live source acceptance and the separate
+alpha.3 publication checks passed. General repository AI and the complete #35 workflow remain open.
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
-with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). It is not a live integration or part of alpha.2.
+with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). Its pure contracts support alpha.3's fixture
+command; the evaluation scripts/corpus and offline copy demos still require a development checkout.
+The offline evaluation does not call a model.
 
-[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published on 2026-09-12
+with package version `0.1.0a3` and unchanged report schema `1.2`, from
+`99be6f5614d283befa2a421b64f84958b680f92f`. It includes the fixed fixture draft/copy/check workflow on
+supported POSIX systems. Windows supports scanning, not fixture application/runtime verification.
+All six public assets were downloaded and matched to the checked tag artifacts; public macOS scan/runtime
+smokes also passed through standard-library controllers under Python `-I -S`, without importing project
+dependencies. No model call was made by those package checks.
+
+The earlier [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) was published on 2026-09-10
 with package version `0.1.0a2` and schema `1.2`. Its binaries include route-owner recognition, literal router
 composition, repository-local imports, and local/inherited dependency evidence. The alpha.1 scaffold
 does not contain these improvements. See the [release record](releases/RELEASING.md) for the exact commit,

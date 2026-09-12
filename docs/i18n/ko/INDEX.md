@@ -66,13 +66,23 @@ opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 �
 #54는 `--runtime-check`로 [소유 fixture 런타임 계획](guides/RUNTIME_VERIFICATION.md)
 ([English](../../guides/RUNTIME_VERIFICATION.md))을 선택적으로 추가하며 정적 검사를 기본값으로 유지합니다.
 선택 자체는 실행 승인이 아닙니다. 별도 결정 뒤 정확히 고정한 번들 fixture만 실행할 수 있고
-의존성을 자동 설치하지 않습니다. #54의 제한된 실제 소스 환경 인수 검증은 통과했으며 최종
-PR·릴리스 게이트는 대기 중입니다. 일반 저장소 AI와 완전한 #35 흐름은 미완료이며 alpha.2 바이너리는 그대로입니다.
+의존성을 자동 설치하지 않습니다. #54의 제한된 실제 소스 환경 인수 검증과 별도의 alpha.3 발행 검사가
+통과했습니다. 일반 저장소 AI와 완전한 #35 흐름은 미완료입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
-[영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.
+[영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 순수 계약은 alpha.3 fixture 명령에서도 사용하지만
+평가 스크립트·데이터셋과 오프라인 복사본 데모에는 계속 개발 checkout이 필요합니다.
+오프라인 평가는 모델을 호출하지 않습니다.
 
-[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 패키지
+[v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 2026-09-12에 패키지
+버전 `0.1.0a3`, 바뀌지 않은 리포트 스키마 `1.2`로 커밋
+`99be6f5614d283befa2a421b64f84958b680f92f`에서 발행했습니다. 지원하는 POSIX 시스템에 고정 fixture
+초안·복사본·검사 흐름을 포함합니다. Windows는 스캔을 지원하고 fixture 적용·런타임 검증은 지원하지 않습니다.
+공개 파일 6개를 모두 내려받아 검사한 태그 산출물과 대조했으며 공개 macOS 스캔·런타임 smoke도
+Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 의존성을 import하지 않고 통과했습니다.
+이 패키지 검사에서는 모델을 호출하지 않았습니다.
+
+이전 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에 패키지
 버전 `0.1.0a2`, 스키마 `1.2`로 발행됐습니다. 실행 파일에는 라우트 소유 객체 인식, 리터럴 router 구성,
 저장소 내부 import와 직접·상속 의존성 근거가 포함됩니다. alpha.1 스캐폴딩에는 이 개선이 없습니다.
 정확한 커밋, 세 플랫폼 산출물과 검증의 한계는 [릴리스 기록](releases/RELEASING.md)을 참고하세요.

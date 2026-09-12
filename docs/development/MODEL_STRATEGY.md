@@ -20,6 +20,10 @@ optional future explanations. Runtime use remains opt-in: an offline static scan
 permission to share source is not permission to apply a patch or execute a test. The workflow below is
 a complete design target, not a claim that the full flow is implemented. The separate
 [#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; one owned-fixture live draft/apply/restore check passed.
+The later [#54 source-live acceptance](../guides/RUNTIME_VERIFICATION.md#bounded-live-acceptance--2026-09-12)
+also completed the separately approved fixed runtime check and restoration. Published
+[alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) includes this bounded workflow;
+its separate [public-asset evidence](../releases/RELEASING.md) is not another live-model result or completion of #35.
 
 The current product inventories a bounded subset of FastAPI routes, route-local dependency declarations,
 and inherited application/router/include context. It does not yet resolve nested dependency graphs, determine authorization
@@ -80,6 +84,9 @@ different, separately approved plan with `--runtime-check`. Only identical bundl
 the check observes `app.debug`, one in-memory ASGI `GET /health`, and dependency versions. It accepts
 no arbitrary repository, generated command or regression suite, and makes no model-quality or
 verified-security-fix claim. Process isolation is not an OS/network or dependency sandbox.
+Alpha.3's native fixture workflow uses these core contracts; the evaluation corpus and demo scripts
+remain source-checkout tools. Packaged fixed runtime checking is supported only on the tested POSIX
+platforms; Windows retains scan support and explicitly refuses this fixture workflow.
 
 For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
 Repository text is untrusted data, not instructions granting the model tools or access. Minimize source

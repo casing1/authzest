@@ -2,8 +2,9 @@
 
 [Documentation](../README.md) · English · [한국어](../i18n/ko/reference/PARSER_SCOPE.md)
 
-This guide describes the parser subset released in
-[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), package `0.1.0a2`.
+This guide describes the parser subset introduced in
+[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), retained unchanged in
+published [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3), package `0.1.0a3`.
 Owner recognition, prefix composition, repository-local imports, versioned registration evidence, and
 local/inherited dependency declarations are included in those binaries, as recorded in the
 [alpha.2 changelog](../../CHANGELOG.md#010-alpha2---2026-09-10). They are absent from the alpha.1 scaffold.

@@ -14,20 +14,20 @@
 AuthZest는 FastAPI 애플리케이션의 소스 코드를 바탕으로 접근통제를 분석하기 위한 설치형 CLI 중심
 오픈소스 프로젝트입니다. 현재 Python core는 대상 애플리케이션을 import하거나 실행하지 않고
 라우트를 수집합니다. 핵심 제품 목표는 Codex 보조 검토와 방어적 테스트·패치 제안, 사용자 승인 또는
-거절, 승인된 변경만 적용, 별도 승인한 격리 검증과 변경 기록입니다. 완전한 흐름은 미완료입니다.
-현재 소스에는 opt-in 소유 fixture Codex 초안·복사본 승인 단계를 추가했으며 한 fixture의 실제 초안·적용·복구 확인 1회가 성공했습니다.
+거절, 승인된 변경만 적용, 별도 승인한 격리 검증과 변경 기록입니다. 더 넓은 흐름은 미완료입니다.
+alpha.3에는 opt-in 소유 fixture 흐름이 포함되며 실제 소스 CLI의 초안·적용·런타임 검사·복구 확인 1회가 성공했습니다.
 정적 스캔은 계속 오프라인으로 동작합니다.
 
 React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 사용하기 위해 웹사이트를 배포할 필요는
 없습니다.
 
 > [!IMPORTANT]
-> [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 2026-09-10에
-> Python 패키지 버전 `0.1.0a2`, 리포트 스키마 `1.2`로 발행됐습니다. 실행 파일에는 아래의
-> 소스 목록·리포트·직접/상속 의존성 근거 기능이 포함됩니다.
+> [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 2026-09-12에
+> Python 패키지 버전 `0.1.0a3`, 리포트 스키마 `1.2`로 발행됐습니다. 정적 목록 기능을 유지하고
+> 지원하는 POSIX 시스템에 제한된 Codex fixture·복사본·검사 흐름을 추가합니다. Windows 스캔 지원은 유지합니다.
 > 정확한 커밋과 검증 근거는 [변경 기록](CHANGELOG.md)과 [릴리스 기록](releases/RELEASING.md)을
 > 확인하세요. `main` checkout은 해당 태그 이후로 변경될 수 있습니다.
-> 아직 알파 소스 분석 도구이며 완성된 취약점 스캐너나 작동하는 Codex 수정 흐름은 아닙니다.
+> 아직 알파 도구이며 완성된 취약점 스캐너나 일반 저장소 수정 흐름은 아닙니다.
 
 ## 현재 소스에서 지원하는 기능
 
@@ -42,12 +42,12 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 지원하는 app·router·`include_router` 의존성 선언을 각 등록의 적용 맥락 근거로 연결하면서
   라우트 직접 목록과 원본 소스 위치를 별도로 보존
 - 선택적인 로컬 API·대시보드, 환경 진단, 독립 실행 파일 패키징
-- 소스 전용 [Codex fixture 명령](guides/CODEX_FIXTURE.md): 명시적 공유, 버전 고정 App Server와
+- 소스와 POSIX 바이너리의 [Codex fixture 명령](guides/CODEX_FIXTURE.md): 명시적 공유, 버전 고정 App Server와
   새 복사본에만 적용하는 정확한 diff 승인. 한 fixture의 실제 확인은 성공함
 - 별도 승인하는 소스 설정 검사를 기본값으로 유지하며 이 AST 검사는 fixture 소스를 실행하지 않음
 - opt-in [`--runtime-check`](guides/RUNTIME_VERIFICATION.md)로 정확히 유지하는 fixture만 선택:
   번들 코드를 실행하여 `app.debug`와 메모리 내 ASGI `GET /health`를 확인함.
-  옵션 선택 자체가 실행 승인은 아님. #54의 제한된 실제 소스 환경 인수 검증은 통과했으며 최종 PR·릴리스 게이트는 대기 중임
+  옵션 선택 자체가 실행 승인은 아님. 제한된 실제 소스 환경 인수 검증과 alpha.3 발행 검사가 통과함
 
 지원 데코레이터는 `get`, `post`, `put`, `patch`, `delete`, `options`, `head`입니다.
 정적 분석의 지원 범위는 제한되어 있으며 미해석 route 선언은 생략될 수 있습니다.
@@ -198,14 +198,20 @@ git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
 
 ## 독립 실행 파일
 
-[alpha.2 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2)는 Linux x64,
+[alpha.3 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 Linux x64,
 macOS arm64, Windows x64 실행 파일과 대응하는 SHA-256 manifest를 제공합니다. 위의 소스 분석 기능과
 리포트 스키마 `1.2`가 포함됩니다. 그래픽 설치 프로그램이 아닌 독립 CLI이며,
-빌드된 실행 파일을 사용하려고 Python이나 Node.js를 설치할 필요는 없습니다.
+빌드된 실행 파일을 사용하려고 Python이나 Node.js를 설치할 필요는 없습니다. POSIX 바이너리에는
+소유 fixture 흐름과 런타임 의존성도 포함됩니다. Codex는 자체 로그인을 사용하는 별도의 신뢰할 수 있는
+설치본이 필요하며 소스 공유와 각 변경·검사는 별도 승인해야 합니다. Windows의 fixture 적용·런타임
+검사는 미지원이며 런타임 통과를 뜻하지 않습니다.
 
 자신의 OS/아키텍처에 맞는 파일과 `.sha256` manifest를 함께 받고 실행 전에
 [체크섬·실행 안내](releases/RELEASING.md#검증과-복구)를 따르세요.
-세 플랫폼 CI 빌드와 다운로드 산출물 smoke 검사는 통과했지만 일반 사용자 기기의 깨끗한 설치·업그레이드와
+세 플랫폼 CI 빌드와 새 작업의 산출물 smoke 검사가 통과했고 공개 파일 6개를 모두 내려받아 검사된
+산출물과 대조했습니다. 공개 macOS 바이너리는 Python `-I -S`의 표준 라이브러리 제어 프로그램으로
+프로젝트 의존성을 import하지 않고 로컬 스캔·런타임 smoke도 통과했습니다. 이 패키지 검사에서 실제
+Codex를 호출하지 않았습니다. 일반 사용자 기기의 깨끗한 설치·업그레이드와
 모든 OS 버전의 호환성을 입증하지는 않았습니다. 서명·공증되지 않은 파일이므로 운영체제가
 확인되지 않은 게시자 경고를 표시할 수 있습니다.
 
@@ -257,28 +263,30 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 [#28](https://github.com/casing1/authzest/issues/28)·[#29](https://github.com/casing1/authzest/issues/29)의
 라우트 직접·상속 근거는 alpha.2에 포함됩니다.
 릴리스 준비·발행 [#39](https://github.com/casing1/authzest/issues/39)는 완료했습니다.
+후속 [alpha.3 중간 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)도 발행·검증했습니다.
 현재 소스 상태와 다음 작업은 아래와 같습니다.
 
 1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 
-[오프라인 기반](reference/AI_CONTRACT.md)은 alpha.2 바이너리에 포함되지 않으며 완전한 #35 흐름은 미완료입니다.
+[오프라인 기반](reference/AI_CONTRACT.md)은 alpha.3 fixture 명령에서 사용하는 계약을 제공합니다.
+평가 스크립트와 데이터셋은 checkout 전용으로 유지하며 완전한 #35 흐름은 미완료입니다.
 #35의 첫 단계인 [#46 오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)은 소스에 구현했습니다.
 diff 미리보기와 모의 승인 검사를 제공하지만 파일 적용이나 검증 실행은 하지 않습니다.
 후속 [#48 복사본 전용 적용 데모](guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본에
 명시적인 터미널 승인·충돌을 고려한 복구를 추가합니다. 원래 checkout은 수정하지 않으며 실제 AI 호출·
-검증 실행을 하지 않고 alpha.2 바이너리에도 포함되지 않습니다.
+검증 실행을 하지 않는 checkout 전용 스크립트입니다. 복사본 helper는 alpha.3 제품 명령에서도 사용합니다.
 후속 [#50 Codex fixture 단계](guides/CODEX_FIXTURE.md)는 명시적 공유 승인 후 모델 초안 한 번을
 요청하고 적용·복구를 별도로 결정합니다. `42ff108`에서 한 소유 fixture의 실제 초안·복사본 적용·복구
 확인 1회가 성공했고 원본은 보존했습니다. 승인 문구는 사용자 허가 아래 assistant가 입력했으며
-독립적인 사람 검토는 아닙니다. 해당 과거 실행에서는 런타임 검증을 하지 않았으며 이 추가 기능들은
-alpha.2에 포함되지 않습니다. #52는 적용과 복구 사이에 별도 승인과 제한된 자식 프로세스를 사용하는
+독립적인 사람 검토는 아닙니다. 해당 과거 실행에서는 런타임 검증을 하지 않았습니다. 이 제품 기능들은
+alpha.2가 아닌 alpha.3에 포함됩니다. #52는 적용과 복구 사이에 별도 승인과 제한된 자식 프로세스를 사용하는
 알려진 해시의 소스에 선택적인 고정 AST 설정 검사를 추가합니다. 대상 소스를 실행하지 않으며 실제 모델 근거나
 검증된 보안 수정 주장을 추가하지 않습니다.
 #54는 `--runtime-check`로 [소유 fixture 런타임 계획](guides/RUNTIME_VERIFICATION.md)을 추가하며,
 별도의 정확한 검증 결정, 제한된 worker와 선택 의존성을 사용하고 자동 설치는 하지 않습니다.
-제한된 실제 소스 환경 인수 검증은 통과했으며 최종 PR·릴리스 게이트는 대기 중입니다.
-일반 저장소 AI와 완전한 #35 흐름은 미완료이며 새 릴리스를 주장하지 않습니다.
+제한된 실제 소스 환경 인수 검증이 통과했고 alpha.3 공개 파일도 별도의 릴리스 검사를 통과했습니다.
+일반 저장소 AI와 완전한 #35 흐름은 미완료입니다.
 6개 사례·3개 모드의 mock 평가는 모델 성능이 아닌 계약을 검사합니다. AI 지원이 결과를 개선하는지는 입증된 장점이 아니라 평가할
 가설입니다. core는 provider나 특정 GPT 모델 없이도 유용해야 합니다.
 최종 데모는 직접 소유·관리하는 fixture를 대상으로 하며 데이터 공유·패치·실행은 각각 별도로 허가받습니다.

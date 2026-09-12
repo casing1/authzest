@@ -15,6 +15,9 @@ and patch proposals, an explicit approve/decline decision, approved-only patch a
 approved isolated verification with a change record. Codex integration is a core product goal, not a
 later optional explanation feature. The full flow remains unfinished. #33/#46/#48 are offline slices;
 [#50](../guides/CODEX_FIXTURE.md) adds an opt-in owned-fixture App Server draft; one live draft/apply/restore check passed.
+The later [#54 acceptance](../guides/RUNTIME_VERIFICATION.md) completed the separately approved fixed
+runtime check and restoration. This narrow workflow is included in published alpha.3; broader #35
+acceptance, generated regression-test drafts and general repository integration remain unfinished.
 
 The static core must still produce useful, repeatable evidence without an AI provider. Each Codex use
 is opt-in; external data sharing, applying a specific patch, and executing a verification plan require
@@ -54,6 +57,9 @@ A new preview release is conditional on its checks, not required every week.
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), package `0.1.0a2`, was
 published after #28/#29 and release issue #39. Bilingual changelog checks, three-OS builds, and fresh
 downloaded-artifact fixture checks passed for its exact commit; see the [release record](../releases/RELEASING.md).
+The later [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3), package
+`0.1.0a3`, was published on 2026-09-12 after exact-main/tag builds and fresh artifact checks; the public
+downloads then passed checksum/content verification. It adds the bounded Codex fixture workflow while retaining schema `1.2`.
 Consumer-device clean installation and upgrades remain unverified. Future releases need their own checks.
 This does not restart the seven-week plan or consume the exam buffer. Week 5 does not require
 finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
@@ -76,16 +82,20 @@ buffer to expand features.
 - [x] PyInstaller packaging and the published `v0.1.0-alpha.1` preview with checksums.
 - [x] Publish `v0.1.0-alpha.2` with schema `1.2`, local/inherited evidence, and checked three-platform
       binaries ([#39](https://github.com/casing1/authzest/issues/39), [PR #40](https://github.com/casing1/authzest/pull/40)).
+- [x] Publish `v0.1.0-alpha.3` with bounded Codex drafting, separate copy/check/restore decisions and
+      verified public assets ([#56](https://github.com/casing1/authzest/issues/56)); POSIX fixture runtime only.
 - [x] Maintained [source-only demo](../guides/EXAMPLES.md), exact inventory regression, and documentation checks in CI.
 
-The parser/report/dependency improvements are now in alpha.2, not just an unreleased source checkout.
-The release commit is `7cc359acbb864ef6d31e3b536787857da4f7e09c`; consult the
+The parser/report/dependency improvements introduced in alpha.2
+(`7cc359acbb864ef6d31e3b536787857da4f7e09c`) are retained in alpha.3
+(`99be6f5614d283befa2a421b64f84958b680f92f`); consult the
 [changelog](../../CHANGELOG.md) and release record before equating later `main` changes with those binaries.
 
 Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
 source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](../reference/REPORT_CONTRACT.md).
-The source-only [offline AI contract and mock evaluation](../reference/AI_CONTRACT.md) is implemented
-after alpha.2; the published binaries remain unchanged.
+The [offline AI contracts](../reference/AI_CONTRACT.md), introduced after alpha.2, now support the
+published alpha.3 fixture command. Mock evaluation scripts/corpus and #48's demo remain source-checkout
+tools, not standalone binary commands or installed repository fixtures.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -95,8 +105,9 @@ debug-setting change and retains separate copy-application/restoration decisions
 run verification. #52 adds an optional, separately approved fixed-source check of the applied copy;
 that static-only mode leaves runtime verification `not-run` and supplies no new live-model evidence.
 #54 adds a separate opt-in [runtime plan](../guides/RUNTIME_VERIFICATION.md) for the exact bundled
-configuration/health fixture, not arbitrary source or authorization testing. End-to-end acceptance
-and release gates remain distinct from implementing the checker.
+configuration/health fixture, not arbitrary source or authorization testing. One separately approved
+source-live draft/apply/runtime/restore check passed for #54. Alpha.3's independently checked public
+assets have separate packaging evidence; neither expands that live run's scope or completes broader #35.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
@@ -111,8 +122,8 @@ Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
 Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
 current-source contract. Route-local declarations (#28) and inherited registration context (#29) are
-included in alpha.2. The offline AI contract (#33) is now implemented in source; next is the user-approved
-Codex workflow (#35), without claiming complete Python coverage or runtime registration certainty.
+included in alpha.2 and retained in alpha.3. The offline AI contract (#33) underlies the published bounded
+fixture workflow; broader #35 work remains, without claiming complete Python coverage or runtime registration certainty.
 
 ## Milestone 1 — Dependency evidence
 
@@ -178,8 +189,9 @@ contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remai
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
 and verification workflow. The offline slices and the narrowly scoped #50 adapter do not complete it;
 one owned-fixture live draft/apply/restore check passed for #50. #52's source-configuration check does
-not complete runtime verification. #54 supplies the bounded runtime implementation; complete its
-end-to-end acceptance before declaring the core demonstration ready. Broader proposal scope is separate work.
+not complete runtime verification. #54's exact configuration/health fixture completed separately approved
+source-live runtime acceptance; alpha.3 subsequently passed its distinct package/publication gates.
+Broader proposal scope, generated regression-test drafts and the complete #35 gate remain separate work.
 
 - [x] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
@@ -196,7 +208,7 @@ end-to-end acceptance before declaring the core demonstration ready. Broader pro
       Broader input sharing and verification permissions need their own design and acceptance evidence.
 - [x] Complete one owned-fixture live draft/apply/restore check of the selected, version-pinned Codex
       App Server adapter. The assistant entered approval phrases under user authorization, not independent
-      human review. The source-only fixture command keeps suggestions separate from static reports;
+      human review. The bounded fixture command keeps suggestions separate from static reports;
       that #50 slice added no second transport or verification executor.
 - [x] Complete offline validation of #52's optional source-configuration check: a separate exact-plan
       decision, fixed AST configuration subprocess with pinned source hashes, bounded output/time, honest skip/failure records, and
@@ -207,8 +219,9 @@ end-to-end acceptance before declaring the core demonstration ready. Broader pro
       plan. Bind approval to that proposal; decline/cancel changes nothing, and changed inputs invalidate approval.
 - [ ] Apply only the approved diff after rechecking its preconditions. Preserve existing user edits,
       record before/after content identities, and provide recoverable changes without resetting unrelated work.
-- [x] Implement a separately approved bounded runtime plan for the exact maintained configuration/health
-      fixture (#54); source mode remains the default. Record fixed checks, exits, results, and failures.
+- [x] Implement and validate a separately approved bounded runtime plan for the exact maintained
+      configuration/health fixture (#54), including one source-live draft/apply/runtime/restore check.
+      Source mode remains the default. Record fixed checks, exits, results, and failures.
       Applying a patch or passing a test is not proof
       of general authorization correctness. Never label failed or unrun verification as a successful fix.
 - [ ] Compare static-only, model-only, and evidence-assisted model modes on frozen, human-labelled fixtures,
@@ -227,6 +240,9 @@ need to be rebuilt as a new product.
 
 - [x] For alpha.2, check four owned source-only fixtures through built/relocated binaries and fresh
       downloaded-artifact jobs on Linux x64, macOS arm64, and Windows x64; verify checksums (#39).
+- [x] For alpha.3, pass three-platform build/fresh-download gates, including fixed POSIX runtime and
+      Windows unsupported/no-worker checks. Verify all six public assets against checksums and tag-CI
+      bytes; the downloaded macOS binary additionally passed seven scan checks and one runtime check.
 - [ ] Run the installed CLI/binary against the maintained policy fixture corpus in CI, beyond the
       existing in-process CLI/API regression tests.
 - [ ] Verify clean installation, execution, and upgrade for each advertised OS/architecture.
@@ -236,6 +252,8 @@ need to be rebuilt as a new product.
       The release script checks tag/version spelling and matching dated, nonempty English/Korean entries;
       it does not replace the semantic content and artifact review performed for alpha.2.
 - [x] Publish alpha.2 from the verified `main` commit after its artifact gates pass (#39).
+- [x] Publish alpha.3 from `99be6f5614d283befa2a421b64f84958b680f92f` after separate version/content and
+      exact-main/tag checks, then verify public assets (#56). See the [release record](../releases/RELEASING.md).
 - [ ] Repeat version, content, artifact, publication, and documentation checks for each future release.
 - [ ] Preserve issue decisions, meaningful commits, PR discussion, CI evidence, and a short reproducible demo.
 - [ ] Consider signing/notarization separately before broader binary distribution.
