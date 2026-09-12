@@ -153,7 +153,7 @@ def codex_fixture(
         typer.Option(help="One adapter attempt timeout, greater than 0 and up to 120 seconds."),
     ] = 120,
 ) -> None:
-    """Opt into Codex review and separately approved edits of an owned fixture copy."""
+    """Separately approve Codex review, fixture-copy edits, configuration checks and restore."""
     from authzest.runner.codex_fixture import FixtureInputError, run_codex_fixture
 
     try:
@@ -164,13 +164,37 @@ def codex_fixture(
         typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
         raise typer.Exit(code=2) from exc
     except KeyboardInterrupt:
-        typer.echo(json.dumps({"status": "cancelled", "verification_status": "not-run"}))
+        typer.echo(
+            json.dumps(
+                {
+                    "status": "cancelled",
+                    "runtime_verification_status": "not-run",
+                    "detail": "Interrupted; inspect the retained workspace record if created.",
+                }
+            )
+        )
         raise typer.Exit(code=0) from None
     except Exception:
-        typer.echo(json.dumps({"status": "workflow-failed", "verification_status": "not-run"}))
+        typer.echo(
+            json.dumps(
+                {
+                    "status": "workflow-failed",
+                    "runtime_verification_status": "not-run",
+                    "detail": "Inspect the retained workspace record if created.",
+                }
+            )
+        )
         raise typer.Exit(code=1) from None
     typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
     raise typer.Exit(code=result["exit_code"])
+
+
+@app.command("_configuration-worker", hidden=True)
+def _configuration_worker() -> None:
+    """Internal fixed checker entry point for the packaged executable."""
+    from authzest.runner._configuration_worker import worker_main
+
+    raise typer.Exit(code=worker_main())
 
 
 @app.command()

@@ -82,5 +82,7 @@ multi-file apply or persisted approval revocation service. Reopening a receipt c
 The separate [#50 Codex fixture command](CODEX_FIXTURE.md) adds opt-in source sharing and a narrowly
 accepted model draft before these copy-only decisions. One owned-fixture live draft/apply/restore check
 passed with user-authorized, assistant-entered approval phrases, not independent human review. This #48 demo remains
-offline and scripted. General repository integration and separately approved isolated verification
-remain later #35 work. Neither slice completes the final acceptance gate or justifies a release by itself.
+offline and scripted, with verification still `not-run`. #52 adds an optional, separately approved
+fixed-source check to the Codex fixture flow, not this demo; it does not execute target source.
+General repository integration and separately approved isolated runtime verification remain later #35
+work. These slices do not complete the final acceptance gate or justify a release by themselves.

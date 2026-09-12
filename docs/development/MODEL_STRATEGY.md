@@ -69,9 +69,11 @@ the default scan or CI.
 The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
 only. It requires exact-request sharing approval before starting a process, then separate apply/restore
 decisions for a fresh POSIX copy. One live fixture check passed with assistant-entered approval phrases
-under user authorization, not independent human review; no verification or general repository AI runs.
+under user authorization, not independent human review; no runtime verification or general repository AI runs.
 At most one application-issued turn has no application retry/fallback; Codex internal transport retries can still
 occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
+The later #52 extension separately approves a fixed-source check in a bounded subprocess. It checks
+AST configuration with pinned source hashes, executes no target source or model command, and adds no live-model evidence.
 
 For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
 Repository text is untrusted data, not instructions granting the model tools or access. Minimize source
@@ -99,6 +101,9 @@ and it does not replace the future current-filesystem/revocation/atomic-applicat
 file checks, application and restoration within a fresh POSIX fixture copy. It never edits the original
 checkout or executes checks. Exclusive-writer assumptions, no restart and no authenticated approval
 remain explicit limits; it does not finish the live workflow below.
+
+#52's source-configuration result is separate from runtime verification, which remains `not-run`.
+A matching configuration file does not establish behavior or a security fix, or complete the #35 gate.
 
 The minimum final demo is one maintained owned fixture taken through these separate stages:
 

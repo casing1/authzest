@@ -499,6 +499,7 @@ def test_real_cli_share_draft_apply_restore_uses_only_exact_decisions(
     answers = (
         f"share {context.request_id}\n"
         f"apply {draft.proposal.proposal_id}\n"
+        "\n"  # Configuration verification requires its own explicit approval.
         f"restore {draft.proposal.proposal_id}\n"
     )
     process, summary, temporary_root = cli_process(fake, tmp_path, answers)
@@ -513,6 +514,8 @@ def test_real_cli_share_draft_apply_restore_uses_only_exact_decisions(
     assert summary["restoration"]["restored"] is True
     assert summary["original_checkout_modified"] is False
     assert summary["verification_status"] == "not-run"
+    assert summary["verification"]["status"] == "not-run"
+    assert summary["runtime_verification_status"] == "not-run"
     assert summary["usage"] == {"input_tokens": 123, "output_tokens": 45}
     assert fake.methods().count("turn/start") == 1
     workspace = Path(summary["application"]["workspace"])

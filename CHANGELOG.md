@@ -16,12 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #52's optional, separately approved source-configuration check between fixture-copy application
+  and restoration: exact-plan approval, a fixed AST configuration worker with pinned source hashes, a 5-second timeout and 4 KiB
+  output limit. Report `passed`/`failed`/`not-run` separately from restoration, while runtime verification
+  stays `not-run`. No target source, model-generated command, or provider is executed by this check;
+  this offline addition is not runtime/security-fix verification or new live-model evidence.
 - Add #50's source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): pinned App Server 0.153.0,
   exact-request sharing approval before process launch, at most one application-issued turn, and a narrowly
   validated debug-setting draft with separate apply/restore decisions for a fresh POSIX copy.
   One owned-fixture live draft/apply/restore check passed on `42ff108` on 2026-09-12, preserving the original.
   The assistant entered approval phrases under user authorization, not independent human review.
-  General repository AI and verification execution remain unimplemented.
+  General repository AI and runtime verification remain unimplemented.
   The default scan stays offline and parent #35 remains open. No new release is included.
 - Handle narrowly validated same-turn Codex stream-recovery notifications without issuing another turn.
   Accept at most three observed notices within the existing time/byte/event limits; discard pre-recovery

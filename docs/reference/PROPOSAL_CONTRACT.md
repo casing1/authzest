@@ -24,6 +24,9 @@ The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) supplies a 
 draft to these host-bound contracts. One owned-fixture live draft/apply/restore check passed with
 user-authorized, assistant-entered approval phrases, not independent human review. It does not change these pure functions
 into a provider client or verification executor, and is not a general repository patch workflow.
+The command's later #52 fixed-source check is a separate, plan-approved runner; it checks only the
+applied fixture's AST configuration with pinned source hashes, not runtime behavior, and does not
+change this pure contract's `not-run` results.
 
 ## Proposal contents and preview
 
@@ -107,4 +110,4 @@ the fixture unchanged and tests unrun. JSON escapes control/non-ASCII characters
 Tests cover exact/multifile diffs, newline handling, source/review/plan changes, unsafe targets, refusal,
 cancellation, expiry, missing source, malformed records and explicit no-network/no-write behavior.
 The fixture-specific application and provider slices have separate scope guides; the complete provider,
-verification failure and recovery acceptance gate remains later #35 work.
+runtime verification failure and recovery acceptance gate remains later #35 work.

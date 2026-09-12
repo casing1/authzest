@@ -87,11 +87,13 @@ source registration evidence, and route-local plus inherited dependency declarat
 The source-only [offline AI contract and mock evaluation](../reference/AI_CONTRACT.md) is implemented
 after alpha.2; the published binaries remain unchanged.
 Nested dependency graphs, authentication/authorization classification, finding
-schemas, general repository AI review, existing-checkout patch application, and verification execution are not implemented.
+schemas, general repository AI review, existing-checkout patch application, and runtime verification are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
 The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) uses pinned Codex 0.153.0 and at most one
 application-issued turn after sharing approval; one owned-fixture live check passed. It only accepts the maintained
-debug-setting change and retains separate copy-application/restoration decisions with verification not run.
+debug-setting change and retains separate copy-application/restoration decisions. That live check did not
+run verification. #52 adds an optional, separately approved fixed-source check of the applied copy;
+runtime verification remains `not-run`, and this addition supplies no new live-model evidence.
 `scan` does not execute the target application or Codex.
 Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
 
@@ -172,7 +174,8 @@ Implement a bounded end-to-end flow before expanding rules or adding a second in
 contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remain prerequisites;
 [#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
 and verification workflow. The offline slices and the narrowly scoped #50 adapter do not complete it;
-one owned-fixture live draft/apply/restore check passed for #50, while verification execution remains a separate next slice.
+one owned-fixture live draft/apply/restore check passed for #50. #52's source-configuration check does
+not complete the remaining runtime verification and broader proposal scope.
 
 - [x] Define evidence-linked explanations and offline evaluation
       ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
@@ -190,14 +193,17 @@ one owned-fixture live draft/apply/restore check passed for #50, while verificat
 - [x] Complete one owned-fixture live draft/apply/restore check of the selected, version-pinned Codex
       App Server adapter. The assistant entered approval phrases under user authorization, not independent
       human review. The source-only fixture command keeps suggestions separate from static reports;
-      no second transport or verification executor was added.
+      that #50 slice added no second transport or verification executor.
+- [x] Complete offline validation of #52's optional source-configuration check: a separate exact-plan
+      decision, fixed AST configuration subprocess with pinned source hashes, bounded output/time, honest skip/failure records, and
+      independently offered restoration. This is not target execution or runtime/security-fix verification.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification
       plan. Bind approval to that proposal; decline/cancel changes nothing, and changed inputs invalidate approval.
 - [ ] Apply only the approved diff after rechecking its preconditions. Preserve existing user edits,
       record before/after content identities, and provide recoverable changes without resetting unrelated work.
-- [ ] Separately approve and run a bounded isolated verification plan for a maintained owned fixture.
+- [ ] Separately approve and run a bounded isolated runtime verification plan for a maintained owned fixture.
       Record commands, exit status, results, and failures; a patch applied or a test passed is not proof
       of general authorization correctness. Never label failed or unrun verification as a successful fix.
 - [ ] Compare static-only, model-only, and evidence-assisted model modes on frozen, human-labelled fixtures,
