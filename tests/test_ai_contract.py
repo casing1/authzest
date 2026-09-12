@@ -6,6 +6,9 @@ from pathlib import Path
 import pytest
 
 from authzest.codex.contracts import (
+    AI_SCHEMA_VERSION,
+    AI_SCHEMA_VERSIONS,
+    PROVIDER_MANAGED_AI_SCHEMA_VERSION,
     AdapterConfig,
     CodexAnalysisRequest,
     ContractError,
@@ -16,7 +19,8 @@ from authzest.codex.contracts import (
     validate_response,
 )
 from authzest.codex.mock import MockCodexAdapter, scripted_response
-from authzest.models import Diagnostic, SourceLocation
+from authzest.codex.proposals import prepare_proposal, validate_proposal
+from authzest.models import Diagnostic, ScanReport, SourceLocation
 from authzest.runner import ScanRunner
 from authzest.runner.review import review_report
 
@@ -430,3 +434,146 @@ def test_mock_cannot_impersonate_live_provider(prepared):
     )
     assert result.status == "unavailable"
     assert result.provenance["returned_identity"] is None
+
+
+def test_legacy_default_request_and_mock_response_identities_are_unchanged():
+    # These hashes were recorded before adding schema 1.1; no file is read or executed.
+    request = prepare_request(
+        ScanReport(root=Path("/not-read"), python_files=1),
+        registration_ids=(),
+        sources={"main.py": "x = 1\n"},
+        policies=(),
+        questions=(("q", "What remains unknown?"),),
+        mode="model-only",
+    )
+    raw = scripted_response(request, {"q": None})
+    assert AI_SCHEMA_VERSION == "1.0"
+    assert PROVIDER_MANAGED_AI_SCHEMA_VERSION == "1.1"
+    assert AI_SCHEMA_VERSIONS == ("1.0", "1.1")
+    assert request.to_dict()["schema_version"] == "1.0"
+    assert (
+        request.request_id
+        == "request-8fe03e578e1fe248b07e22af72764c8035e6158d48b78a04a471e77e37bb1df3"
+    )
+    assert (
+        identity(decode(raw)) == "986996573121451d9563491b8d3a8f89e6d30c4cc700514a85bc2e5e52f5115f"
+    )
+    assert validate_response(raw, request)
+
+
+@pytest.mark.parametrize(
+    "temperature,version", [(None, "1.1"), (0, "1.0"), (0.0, "1.0"), (0.75, "1.0"), (2, "1.0")]
+)
+def test_prepare_request_selects_minimum_temperature_schema(prepared, temperature, version):
+    report, _ = prepared
+    request = prepare_request(
+        report,
+        registration_ids=(),
+        sources={"main.py": SOURCE},
+        policies=(),
+        questions=(("q", "What remains unknown?"),),
+        config=AdapterConfig(temperature=temperature),
+    )
+    payload = request.to_dict()
+    assert payload["schema_version"] == version
+    assert payload["config"]["temperature"] == temperature
+    # Preserve numeric representation as well as the value in existing identities.
+    assert type(payload["config"]["temperature"]) is type(temperature)
+    assert CodexAnalysisRequest(request.payload_json).request_id == request.request_id
+    assert validate_response(scripted_response(request, {"q": None}), request)
+
+
+@pytest.mark.parametrize("temperature", [None, 0, 0.0, 0.75, 2])
+def test_schema_1_1_accepts_numeric_and_provider_managed_temperature(prepared, temperature):
+    _, legacy = prepared
+    payload = legacy.to_dict()
+    payload["schema_version"] = "1.1"
+    payload["config"]["temperature"] = temperature
+    request = CodexAnalysisRequest(canonical(payload))
+    assert request.to_dict() == payload
+    assert validate_response(scripted_response(request, {"policy": None}), request)
+    assert request.request_id != legacy.request_id
+
+
+def test_schema_1_0_rejects_null_temperature(prepared):
+    _, request = prepared
+    payload = request.to_dict()
+    payload["config"]["temperature"] = None
+    with pytest.raises(ContractError, match="Schema 1.0"):
+        CodexAnalysisRequest(canonical(payload))
+
+
+@pytest.mark.parametrize("temperature", [True, False, "provider-managed", -0.5, 3, [], {}])
+def test_schema_1_1_does_not_relax_other_temperature_validation(prepared, temperature):
+    _, request = prepared
+    payload = request.to_dict()
+    payload["schema_version"] = "1.1"
+    payload["config"]["temperature"] = temperature
+    with pytest.raises(ContractError, match="Invalid temperature"):
+        CodexAnalysisRequest(canonical(payload))
+
+
+@pytest.mark.parametrize("request_version,response_version", [("1.0", "1.1"), ("1.1", "1.0")])
+def test_response_schema_must_match_request_even_when_both_versions_are_supported(
+    prepared, request_version, response_version
+):
+    _, original = prepared
+    payload = original.to_dict()
+    payload["schema_version"] = request_version
+    request = CodexAnalysisRequest(canonical(payload))
+    response = decode(scripted_response(request, {"policy": None}))
+    response["schema_version"] = response_version
+    with pytest.raises(ContractError, match="version or request identity mismatch"):
+        validate_response(canonical(response), request)
+
+
+@pytest.mark.parametrize("change", ["version", "temperature"])
+def test_approval_does_not_transfer_to_schema_or_temperature_change(prepared, change):
+    report, original = prepared
+    payload = original.to_dict()
+    payload["schema_version"] = "1.1"
+    if change == "temperature":
+        payload["config"]["temperature"] = None
+    request = CodexAnalysisRequest(canonical(payload))
+    adapter = MockCodexAdapter(scripted_response(request, {"policy": None}))
+    result = asyncio.run(
+        review_report(report, request, approved_request_id=original.request_id, adapter=adapter)
+    )
+    assert request.request_id != original.request_id
+    assert result.status == "not-approved" and adapter.calls == 0
+
+
+def test_provider_managed_temperature_retained_in_review_and_proposal_bindings(prepared):
+    report, original = prepared
+    payload = original.to_dict()
+    payload["schema_version"] = "1.1"
+    payload["config"]["temperature"] = None
+    request = CodexAnalysisRequest(canonical(payload))
+    result = asyncio.run(
+        review_report(
+            report,
+            request,
+            approved_request_id=request.request_id,
+            adapter=MockCodexAdapter(scripted_response(request, {"policy": None})),
+        )
+    )
+    assert result.status == "ok" and result.report is report
+    assert result.provenance["schema_version"] == "1.1"
+    assert result.provenance["config"]["temperature"] is None
+    assert result.provenance["usage"] is None
+    assert result.response is not None
+    assert result.response.to_dict()["schema_version"] == "1.1"
+    proposal = prepare_proposal(
+        request,
+        result.response,
+        replacements={"main.py": SOURCE + "# Explicit caller-authored draft.\n"},
+        rationale="Exercise version compatibility, not a verified fix.",
+        uncertainties=("No execution or runtime guarantee.",),
+        side_effects=(),
+        checks=("fixture-static-inventory",),
+        expectations=("Preserve route declarations.",),
+    )
+    assert proposal.to_dict()["schema_version"] == "1.0"
+    assert proposal.to_dict()["request_id"] == request.request_id
+    assert proposal.to_dict()["review_id"] == identity(result.response.to_dict())
+    assert validate_proposal(proposal.payload_json, request, result.response) == proposal

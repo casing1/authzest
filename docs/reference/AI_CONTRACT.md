@@ -10,9 +10,14 @@
 ## Status and scope
 
 The source checkout implements #33's offline foundation; alpha.2 binaries do not include it.
-AI schema `1.0` is separate from scan report schema `1.2` and package version `0.1.0a2`.
-No live provider, new CLI command, source execution, test/patch generation, or patch application is added.
-The ordinary scan and its JSON/exit behavior remain unchanged. #35 owns the later live improvement flow.
+AI schema `1.0` remains the compatible default for numeric-temperature requests. Schema `1.1` additionally
+allows `temperature: null` for provider-managed sampling. These are separate from scan report schema
+`1.2` and package version `0.1.0a2`. Existing numeric requests and identities remain unchanged; the
+`AdapterConfig` temperature default remains `0.0`. Null does not mean zero or deterministic output.
+The contract itself performs no provider call or file application. The separate
+[#50 owned-fixture command](../guides/CODEX_FIXTURE.md) uses the nullable schema for a pinned App Server
+draft; one owned-fixture live draft/apply/restore check passed. Ordinary scan JSON/exits remain unchanged and offline. The complete
+#35 flow, general repository AI and verification execution remain unfinished.
 The old unused `CodexFinding` placeholder is removed; adapters now return untrusted JSON, not findings.
 
 ## Input and identity
@@ -37,7 +42,7 @@ Sources and policies are untrusted data, not tool permissions or system instruct
   approval is required by the optional review service. No approval or a changed input produces
   `not-approved` before an adapter is called. This programmatic guard is not a user-facing consent UI.
 
-Selection is not automatic secret detection or anonymization. Before a future live call, a user must
+Selection is not automatic secret detection or anonymization. Before any live call, a user must
 inspect the exact snapshot and remove secrets/private content. The library does not read credentials,
 infer consent, provide an API client, or turn repository text into commands.
 
@@ -60,7 +65,8 @@ token counts, and measured local round-trip latency. It does not invent cost/tok
 log raw source/provider exceptions. Mocks report no model usage. Adapter failure, unavailability,
 malformed output, and timeout preserve the original report. Cancellation propagates to the caller
 and cooperative async adapter. Timeouts are not an OS sandbox and cannot stop a blocking/uncooperative
-transport; future live implementations need process cleanup and independent permission enforcement.
+transport. The separate fixture adapter adds its own process cleanup and permission checks; this
+generic service is not an OS sandbox.
 
 ## Reproduce the offline evaluation
 
@@ -100,13 +106,16 @@ Do not compare the mock scores as evidence that AI helps, that authorization is 
 model upgrade is safe. Real repeated trials, independent semantic review, usage, and reviewer effort
 remain requirements for a later approved live evaluation.
 
-## Before any live adapter
+## Live boundary and remaining work
 
 The subsequent [proposal/decision contract](PROPOSAL_CONTRACT.md) (#46) implements in-memory
 proposal binding, previews and expiry/stale-state checks only. It is not a live adapter, consent UI,
 filesystem application service or verification executor. The separate
 [#48 copy-only demo](../guides/FIXTURE_APPLICATION.md) adds terminal decisions and application/restoration
-inside a fresh POSIX fixture copy; live integration and verification in #35 remain open.
+inside a fresh POSIX fixture copy. #50's separate version-pinned App Server command adds explicit sharing
+and an owned-fixture model draft; it does not run the offline evaluation against a real model, accept a
+general repository, or execute verification. Its one live fixture check used assistant-entered approval
+phrases under user authorization, not independent human review; parent #35 remains open.
 
 Require separate approval for the exact source/policy snapshot, provider/model identity, privacy/data
 handling, and budget. Choose one transport and record actual returned identity/usage when available.

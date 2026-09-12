@@ -144,7 +144,8 @@ On Windows, use `--binary dist/authzest.exe`. This bounded smoke checks source-o
 CLI exits, and a relocated copy without invoking Codex or scanned application code. It does not establish
 consumer-device installation or upgrade support. Explicitly running the optional `doctor` can invoke an installed Codex CLI through
 `codex --version` and `codex login status`; it does not start an AI scan. A successful login does not
-enable AI analysis, because that integration is not implemented. See
+enable AI scanning or approve source sharing. The separate [owned-fixture Codex command](docs/guides/CODEX_FIXTURE.md)
+is opt-in and version-pinned; one owned-fixture live check passed, while general repository AI remains unimplemented. See
 [CLI diagnostics](README.md#cli-diagnostics).
 
 ## Change principles

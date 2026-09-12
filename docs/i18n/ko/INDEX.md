@@ -37,6 +37,7 @@ docs/
 | 개발 방향과 TODO 순서          | [Development plan](../../development/DEVELOPMENT_PLAN.md) | [개발 계획](development/DEVELOPMENT_PLAN.md) |
 | 지원 소스 구문과 한계          | [Parser scope](../../reference/PARSER_SCOPE.md)           | [파서 범위](reference/PARSER_SCOPE.md)       |
 | 유지하는 소스 전용 CLI 데모    | [Examples](../../guides/EXAMPLES.md)                      | [예제](guides/EXAMPLES.md)                   |
+| opt-in 소유 fixture Codex 초안 | [Codex fixture](../../guides/CODEX_FIXTURE.md)            | [Codex fixture](guides/CODEX_FIXTURE.md)     |
 | 교체 가능한 모델과 측정할 가치 | [Model strategy](../../development/MODEL_STRATEGY.md)     | [모델 전략](development/MODEL_STRATEGY.md)   |
 | 버전이 있는 진단과 등록 근거   | [Report contract](../../reference/REPORT_CONTRACT.md)     | [리포트 계약](reference/REPORT_CONTRACT.md)  |
 | 기여와 커밋 규칙               | [Contributing](../../../CONTRIBUTING.md)                  | [기여 안내](CONTRIBUTING.md)                 |
@@ -54,7 +55,13 @@ docs/
 
 후속 [소유 fixture 적용 데모](guides/FIXTURE_APPLICATION.md)
 ([English](../../guides/FIXTURE_APPLICATION.md))는 #48의 터미널 승인·복구를 새 POSIX 복사본에만
-추가합니다. 기존 checkout은 편집하지 않으며 실제 연동과 검증 실행은 미완료입니다.
+추가합니다. 기존 checkout은 편집하지 않으며 고정 응답을 쓰는 오프라인 데모를 유지합니다.
+
+[#50 Codex fixture 명령](guides/CODEX_FIXTURE.md)([English](../../guides/CODEX_FIXTURE.md))은
+opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 추가합니다. 한 소유 fixture의 실제
+초안·적용·복구 확인 1회가 성공했으며 승인 문구는 사용자 허가 아래 assistant가 입력했습니다.
+독립적인 사람 검토는 아닙니다.
+검증 실행과 일반 저장소 AI는 미구현이며 완전한 #35 흐름은 미완료입니다. alpha.2 바이너리는 그대로입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
 [영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.

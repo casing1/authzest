@@ -37,6 +37,7 @@ docs/
 | Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md) | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md) |
 | Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)           | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)       |
 | Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                      | [예제](i18n/ko/guides/EXAMPLES.md)                   |
+| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)            | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)     |
 | Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)     | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)   |
 | Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)     | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)  |
 | Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                  | [기여 안내](i18n/ko/CONTRIBUTING.md)                 |
@@ -54,7 +55,13 @@ slice of #35. That pure contract does not apply files, call a provider or execut
 
 The subsequent [owned-fixture application demo](guides/FIXTURE_APPLICATION.md)
 ([한국어](i18n/ko/guides/FIXTURE_APPLICATION.md)) adds #48's explicit terminal approval and restoration
-in a fresh POSIX copy only. It never edits an existing checkout; live integration and verification remain open.
+in a fresh POSIX copy only. It never edits an existing checkout and remains an offline scripted demo.
+
+[#50's Codex fixture command](guides/CODEX_FIXTURE.md) ([한국어](i18n/ko/guides/CODEX_FIXTURE.md))
+adds an opt-in, version-pinned App Server draft followed by separate copy-application decisions.
+One owned-fixture live draft/apply/restore check passed, with assistant-entered approval phrases under
+user authorization, not independent human review. Verification execution and general repository AI remain unimplemented;
+the complete #35 workflow is still open and alpha.2 binaries are unchanged.
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
 with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). It is not a live integration or part of alpha.2.

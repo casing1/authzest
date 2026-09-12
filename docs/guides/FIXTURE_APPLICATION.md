@@ -79,6 +79,8 @@ can tamper with local records; they are not signed, authenticated or replay-proo
 no restart/resume, automatic crash recovery, filesystem-wide transaction, arbitrary-checkout editing,
 multi-file apply or persisted approval revocation service. Reopening a receipt cannot resume this session.
 
-Live Codex integration, external source-sharing decisions and separately approved isolated verification
-remain later #35 work. This copy-only demonstration does not finish the final end-to-end acceptance gate
-or justify a new release by itself.
+The separate [#50 Codex fixture command](CODEX_FIXTURE.md) adds opt-in source sharing and a narrowly
+accepted model draft before these copy-only decisions. One owned-fixture live draft/apply/restore check
+passed with user-authorized, assistant-entered approval phrases, not independent human review. This #48 demo remains
+offline and scripted. General repository integration and separately approved isolated verification
+remain later #35 work. Neither slice completes the final acceptance gate or justifies a release by itself.

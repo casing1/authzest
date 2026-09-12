@@ -15,7 +15,8 @@ AuthZest is an installable, CLI-first open-source project for source-aware acces
 FastAPI applications. Its current Python core inventories routes without importing or executing the target
 application. The core product goal is Codex-assisted review and defensive test/patch proposals, user
 approval or refusal, approved-only changes, and separately approved isolated verification with a change
-record. That workflow is planned, not implemented; static scans remain offline and Codex use will be opt-in.
+record. The complete workflow remains unfinished. Current source adds an opt-in, owned-fixture Codex
+draft/copy-approval slice; one owned-fixture live draft/apply/restore check has passed. Static scans remain offline.
 
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
@@ -40,6 +41,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Carries supported application, router, and `include_router` dependency declarations into each
   registration's effective evidence, preserving the separate route-local list and original source positions.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
+- Adds the source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): explicit sharing, a pinned
+  App Server, and exact-diff approval for a fresh copy only. One fixture live check passed; verification is not run.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
 This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
@@ -114,7 +117,8 @@ authzest doctor --json
 `doctor` checks the Python runtime. If it finds `codex` on PATH, it also runs `codex --version` and
 `codex login status` as subprocesses. It does not start an AI scan or read credential files itself.
 Missing Codex or login produces a warning and does not prevent static scans.
-A successful login does not enable AI analysis; that integration is not implemented.
+A successful login does not enable AI scanning or grant data-sharing consent. The separate
+[Codex fixture command](docs/guides/CODEX_FIXTURE.md) requires explicit sharing and supports only its owned fixture.
 
 ## Development setup
 
@@ -217,7 +221,7 @@ src/authzest/
 ├── analyzer/   # Repository analysis and aggregation
 ├── parser/     # AST route and import resolution
 ├── runner/     # Shared scan orchestration
-├── codex/      # Codex interface; live integration planned, scan adapter disabled
+├── codex/      # Offline contracts and opt-in owned-fixture adapter; scan stays offline
 ├── cli.py      # Typer command-line interface
 ├── api/        # Optional FastAPI transport
 └── models.py   # Core report data
@@ -250,12 +254,17 @@ Current source and next step:
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 
-The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; #35's live workflow is not implemented yet.
+The [offline foundation](docs/reference/AI_CONTRACT.md) is not included in alpha.2 binaries; the complete #35 workflow remains open.
 The first #35 slice, [#46's offline proposal/decision contract](docs/reference/PROPOSAL_CONTRACT.md),
 is implemented in source with diff previews and simulated approval checks; it never applies files or runs verification.
 The subsequent [#48 copy-only application demo](docs/guides/FIXTURE_APPLICATION.md) adds explicit
 terminal approval and conflict-aware restoration of a fresh POSIX fixture copy, not the original checkout.
 It performs no live AI call or verification execution and is not included in alpha.2 binaries.
+The next [#50 Codex fixture slice](docs/guides/CODEX_FIXTURE.md) requests one model draft after explicit
+sharing approval, with separate apply/restore decisions. One owned-fixture live draft/apply/restore check
+passed on `42ff108`, with the original preserved. The assistant entered approval phrases under user
+authorization; this was not independent human review. It remains source-only and outside alpha.2;
+verification execution and general repository AI remain unimplemented.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

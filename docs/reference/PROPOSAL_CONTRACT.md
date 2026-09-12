@@ -15,11 +15,15 @@ part of the alpha.2 binaries. There is no new product CLI/API command or changed
 
 The library packages explicit caller-authored replacement text and validates a proposal/decision.
 It does not call Codex, synthesize code, write a draft workspace, apply a patch, execute tests, or
-recover files. #35 remains open for those later, separately approved integration stages.
+recover files. #35 remains open for the complete, separately approved integration stages.
 
 The separate [#48 fixture-copy service](../guides/FIXTURE_APPLICATION.md) now demonstrates actual
 approved application/restoration in a fresh POSIX copy only. This contract module remains pure; neither
 it nor that bounded copy demo provides arbitrary-checkout writes, live AI or verification execution.
+The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) supplies a narrowly validated model
+draft to these host-bound contracts. One owned-fixture live draft/apply/restore check passed with
+user-authorized, assistant-entered approval phrases, not independent human review. It does not change these pure functions
+into a provider client or verification executor, and is not a general repository patch workflow.
 
 ## Proposal contents and preview
 
@@ -102,4 +106,5 @@ the fixture unchanged and tests unrun. JSON escapes control/non-ASCII characters
 
 Tests cover exact/multifile diffs, newline handling, source/review/plan changes, unsafe targets, refusal,
 cancellation, expiry, missing source, malformed records and explicit no-network/no-write behavior.
-Actual provider, application, verification failure and recovery tests still belong to later #35 work.
+The fixture-specific application and provider slices have separate scope guides; the complete provider,
+verification failure and recovery acceptance gate remains later #35 work.
