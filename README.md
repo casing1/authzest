@@ -42,7 +42,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   registration's effective evidence, preserving the separate route-local list and original source positions.
 - Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
 - Adds the source-only [Codex fixture command](docs/guides/CODEX_FIXTURE.md): explicit sharing, a pinned
-  App Server, and exact-diff approval for a fresh copy only. One fixture live check passed; verification is not run.
+  App Server, and exact-diff approval for a fresh copy only. One fixture live check passed.
+- Adds optional, separately approved source-configuration verification of that copy; runtime verification is not run.
 
 Supported decorators are `get`, `post`, `put`, `patch`, `delete`, `options`, and `head`.
 This is a bounded static subset: unresolved route declarations may be omitted. A supported route with
@@ -264,7 +265,9 @@ The next [#50 Codex fixture slice](docs/guides/CODEX_FIXTURE.md) requests one mo
 sharing approval, with separate apply/restore decisions. One owned-fixture live draft/apply/restore check
 passed on `42ff108`, with the original preserved. The assistant entered approval phrases under user
 authorization; this was not independent human review. It remains source-only and outside alpha.2;
-verification execution and general repository AI remain unimplemented.
+runtime verification and general repository AI remain unimplemented. #52 adds an optional, fixed AST
+configuration check of the known-hash source between application and restoration, with separate approval and a bounded
+subprocess. It executes no target source and adds no live-model evidence or verified-security-fix claim.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

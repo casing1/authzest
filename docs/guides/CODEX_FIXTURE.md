@@ -21,8 +21,9 @@ other character. This is a configuration demonstration, not an authorization fin
 generated regression test, or verified security fix. There is no arbitrary repository/path input.
 
 The ordinary `scan` command stays offline. The existing offline proposal and copy demos remain scripted,
-not AI-generated. General repository AI review, arbitrary patching, and verification execution are not
-implemented by this command.
+not AI-generated. General repository AI review, arbitrary patching, and runtime verification are not
+implemented by this command. #52 adds only an optional, separately approved source-configuration check
+of the applied fixture copy, described below; it does not add another model call.
 
 ## Run from current source
 
@@ -110,15 +111,71 @@ an informational warning cannot waive these checks.
 
 A valid draft is shown for a separate exact-diff decision. Approval can change only a newly created,
 private fixture copy, never the original checkout. Type the displayed `apply <proposal_id>` phrase
-exactly; decline/cancel does not apply the draft. Restoration requires `restore <proposal_id>` and
+exactly; decline/cancel does not apply the draft. After application, source-configuration verification
+is optional and separately approved. Restoration requires `restore <proposal_id>` and
 refuses detected intervening edits; it does not overwrite user work. The copy, before/after snapshots,
 and `record.json` are retained for inspection; the workflow JSON summary includes request/proposal IDs
 and available usage. The file-operation limits
 and failure meanings in the [copy application guide](FIXTURE_APPLICATION.md) still apply.
 
-All outcomes retain `verification_status: not-run`. No source code, test command, install hook, or
-verification plan is executed. A successful draft or file replacement is not a verified fix. A later
-issue must add separately approved, bounded verification before the complete #35 acceptance gate can close.
+## Optional source-configuration verification
+
+After copy application and before restoration, #52 displays a fixed plan and requires the exact
+`verify <plan_id>` phrase. Sharing or applying does not approve this step. The plan binds the proposal,
+applied source identity, and maintained check/worker identities. The check is
+`owned-fixture-debug-disabled-v1`; the preview includes the exact worker source, SHA-256, and limits.
+These terminal choices are recorded decisions, not authenticated human-approval receipts.
+
+The fixed worker runs in a separate subprocess with a 5-second startup/I/O deadline, a separate
+1-second kill/reap cleanup bound, 1 KiB input and 4 KiB output limits. The plan includes
+`max_cleanup_seconds`. The host rechecks the applied copy and passes immutable `main.py` bytes to the
+worker. The fixed checker accepts only pinned maintained-source hashes, parses the bytes as an AST,
+and inspects the declared `FastAPI(debug=False)` configuration. A separate process is not an OS/network sandbox.
+It does not import or execute that source, run a server/test/install hook, accept model-generated
+commands, or call a provider. Passing proves this bounded source-configuration check, not runtime behavior,
+authorization correctness, or a verified security fix.
+
+The worker receives a reduced environment. In a frozen main process only, it preserves the existing
+`_PYI_ARCHIVE_FILE`, `_PYI_APPLICATION_HOME_DIR`, and `_PYI_PARENT_PROCESS_LEVEL` unchanged after checking
+that they match the current existing executable, the existing `sys._MEIPASS` directory, and level `1`.
+It never manufactures bootloader state. This is private-value consistency, not executable/environment
+attestation; source-mode workers still drop those ambient values. The 5-second deadline and separate
+1-second cleanup limit are unchanged.
+
+The workflow reports `verification_scope: source-configuration` and `verification_status` as `passed`,
+`failed`, or `not-run`; `runtime_verification_status` always remains `not-run`. A normally produced,
+plan-bound `verification` record carries the scope, plan/check/worker/source identities, reason, elapsed
+time, and exit status. Unexpected workflow failures may omit result details; inspect the retained
+record instead of assuming a missing result means success or `not-run`.
+Decline/cancel starts no worker and records `not-run`; this intentional skip gives CLI exit `0`
+unless a separate workflow step fails.
+Worker failure, stale state, or journal failure causes exit `1`, not a verified result. A separate
+restoration decision is still offered after a skip or failure when safe. Restoration is not automatic
+and does not change a retained verification result: that result describes the applied source hash,
+not the restored file. Application, verification, and restoration outcomes remain distinct.
+Journal schema `1.1` retains the full `verification_plan` preview, decision, and result when recorded.
+`journal_status: recorded` means the host write completed, not authenticated or permanent durability
+proof. A write/fsync error produces `unconfirmed` and triggers a best-effort correction to a failure
+record; if correction also fails, the retained record may be uncertain. Inspect actual files and the
+reported failure rather than trusting an earlier success entry. The journal cannot restart or resume
+the session and is not a replay-proof approval receipt.
+
+The existing `scripts.demo_apply` flow is unchanged and remains `not-run`. This source-only addition
+does not complete #35's separately approved runtime verification and failure/recovery acceptance gate.
+
+## Offline configuration-check demo
+
+After editable development setup, from the repository root:
+
+```bash
+python -m scripts.demo_verify
+```
+
+This source-checkout demo uses a caller-authored mock draft, never Codex or a model call. It presents
+separate exact `apply <proposal_id>`, `verify <plan_id>`, and `restore <proposal_id>` decisions for a fresh
+private fixture copy and uses the same fixed configuration worker. Follow the displayed IDs; no step
+is approved by default. Passing this demo is offline workflow evidence, not live-model performance,
+target-code execution, or security-fix verification. Copies and records remain available for inspection.
 
 ## Contract compatibility
 
@@ -130,7 +187,7 @@ The scan report remains schema `1.2`; no package version or new release is impli
 Live attempts, end-to-end results, token usage, and failure recovery evidence must be recorded
 separately from offline mocks. Unknown usage is not zero; successful mocks alone do not establish live
 end-to-end success. The dated history below preserves the state at each step, including superseded
-pending/Draft records. The latest successful check is recorded at the end.
+pending/Draft records. The successful live check below predates #52; newer offline work is labelled separately.
 
 ## Historical development validation — 2026-09-11
 
@@ -259,8 +316,9 @@ This is the eighth approved host attempt overall: seven earlier failures and thi
 count of billed/dispatched provider turns. There was no application retry or additional model call.
 The first post-routing-correction attempt passed without the prior 401; this supports the routing
 diagnosis but does not independently trace the earlier HTTP requests. The approval is exhausted.
-No release is implied. All results retain `verification_status: not-run`: source/test execution,
-security-fix verification, arbitrary repository AI and the remaining #35 work are still unimplemented.
+No release is implied. This recorded #51 run retained `verification_status: not-run`; it did not
+exercise the later #52 source-configuration check. Source/test execution, security-fix verification,
+arbitrary repository AI and the remaining #35 work are still unimplemented.
 
 Development wheel and macOS ARM64 artifacts were rebuilt from a fixed `42ff108` runtime snapshot.
 Both passed help, full preview and pre-sharing EOF cancellation with zero Codex processes/model turns;
@@ -269,3 +327,35 @@ inventory per-command limits were retained. A native check initially hit the hos
 restriction, then passed unchanged with the needed local permission. These unpublished builds reused
 local dependencies; they do not establish clean-device installation, upgrades, signing, notarization,
 other-OS support or a live model run from the packaged artifacts.
+
+## Source-configuration extension — offline validation, 2026-09-12
+
+#52's runtime `52311f99a28711d7d362cfd313a7dfde8571f785` passed 1,350 tests in 152.04 seconds.
+Ruff lint and formatting (124 Python files), frontend clean install/lint/format/build, 14 documentation
+checker tests, and 36 Markdown files / 17 language pairs / 460 links / 82 shell-block checks passed.
+Workflow validation used offline fixtures and mocks only: no actual Codex, account, model, or provider-network call.
+
+The source-checkout terminal demo applied the fixture change, passed the fixed AST configuration check
+in `23.572 ms`, and restored the copy. Independent checks confirmed the applied and restored hashes
+shown above and preservation of the original. The assistant entered exact phrases within the test scope;
+this is not independent human approval or a new live-model result.
+
+A rebuilt macOS ARM64 development binary (SHA256
+`b86d7da8c33bb61ffb073dc6396aaf4cbae90f845dd3b01bde4d59a80d3ebc55`) passed the production
+parent-to-worker flow using a fake Codex server: separate share/apply/verify/restore decisions, exit `0`,
+and empty stderr. Bootstrap took 14.732 seconds within the external 30-second limit; the child check
+took `131.652 ms` within its unchanged 5-second deadline and separate 1-second cleanup bound.
+The whole flow took 15.399 seconds. Actual copy application/restoration and original preservation were
+independently confirmed. Fake identity and token fields are scripted test data, not provider usage.
+
+Earlier cold worker starts timed out twice at 5 seconds; a parallel help check also hit 30 seconds,
+then passed independently. The minimal validated bootloader-context correction above addressed the
+packaged worker startup without relaxing deadlines. The final harness initially hit a host semaphore
+restriction before application launch, then passed unchanged with the necessary IPC permission.
+The same final binary passed 14 inventory-only smoke checks (7 selected, 7 relocated) at the unchanged
+45-second per-command limit; its help check also passed within 30 seconds. The native configuration
+check evidence covers the applied `debug=False` source, not a native before-change failure check.
+
+These are unpublished local development artifacts, not clean-device, cross-platform, signing, upgrade,
+or live-model package acceptance. #52's source-configuration acceptance is complete; runtime verification
+remains `not-run`, #35 stays open, and no new release or verified security fix is claimed.

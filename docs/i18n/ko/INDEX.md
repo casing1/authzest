@@ -60,8 +60,9 @@ docs/
 [#50 Codex fixture 명령](guides/CODEX_FIXTURE.md)([English](../../guides/CODEX_FIXTURE.md))은
 opt-in 버전 고정 App Server 초안과 별도의 복사본 적용 결정을 추가합니다. 한 소유 fixture의 실제
 초안·적용·복구 확인 1회가 성공했으며 승인 문구는 사용자 허가 아래 assistant가 입력했습니다.
-독립적인 사람 검토는 아닙니다.
-검증 실행과 일반 저장소 AI는 미구현이며 완전한 #35 흐름은 미완료입니다. alpha.2 바이너리는 그대로입니다.
+독립적인 사람 검토는 아닙니다. #52는 별도 승인하는 선택적 자식 프로세스 검사로 적용된 fixture의
+소스 해시를 고정한 fixture의 AST 설정만 확인하며 런타임 동작이나 보안 수정 효과를 검증하지 않습니다.
+런타임 검증과 일반 저장소 AI는 미구현이며 완전한 #35 흐름은 미완료입니다. alpha.2 바이너리는 그대로입니다.
 
 소스 checkout에 [오프라인 AI 계약과 평가](reference/AI_CONTRACT.md)를 구현했으며
 [영어 안내](../../reference/AI_CONTRACT.md)도 있습니다. 실제 연동이나 alpha.2의 일부는 아닙니다.
