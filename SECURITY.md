@@ -33,9 +33,42 @@ The maintainer should acknowledge the report, confirm its scope, and provide an 
 Use AuthZest only with source code and environments that you own or are explicitly authorized to test.
 Repositories may contain credentials, production data, personal information, or proprietary code.
 
-The current deterministic local analyzer does not require an API key. Before a future Codex adapter sends any
-content outside the local process, it must clearly show which files and prompts will be transmitted and apply
-least privilege, explicit user approval, sensitive-data redaction, timeouts, and failure isolation.
+The default `authzest scan` is a deterministic local source scan. It does not require an API key,
+call Codex, execute the target application, or modify its files. Explicitly running `authzest doctor`
+can invoke the installed Codex CLI for version/login diagnostics; it does not call a model or approve
+source sharing. Review diagnostic output before sharing it.
+
+The separate, opt-in POSIX `authzest codex-fixture` workflow is implemented for a packaged, owned fixture.
+It previews the task/source payload, host instructions and output schema before exact-request sharing
+approval, then uses a trusted local Codex installation and its existing ChatGPT login. Codex adds its own
+harness context. The live workflow accepts only the maintained `main.py` change from `debug=True` to
+`debug=False`; it does not accept an arbitrary repository path or edit an existing checkout.
+See the [Codex fixture guide](docs/guides/CODEX_FIXTURE.md).
+
+Sharing, applying the exact diff to a fresh private copy, verifying, and restoring require separate
+decisions. The default verification plan checks source configuration without executing it.
+Selecting `--runtime-check` does not approve execution: after a separate decision, the fixed worker
+can execute only matching bundled fixture constants and inspect debug/health behavior. This is not
+an OS/network sandbox, an authorization test, or proof of a security fix. Terminal choices and retained
+records are not authenticated human-approval receipts. See [runtime verification](docs/guides/RUNTIME_VERIFICATION.md).
+
+Least privilege, explicit user approval, sensitive-data redaction, timeouts, and failure isolation
+remain requirements before source sharing. The packaged public fixture is not evidence of general
+secret detection or redaction for arbitrary repositories. General repository AI and generated-test
+execution remain unsupported by this live workflow. Its timeout and application-attempt limits are
+not hard limits on provider-internal retries, tokens, or spending; missing usage remains unknown.
+
+## Threat model and current boundaries
+
+The [repository threat model](docs/reference/threat-model.md) documents inspected source, protected
+assets, trust boundaries, assumptions, and review hypotheses. It is not a completed audit or a blanket
+finding-suppression list. The authorization policy of an analyzed application is a separate input.
+
+The optional local API scans the workspace selected at server startup; requests cannot choose a new
+path. The CLI UI defaults to loopback. No application authentication or tenant isolation is implemented,
+so keep the service local and operator-controlled rather than treating it as a public/shared service.
+Private fixture copies and their records are retained for inspection; file-state checks and atomic
+replacement are not isolation from hostile concurrent same-user writers.
 
 ## Security design expectations
 
