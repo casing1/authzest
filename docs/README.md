@@ -30,30 +30,36 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| Document                                        | English                                                | 한국어                                                |
-| ----------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------- |
-| Project overview and installation               | [README](../README.md)                                 | [프로젝트 소개](i18n/ko/README.md)                    |
-| Documentation index                             | [Index](README.md)                                     | [문서 목차](i18n/ko/INDEX.md)                         |
-| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)    | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)  |
-| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)              | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)        |
-| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                         | [예제](i18n/ko/guides/EXAMPLES.md)                    |
-| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)               | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)      |
-| Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md) | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md) |
-| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)        | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)    |
-| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)        | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)   |
-| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                     | [기여 안내](i18n/ko/CONTRIBUTING.md)                  |
-| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)            | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)    |
-| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                     | [릴리스 가이드](i18n/ko/releases/RELEASING.md)        |
-| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                           | [변경 이력](i18n/ko/CHANGELOG.md)                     |
-| Private reporting and safe-use policy           | [Security](../SECURITY.md)                             | [보안 정책](i18n/ko/SECURITY.md)                      |
-| Repository threat model and review boundaries   | [Threat model](reference/threat-model.md)              | [위협 모델](i18n/ko/reference/threat-model.md)        |
-| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)     | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)      |
+| Document                                        | English                                                   | 한국어                                                      |
+| ----------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- |
+| Project overview and installation               | [README](../README.md)                                    | [프로젝트 소개](i18n/ko/README.md)                          |
+| Documentation index                             | [Index](README.md)                                        | [문서 목차](i18n/ko/INDEX.md)                               |
+| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)       | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)        |
+| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)              |
+| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                          |
+| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)            |
+| Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)       |
+| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)           | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)          |
+| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)           | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)         |
+| Offline evidence-linked expected outcomes       | [Expectation contract](reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md) |
+| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                        | [기여 안내](i18n/ko/CONTRIBUTING.md)                        |
+| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)               | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)          |
+| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                        | [릴리스 가이드](i18n/ko/releases/RELEASING.md)              |
+| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                              | [변경 이력](i18n/ko/CHANGELOG.md)                           |
+| Private reporting and safe-use policy           | [Security](../SECURITY.md)                                | [보안 정책](i18n/ko/SECURITY.md)                            |
+| Repository threat model and review boundaries   | [Threat model](reference/threat-model.md)                 | [위협 모델](i18n/ko/reference/threat-model.md)              |
+| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)        | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)            |
 
 ## Read the right version
 
 The [offline proposal/decision contract](reference/PROPOSAL_CONTRACT.md), also available in
 [Korean](i18n/ko/reference/PROPOSAL_CONTRACT.md), implements only #46's preview and simulated-decision
 slice of #35. That pure contract does not apply files, call a provider or execute verification.
+
+[#61's offline expectation manifest](reference/EXPECTATION_CONTRACT.md)
+([한국어](i18n/ko/reference/EXPECTATION_CONTRACT.md)) is an unreleased source addition after alpha.3.
+It binds caller-authored policy/declaration targets to an exact proposal and baseline evidence, always
+as draft/not-run data. It generates or executes no tests and is not consumed by existing approvals or runners.
 
 The subsequent [owned-fixture application demo](guides/FIXTURE_APPLICATION.md)
 ([한국어](i18n/ko/guides/FIXTURE_APPLICATION.md)) adds #48's explicit terminal approval and restoration

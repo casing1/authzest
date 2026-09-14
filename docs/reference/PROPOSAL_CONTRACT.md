@@ -65,6 +65,12 @@ execute either of these proposal identifiers or any model-proposed test.
 Expectations and prose remain untrusted data. A future implementation must resolve checks through a
 reviewed fixed implementation and obtain separate execution approval.
 
+The separate [#61 expectation manifest](EXPECTATION_CONTRACT.md) adds an unreleased, pure structured
+contract after alpha.3 for caller-authored policy/declaration targets linked to a proposal and baseline
+evidence. It does not replace these free-text expectations or change proposal schema `1.0`. Its preview
+is always draft/not-run, with no observed result or authorization verdict beyond unknown. No existing
+proposal decision or runner consumes or binds that manifest; generated tests and execution remain separate work.
+
 ## Decisions and current-state checks
 
 `record_decision` records the caller's explicit `approve`, `decline`, or `cancel` choice for the exact
