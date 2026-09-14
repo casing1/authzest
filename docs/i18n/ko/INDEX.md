@@ -20,7 +20,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 docs/
 ├── README.md                 # English index
 ├── guides/                   # Usage and examples
-├── reference/                # Parser scope and report contracts
+├── reference/                # Parser scope, contracts, threat model
 ├── development/              # Plan, model strategy, branch rules
 ├── releases/                 # Release procedure
 ├── assets/                   # Shared images
@@ -46,6 +46,7 @@ docs/
 | 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                     | [릴리스 가이드](releases/RELEASING.md)        |
 | 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                           | [변경 이력](CHANGELOG.md)                     |
 | 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                             | [보안 정책](SECURITY.md)                      |
+| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)              | [위협 모델](reference/threat-model.md)        |
 | PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)     | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)      |
 
 ## 올바른 버전의 문서 읽기

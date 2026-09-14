@@ -20,7 +20,7 @@ The conventional English README, contributing, security, and changelog files rem
 docs/
 ├── README.md                 # English index
 ├── guides/                   # Usage and examples
-├── reference/                # Parser scope and report contracts
+├── reference/                # Parser scope, contracts, threat model
 ├── development/              # Plan, model strategy, branch rules
 ├── releases/                 # Release procedure
 ├── assets/                   # Shared images
@@ -46,6 +46,7 @@ docs/
 | Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                     | [릴리스 가이드](i18n/ko/releases/RELEASING.md)        |
 | Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                           | [변경 이력](i18n/ko/CHANGELOG.md)                     |
 | Private reporting and safe-use policy           | [Security](../SECURITY.md)                             | [보안 정책](i18n/ko/SECURITY.md)                      |
+| Repository threat model and review boundaries   | [Threat model](reference/threat-model.md)              | [위협 모델](i18n/ko/reference/threat-model.md)        |
 | Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)     | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)      |
 
 ## Read the right version
