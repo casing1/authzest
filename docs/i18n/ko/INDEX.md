@@ -30,30 +30,36 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| 문서                                   | English                                                      | 한국어                                        |
-| -------------------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
-| 프로젝트 소개와 설치                   | [README](../../../README.md)                                 | [프로젝트 소개](README.md)                    |
-| 문서 목차                              | [Index](../../README.md)                                     | [문서 목차](INDEX.md)                         |
-| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)    | [개발 계획](development/DEVELOPMENT_PLAN.md)  |
-| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)              | [파서 범위](reference/PARSER_SCOPE.md)        |
-| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                         | [예제](guides/EXAMPLES.md)                    |
-| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)               | [Codex fixture](guides/CODEX_FIXTURE.md)      |
-| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md) | [런타임 검증](guides/RUNTIME_VERIFICATION.md) |
-| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)        | [모델 전략](development/MODEL_STRATEGY.md)    |
-| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)        | [리포트 계약](reference/REPORT_CONTRACT.md)   |
-| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                     | [기여 안내](CONTRIBUTING.md)                  |
-| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)            | [브랜치 규칙](development/BRANCH_RULES.md)    |
-| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                     | [릴리스 가이드](releases/RELEASING.md)        |
-| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                           | [변경 이력](CHANGELOG.md)                     |
-| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                             | [보안 정책](SECURITY.md)                      |
-| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)              | [위협 모델](reference/threat-model.md)        |
-| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)     | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)      |
+| 문서                                   | English                                                         | 한국어                                              |
+| -------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------- |
+| 프로젝트 소개와 설치                   | [README](../../../README.md)                                    | [프로젝트 소개](README.md)                          |
+| 문서 목차                              | [Index](../../README.md)                                        | [문서 목차](INDEX.md)                               |
+| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)        |
+| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)              |
+| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                          |
+| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
+| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
+| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)          |
+| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)           | [리포트 계약](reference/REPORT_CONTRACT.md)         |
+| 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md) |
+| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                        |
+| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)          |
+| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)              |
+| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                           |
+| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                            |
+| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)                 | [위협 모델](reference/threat-model.md)              |
+| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)        | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)            |
 
 ## 올바른 버전의 문서 읽기
 
 [오프라인 제안/결정 계약](reference/PROPOSAL_CONTRACT.md)과
 [영어 안내](../../reference/PROPOSAL_CONTRACT.md)는 #35 중 #46의 미리보기·모의 결정 단계만 구현합니다.
 해당 순수 계약 자체는 파일 적용·제공자 호출·검증 실행을 하지 않습니다.
+
+[#61 오프라인 예상 결과 manifest](reference/EXPECTATION_CONTRACT.md)
+([English](../../reference/EXPECTATION_CONTRACT.md))는 alpha.3 이후 소스에 추가한 미출시 기능입니다.
+호출자가 작성한 정책·선언 목표를 정확한 제안과 기준 근거에 연결하며 항상 draft/not-run 데이터로
+표시합니다. 테스트를 생성·실행하지 않고 기존 승인이나 실행기에서도 사용하지 않습니다.
 
 후속 [소유 fixture 적용 데모](guides/FIXTURE_APPLICATION.md)
 ([English](../../guides/FIXTURE_APPLICATION.md))는 #48의 터미널 승인·복구를 새 POSIX 복사본에만

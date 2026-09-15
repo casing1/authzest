@@ -14,6 +14,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Add #61's pure [expectation manifest](docs/reference/EXPECTATION_CONTRACT.md), schema `1.0`:
+  bind caller-authored policy/declaration targets to the exact request, review, proposal, baseline
+  registration and before/after source hashes. Validate typed expectations and same-request evidence;
+  previews remain draft/not-run with unknown authorization. No generated tests, provider calls,
+  CLI integration or new execution/approval authority; published alpha.3 remains unchanged.
+
 ### Documentation
 
 - Synchronize all four README languages and English/Korean guides after verified alpha.3 publication
