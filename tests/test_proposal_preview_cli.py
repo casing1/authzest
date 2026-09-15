@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from click import unstyle
 from scripts import demo_preview
 from scripts.demo_preview import build_demo_bundle
 from typer.testing import CliRunner
@@ -48,15 +49,16 @@ def assert_invalid(result):
     return error
 
 
-def test_help_does_not_read_an_input(monkeypatch):
+@pytest.mark.parametrize("color", [False, True])
+def test_help_does_not_read_an_input(monkeypatch, color):
     def forbidden(*args, **kwargs):
         pytest.fail("Help must not read a bundle")
 
     monkeypatch.setattr(reader, "load_preview", forbidden)
-    result = runner.invoke(app, ["proposal-preview", "--help"])
+    result = runner.invoke(app, ["proposal-preview", "--help"], color=color)
     assert result.exit_code == 0
-    assert "--json" in result.stdout
-    assert "proposal-preview" in runner.invoke(app, ["--help"]).stdout
+    assert "--json" in unstyle(result.stdout)
+    assert "proposal-preview" in unstyle(runner.invoke(app, ["--help"], color=color).stdout)
 
 
 @pytest.mark.skipif(not POSIX_READER, reason="Bounded POSIX preview reader")
