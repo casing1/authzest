@@ -199,6 +199,56 @@ def codex_fixture(
     raise typer.Exit(code=result["exit_code"])
 
 
+def _format_proposal_preview(view: dict) -> str:
+    def quoted(value) -> str:
+        return json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False)
+
+    lines = [
+        "Offline proposal preview - draft / not-run / authorization unknown",
+        "Not applied. Supplied snapshots only; not approval or verification.",
+        "Bundle: " + quoted(view["bundle_id"]),
+    ]
+    for title, key in (("Request", "request"), ("Review", "review"), ("Evidence", "evidence")):
+        lines.extend(("", title, quoted(view[key])))
+    proposal = view["proposal"]
+    lines.extend(("", "Proposal", quoted({k: v for k, v in proposal.items() if k != "changes"})))
+    for change in proposal["changes"]:
+        lines.append(quoted({k: v for k, v in change.items() if k != "diff"}))
+        lines.append("Exact diff (each line is quoted):")
+        lines.extend(quoted(line) for line in change["diff"].split("\n"))
+    lines.extend(("", "Expectations", quoted(view["expectations"])))
+    lines.extend(("", "Limitations", quoted(view["limitations"])))
+    return "\n".join(lines)
+
+
+@app.command("proposal-preview")
+def proposal_preview_command(
+    path: Annotated[
+        Path, typer.Argument(help="Offline JSON bundle; no embedded paths are opened.")
+    ],
+    as_json: bool = typer.Option(False, "--json", help="Print an ASCII-escaped JSON preview."),
+) -> None:
+    """Review stored evidence, exact diff and expected outcomes without applying or executing."""
+    from authzest.runner.proposal_preview import PreviewInputError, load_preview
+
+    try:
+        view = load_preview(path)
+        output = (
+            json.dumps(view, ensure_ascii=True, indent=2, allow_nan=False)
+            if as_json
+            else _format_proposal_preview(view)
+        )
+    except PreviewInputError as exc:
+        typer.echo(
+            json.dumps({"status": "invalid-input", "detail": str(exc)}, ensure_ascii=True), err=True
+        )
+        raise typer.Exit(code=2) from None
+    except KeyboardInterrupt:
+        typer.echo('{"status": "cancelled"}', err=True)
+        raise typer.Exit(code=130) from None
+    typer.echo(output)
+
+
 @app.command("_configuration-worker", hidden=True)
 def _configuration_worker() -> None:
     """Internal fixed checker entry point for the packaged executable."""

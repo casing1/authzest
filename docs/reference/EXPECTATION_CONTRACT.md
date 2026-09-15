@@ -16,8 +16,10 @@ The implementation is [codex/expectations.py](../../src/authzest/codex/expectati
 
 The manifest connects an exact proposal to baseline source/registration evidence, cited policy and
 intended outcomes for later review. It generates no tests, calls no provider, reads or writes no files,
-and executes no source, process or network operation. No CLI, adapter, runner or approval service
-consumes it. The existing fixed configuration/health fixture workflow is unchanged; #35 and broader
+and executes no source, process or network operation. The separate
+[#63 CLI preview](../guides/PROPOSAL_PREVIEW.md) now displays it from a validated offline bundle only;
+no adapter, application/verification runner or approval service consumes or binds it.
+The existing fixed configuration/health fixture workflow is unchanged; #35 and broader
 defensive regression-test drafting remain unfinished.
 
 ## Bound data and validation

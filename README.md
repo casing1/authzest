@@ -34,6 +34,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
+- Adds the unreleased, read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md) in source:
+  display a bundle's exact diff, evidence and expected outcomes on supported POSIX systems; no approval or execution.
 - Adds schema `1.2`, structured diagnostics, bounded/partial status, and distinct registration IDs with
   original declaration, application, and `include_router` evidence while retaining existing JSON fields.
 - Collects route-local `Depends`/`Security` declarations, source locations, and known scopes without

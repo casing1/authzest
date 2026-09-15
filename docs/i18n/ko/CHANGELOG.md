@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- #63의 읽기 전용 [`proposal-preview` CLI](guides/PROPOSAL_PREVIEW.md)를 추가했습니다. 엄격한
+  스키마 `1.0` bundle을 검증한 뒤 정확한 diff·연결된 근거·예상 결과·한계를 텍스트나 ASCII 이스케이프
+  JSON으로 표시합니다. 호출자 작성 오프라인 내보내기, 제한된 POSIX 일반 파일 입력과 플랫폼 독립적인
+  순수 bundle API를 추가했습니다. 상태는 draft/not-run이며 제공자 호출·승인·패치 적용·테스트 실행은
+  하지 않습니다. 이 소스 추가 기능은 공개 alpha.3에 포함되지 않습니다.
 - #61의 순수 [예상 결과 manifest](reference/EXPECTATION_CONTRACT.md), 스키마 `1.0`을 추가했습니다.
   호출자 작성 정책/선언 목표를 정확한 요청·검토·제안·기준 등록·변경 전후 소스 해시에 묶습니다.
   타입이 정해진 예상값과 같은 요청의 근거를 검증하며 미리보기는 초안·미실행·인가 unknown을

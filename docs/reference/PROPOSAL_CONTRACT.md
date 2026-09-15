@@ -69,7 +69,9 @@ The separate [#61 expectation manifest](EXPECTATION_CONTRACT.md) adds an unrelea
 contract after alpha.3 for caller-authored policy/declaration targets linked to a proposal and baseline
 evidence. It does not replace these free-text expectations or change proposal schema `1.0`. Its preview
 is always draft/not-run, with no observed result or authorization verdict beyond unknown. No existing
-proposal decision or runner consumes or binds that manifest; generated tests and execution remain separate work.
+proposal decision or application/verification runner consumes or binds that manifest; generated tests and execution remain separate work.
+The unreleased [#63 CLI preview](../guides/PROPOSAL_PREVIEW.md) displays those linked artifacts from a
+strict offline bundle. This read-only presentation does not grant approval or execution authority.
 
 ## Decisions and current-state checks
 
