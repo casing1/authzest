@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #63's read-only [`proposal-preview` CLI](docs/guides/PROPOSAL_PREVIEW.md): validate a strict
+  schema `1.0` bundle, then display the exact diff, linked evidence, expected outcomes and limitations
+  as text or ASCII-escaped JSON. Add a caller-authored offline exporter, bounded POSIX regular-file
+  input and platform-independent pure bundle APIs. Status remains draft/not-run; no provider calls,
+  approval, patch application or test execution. This source addition is not in published alpha.3.
 - Add #61's pure [expectation manifest](docs/reference/EXPECTATION_CONTRACT.md), schema `1.0`:
   bind caller-authored policy/declaration targets to the exact request, review, proposal, baseline
   registration and before/after source hashes. Validate typed expectations and same-request evidence;

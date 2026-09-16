@@ -37,6 +37,7 @@ docs/
 | 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)        |
 | 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)              |
 | 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                          |
+| 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)         |
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
 | 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)          |
@@ -59,7 +60,10 @@ docs/
 [#61 오프라인 예상 결과 manifest](reference/EXPECTATION_CONTRACT.md)
 ([English](../../reference/EXPECTATION_CONTRACT.md))는 alpha.3 이후 소스에 추가한 미출시 기능입니다.
 호출자가 작성한 정책·선언 목표를 정확한 제안과 기준 근거에 연결하며 항상 draft/not-run 데이터로
-표시합니다. 테스트를 생성·실행하지 않고 기존 승인이나 실행기에서도 사용하지 않습니다.
+표시합니다. 테스트를 생성·실행하지 않고 기존 승인이나 적용/검증 실행기에서도 사용하지 않습니다.
+[#63 제안 미리보기](guides/PROPOSAL_PREVIEW.md)([English](../../guides/PROPOSAL_PREVIEW.md))는
+지원하는 POSIX 시스템에서 엄격한 bundle을 읽기 전용으로 표시하는 미출시 CLI 기능입니다.
+정확한 diff·연결된 근거·예상 결과를 보여주며 승인·실행·실제 공유 범위는 바꾸지 않습니다.
 
 후속 [소유 fixture 적용 데모](guides/FIXTURE_APPLICATION.md)
 ([English](../../guides/FIXTURE_APPLICATION.md))는 #48의 터미널 승인·복구를 새 POSIX 복사본에만

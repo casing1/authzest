@@ -37,6 +37,7 @@ docs/
 | Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)       | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)        |
 | Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)              |
 | Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                          |
+| Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)         |
 | Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)            |
 | Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)       |
 | Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)           | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)          |
@@ -59,7 +60,10 @@ slice of #35. That pure contract does not apply files, call a provider or execut
 [#61's offline expectation manifest](reference/EXPECTATION_CONTRACT.md)
 ([한국어](i18n/ko/reference/EXPECTATION_CONTRACT.md)) is an unreleased source addition after alpha.3.
 It binds caller-authored policy/declaration targets to an exact proposal and baseline evidence, always
-as draft/not-run data. It generates or executes no tests and is not consumed by existing approvals or runners.
+as draft/not-run data. It generates or executes no tests and is not consumed by existing approvals or application/verification runners.
+[#63's proposal preview](guides/PROPOSAL_PREVIEW.md) ([한국어](i18n/ko/guides/PROPOSAL_PREVIEW.md))
+adds an unreleased, read-only CLI view of a strict bundle on supported POSIX systems. It shows the
+exact diff, linked evidence and expected outcomes without changing approval, execution or live-sharing scope.
 
 The subsequent [owned-fixture application demo](guides/FIXTURE_APPLICATION.md)
 ([한국어](i18n/ko/guides/FIXTURE_APPLICATION.md)) adds #48's explicit terminal approval and restoration

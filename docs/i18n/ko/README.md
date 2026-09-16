@@ -35,6 +35,8 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
+- 소스에 미출시 읽기 전용 [`authzest proposal-preview`](guides/PROPOSAL_PREVIEW.md) 추가:
+  지원하는 POSIX 시스템에서 bundle의 정확한 diff·근거·예상 결과를 표시하며 승인·실행은 하지 않음
 - 기존 JSON 필드를 유지하며 스키마 `1.2`, 구조화된 진단, bounded/partial 상태와 원본 선언·app·
   `include_router` 근거를 포함한 구별되는 등록 ID 추가
 - 라우트에 직접 선언된 `Depends`·`Security`, 소스 위치와 확인한 scopes 수집. 일반 의존성 주입을

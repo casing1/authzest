@@ -216,7 +216,11 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
 - [x] Add [#61's offline expectation manifest](../reference/EXPECTATION_CONTRACT.md): exact proposal,
       baseline registration/source and policy references bound to caller-authored declaration/intent targets.
       This unreleased post-alpha.3 contract stays draft/not-run, changes no frozen corpus and grants no approval
-      or execution. Generated tests, runtime observations and integration remain separate work.
+      or execution. Generated tests, runtime observations and approval/execution integration remain separate work.
+- [x] Add [#63's offline CLI presentation](../guides/PROPOSAL_PREVIEW.md): revalidate one bounded JSON
+      bundle and display the exact diff, linked source/policy evidence, expected outcomes and limitations.
+      This source-only post-alpha.3 addition stays draft/not-run; no provider, approval, application or
+      execution integration is added. The broader presentation/approval acceptance item below remains open.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

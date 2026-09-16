@@ -36,6 +36,8 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
+- 未リリースの読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) をソースに追加：
+  対応 POSIX システムで bundle の正確な diff・根拠・期待結果を表示し、承認や実行は行わない
 - 既存の JSON フィールドを保持し、スキーマ `1.2`、構造化された診断、bounded/partial 状態と、
   元の宣言・app・`include_router` の根拠を伴う区別可能な登録 ID を追加
 - ルートに直接宣言された `Depends`・`Security`、ソース位置と既知の scopes を収集。
