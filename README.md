@@ -36,6 +36,9 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Produces human-readable or JSON reports through the `scan` command.
 - Adds the unreleased, read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md) in source:
   display a bundle's exact diff, evidence and expected outcomes on supported POSIX systems; no approval or execution.
+- Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
+  walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
+  POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
 - Adds schema `1.2`, structured diagnostics, bounded/partial status, and distinct registration IDs with
   original declaration, application, and `include_router` evidence while retaining existing JSON fields.
 - Collects route-local `Depends`/`Security` declarations, source locations, and known scopes without

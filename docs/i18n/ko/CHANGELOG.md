@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- #65의 패키지 오프라인 [`fixture-demo` 시연](guides/FIXTURE_DEMO.md)을 추가했습니다. 고정 mock
+  제안, 별도 적용·소스 검사·복구 결정과 보존되는 비공개 복사본 기록을 제공하며 저장소 fixture
+  파일·Codex·계정·네트워크 호출·fixture 소스 실행은 사용하지 않습니다. 처음에는 지원하는
+  POSIX 연산이 필요하며 대상·bundle·런타임·자동 승인 옵션은 추가하지 않습니다.
+  이 소스 추가 기능은 공개 alpha.3에 포함되지 않으며 더 넓은 #35를 완료하지 않습니다.
 - #63의 읽기 전용 [`proposal-preview` CLI](guides/PROPOSAL_PREVIEW.md)를 추가했습니다. 엄격한
   스키마 `1.0` bundle을 검증한 뒤 정확한 diff·연결된 근거·예상 결과·한계를 텍스트나 ASCII 이스케이프
   JSON으로 표시합니다. 호출자 작성 오프라인 내보내기, 제한된 POSIX 일반 파일 입력과 플랫폼 독립적인

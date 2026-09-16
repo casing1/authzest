@@ -16,6 +16,7 @@ from scripts.demo_proposal import FIXTURE_ROOT
 
 from authzest.codex.fixture_draft import FIXTURE_AFTER, FIXTURE_SOURCE
 from authzest.runner import fixture_check
+from authzest.runner import fixture_demo as packaged_demo
 from authzest.runner._fixture_workspace import supported
 
 pytestmark = pytest.mark.skipif(not supported(), reason="POSIX owned-fixture workflow")
@@ -197,7 +198,7 @@ def test_demo_setup_error_has_no_false_verification_claim_or_raw_error(tmp_path,
     def fail():
         raise RuntimeError("PRIVATE-LOCAL-STDERR")
 
-    monkeypatch.setattr(demo_verify, "build_demo_proposal", fail)
+    monkeypatch.setattr(packaged_demo, "build_demo_proposal", fail)
     result = asyncio.run(demo_verify.run_demo(emit=lambda _: None, parent=tmp_path))
     assert result["status"] == "workflow-failed" and result["exit_code"] == 1
     assert "verification_status" not in result

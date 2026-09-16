@@ -200,6 +200,10 @@ restored file. #54's bounded live source acceptance passed, with evidence in the
 
 ## Offline configuration-check demo
 
+For the source addition after alpha.3, [`authzest fixture-demo`](FIXTURE_DEMO.md) packages the offline
+source-only walkthrough without a development checkout or Codex account. It does not accept
+`--runtime-check`. The development script below remains available with its separate runtime variant.
+
 After editable development setup, from the repository root:
 
 ```bash

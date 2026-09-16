@@ -96,6 +96,8 @@ source registration evidence, and route-local plus inherited dependency declarat
 The [offline AI contracts](../reference/AI_CONTRACT.md), introduced after alpha.2, now support the
 published alpha.3 fixture command. Mock evaluation scripts/corpus and #48's demo remain source-checkout
 tools, not standalone binary commands or installed repository fixtures.
+The unreleased [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md) instead packages its own fixed mock
+walkthrough, reusing separate copy/source-check/restore decisions without Codex or fixture-source execution.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -221,6 +223,10 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       bundle and display the exact diff, linked source/policy evidence, expected outcomes and limitations.
       This source-only post-alpha.3 addition stays draft/not-run; no provider, approval, application or
       execution integration is added. The broader presentation/approval acceptance item below remains open.
+- [x] Add [#65's packaged offline walkthrough](../guides/FIXTURE_DEMO.md): expose a maintained mock
+      draft and separate copy-application, fixed source-configuration check and restoration decisions
+      through `fixture-demo`, without checkout fixture files or provider calls. This unreleased POSIX
+      source slice adds no runtime selector or arbitrary bundle executor and does not complete #35.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

@@ -199,6 +199,35 @@ def codex_fixture(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("fixture-demo")
+def fixture_demo() -> None:
+    """Try an offline mock proposal with separate copy-edit, source-check and restore choices."""
+    from authzest.runner.fixture_demo import run_fixture_demo
+
+    try:
+        result = asyncio.run(run_fixture_demo(emit=typer.echo))
+    except (asyncio.CancelledError, KeyboardInterrupt):
+        result = {
+            "status": "cancelled",
+            "exit_code": 130,
+            "draft_provenance": "caller-authored-mock",
+            "live_provider_calls": 0,
+            "runtime_verification_status": "not-run",
+            "detail": "Interrupted; inspect the retained workspace record if created.",
+        }
+    except Exception:
+        result = {
+            "status": "workflow-failed",
+            "exit_code": 1,
+            "draft_provenance": "caller-authored-mock",
+            "live_provider_calls": 0,
+            "runtime_verification_status": "not-run",
+            "detail": "Inspect the retained workspace record if created.",
+        }
+    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    raise typer.Exit(code=result["exit_code"])
+
+
 def _format_proposal_preview(view: dict) -> str:
     def quoted(value) -> str:
         return json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False)

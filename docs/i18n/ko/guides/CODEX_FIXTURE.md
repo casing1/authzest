@@ -196,6 +196,10 @@ sandbox, 인가 검사, exploit 재현이나 검증된 보안 수정이 아닙�
 
 ## 오프라인 설정 검사 데모
 
+alpha.3 이후 소스에 추가한 [`authzest fixture-demo`](FIXTURE_DEMO.md)는 개발 checkout이나
+Codex 계정 없이 오프라인 소스 전용 시연을 제공합니다. `--runtime-check`는 받지 않습니다.
+아래 개발 스크립트와 별도의 런타임 변형은 계속 사용할 수 있습니다.
+
 editable 개발 환경 설치 후 저장소 루트에서 실행합니다.
 
 ```bash

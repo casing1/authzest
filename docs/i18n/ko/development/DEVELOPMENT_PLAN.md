@@ -92,6 +92,8 @@ alpha.3(`99be6f5614d283befa2a421b64f84958b680f92f`)에도 유지합니다. 이�
 alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)은 이제 공개 alpha.3 fixture
 명령에 사용됩니다. mock 평가 스크립트·corpus와 #48 데모는 계속 소스 checkout 도구이며
 독립 실행 파일의 명령이나 설치된 저장소 fixture가 아닙니다.
+별도의 미출시 [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md)는 고정 mock 시연을 패키지에
+포함하고 Codex나 fixture 소스 실행 없이 별도 복사본 적용·소스 검사·복구 결정을 재사용합니다.
 중첩 의존성 그래프, 인증·인가 분류, finding 스키마, 일반 저장소 AI 검토와 기존 checkout 패치 적용은
 아직 구현되지 않았습니다.
 [#48 적용 데모](../guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본만 변경합니다.
@@ -217,6 +219,10 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
       다시 검증하고 정확한 diff·연결된 소스와 정책 근거·예상 결과·한계를 표시합니다.
       alpha.3 이후 소스에만 추가한 기능이며 draft/not-run을 유지하고 제공자·승인·적용·실행 연동은
       추가하지 않습니다. 아래의 더 넓은 표시·승인 완료 조건은 계속 열어둡니다.
+- [x] [#65 패키지 오프라인 시연](../guides/FIXTURE_DEMO.md)을 추가합니다. 관리 대상 mock 초안과
+      별도의 복사본 적용·고정 소스 설정 검사·복구 결정을 `fixture-demo`로 제공하며 checkout의
+      fixture 파일이나 제공자 호출은 필요하지 않습니다. 이 미출시 POSIX 소스 단계는 런타임 선택이나
+      임의 bundle 실행기를 추가하지 않으며 #35 전체를 완료하지 않습니다.
 - [ ] 격리된 임시 workspace에서 근거에 연결된 설명, 방어적 회귀 테스트 초안과 검토 가능한 diff를 만듭니다.
       제안 중에는 스캔한 소스를 실행하거나 사용자의 worktree를 수정하지 않습니다.
 - [ ] 이유, 대상 파일, 정확한 diff, 소스 revision/내용 식별값과 검증 계획을 제시합니다.

@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #65's packaged offline [`fixture-demo` walkthrough](docs/guides/FIXTURE_DEMO.md): a fixed mock
+  proposal, separate apply/source-check/restore decisions and retained private-copy records without
+  repository fixture files, Codex, accounts, network calls or fixture-source execution. It initially
+  requires supported POSIX operations and adds no target, bundle, runtime or automatic-approval option.
+  This source addition is not in published alpha.3 and does not complete broader #35.
 - Add #63's read-only [`proposal-preview` CLI](docs/guides/PROPOSAL_PREVIEW.md): validate a strict
   schema `1.0` bundle, then display the exact diff, linked evidence, expected outcomes and limitations
   as text or ASCII-escaped JSON. Add a caller-authored offline exporter, bounded POSIX regular-file

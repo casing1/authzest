@@ -9,6 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from authzest.runner.fixture_apply import FixtureApplySession
+from authzest.runner.fixture_demo import run_fixture_demo
 from scripts.demo_apply import _choice
 from scripts.demo_proposal import build_demo_proposal
 
@@ -30,6 +31,8 @@ async def run_demo(
     """
     if type(runtime_check) is not bool:
         raise ValueError("Runtime check selection must be a boolean")
+    if not runtime_check:
+        return await run_fixture_demo(read=read, emit=emit, parent=parent)
     verification_scope = "owned-fixture-runtime" if runtime_check else "source-configuration"
     kind = "runtime" if runtime_check else "configuration"
     result = {
