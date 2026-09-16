@@ -32,6 +32,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   previews remain draft/not-run with unknown authorization. No generated tests, provider calls,
   CLI integration or new execution/approval authority; published alpha.3 remains unchanged.
 
+### Fixed
+
+- Keep `fixture-demo` verification-setup failures in the session record as not-run with no execution
+  attempt; show an explicit warning for unconfirmed journal persistence, retain the separate restore
+  choice and exit nonzero. Unexpected exceptions escaping verification no longer synthesize a check result.
+- Preserve confirmed-created workspace paths and initialization stages through shared constructor
+  failures/cancellation, and report them in `fixture-demo` without deleting retained files or claiming
+  a complete journal or resume support. Older `codex-fixture` and development runtime-script fallback
+  handling is unchanged. These reliability fixes remain unreleased.
+
 ### Documentation
 
 - Synchronize all four README languages and English/Korean guides after verified alpha.3 publication

@@ -9,7 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from authzest.codex.fixture_demo import build_demo_proposal
-from authzest.runner._fixture_workspace import supported
+from authzest.runner._fixture_workspace import WorkspaceInitializationError, supported
 from authzest.runner.fixture_apply import FixtureApplySession
 
 
@@ -102,14 +102,11 @@ async def run_fixture_demo(*, read=input, emit=print, parent: Path | None = None
                 _emit(emit, preview)
                 plan_id = preview["plan_id"]
                 session.decide_verification(_choice(read, "verify", plan_id), plan_id)
-                verification = await session.verify()
             except Exception:
-                verification = {
-                    "status": "failed",
-                    "reason": "verification-unavailable",
-                    "verification_scope": "source-configuration",
-                    "runtime_verification_status": "not-run",
-                }
+                verification = session.fail_verification_setup()
+            else:
+                # Escaped execution errors are not known pre-execution failures.
+                verification = await session.verify()
             result["verification"] = verification
             result["verification_status"] = verification["status"]
             _emit(emit, verification)
@@ -142,11 +139,35 @@ async def run_fixture_demo(*, read=input, emit=print, parent: Path | None = None
         )
         result["exit_code"] = 0 if application_ok and not verification_failed else 1
         if result["exit_code"]:
-            result["detail"] = "Inspect the retained workspace record if created."
-    except (asyncio.CancelledError, KeyboardInterrupt):
+            result["detail"] = (
+                "Verification journal persistence is unconfirmed; "
+                "the retained record may be stale. "
+                "Inspect the workspace files and command output; this is not a restart receipt."
+                if verification is not None and verification.get("journal_status") == "unconfirmed"
+                else "Inspect the retained workspace record if created."
+            )
+    except (asyncio.CancelledError, KeyboardInterrupt) as exc:
         result.update(status="cancelled", exit_code=130)
         result.pop("verification_status", None)
         result["detail"] = "Interrupted; inspect the retained workspace record if created."
+        failure = getattr(exc, "workspace_initialization", None)
+        if isinstance(failure, WorkspaceInitializationError):
+            result.update(
+                workspace=str(failure.created_path),
+                initialization_stage=failure.initialization_stage,
+                detail="Initialization interrupted; inspect the retained workspace. "
+                "Its record may be absent or incomplete; no automatic cleanup was performed.",
+            )
+    except WorkspaceInitializationError as exc:
+        result.update(
+            status="workflow-failed",
+            exit_code=1,
+            workspace=str(exc.created_path),
+            initialization_stage=exc.initialization_stage,
+            detail="Initialization failed; inspect the retained workspace. "
+            "Its record may be absent or incomplete; no automatic cleanup was performed.",
+        )
+        result.pop("verification_status", None)
     except Exception:
         result.update(status="workflow-failed", exit_code=1)
         result.pop("verification_status", None)

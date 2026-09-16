@@ -43,7 +43,7 @@ answering each prompt; placeholder identifiers below are not literal values to e
 Enter or other nonmatching text declines the current step; `cancel`, EOF or interruption at a prompt
 cancels that step. Declining application stops before checks or restoration. Declining verification
 leaves it `not-run` and still offers restoration. Declining restoration keeps the applied copy.
-A failed check is not a successful fix; restoration remains a separate decision after check failure.
+A failed check is not a successful fix; recorded check failures still lead to a separate restoration decision.
 
 ## What runs and what remains
 
@@ -58,6 +58,21 @@ after decline or failure if they were created. Restoration refuses detected late
 overwriting them. Do not concurrently edit the copy during an operation. Inspect the displayed
 workspace after an interrupted or uncertain operation; the journal is not crash recovery or a
 restart/resume capability, and temporary storage is not a permanent backup.
+
+If verification setup fails before `verify()` is invoked, the session records `status: not-run`,
+`reason: verification-setup-failed` and `execution_attempted: false`. Restoration is still offered
+separately, and the command exits `1`. If that record cannot be durably saved, the result instead
+reports `reason: journal-unavailable` and `journal_status: unconfirmed`, with an explicit warning;
+do not assume the retained journal matches the displayed result. An unexpected exception escaping
+`verify()` produces `workflow-failed` without inventing a check result or guaranteeing an automatic
+restoration prompt. Inspect the retained workspace and record before taking further action.
+
+If initialization fails or is cancelled after a workspace was created, the command reports the
+confirmed-created `workspace` path and a bounded `initialization_stage` when available. Retained
+files are not deleted; the record may be missing or incomplete. The path identifies the created
+workspace, not a guarantee of its current contents or a way to resume the session. These reporting
+changes apply to `fixture-demo` and shared constructor error information; the older `codex-fixture`
+and development runtime-script fallback handling is unchanged.
 
 Mock provenance, zero live provider calls and runtime verification `not-run` must not be confused
 with live-model quality, authenticated human consent, authorization correctness or a verified
