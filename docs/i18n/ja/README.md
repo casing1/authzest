@@ -38,6 +38,9 @@ React ダッシュボードは任意のローカルインターフェースで�
 - `scan` コマンドによる読みやすい形式または JSON のレポート
 - 未リリースの読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) をソースに追加：
   対応 POSIX システムで bundle の正確な diff・根拠・期待結果を表示し、承認や実行は行わない
+- 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
+  同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
+  Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない
 - 既存の JSON フィールドを保持し、スキーマ `1.2`、構造化された診断、bounded/partial 状態と、
   元の宣言・app・`include_router` の根拠を伴う区別可能な登録 ID を追加
 - ルートに直接宣言された `Depends`・`Security`、ソース位置と既知の scopes を収集。

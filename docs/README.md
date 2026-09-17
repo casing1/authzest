@@ -38,6 +38,7 @@ docs/
 | Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)              |
 | Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                          |
 | Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)         |
+| Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)     |
 | Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)            |
 | Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)       |
 | Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)           | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)          |
@@ -64,6 +65,10 @@ as draft/not-run data. It generates or executes no tests and is not consumed by 
 [#63's proposal preview](guides/PROPOSAL_PREVIEW.md) ([한국어](i18n/ko/guides/PROPOSAL_PREVIEW.md))
 adds an unreleased, read-only CLI view of a strict bundle on supported POSIX systems. It shows the
 exact diff, linked evidence and expected outcomes without changing approval, execution or live-sharing scope.
+[#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
+adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
+separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source
+execution. It accepts neither the preview bundle nor a runtime selector.
 
 The subsequent [owned-fixture application demo](guides/FIXTURE_APPLICATION.md)
 ([한국어](i18n/ko/guides/FIXTURE_APPLICATION.md)) adds #48's explicit terminal approval and restoration
@@ -82,7 +87,7 @@ alpha.3 publication checks passed. General repository AI and the complete #35 wo
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
 with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). Its pure contracts support alpha.3's fixture
-command; the evaluation scripts/corpus and offline copy demos still require a development checkout.
+command; the evaluation scripts/corpus and original `scripts` demos still require a development checkout.
 The offline evaluation does not call a model.
 
 [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published on 2026-09-12

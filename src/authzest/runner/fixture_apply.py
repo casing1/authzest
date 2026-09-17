@@ -24,7 +24,12 @@ from authzest.codex.proposals import (
     source_snapshots,
     validate_proposal,
 )
-from authzest.runner._fixture_workspace import CommittedWriteError, FixtureWorkspace, WorkspaceError
+from authzest.runner._fixture_workspace import (
+    CommittedWriteError,
+    FixtureWorkspace,
+    WorkspaceError,
+    WorkspaceInitializationError,
+)
 from authzest.runner.approval import ProposalDecision, assess_decision, record_decision
 
 
@@ -90,12 +95,24 @@ class FixtureApplySession:
         self._verification_blocked = False
         self._verification: dict | None = None
         self._workspace = FixtureWorkspace(self._before, self._after, parent=parent)
+        stage = "read-initial-source"
         try:
             self._original = self._workspace.read_main()
             self._current = self._original
+            stage = "write-initial-record"
             self._record("prepared")
-        except BaseException:
-            self.close()
+        except BaseException as exc:
+            failure = WorkspaceInitializationError(self.workspace, stage)
+            try:
+                self.close()
+            except Exception:
+                pass  # Retain the original failure and the confirmed workspace path.
+            except BaseException as interrupted:
+                interrupted.workspace_initialization = failure
+                raise
+            if isinstance(exc, Exception):
+                raise failure from None
+            exc.workspace_initialization = failure
             raise
 
     @property
@@ -307,6 +324,40 @@ class FixtureApplySession:
             with suppress(OSError, WorkspaceError):
                 self._record("verification-journal-unavailable")
         return dict(self._verification)
+
+    def fail_verification_setup(self) -> dict:
+        """Record a pre-execution setup failure without inventing a checker outcome.
+
+        Call only when preparation failed before invoking verify(). An existing
+        outcome is preserved; an active or consumed attempt cannot be reclassified.
+        Restoration remains an independent, guarded decision.
+        """
+        if self._verification_running:
+            raise WorkspaceError("Verification is still running")
+        if self._verification is not None:
+            return dict(self._verification)
+        if self._phase != "applied" or self._verification_used:
+            raise WorkspaceError("Verification setup failure is no longer recordable")
+        self._verification_used = True
+        self._verification_blocked = True
+        plan = self._verification_plan or {}
+        result = {
+            "status": "not-run",
+            "reason": "verification-setup-failed",
+            "plan_id": plan.get("plan_id"),
+            "proposal_id": self._proposal.proposal_id,
+            "check_id": plan.get("check_id"),
+            "source_sha256": sha256(self._after).hexdigest(),
+            "worker_sha256": plan.get("worker_sha256"),
+            "elapsed_ms": None,
+            "exit_code": None,
+            "execution_attempted": False,
+            "verification_scope": self._verification_scope(),
+            "runtime_verification_status": "not-run",
+        }
+        if self._runtime_check:
+            result["runtime_evidence"] = None
+        return self._save_verification(result)
 
     async def verify(self) -> dict:
         """Run the approved fixed check once, retaining its historical checked-content result."""

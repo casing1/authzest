@@ -16,6 +16,38 @@ class WorkspaceError(RuntimeError):
     """A precondition or bounded workspace operation failed."""
 
 
+class WorkspaceInitializationError(WorkspaceError):
+    """A confirmed new directory was retained after incomplete initialization.
+
+    The path and stage are metadata, not exception-message fragments. This does
+    not attest that an audit record exists or that initialization was rolled back.
+    Interrupted constructors attach this object as ``workspace_initialization``
+    to the original interruption instead of replacing its exception type.
+    """
+
+    STAGES = frozenset(
+        {
+            "resolve-path",
+            "open-directory",
+            "inspect-directory",
+            "check-directory",
+            "create-main",
+            "create-before",
+            "create-after",
+            "sync-directory",
+            "read-initial-source",
+            "write-initial-record",
+        }
+    )
+
+    def __init__(self, created_path: Path, initialization_stage: str):
+        if initialization_stage not in self.STAGES:
+            raise ValueError("Unknown workspace initialization stage")
+        super().__init__("Fixture workspace initialization failed; inspect the retained directory.")
+        self.created_path = created_path
+        self.initialization_stage = initialization_stage
+
+
 class CommittedWriteError(WorkspaceError):
     """Replacement happened, but its durability/current state could not be confirmed."""
 
@@ -56,16 +88,40 @@ class FixtureWorkspace:
     def __init__(self, before: bytes, after: bytes, *, parent: Path | None = None):
         if not supported():
             raise WorkspaceError("Fixture application requires supported POSIX file operations")
-        self.path = Path(tempfile.mkdtemp(prefix="authzest-fixture-", dir=parent)).resolve()
-        self._fd = os.open(self.path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-        self._root = os.fstat(self._fd)
+        # Capture the returned name before resolving it; even resolution can fail.
+        # A failed mkdtemp has no confirmed directory to report.
+        self.path = Path(tempfile.mkdtemp(prefix="authzest-fixture-", dir=parent))
+        self._fd = -1
+        stage = "resolve-path"
         try:
+            self.path = self.path.resolve()
+            stage = "open-directory"
+            self._fd = os.open(self.path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            stage = "inspect-directory"
+            self._root = os.fstat(self._fd)
+            stage = "check-directory"
             self._check_root()
-            for name, data in (("main.py", before), ("before.txt", before), ("after.txt", after)):
+            for create_stage, name, data in (
+                ("create-main", "main.py", before),
+                ("create-before", "before.txt", before),
+                ("create-after", "after.txt", after),
+            ):
+                stage = create_stage
                 self._create(name, data)
+            stage = "sync-directory"
             os.fsync(self._fd)
-        except BaseException:
-            self.close()
+        except BaseException as exc:
+            failure = WorkspaceInitializationError(self.path, stage)
+            try:
+                self.close()
+            except Exception:
+                pass  # Best effort; do not mask the original failure or delete retained files.
+            except BaseException as interrupted:
+                interrupted.workspace_initialization = failure
+                raise
+            if isinstance(exc, Exception):
+                raise failure from None
+            exc.workspace_initialization = failure
             raise
 
     def close(self) -> None:

@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #65's packaged offline [`fixture-demo` walkthrough](docs/guides/FIXTURE_DEMO.md): a fixed mock
+  proposal, separate apply/source-check/restore decisions and retained private-copy records without
+  repository fixture files, Codex, accounts, network calls or fixture-source execution. It initially
+  requires supported POSIX operations and adds no target, bundle, runtime or automatic-approval option.
+  This source addition is not in published alpha.3 and does not complete broader #35.
 - Add #63's read-only [`proposal-preview` CLI](docs/guides/PROPOSAL_PREVIEW.md): validate a strict
   schema `1.0` bundle, then display the exact diff, linked evidence, expected outcomes and limitations
   as text or ASCII-escaped JSON. Add a caller-authored offline exporter, bounded POSIX regular-file
@@ -26,6 +31,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   registration and before/after source hashes. Validate typed expectations and same-request evidence;
   previews remain draft/not-run with unknown authorization. No generated tests, provider calls,
   CLI integration or new execution/approval authority; published alpha.3 remains unchanged.
+
+### Fixed
+
+- Keep `fixture-demo` verification-setup failures in the session record as not-run with no execution
+  attempt; show an explicit warning for unconfirmed journal persistence, retain the separate restore
+  choice and exit nonzero. Unexpected exceptions escaping verification no longer synthesize a check result.
+- Preserve confirmed-created workspace paths and initialization stages through shared constructor
+  failures/cancellation, and report them in `fixture-demo` without deleting retained files or claiming
+  a complete journal or resume support. Older `codex-fixture` and development runtime-script fallback
+  handling is unchanged. These reliability fixes remain unreleased.
 
 ### Documentation
 

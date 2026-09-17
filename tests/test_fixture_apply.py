@@ -401,9 +401,11 @@ def test_session_initialization_failure_closes_handle(tmp_path, monkeypatch):
 
     monkeypatch.setattr(io.FixtureWorkspace, "close", observe)
     monkeypatch.setattr(io.FixtureWorkspace, "write_record", fail)
-    with pytest.raises(OSError):
+    with pytest.raises(io.WorkspaceInitializationError) as caught:
         FixtureApplySession(draft(request, review), request, review, parent=tmp_path)
     assert len(closed) == 1 and closed[0].is_dir()
+    assert caught.value.created_path == closed[0]
+    assert caught.value.initialization_stage == "write-initial-record"
 
 
 @pytest.mark.parametrize("failure", ["replace", "audit", "post-read"])
