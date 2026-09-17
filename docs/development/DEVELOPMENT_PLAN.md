@@ -98,6 +98,9 @@ published alpha.3 fixture command. Mock evaluation scripts/corpus and #48's demo
 tools, not standalone binary commands or installed repository fixtures.
 The unreleased [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md) instead packages its own fixed mock
 walkthrough, reusing separate copy/source-check/restore decisions without Codex or fixture-source execution.
+The [#67 failure-handling follow-up](../guides/CODEX_FIXTURE.md#unreleased-failure-handling) aligns
+the existing Codex source/runtime and development runtime paths without expanding execution. Source-only
+comparison of proposal declaration expectations is a separate next feature, not implemented by #67.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.

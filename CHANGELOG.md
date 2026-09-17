@@ -39,8 +39,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   choice and exit nonzero. Unexpected exceptions escaping verification no longer synthesize a check result.
 - Preserve confirmed-created workspace paths and initialization stages through shared constructor
   failures/cancellation, and report them in `fixture-demo` without deleting retained files or claiming
-  a complete journal or resume support. Older `codex-fixture` and development runtime-script fallback
-  handling is unchanged. These reliability fixes remain unreleased.
+  a complete journal or resume support.
+- Extend that failure handling in #67 to `codex-fixture` source/runtime modes and the development
+  runtime script: persist setup failures as not-run without an execution attempt, warn about unconfirmed
+  journals, retain initialization path/stage information and keep restoration separately approved.
+  Unexpected exceptions escaping verification become workflow failures without fabricated check results
+  or an automatic-restoration guarantee. Codex library cancellation still propagates; CLI interruption
+  outside a prompt exits `130`, while intentional prompt decline/cancel behavior is unchanged.
+  No provider or execution scope is added, and published alpha.3 assets remain unchanged.
 
 ### Documentation
 

@@ -162,28 +162,53 @@ def codex_fixture(
     ] = False,
 ) -> None:
     """Separately approve Codex review, fixture-copy edits, fixed checks and restore."""
+    from authzest.runner._fixture_workspace import WorkspaceInitializationError
     from authzest.runner.codex_fixture import FixtureInputError, run_codex_fixture
 
-    try:
-        result = asyncio.run(
-            run_codex_fixture(
+    recovery: dict[str, object] = {}
+
+    async def run_with_recovery() -> dict:
+        try:
+            return await run_codex_fixture(
                 model, timeout_seconds=timeout_seconds, runtime_check=runtime_check, emit=typer.echo
             )
-        )
+        except (asyncio.CancelledError, KeyboardInterrupt) as exc:
+            # Capture metadata inside the coroutine: asyncio.run may translate task
+            # cancellation into a fresh KeyboardInterrupt, losing exception attributes.
+            failure = getattr(exc, "workspace_initialization", None)
+            if isinstance(failure, WorkspaceInitializationError):
+                recovery.update(
+                    workspace=str(failure.created_path),
+                    initialization_stage=failure.initialization_stage,
+                    runtime_verification_status="not-run",
+                    detail="Initialization interrupted; inspect the retained workspace. "
+                    "Its record may be absent or incomplete; no automatic cleanup was performed.",
+                )
+            else:
+                workspace = getattr(exc, "fixture_workspace", None)
+                if isinstance(workspace, Path):
+                    recovery["workspace"] = str(workspace)
+            raise
+
+    try:
+        result = asyncio.run(run_with_recovery())
     except FixtureInputError as exc:
         typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
         raise typer.Exit(code=2) from exc
-    except KeyboardInterrupt:
+    except (asyncio.CancelledError, KeyboardInterrupt):
         typer.echo(
             json.dumps(
                 {
                     "status": "cancelled",
+                    "exit_code": 130,
                     **({} if runtime_check else {"runtime_verification_status": "not-run"}),
                     "detail": "Interrupted; inspect the retained workspace record if created.",
-                }
+                    **recovery,
+                },
+                ensure_ascii=True,
             )
         )
-        raise typer.Exit(code=0) from None
+        raise typer.Exit(code=130) from None
     except Exception:
         typer.echo(
             json.dumps(

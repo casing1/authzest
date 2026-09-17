@@ -224,6 +224,33 @@ python -m scripts.demo_verify --runtime-check
 
 ## 계약 호환성
 
+### 미출시 실패 처리
+
+[#67](https://github.com/casing1/authzest/issues/67)은 `codex-fixture`의 소스·런타임 모드와
+개발용 런타임 스크립트를 [`fixture-demo`](FIXTURE_DEMO.md)에 도입한 실패 처리와 맞춥니다.
+이 변경은 이후 소스 revision이 필요하며 공개 alpha.3 바이너리에는 없습니다.
+소스 공유·검증 범위·자동 작업은 확대하지 않습니다.
+
+`verify()` 호출 전 준비 예외는 세션이 `status: not-run`,
+`reason: verification-setup-failed`, `execution_attempted: false`로 기록합니다.
+복구 여부는 계속 별도로 묻고 워크플로는 `1`로 종료합니다. 기록에 실패하면
+`reason: journal-unavailable`, `journal_status: unconfirmed`와 명시적인 경고를 표시합니다.
+보존된 journal은 없거나 불완전하거나 화면 결과와 다를 수 있으므로 검증 성공의 근거로
+취급하지 마세요. `verify()` 밖으로 예상하지 못한 예외가 전달되면 검사 결과를 만들어내지
+않고 `workflow-failed`로 처리하며 자동 복구 질문도 보장하지 않습니다. 보존 파일과 기록을 확인하세요.
+
+workspace 생성 이후 초기화 실패·취소에서는 확인된 생성 경로인 `workspace`와 제한된
+`initialization_stage`를 확인 가능한 경우 보존합니다. 보존 파일은 삭제하지 않으며 이 경로가
+현재 상태나 재시작/재개를 보장하지 않습니다. 라이브러리 수준의 `asyncio.CancelledError`는
+정상 성공 반환으로 바꾸지 않고 계속 전파합니다. 질문 밖의 CLI 중단은 `130`으로 종료합니다.
+Enter·일치하지 않는 입력은 계속 질문을 거절하며, `cancel`·EOF·응답 중 중단은 해당 단계를
+취소합니다. 이 의도적인 질문 선택의 기존 동작은 유지하며 다른 단계를 승인하지 않습니다.
+
+새 실제 모델 검증이나 릴리스를 뜻하지 않습니다. `proposal-check`와 같은 소스 전용
+선언·예상 결과 비교는 아직 미구현이며 이 안정성 변경과 별도입니다.
+
+### 기존 스키마와 근거
+
 AI 스키마 `1.1`은 `temperature: null`을 허용하며 숫자 sampling temperature를 요청하지 않고
 제공자가 관리한다는 뜻입니다. 기존 숫자 temperature 요청은 스키마 `1.0`, 기존 식별값과
 `AdapterConfig` 기본값 `0.0`을 유지합니다. null은 0이나 결정론적 생성을 뜻하지 않습니다.

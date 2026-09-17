@@ -715,7 +715,7 @@ def test_configuration_check_requires_its_own_exact_choice_and_keeps_restore_ava
 
 @pytest.mark.skipif(not supported(), reason="POSIX owned-fixture command")
 @pytest.mark.parametrize("stage", ["verification_preview", "decide_verification", "verify"])
-def test_local_verification_stage_exception_is_sanitized_and_does_not_skip_restore(
+def test_local_verification_errors_distinguish_preparation_from_uncertain_execution(
     tmp_path, monkeypatch, adapter_factory, stage
 ):
     factory, _ = adapter_factory
@@ -734,12 +734,20 @@ def test_local_verification_stage_exception_is_sanitized_and_does_not_skip_resto
             MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=factory, parent=tmp_path
         )
     )
-    assert result["status"] == "verification-failed" and result["exit_code"] == 1
-    assert result["verification"]["reason"] == "verification-unavailable"
-    assert result["verification_status"] == "failed"
+    assert result["exit_code"] == 1
+    if stage == "verify":
+        assert result["status"] == "workflow-failed"
+        assert "verification_status" not in result
+        assert result["verification"] is result["restoration"] is None
+        assert Path(result["workspace"]).joinpath("main.py").read_text() == FIXTURE_AFTER
+    else:
+        assert result["status"] == "verification-failed"
+        assert result["verification"]["reason"] == "verification-setup-failed"
+        assert result["verification_status"] == "not-run"
+        assert result["verification"]["execution_attempted"] is False
+        assert result["restoration"]["restored"] is True
     assert result["runtime_verification_status"] == "not-run"
     assert result["application"]["applied"] is True
-    assert result["restoration"]["restored"] is True
     assert "SECRET-WORKER-STDERR" not in json.dumps(result)
 
 
@@ -768,7 +776,9 @@ def test_stale_verification_source_is_not_checked_or_overwritten_on_restore(
             MODEL, read=read, emit=output.append, adapter_factory=factory, parent=tmp_path
         )
     )
-    assert result["verification_status"] == "failed"
+    assert result["verification_status"] == "not-run"
+    assert result["verification"]["reason"] == "verification-setup-failed"
+    assert result["verification"]["execution_attempted"] is False
     assert result["status"] == "application-failed" and result["exit_code"] == 1
     assert result["restoration"]["restored"] is False
     assert result["runtime_verification_status"] == "not-run"
@@ -907,8 +917,9 @@ def test_verification_cancellation_propagates_and_retains_truthful_applied_recor
         while not state:
             await asyncio.sleep(0)
         task.cancel()
-        with pytest.raises(asyncio.CancelledError):
+        with pytest.raises(asyncio.CancelledError) as interrupted:
             await task
+        assert interrupted.value.fixture_workspace == next(tmp_path.iterdir())
 
     asyncio.run(run())
     assert state == ["started", "finished"]
@@ -959,7 +970,7 @@ def test_cli_interrupted_or_unknown_workflow_does_not_claim_verification_never_s
 
     monkeypatch.setattr(workflow, "run_codex_fixture", fail)
     result = runner.invoke(app, ["codex-fixture", "--model", MODEL])
-    assert result.exit_code == (0 if failure is KeyboardInterrupt else 1)
+    assert result.exit_code == (130 if failure is KeyboardInterrupt else 1)
     summary = json.loads(result.stdout)
     assert summary["status"] == ("cancelled" if failure is KeyboardInterrupt else "workflow-failed")
     assert summary["runtime_verification_status"] == "not-run"

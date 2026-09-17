@@ -228,6 +228,34 @@ verification approval. It requires the optional dependencies and has the boundar
 
 ## Contract compatibility
 
+### Unreleased failure handling
+
+[#67](https://github.com/casing1/authzest/issues/67) aligns source/runtime `codex-fixture` and the
+development runtime script with the failure handling introduced for
+[`fixture-demo`](FIXTURE_DEMO.md). These changes require the newer source revision; they are not in
+published alpha.3 binaries and do not expand source sharing, verification scope or automatic actions.
+
+A setup exception before `verify()` is invoked is recorded by the session as `status: not-run`,
+`reason: verification-setup-failed` and `execution_attempted: false`. A separate restoration choice
+is still offered; the workflow exits `1`. If recording fails, `reason: journal-unavailable` and
+`journal_status: unconfirmed` produce an explicit warning. The retained journal may be missing,
+incomplete or inconsistent with the displayed result. Never treat it as proof of successful verification.
+An unexpected exception escaping `verify()` instead produces `workflow-failed` without inventing
+a check result or guaranteeing an automatic restoration prompt. Inspect the retained files and record.
+
+Initialization failures or cancellation after workspace creation preserve the confirmed-created
+`workspace` path and bounded `initialization_stage` when available. Retained files are not deleted,
+and that path does not guarantee their current state or enable restart/resume. Library-level
+`asyncio.CancelledError` continues to propagate rather than becoming a normal successful return.
+CLI interruption outside a prompt exits `130`; Enter/nonmatching input still declines a prompt,
+and `cancel`, EOF or interruption while answering still cancels that step. These intentional prompt
+choices retain their existing behavior and are not approval for another step.
+
+No new live-model validation or release is implied. Source-only declaration/expectation comparison
+such as `proposal-check` remains unimplemented and separate from this reliability change.
+
+### Existing schemas and evidence
+
 AI schema `1.1` permits `temperature: null`, meaning no numeric sampling temperature was requested;
 the provider manages it. Existing numeric-temperature requests retain schema `1.0`, their identities,
 and the existing `AdapterConfig` default of `0.0`. Null is not zero or deterministic generation.

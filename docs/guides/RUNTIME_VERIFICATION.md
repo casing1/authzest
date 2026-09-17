@@ -86,6 +86,24 @@ cannot become `passed`. An outer interruption can omit unknown status; inspect t
 instead of assuming that no execution occurred. A result remains historical evidence of its checked
 AFTER digest even after an approved restoration to BEFORE.
 
+### Unreleased failure handling
+
+In newer source after alpha.3, [#67](https://github.com/casing1/authzest/issues/67) aligns the Codex
+runtime workflow and `scripts.demo_verify --runtime-check` with the session's setup-failure record:
+`status: not-run`, `reason: verification-setup-failed`, `execution_attempted: false`. The runtime
+worker was not invoked; restoration is still a separate choice and the workflow exits `1`.
+Unconfirmed persistence is reported as `journal-unavailable` / `journal_status: unconfirmed` with a
+warning, not an authoritative result on disk. An unexpected exception escaping `verify()` is a
+workflow failure without a fabricated verification status or a guaranteed automatic restoration prompt.
+
+After initialization failure or cancellation, confirmed-created workspace paths and initialization
+stages are retained when available; files are not deleted and the record may be absent or incomplete.
+Codex library cancellation continues to propagate. CLI interruption outside a prompt exits `130`;
+intentional prompt decline/cancel behavior is unchanged. See the
+[Codex failure-handling details](CODEX_FIXTURE.md#unreleased-failure-handling).
+These source changes neither expand runtime scope nor add live-model evidence, a new release or changes
+to the published alpha.3 assets. Historical validation below remains tied to its stated commits.
+
 ## Process boundary and limitations
 
 The fixed worker gets bounded source bytes over stdin, a private working directory, a reduced
