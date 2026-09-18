@@ -50,6 +50,8 @@ authzest proposal-check "$preview_dir/bundle.json" --json
 하며 유효한 참조 ID만으로는 부족합니다. 두 snapshot 모두 별칭·라우터 없이 단일 `FastAPI`
 소유 객체에 직접 등록한 지원 범위 내 모듈 수준 라우트를 사용해야 합니다.
 일반 `scan` 파서의 지원 구문보다 좁은 범위입니다.
+`pkg/api.py` 같은 소스 경로 표기는 Windows를 포함한 모든 운영체제에서 bundle 계약의 POSIX
+형식을 사용합니다. 이 정규화는 기존 scan 표시 경로나 등록 식별값을 바꾸지 않습니다.
 정식 이름의 `from fastapi import FastAPI, Depends, Security`, `typing` 또는 `typing_extensions`의
 `Annotated`/`Any`, 지원하는 기본·generic·union annotation, 명시적인 의존성 참조와 리터럴
 보조 인자를 지원합니다. namespace import, 사용자 정의 import/decorator와 문자열·타입 별칭은

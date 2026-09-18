@@ -21,8 +21,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   caller-authored dependency-count or declared-scope targets, and retain identities and reasons in
   text/JSON results. Unsupported or ambiguous evidence remains unknown; policy intent is not evaluated.
   Completed processing/exit zero is not a match or security pass. No provider, source execution,
-  embedded-path reads, patch application or approval is added. This source implementation is pending
-  review/merge, is not in published alpha.3 and does not complete broader #35.
+  embedded-path reads, patch application or approval is added. This source implementation is not in
+  published alpha.3 and does not complete broader #35.
 - Add #65's packaged offline [`fixture-demo` walkthrough](docs/guides/FIXTURE_DEMO.md): a fixed mock
   proposal, separate apply/source-check/restore decisions and retained private-copy records without
   repository fixture files, Codex, accounts, network calls or fixture-source execution. It initially
@@ -41,6 +41,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Normalize logical source labels to POSIX form when comparing proposal baseline evidence on
+  Windows, without changing legacy scan display paths or registration identities. Add nested-label
+  regressions and a scoped Windows CI job; the file-reading CLI remains POSIX-only.
 - Keep `fixture-demo` verification-setup failures in the session record as not-run with no execution
   attempt; show an explicit warning for unconfirmed journal persistence, retain the separate restore
   choice and exit nonzero. Unexpected exceptions escaping verification no longer synthesize a check result.

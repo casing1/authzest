@@ -283,6 +283,15 @@ def _key(route: Route, owner: str | None) -> tuple:
     return owner, route.function, route.methods, route.path
 
 
+def _declaration_evidence(route: Route) -> dict:
+    # Bundle source labels are logical POSIX paths on every host. Keep the legacy
+    # scan report's native display paths unchanged, but match prepare_request's
+    # wire normalization here. Locations and registration IDs already use POSIX.
+    evidence = route.to_dict()
+    evidence["file"] = route.file.as_posix()
+    return evidence
+
+
 def _observe(route: Route, observation: str) -> dict | None:
     if observation == "dependency-declarations":
         return {"count": len(route.effective_dependencies)}
@@ -319,7 +328,9 @@ def compare_declarations(
         if before.reason or after.reason:
             results.append(_result("unknown", before.reason or after.reason))
             continue
-        baseline = [route for route in before.routes if route.to_dict() == target.baseline]
+        baseline = [
+            route for route in before.routes if _declaration_evidence(route) == target.baseline
+        ]
         if len(baseline) != 1:
             results.append(_result("unknown", "baseline-evidence-mismatch"))
             continue
@@ -348,7 +359,7 @@ def compare_declarations(
                 "declaration-match" if matched else "declaration-mismatch",
                 before=prior,
                 observed=observed,
-                registration_id=candidates[0].to_dict()["registration_id"],
+                registration_id=_declaration_evidence(candidates[0])["registration_id"],
             )
         )
     return results

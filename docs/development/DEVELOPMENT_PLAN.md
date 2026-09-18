@@ -100,7 +100,7 @@ The unreleased [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md) instead packages 
 walkthrough, reusing separate copy/source-check/restore decisions without Codex or fixture-source execution.
 The merged [#67 failure-handling follow-up](../guides/CODEX_FIXTURE.md#unreleased-failure-handling)
 aligns the existing Codex source/runtime and development runtime paths without expanding execution.
-[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md) is implemented in source pending review/merge:
+[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md) is implemented in the source checkout:
 it compares declaration targets with supported single-source snapshots from validated preview bundles.
 Policy intent stays not-evaluated; runtime verification stays not-run and authorization remains unknown.
 Neither post-alpha.3 addition changes published assets or completes broader #35.
@@ -236,7 +236,7 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
 - [x] Merge [#67's failure-handling alignment](../guides/CODEX_FIXTURE.md#unreleased-failure-handling)
       for existing Codex source/runtime paths and the development runtime script, retaining separate
       restoration decisions and honest setup/unknown-execution failure records without expanding scope.
-- [ ] Complete review/merge for [#69's source-only declaration comparison](../guides/PROPOSAL_CHECK.md).
+- [x] Implement [#69's source-only declaration comparison](../guides/PROPOSAL_CHECK.md).
       Implemented in source: bounded dependency-count/scope comparison, explicit unknown/not-evaluated
       outcomes and offline CLI text/JSON. No provider, source execution, patch application or approval;
       generated tests, runtime authorization and broader #35 acceptance remain separate work.

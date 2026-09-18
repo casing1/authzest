@@ -96,7 +96,7 @@ alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)�
 포함하고 Codex나 fixture 소스 실행 없이 별도 복사본 적용·소스 검사·복구 결정을 재사용합니다.
 병합된 [#67 실패 처리 후속 작업](../guides/CODEX_FIXTURE.md#미출시-실패-처리)은 실행 범위를
 넓히지 않고 기존 Codex 소스·런타임 및 개발용 런타임 경로를 맞춥니다.
-[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md)는 소스 구현 후 검토·병합 대기 중입니다.
+[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md)는 소스 checkout에 구현했습니다.
 검증된 preview bundle의 지원 범위 내 단일 소스 snapshot을 선언 목표와 비교합니다.
 정책 의도는 not-evaluated, 런타임 검증은 not-run, 인가는 unknown을 유지합니다.
 alpha.3 이후의 두 추가 작업 모두 공개 산출물을 바꾸거나 더 넓은 #35를 완료하지 않습니다.
@@ -232,7 +232,7 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
 - [x] [#67 실패 처리 정렬](../guides/CODEX_FIXTURE.md#미출시-실패-처리)을 병합했습니다.
       기존 Codex 소스·런타임 및 개발용 런타임 스크립트가 대상이며 범위를 넓히지 않고 별도 복구 결정과
       준비 실패·실행 여부 불확실 실패의 정확한 기록을 유지합니다.
-- [ ] [#69 소스 전용 선언 비교](../guides/PROPOSAL_CHECK.md)의 검토·병합을 완료합니다.
+- [x] [#69 소스 전용 선언 비교](../guides/PROPOSAL_CHECK.md)를 구현합니다.
       제한된 의존성 개수·scope 비교, 명시적인 unknown/not-evaluated 결과와 오프라인 CLI 텍스트/JSON은
       소스에 구현했습니다. 제공자·소스 실행·패치 적용·승인은 추가하지 않으며 생성 테스트·런타임 인가와
       더 넓은 #35 완료 조건은 별도 작업입니다.

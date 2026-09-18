@@ -51,6 +51,8 @@ exactly one selected source and one changed file. The baseline route evidence mu
 re-parsing that source; a valid reference ID alone is insufficient. Both snapshots must use supported
 module-level route registrations directly on a single `FastAPI` owner, without aliases or routers.
 This is narrower than the ordinary `scan` parser's supported syntax.
+Source labels such as `pkg/api.py` use the bundle contract's POSIX form on every host, including
+Windows. This normalization does not change legacy scan display paths or registration identities.
 Canonical `from fastapi import FastAPI, Depends, Security` names are supported, as are
 `Annotated`/`Any` imports from `typing` or `typing_extensions`, supported primitive/generic/union
 annotations, explicit dependency references and literal auxiliary arguments. Namespace imports,

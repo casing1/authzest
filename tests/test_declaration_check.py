@@ -8,10 +8,11 @@ import socket
 import subprocess
 from copy import deepcopy
 from dataclasses import FrozenInstanceError
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import pytest
 
+from authzest.analyzer import declarations
 from authzest.analyzer.declarations import DeclarationTarget, compare_declarations
 from authzest.codex.contracts import (
     CodexAnalysisRequest,
@@ -143,6 +144,81 @@ def compare(
     return compare_declarations(
         path="main.py", before_text=before, after_text=after, targets=[target]
     )[0]
+
+
+@pytest.mark.parametrize("path", ["main.py", "pkg/api.py", "pkg/nested/api.py"])
+@pytest.mark.parametrize("windows_paths", [False, True])
+def test_nested_wire_labels_and_ids_survive_host_path_semantics(monkeypatch, path, windows_paths):
+    after = "# Shift all declaration locations.\n\n" + WITH_SCOPES
+    bundle = bundle_for(
+        before=WITH_DEPENDENCY,
+        after=after,
+        path=path,
+        observation="scope-declarations",
+        expected={"scopes": ["reports:read"]},
+    )
+    baseline = next(
+        item["data"] for item in bundle.to_dict()["request"]["evidence"] if item["kind"] == "route"
+    )
+    after_bundle = bundle_for(before=after, after=after + "# another draft\n", path=path)
+    after_evidence = next(
+        item["data"]
+        for item in after_bundle.to_dict()["request"]["evidence"]
+        if item["kind"] == "route"
+    )
+    # prepare_request establishes POSIX wire labels, including on a Windows host.
+    for evidence in (baseline, after_evidence):
+        assert evidence["file"] == path
+        assert evidence["registration"]["declaration"]["file"] == path
+        assert evidence["registration"]["owner"]["location"]["file"] == path
+        assert evidence["registration"]["application"]["location"]["file"] == path
+        for field in ("dependencies", "effective_dependencies"):
+            assert evidence[field]
+            assert all(item["location"]["file"] == path for item in evidence[field])
+    assert baseline["registration_id"] != after_evidence["registration_id"]
+    original_baseline = deepcopy(baseline)
+    native_report = check_proposal(bundle)
+    if windows_paths:
+        # Only choose the host path flavour. Real parsing, evidence serialization and
+        # comparison still run; no comparator or result is replaced by a test double.
+        monkeypatch.setattr(declarations, "Path", PureWindowsPath)
+    compared = compare_declarations(
+        path=path,
+        before_text=WITH_DEPENDENCY,
+        after_text=after,
+        targets=[DeclarationTarget(baseline, "scope-declarations", {"scopes": ["reports:read"]})],
+    )[0]
+    assert compared["status"] == "matched", compared
+    assert compared["before_observed"] == {"scopes": []}
+    assert compared["observed"] == {"scopes": ["reports:read"]}
+    assert compared["after_registration_id"] == after_evidence["registration_id"]
+    report = check_proposal(bundle)
+    assert report == native_report
+    assert report["results"][0]["status"] == "matched"
+    assert report["results"][0]["path"] == path
+    assert report["results"][0]["baseline_registration_id"] == baseline["registration_id"]
+    assert report["results"][0]["after_registration_id"] == after_evidence["registration_id"]
+    assert baseline == original_baseline
+
+
+@pytest.mark.parametrize("windows_paths", [False, True])
+def test_path_normalization_does_not_match_another_canonical_source(monkeypatch, windows_paths):
+    foreign = bundle_for(before=WITH_DEPENDENCY, after=WITH_SCOPES, path="other/api.py")
+    baseline = next(
+        item["data"] for item in foreign.to_dict()["request"]["evidence"] if item["kind"] == "route"
+    )
+    if windows_paths:
+        monkeypatch.setattr(declarations, "Path", PureWindowsPath)
+    result = compare_declarations(
+        path="pkg/api.py",
+        before_text=WITH_DEPENDENCY,
+        after_text=WITH_SCOPES,
+        targets=[DeclarationTarget(baseline, "dependency-declarations", {"count": 1})],
+    )[0]
+    assert result["status"] == "unknown" and result["reason"] == "baseline-evidence-mismatch"
+    assert (
+        result["before_observed"] is result["observed"] is result["after_registration_id"] is None
+    )
 
 
 def assert_unknown(result):
