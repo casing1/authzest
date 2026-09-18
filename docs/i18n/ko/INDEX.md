@@ -38,6 +38,7 @@ docs/
 | 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)              |
 | 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                          |
 | 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)         |
+| 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)          |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)     |
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
@@ -61,10 +62,14 @@ docs/
 [#61 오프라인 예상 결과 manifest](reference/EXPECTATION_CONTRACT.md)
 ([English](../../reference/EXPECTATION_CONTRACT.md))는 alpha.3 이후 소스에 추가한 미출시 기능입니다.
 호출자가 작성한 정책·선언 목표를 정확한 제안과 기준 근거에 연결하며 항상 draft/not-run 데이터로
-표시합니다. 테스트를 생성·실행하지 않고 기존 승인이나 적용/검증 실행기에서도 사용하지 않습니다.
+표시합니다. 테스트를 생성·실행하지 않고 승인이나 소스 실행 권한을 부여하지 않습니다.
 [#63 제안 미리보기](guides/PROPOSAL_PREVIEW.md)([English](../../guides/PROPOSAL_PREVIEW.md))는
 지원하는 POSIX 시스템에서 엄격한 bundle을 읽기 전용으로 표시하는 미출시 CLI 기능입니다.
 정확한 diff·연결된 근거·예상 결과를 보여주며 승인·실행·실제 공유 범위는 바꾸지 않습니다.
+[#69 소스 전용 제안 검사](guides/PROPOSAL_CHECK.md)([English](../../guides/PROPOSAL_CHECK.md))는
+같은 bundle의 지원 범위 내 변경 전후 소스 snapshot을 선언 목표와 비교합니다.
+정책 의도는 `not-evaluated`, 런타임 검증은 `not-run`, 인가는 `unknown`을 유지합니다.
+종료 `0`은 비교 처리 완료이지 선언 일치나 보안 통과가 아닙니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.

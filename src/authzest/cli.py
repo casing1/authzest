@@ -303,6 +303,46 @@ def proposal_preview_command(
     typer.echo(output)
 
 
+@app.command("proposal-check")
+def proposal_check_command(
+    path: Annotated[
+        Path, typer.Argument(help="Offline JSON bundle; no embedded paths are opened.")
+    ],
+    as_json: bool = typer.Option(False, "--json", help="Print ASCII-escaped comparison JSON."),
+) -> None:
+    """Compare source declaration targets offline; not runtime or authorization verification."""
+    from authzest.runner.proposal_check import load_check
+    from authzest.runner.proposal_preview import PreviewInputError
+
+    try:
+        result = load_check(path)
+        # Quote every untrusted value, including human-readable output.
+        payload = json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False)
+        output = (
+            payload
+            if as_json
+            else (
+                "Offline source declaration comparison - authorization unknown / runtime not-run\n"
+                "Completed processing is not approval or a security pass. Not applied.\n" + payload
+            )
+        )
+    except PreviewInputError as exc:
+        typer.echo(
+            json.dumps({"status": "invalid-input", "detail": str(exc)}, ensure_ascii=True),
+            err=True,
+        )
+        raise typer.Exit(code=2) from None
+    except KeyboardInterrupt:
+        typer.echo('{"status": "cancelled"}', err=True)
+        raise typer.Exit(code=130) from None
+    except Exception:
+        typer.echo(
+            '{"status": "comparison-failed", "detail": "Offline comparison failed."}', err=True
+        )
+        raise typer.Exit(code=1) from None
+    typer.echo(output)
+
+
 @app.command("_configuration-worker", hidden=True)
 def _configuration_worker() -> None:
     """Internal fixed checker entry point for the packaged executable."""

@@ -36,6 +36,9 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Produces human-readable or JSON reports through the `scan` command.
 - Adds the unreleased, read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md) in source:
   display a bundle's exact diff, evidence and expected outcomes on supported POSIX systems; no approval or execution.
+- Adds the unreleased [`authzest proposal-check`](docs/guides/PROPOSAL_CHECK.md) to compare declaration
+  targets with a bounded subset of supplied before/after source snapshots. No source execution;
+  policy intent is not evaluated and a match is not an authorization guarantee.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.

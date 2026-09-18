@@ -19,6 +19,9 @@ expectation manifest before displaying their linked evidence, exact diff, ration
 and limitations. It does not read paths named inside the bundle, inspect Git or current source files,
 call Codex, approve or apply a patch, or generate or execute tests. Existing `codex-fixture` artifacts
 are not this input format, and its live input-sharing and execution boundaries are unchanged.
+The separate [source-only `proposal-check`](PROPOSAL_CHECK.md) command can compare declaration
+targets with supported source snapshots from the same bundle. It does not change this preview's
+draft/not-run status, evaluate policy intent or grant approval or execution.
 
 ## Reproducible offline demo
 
