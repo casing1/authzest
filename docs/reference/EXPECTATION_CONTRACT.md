@@ -17,8 +17,10 @@ The implementation is [codex/expectations.py](../../src/authzest/codex/expectati
 The manifest connects an exact proposal to baseline source/registration evidence, cited policy and
 intended outcomes for later review. It generates no tests, calls no provider, reads or writes no files,
 and executes no source, process or network operation. The separate
-[#63 CLI preview](../guides/PROPOSAL_PREVIEW.md) now displays it from a validated offline bundle only;
-no adapter, application/verification runner or approval service consumes or binds it.
+[#63 CLI preview](../guides/PROPOSAL_PREVIEW.md) displays it from a validated offline bundle.
+The later [#69 source-only check](../guides/PROPOSAL_CHECK.md) compares declaration targets with a
+bounded subset of that bundle's source snapshots. No adapter, patch-application or execution service,
+or approval decision consumes or binds this manifest.
 The existing fixed configuration/health fixture workflow is unchanged; #35 and broader
 defensive regression-test drafting remain unfinished.
 
@@ -59,8 +61,10 @@ authorization record, proof of fixture ownership, semantic correctness or curren
 | `dependency-declarations` | `{"count": 1}`; integer 0–256, not boolean                                            | Intended effective dependency declaration count for the selected registration; ordinary DI is not access-control evidence      |
 | `scope-declarations`      | `{"scopes": ["items:read"]}`; 0–32 unique, nonblank strings of at most 256 characters | Intended unique declared scopes across that registration's effective dependencies; declarations do not prove scope enforcement |
 
-These are future targets. The library neither compares them with the baseline inventory nor parses the
-proposed replacement to check them. Baseline evidence may be partial, and an expectation manifest may
+These are caller-authored targets. This pure contract module does not parse or compare source.
+The separate [#69 checker](../guides/PROPOSAL_CHECK.md) re-parses supported baseline/proposed snapshots
+and reports declaration comparisons, while `policy-intent` always remains `not-evaluated`.
+Baseline evidence may be partial, and an expectation manifest may
 cover only a subset of proposal changes. An empty scopes list or zero declaration count is not a finding
 that an endpoint is public, safe or vulnerable. Public intent does not prove public runtime behavior;
 restricted intent does not prove authorization.

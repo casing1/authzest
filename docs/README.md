@@ -38,6 +38,7 @@ docs/
 | Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)              |
 | Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                          |
 | Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)         |
+| Source-only proposal declaration comparison     | [Proposal check](guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](i18n/ko/guides/PROPOSAL_CHECK.md)          |
 | Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)     |
 | Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)            |
 | Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)       |
@@ -61,10 +62,14 @@ slice of #35. That pure contract does not apply files, call a provider or execut
 [#61's offline expectation manifest](reference/EXPECTATION_CONTRACT.md)
 ([한국어](i18n/ko/reference/EXPECTATION_CONTRACT.md)) is an unreleased source addition after alpha.3.
 It binds caller-authored policy/declaration targets to an exact proposal and baseline evidence, always
-as draft/not-run data. It generates or executes no tests and is not consumed by existing approvals or application/verification runners.
+as draft/not-run data. It generates or executes no tests and grants no approval or source execution.
 [#63's proposal preview](guides/PROPOSAL_PREVIEW.md) ([한국어](i18n/ko/guides/PROPOSAL_PREVIEW.md))
 adds an unreleased, read-only CLI view of a strict bundle on supported POSIX systems. It shows the
 exact diff, linked evidence and expected outcomes without changing approval, execution or live-sharing scope.
+[#69's source-only proposal check](guides/PROPOSAL_CHECK.md) ([한국어](i18n/ko/guides/PROPOSAL_CHECK.md))
+compares declaration targets with a bounded subset of the same bundle's before/after source snapshots.
+It leaves policy intent `not-evaluated`, runtime verification `not-run` and authorization `unknown`;
+exit `0` means comparison processing completed, not that declarations matched or security passed.
 [#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
 adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
 separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source

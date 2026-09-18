@@ -8,7 +8,11 @@ from pathlib import Path
 from typing import Any
 
 from authzest.codex.contracts import MAX_JSON_BYTES
-from authzest.codex.preview import preview_bundle, validate_preview_bundle
+from authzest.codex.preview import (
+    ValidatedPreviewBundle,
+    preview_bundle,
+    validate_preview_bundle,
+)
 
 
 class PreviewInputError(ValueError):
@@ -60,7 +64,7 @@ def _read_bundle(path: Path) -> bytes:
         os.close(fd)
 
 
-def load_preview(path: Path) -> dict[str, Any]:
+def load_preview_bundle(path: Path) -> ValidatedPreviewBundle:
     """Read one selected file, then validate in memory before any presentation.
 
     O_NOFOLLOW protects the final component only. This detects ordinary changes, not
@@ -69,10 +73,14 @@ def load_preview(path: Path) -> dict[str, Any]:
     if not preview_file_supported():
         raise PreviewInputError("File preview requires POSIX no-follow and nonblocking operations")
     try:
-        bundle = validate_preview_bundle(_read_bundle(path).decode("utf-8"))
-        return preview_bundle(bundle)
+        return validate_preview_bundle(_read_bundle(path).decode("utf-8"))
     except (OSError, ValueError) as exc:
         raise PreviewInputError(
             "Cannot preview: expected a stable regular UTF-8 bundle of at most 262144 bytes "
             "with valid, matching artifacts"
         ) from exc
+
+
+def load_preview(path: Path) -> dict[str, Any]:
+    """Display a validated bundle without consuming embedded paths."""
+    return preview_bundle(load_preview_bundle(path))

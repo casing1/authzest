@@ -94,9 +94,12 @@ alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)�
 독립 실행 파일의 명령이나 설치된 저장소 fixture가 아닙니다.
 별도의 미출시 [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md)는 고정 mock 시연을 패키지에
 포함하고 Codex나 fixture 소스 실행 없이 별도 복사본 적용·소스 검사·복구 결정을 재사용합니다.
-[#67 실패 처리 후속 작업](../guides/CODEX_FIXTURE.md#미출시-실패-처리)은 실행 범위를 넓히지 않고
-기존 Codex 소스·런타임 및 개발용 런타임 경로를 맞춥니다. 제안의 선언 기대값을 소스 전용으로
-비교하는 기능은 별도 후속 기능이며 #67에서 구현하지 않습니다.
+병합된 [#67 실패 처리 후속 작업](../guides/CODEX_FIXTURE.md#미출시-실패-처리)은 실행 범위를
+넓히지 않고 기존 Codex 소스·런타임 및 개발용 런타임 경로를 맞춥니다.
+[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md)는 소스 checkout에 구현했습니다.
+검증된 preview bundle의 지원 범위 내 단일 소스 snapshot을 선언 목표와 비교합니다.
+정책 의도는 not-evaluated, 런타임 검증은 not-run, 인가는 unknown을 유지합니다.
+alpha.3 이후의 두 추가 작업 모두 공개 산출물을 바꾸거나 더 넓은 #35를 완료하지 않습니다.
 중첩 의존성 그래프, 인증·인가 분류, finding 스키마, 일반 저장소 AI 검토와 기존 checkout 패치 적용은
 아직 구현되지 않았습니다.
 [#48 적용 데모](../guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본만 변경합니다.
@@ -226,6 +229,13 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
       별도의 복사본 적용·고정 소스 설정 검사·복구 결정을 `fixture-demo`로 제공하며 checkout의
       fixture 파일이나 제공자 호출은 필요하지 않습니다. 이 미출시 POSIX 소스 단계는 런타임 선택이나
       임의 bundle 실행기를 추가하지 않으며 #35 전체를 완료하지 않습니다.
+- [x] [#67 실패 처리 정렬](../guides/CODEX_FIXTURE.md#미출시-실패-처리)을 병합했습니다.
+      기존 Codex 소스·런타임 및 개발용 런타임 스크립트가 대상이며 범위를 넓히지 않고 별도 복구 결정과
+      준비 실패·실행 여부 불확실 실패의 정확한 기록을 유지합니다.
+- [x] [#69 소스 전용 선언 비교](../guides/PROPOSAL_CHECK.md)를 구현합니다.
+      제한된 의존성 개수·scope 비교, 명시적인 unknown/not-evaluated 결과와 오프라인 CLI 텍스트/JSON은
+      소스에 구현했습니다. 제공자·소스 실행·패치 적용·승인은 추가하지 않으며 생성 테스트·런타임 인가와
+      더 넓은 #35 완료 조건은 별도 작업입니다.
 - [ ] 격리된 임시 workspace에서 근거에 연결된 설명, 방어적 회귀 테스트 초안과 검토 가능한 diff를 만듭니다.
       제안 중에는 스캔한 소스를 실행하거나 사용자의 worktree를 수정하지 않습니다.
 - [ ] 이유, 대상 파일, 정확한 diff, 소스 revision/내용 식별값과 검증 계획을 제시합니다.

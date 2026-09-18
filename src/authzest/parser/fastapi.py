@@ -288,12 +288,25 @@ class FastAPIRouteParser:
 
     def parse_file(self, path: Path) -> ParseResult:
         try:
-            tree = ast.parse(path.read_bytes(), filename=str(path))
-        except (OSError, SyntaxError, UnicodeError) as exc:
+            source = path.read_bytes()
+        except OSError as exc:
             return ParseResult(
                 routes=(), error=f"{path}: {exc}", diagnostics=(_source_diagnostic(path, exc),)
             )
+        return self.parse_source(source, path)
 
+    def parse_source(self, source: str | bytes, path: Path) -> ParseResult:
+        """Inventory supplied source data; ``path`` is a label, never opened or resolved."""
+        try:
+            tree = ast.parse(source, filename=str(path))
+        except (SyntaxError, UnicodeError) as exc:
+            return ParseResult(
+                routes=(), error=f"{path}: {exc}", diagnostics=(_source_diagnostic(path, exc),)
+            )
+        return self.parse_tree(tree, path)
+
+    def parse_tree(self, tree: ast.Module, path: Path) -> ParseResult:
+        """Inventory an already parsed module AST without source, import or filesystem I/O."""
         registrations = _Registrations()
         self._parse_body(tree.body, {}, path, registrations)
         return ParseResult(

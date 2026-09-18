@@ -37,6 +37,9 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
 - 소스에 미출시 읽기 전용 [`authzest proposal-preview`](guides/PROPOSAL_PREVIEW.md) 추가:
   지원하는 POSIX 시스템에서 bundle의 정확한 diff·근거·예상 결과를 표시하며 승인·실행은 하지 않음
+- 미출시 [`authzest proposal-check`](guides/PROPOSAL_CHECK.md)로 지원 범위 내 변경 전후 소스
+  snapshot을 선언 목표와 비교함. 소스를 실행하지 않으며 정책 의도는 평가하지 않고
+  일치도 인가 보장이 아님
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
