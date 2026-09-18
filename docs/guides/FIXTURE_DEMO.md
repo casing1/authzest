@@ -70,9 +70,12 @@ restoration prompt. Inspect the retained workspace and record before taking furt
 If initialization fails or is cancelled after a workspace was created, the command reports the
 confirmed-created `workspace` path and a bounded `initialization_stage` when available. Retained
 files are not deleted; the record may be missing or incomplete. The path identifies the created
-workspace, not a guarantee of its current contents or a way to resume the session. These reporting
-changes apply to `fixture-demo` and shared constructor error information; the older `codex-fixture`
-and development runtime-script fallback handling is unchanged.
+workspace, not a guarantee of its current contents or a way to resume the session. After #65,
+[#67](https://github.com/casing1/authzest/issues/67) extends this failure handling to source/runtime
+`codex-fixture` and the development runtime script; see the
+[unreleased failure-handling details](CODEX_FIXTURE.md#unreleased-failure-handling).
+Interruption outside a `fixture-demo` prompt exits `130`; intentional prompt decline/cancel behavior
+is unchanged. These source changes do not expand execution or update published alpha.3 assets.
 
 Mock provenance, zero live provider calls and runtime verification `not-run` must not be confused
 with live-model quality, authenticated human consent, authorization correctness or a verified

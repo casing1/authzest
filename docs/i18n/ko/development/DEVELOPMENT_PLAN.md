@@ -94,6 +94,9 @@ alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)�
 독립 실행 파일의 명령이나 설치된 저장소 fixture가 아닙니다.
 별도의 미출시 [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md)는 고정 mock 시연을 패키지에
 포함하고 Codex나 fixture 소스 실행 없이 별도 복사본 적용·소스 검사·복구 결정을 재사용합니다.
+[#67 실패 처리 후속 작업](../guides/CODEX_FIXTURE.md#미출시-실패-처리)은 실행 범위를 넓히지 않고
+기존 Codex 소스·런타임 및 개발용 런타임 경로를 맞춥니다. 제안의 선언 기대값을 소스 전용으로
+비교하는 기능은 별도 후속 기능이며 #67에서 구현하지 않습니다.
 중첩 의존성 그래프, 인증·인가 분류, finding 스키마, 일반 저장소 AI 검토와 기존 checkout 패치 적용은
 아직 구현되지 않았습니다.
 [#48 적용 데모](../guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본만 변경합니다.

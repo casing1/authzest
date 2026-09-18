@@ -82,6 +82,23 @@ AFTER 검사가 성공하면 `passed` / `runtime-check-passed`입니다. BEFORE�
 외곽 중단으로 상태를 모르면 상태 필드를 생략할 수 있으므로 미실행으로 추측하지 말고 보존된
 기록을 확인하세요. 승인 후 BEFORE로 복구해도 결과는 해당 AFTER digest를 검사한 과거 근거입니다.
 
+### 미출시 실패 처리
+
+alpha.3 이후 소스의 [#67](https://github.com/casing1/authzest/issues/67)은 Codex 런타임
+흐름과 `scripts.demo_verify --runtime-check`를 세션의 준비 실패 기록과 맞춥니다.
+`status: not-run`, `reason: verification-setup-failed`, `execution_attempted: false`는
+런타임 worker를 호출하지 않았음을 나타냅니다. 복구는 계속 별도 선택이며 워크플로는 `1`로
+종료합니다. 저장을 확인하지 못하면 `journal-unavailable` / `journal_status: unconfirmed`와
+경고를 표시하며 디스크의 확정 결과로 취급하지 않습니다. `verify()` 밖의 예상하지 못한 예외는
+검증 상태나 자동 복구 질문 보장을 만들어내지 않는 워크플로 실패입니다.
+
+초기화 실패·취소 후에는 확인된 workspace 생성 경로와 초기화 단계를 확인 가능한 경우
+보존합니다. 파일은 삭제하지 않으며 기록이 없거나 불완전할 수 있습니다. Codex 라이브러리
+취소는 계속 전파합니다. 질문 밖의 CLI 중단은 `130`으로 종료하고 의도적인 질문 거절·취소
+동작은 유지합니다. [Codex 실패 처리 상세](CODEX_FIXTURE.md#미출시-실패-처리)를 참고하세요.
+이 소스 변경은 런타임 범위·실제 모델 근거·새 릴리스를 추가하거나 공개 alpha.3 산출물을
+변경하지 않습니다. 아래 과거 검증은 계속 명시된 커밋에 한정됩니다.
+
 ## 프로세스 경계와 한계
 
 고정 worker는 stdin으로 제한된 소스 바이트를 받으며 비공개 작업 디렉터리, 축소 환경,

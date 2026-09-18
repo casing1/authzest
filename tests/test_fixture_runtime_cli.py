@@ -213,7 +213,7 @@ def test_runtime_plan_needs_separate_exact_consent_and_preserves_restoration(
 
 @pytest.mark.skipif(not supported(), reason="POSIX owned fixture")
 @pytest.mark.parametrize("entry", ["codex", "demo"])
-def test_uncertain_runtime_stage_failure_omits_runtime_status_but_still_restores(
+def test_uncertain_runtime_stage_failure_preserves_copy_without_automatic_restore(
     tmp_path, monkeypatch, fake_adapter, entry
 ):
     factory, _ = fake_adapter
@@ -236,10 +236,11 @@ def test_uncertain_runtime_stage_failure_omits_runtime_status_but_still_restores
             runtime_check=True, read=exact, emit=lambda _: None, parent=tmp_path
         )
     )
-    assert result["status"] == "verification-failed" and result["exit_code"] == 1
+    assert result["status"] == "workflow-failed" and result["exit_code"] == 1
+    assert "verification_status" not in result
     assert "runtime_verification_status" not in result
-    assert "runtime_verification_status" not in result["verification"]
-    assert result["restoration"]["restored"] is True
+    assert result["verification"] is result["restoration"] is None
+    assert Path(result["workspace"]).joinpath("main.py").read_text() == FIXTURE_AFTER
     assert "PRIVATE-RUNTIME-EXCEPTION" not in json.dumps(result)
 
 
@@ -317,8 +318,9 @@ def test_runtime_cancellation_retains_failed_journal_without_claiming_no_executi
                 await asyncio.sleep(0)
         task.cancel()
         if entry == "codex":
-            with pytest.raises(asyncio.CancelledError):
+            with pytest.raises(asyncio.CancelledError) as interrupted:
                 await task
+            assert interrupted.value.fixture_workspace == next(tmp_path.iterdir())
             return None
         return await task
 

@@ -28,7 +28,7 @@ from authzest.codex.fixture_draft import (
     fixture_prompt,
 )
 from authzest.codex.proposals import validate_proposal
-from authzest.runner._fixture_workspace import WorkspaceError, supported
+from authzest.runner._fixture_workspace import WorkspaceInitializationError, supported
 from authzest.runner.fixture_apply import FixtureApplySession
 
 
@@ -157,6 +157,7 @@ async def run_codex_fixture(
         "provider_warning_count": None,
         "provider_retry_notification_count": None,
         "latency_ms": None,
+        "workspace": None,
         "application": None,
         "verification": None,
         "restoration": None,
@@ -211,6 +212,7 @@ async def run_codex_fixture(
         session = FixtureApplySession(
             proposal, request, review, parent=parent, runtime_check=runtime_check
         )
+        result["workspace"] = str(session.workspace)
         _emit_json(emit, session.preview())
         session.decide(_choice(read, "apply", proposal.proposal_id))
         applied = session.apply()
@@ -222,17 +224,11 @@ async def run_codex_fixture(
                 _emit_json(emit, verification_preview)
                 plan_id = verification_preview["plan_id"]
                 session.decide_verification(_choice(read, "verify", plan_id), plan_id)
-                verification = await session.verify()
             except Exception:
-                # Keep restoration available after a local verification failure. Neither
-                # worker output nor exception text is evidence or safe terminal output.
-                verification = {
-                    "status": "failed",
-                    "reason": "verification-unavailable",
-                    "verification_scope": verification_scope,
-                }
-                if not runtime_check:
-                    verification["runtime_verification_status"] = "not-run"
+                verification = session.fail_verification_setup()
+            else:
+                # An escaped execution error is not a known pre-execution failure.
+                verification = await session.verify()
             result["verification"] = verification
             result["verification_status"] = verification["status"]
             if runtime_check:
@@ -271,11 +267,37 @@ async def run_codex_fixture(
             else "completed"
         )
         result.update(status=status, exit_code=0 if success and not verification_failed else 1)
-    except (OSError, WorkspaceError, ContractError):
-        result.update(status="application-failed", exit_code=1)
+        if result["exit_code"]:
+            result["detail"] = (
+                "Verification journal persistence is unconfirmed; "
+                "the retained record may be stale. "
+                "Inspect the workspace files and command output; this is not a restart receipt."
+                if verification is not None and verification.get("journal_status") == "unconfirmed"
+                else "Inspect the retained workspace record if created."
+            )
+    except (asyncio.CancelledError, KeyboardInterrupt) as exc:
+        # Preserve library cancellation propagation and only attach a confirmed local path.
+        # Initialization interruptions already carry typed metadata from the constructor.
+        if session is not None:
+            exc.fixture_workspace = session.workspace
+        raise
+    except WorkspaceInitializationError as exc:
+        result.update(
+            status="workflow-failed",
+            exit_code=1,
+            workspace=str(exc.created_path),
+            initialization_stage=exc.initialization_stage,
+            runtime_verification_status="not-run",
+            detail="Initialization failed; inspect the retained workspace. "
+            "Its record may be absent or incomplete; no automatic cleanup was performed.",
+        )
+        result.pop("verification_status", None)
+    except Exception:
+        result.update(status="workflow-failed", exit_code=1)
+        result.pop("verification_status", None)
         if runtime_check:
             result.pop("runtime_verification_status", None)
-            result["detail"] = "Inspect the retained workspace record if created."
+        result["detail"] = "Inspect the retained workspace record if created."
     finally:
         if session is not None:
             session.close()
