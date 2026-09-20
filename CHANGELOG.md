@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #71's read-only [`review-demo`](docs/guides/REVIEW_DEMO.md): combine one packaged mock case's
+  exact diff, evidence, expectations, source declaration comparison and identity-bound prose test draft.
+  The draft is a non-executable maintainer template, not model output or an observed runtime result.
+  Compose entirely in memory, including on Windows, with no input files, temporary directories,
+  provider calls, subprocesses, patch application or target execution. Existing fixture workflows,
+  artifact schemas, package version and published alpha.3 are unchanged; broader #35 remains open.
 - Add #69's offline [`proposal-check`](docs/guides/PROPOSAL_CHECK.md) source declaration comparison:
   revalidate an existing preview bundle, compare supported single-source before/after snapshots with
   caller-authored dependency-count or declared-scope targets, and retain identities and reasons in

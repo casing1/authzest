@@ -99,7 +99,11 @@ alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)�
 [#69 `proposal-check`](../guides/PROPOSAL_CHECK.md)는 소스 checkout에 구현했습니다.
 검증된 preview bundle의 지원 범위 내 단일 소스 snapshot을 선언 목표와 비교합니다.
 정책 의도는 not-evaluated, 런타임 검증은 not-run, 인가는 unknown을 유지합니다.
-alpha.3 이후의 두 추가 작업 모두 공개 산출물을 바꾸거나 더 넓은 #35를 완료하지 않습니다.
+[#71 `review-demo`](../guides/REVIEW_DEMO.md)는 패키지 mock 선언 사례 하나의 정확한 diff·비교와
+식별값에 연결된 실행 불가 설명문 테스트 초안을 메모리에서 통합합니다. 제공자 호출·입력 파일·
+적용·실행은 추가하지 않습니다. 완료 조건과 병합 상태는
+[#71](https://github.com/casing1/authzest/issues/71)에서 추적합니다. alpha.3 이후 소스에 추가한
+기능은 공개 산출물을 바꾸거나 더 넓은 #35를 완료하지 않습니다.
 중첩 의존성 그래프, 인증·인가 분류, finding 스키마, 일반 저장소 AI 검토와 기존 checkout 패치 적용은
 아직 구현되지 않았습니다.
 [#48 적용 데모](../guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본만 변경합니다.
@@ -236,6 +240,11 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
       제한된 의존성 개수·scope 비교, 명시적인 unknown/not-evaluated 결과와 오프라인 CLI 텍스트/JSON은
       소스에 구현했습니다. 제공자·소스 실행·패치 적용·승인은 추가하지 않으며 생성 테스트·런타임 인가와
       더 넓은 #35 완료 조건은 별도 작업입니다.
+- [x] [#71 메모리 내 통합 검토](../guides/REVIEW_DEMO.md)를 구현합니다. 패키지 mock 사례 하나의
+      정확한 diff·근거·기대값, 기존 선언 비교와 별도 템플릿 출처를 가진 실행 불가 설명문 회귀 테스트
+      초안이 대상입니다. 소스 구현을 기록한 항목이며 완료 조건과 병합 상태는
+      [이슈 #71](https://github.com/casing1/authzest/issues/71)에서 추적합니다.
+      실행 가능한 테스트 생성·실제 모델 초안·적용 연동은 별도 작업입니다.
 - [ ] 격리된 임시 workspace에서 근거에 연결된 설명, 방어적 회귀 테스트 초안과 검토 가능한 diff를 만듭니다.
       제안 중에는 스캔한 소스를 실행하거나 사용자의 worktree를 수정하지 않습니다.
 - [ ] 이유, 대상 파일, 정확한 diff, 소스 revision/내용 식별값과 검증 계획을 제시합니다.

@@ -41,6 +41,9 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 未リリースの [`authzest proposal-check`](../../guides/PROPOSAL_CHECK.md) で、対応範囲内の変更前後の
   ソース snapshot と宣言の期待値を比較する。ソースは実行せず、ポリシーの意図は評価しない。
   一致しても認可を保証するものではない
+- 未リリースの [`authzest review-demo`](../../guides/REVIEW_DEMO.md) は、メモリ内の mock 例一つで
+  正確な diff・宣言の比較結果・文章のみのテスト草案をまとめて表示し、`--json` にも対応する。
+  入力ファイル・プロバイダー・適用・実行はなく、実行時の認可検査ではない
 - 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
   同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
   Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない

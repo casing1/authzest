@@ -39,6 +39,9 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Adds the unreleased [`authzest proposal-check`](docs/guides/PROPOSAL_CHECK.md) to compare declaration
   targets with a bounded subset of supplied before/after source snapshots. No source execution;
   policy intent is not evaluated and a match is not an authorization guarantee.
+- Adds the unreleased [`authzest review-demo`](docs/guides/REVIEW_DEMO.md): one in-memory mock example
+  combining exact diff, declaration results and a prose-only test draft, also available with `--json`.
+  No input files, provider, application or execution; not a runtime authorization check.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.

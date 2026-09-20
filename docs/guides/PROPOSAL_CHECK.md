@@ -19,6 +19,8 @@ declaration expectations with its baseline and proposed source strings. It does 
 those strings, call Codex, start a worker, open paths embedded in the bundle, inspect Git or current
 source files, apply a patch, or grant approval. These are supplied snapshots, not a check of disk
 freshness, policy enforcement or runtime authorization. The fixed-fixture workflows are unchanged.
+For a packaged, no-input example combining the diff, declaration results and a prose-only test draft,
+see the [integrated review demonstration](REVIEW_DEMO.md). It neither reads a bundle file nor applies a proposal.
 
 ## Try the command
 

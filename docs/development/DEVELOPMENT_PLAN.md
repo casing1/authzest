@@ -103,7 +103,11 @@ aligns the existing Codex source/runtime and development runtime paths without e
 [#69 `proposal-check`](../guides/PROPOSAL_CHECK.md) is implemented in the source checkout:
 it compares declaration targets with supported single-source snapshots from validated preview bundles.
 Policy intent stays not-evaluated; runtime verification stays not-run and authorization remains unknown.
-Neither post-alpha.3 addition changes published assets or completes broader #35.
+[#71 `review-demo`](../guides/REVIEW_DEMO.md) composes one packaged mock declaration example's
+exact diff, comparison and identity-bound, non-executable prose test draft in memory. It adds no
+provider calls, input files, application or execution. Acceptance and merge status are tracked in
+[#71](https://github.com/casing1/authzest/issues/71). These post-alpha.3 source additions do not change
+published assets or complete broader #35.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -240,6 +244,11 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       Implemented in source: bounded dependency-count/scope comparison, explicit unknown/not-evaluated
       outcomes and offline CLI text/JSON. No provider, source execution, patch application or approval;
       generated tests, runtime authorization and broader #35 acceptance remain separate work.
+- [x] Implement [#71's in-memory integrated review](../guides/REVIEW_DEMO.md): one packaged mock case,
+      exact diff/evidence/expectations, existing declaration comparison and a non-executable prose
+      regression-test draft with separate template provenance. This records source implementation;
+      [issue #71](https://github.com/casing1/authzest/issues/71) tracks acceptance and merge status.
+      Generated executable tests, live-model drafting and application integration remain separate work.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification
