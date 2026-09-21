@@ -44,6 +44,9 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 未リリースの [`authzest review-demo`](../../guides/REVIEW_DEMO.md) は、メモリ内の mock 例一つで
   正確な diff・宣言の比較結果・文章のみのテスト草案をまとめて表示し、`--json` にも対応する。
   入力ファイル・プロバイダー・適用・実行はなく、実行時の認可検査ではない
+- ソース checkout に[所有者限定レポートポリシー例](../../guides/OWNER_POLICY.md)を追加：純粋な
+  所有者・scope ポリシー、独立した開発用単体テスト、別途スキャンする FastAPI 参照を提供する。
+  実際の認証・endpoint の実行時テスト・新しい製品実行モードではない
 - 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
   同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
   Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない

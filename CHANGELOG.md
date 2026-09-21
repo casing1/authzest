@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #73's source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md): default-deny
+  pure policy requiring authenticated identity, the exact reports:read scope and matching ownership,
+  with an independent assistant-authored regression matrix and separate non-importing source inventory
+  checks. The FastAPI reference has deliberately unconfigured fail-closed authentication and is not
+  executed. Developer policy unit tests do not add a product runtime mode, provider use or a general
+  authorization verdict. Frozen AI corpus, fixture allowlists, package version and alpha.3 remain unchanged.
 - Add #71's read-only [`review-demo`](docs/guides/REVIEW_DEMO.md): combine one packaged mock case's
   exact diff, evidence, expectations, source declaration comparison and identity-bound prose test draft.
   The draft is a non-executable maintainer template, not model output or an observed runtime result.

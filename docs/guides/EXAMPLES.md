@@ -18,6 +18,11 @@ fixtures, use the [tagged source archive](https://github.com/casing1/authzest/ar
 The commands below assume `authzest` is on PATH; otherwise use the downloaded executable's absolute path.
 See the [release record](../releases/RELEASING.md) for validation evidence and limitations.
 
+The later [owned report policy example](OWNER_POLICY.md) is available only in a checkout containing
+#73, not in the alpha.3 fixture archive. Its scanner path remains source-only. Its separately documented
+developer unit tests intentionally import and call a pure policy module, never the FastAPI application;
+they are not an added product runtime mode or endpoint authorization test.
+
 ## Route registration example
 
 The [registration example](../../examples/fastapi_inventory/) covers cross-file and repeated router mounts.

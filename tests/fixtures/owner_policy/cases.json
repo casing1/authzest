@@ -1,0 +1,451 @@
+{
+  "schema_version": "1.0",
+  "kind": "maintained-owner-policy-unit-cases",
+  "authorship": "assistant-authored expected values; not human-authored",
+  "policy_review": {
+    "status": "pending-maintainer-review",
+    "approval": null
+  },
+  "scope": "Trusted synthetic principal and report metadata; pure policy unit tests only.",
+  "frozen_evaluation_corpus": false,
+  "limitations": [
+    "These cases are separate from the frozen AI evaluation corpus and its previous policy approval.",
+    "Expected values do not prove authentication, HTTP enforcement, or behavior in an arbitrary repository."
+  ],
+  "cases": [
+    {
+      "id": "auth0-scope0-owner0",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": false,
+        "scopes": []
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "bob"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth0-scope0-owner1",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": false,
+        "scopes": []
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth0-scope1-owner0",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": false,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "bob"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth0-scope1-owner1",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": false,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth1-scope0-owner0",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": []
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "bob"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth1-scope0-owner1",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": []
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth1-scope1-owner0",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "bob"
+      },
+      "expected": false
+    },
+    {
+      "id": "auth1-scope1-owner1",
+      "category": "truth-table",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": true
+    },
+    {
+      "id": "missing-principal",
+      "category": "edge-case",
+      "principal": null,
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "missing-report",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": null,
+      "expected": false
+    },
+    {
+      "id": "missing-subject",
+      "category": "edge-case",
+      "principal": {
+        "subject": null,
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "empty-subject",
+      "category": "edge-case",
+      "principal": {
+        "subject": "",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "blank-subject",
+      "category": "edge-case",
+      "principal": {
+        "subject": " \t",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "missing-owner",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": null
+      },
+      "expected": false
+    },
+    {
+      "id": "empty-owner",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": ""
+      },
+      "expected": false
+    },
+    {
+      "id": "blank-owner",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": " \t"
+      },
+      "expected": false
+    },
+    {
+      "id": "empty-report-id",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "blank-report-id",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": " \t",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "scope-case-is-exact",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "Reports:Read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "scope-whitespace-is-not-trimmed",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          " reports:read "
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "wildcard-is-not-read",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "*"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "admin-is-not-read",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "admin"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "admin-does-not-bypass-owner",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read",
+          "admin"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "bob"
+      },
+      "expected": false
+    },
+    {
+      "id": "subject-case-is-exact",
+      "category": "edge-case",
+      "principal": {
+        "subject": "Alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "subject-whitespace-is-not-trimmed",
+      "category": "edge-case",
+      "principal": {
+        "subject": " alice ",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    },
+    {
+      "id": "equal-nonblank-identities-are-not-normalized",
+      "category": "edge-case",
+      "principal": {
+        "subject": " alice ",
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": " alice "
+      },
+      "expected": true
+    },
+    {
+      "id": "additional-valid-scope",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read",
+          "reports:list"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": true
+    },
+    {
+      "id": "blank-scope-denies-even-with-read",
+      "category": "edge-case",
+      "principal": {
+        "subject": "alice",
+        "authenticated": true,
+        "scopes": [
+          "reports:read",
+          " \t"
+        ]
+      },
+      "report": {
+        "report_id": "report-001",
+        "owner_id": "alice"
+      },
+      "expected": false
+    }
+  ]
+}

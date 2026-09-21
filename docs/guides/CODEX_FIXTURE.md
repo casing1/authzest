@@ -251,8 +251,9 @@ CLI interruption outside a prompt exits `130`; Enter/nonmatching input still dec
 and `cancel`, EOF or interruption while answering still cancels that step. These intentional prompt
 choices retain their existing behavior and are not approval for another step.
 
-No new live-model validation or release is implied. Source-only declaration/expectation comparison
-such as `proposal-check` remains unimplemented and separate from this reliability change.
+No new live-model validation or release is implied. The later
+[#69 source-only `proposal-check`](PROPOSAL_CHECK.md) is separately available in the source checkout.
+It compares declaration expectations without changing this Codex command's input, usage, approval or execution scope.
 
 ### Existing schemas and evidence
 
