@@ -40,6 +40,9 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 미출시 [`authzest proposal-check`](guides/PROPOSAL_CHECK.md)로 지원 범위 내 변경 전후 소스
   snapshot을 선언 목표와 비교함. 소스를 실행하지 않으며 정책 의도는 평가하지 않고
   일치도 인가 보장이 아님
+- 미출시 [`authzest review-demo`](guides/REVIEW_DEMO.md)로 메모리 내 mock 예제 하나의 정확한
+  diff·선언 결과·설명문 전용 테스트 초안을 함께 표시하며 `--json`도 지원함.
+  입력 파일·제공자·적용·실행이 없고 런타임 인가 검사가 아님
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음

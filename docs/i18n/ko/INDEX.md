@@ -39,6 +39,7 @@ docs/
 | 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                          |
 | 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)         |
 | 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)          |
+| 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)             |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)     |
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
@@ -70,6 +71,9 @@ docs/
 같은 bundle의 지원 범위 내 변경 전후 소스 snapshot을 선언 목표와 비교합니다.
 정책 의도는 `not-evaluated`, 런타임 검증은 `not-run`, 인가는 `unknown`을 유지합니다.
 종료 `0`은 비교 처리 완료이지 선언 일치나 보안 통과가 아닙니다.
+[#71 통합 검토 시연](guides/REVIEW_DEMO.md)([English](../../guides/REVIEW_DEMO.md))은 메모리에서
+고정 mock diff·선언 비교·실행 불가 설명문 테스트 초안을 함께 표시합니다. 입력 파일이나 POSIX
+reader가 필요 없고 제공자를 호출하거나 적용·실행을 허가하지 않습니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.

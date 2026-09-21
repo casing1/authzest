@@ -343,6 +343,50 @@ def proposal_check_command(
     typer.echo(output)
 
 
+def _format_review_demo(view: dict) -> str:
+    def quoted(value) -> str:
+        return json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False)
+
+    return "\n\n".join(
+        [
+            "Offline integrated review demo - caller-authored mock; no live model",
+            "Read-only. Declaration matches are not authorization or runtime verification.",
+            "Demo provenance\n" + quoted(view["demo"]),
+            _format_proposal_preview(view["preview"]),
+            "Source declaration comparison\n" + quoted(view["comparison"]),
+            "Defensive regression-test draft (prose only; not executable; not run)\n"
+            + quoted(view["regression_test_draft"]),
+            "Review limitations\n" + quoted(view["limitations"]),
+        ]
+    )
+
+
+@app.command("review-demo")
+def review_demo_command(
+    as_json: bool = typer.Option(False, "--json", help="Print the ASCII-escaped review as JSON."),
+) -> None:
+    """Review one packaged mock diff, declaration comparison and unexecuted prose test draft."""
+    from authzest.runner.review_demo import run_review_demo
+
+    try:
+        view = run_review_demo()
+        output = (
+            json.dumps(view, ensure_ascii=True, indent=2, allow_nan=False)
+            if as_json
+            else _format_review_demo(view)
+        )
+    except KeyboardInterrupt:
+        typer.echo('{"status": "cancelled"}', err=True)
+        raise typer.Exit(code=130) from None
+    except Exception:
+        typer.echo(
+            '{"status": "review-failed", "detail": "Offline review composition failed."}',
+            err=True,
+        )
+        raise typer.Exit(code=1) from None
+    typer.echo(output)
+
+
 @app.command("_configuration-worker", hidden=True)
 def _configuration_worker() -> None:
     """Internal fixed checker entry point for the packaged executable."""
