@@ -167,7 +167,11 @@ def test_core_never_reads_writes_imports_target_starts_process_or_network(contex
     assert validate_owner_policy_result(result, request) == result
 
 
-@pytest.mark.parametrize("model", ["", " spaces ", "a\nmodel", "a" * 129, None, 1])
+@pytest.mark.parametrize(
+    "model",
+    ["", " spaces ", "a\nmodel", "a" * 129, None, 1],
+    ids=["empty", "spaces", "newline", "too-long", "null", "integer"],
+)
 def test_invalid_explicit_model_fails_before_parsing(model, monkeypatch):
     def forbidden(*args, **kwargs):
         pytest.fail("Invalid model identity must fail before parsing")
@@ -510,7 +514,10 @@ def test_invalid_draft_shapes_types_bounds_and_citations_are_rejected(context, m
 
 
 @pytest.mark.parametrize(
-    "raw", [None, "[]", '{"answers":[],"answers":[],"cases":[]}', "x" * 262145]
+    "raw",
+    [None, "[]", '{"answers":[],"answers":[],"cases":[]}', "x" * 262145],
+    # Pytest puts the node ID in PYTEST_CURRENT_TEST; Windows limits its length.
+    ids=["non-string", "array-root", "duplicate-key", "oversized-json"],
 )
 def test_malformed_duplicate_key_and_oversized_json_rejected(context, raw):
     with pytest.raises(ContractError):

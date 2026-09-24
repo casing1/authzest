@@ -27,12 +27,36 @@ def no_live_io(monkeypatch):
 
     monkeypatch.setattr(subprocess, "Popen", forbidden)
     monkeypatch.setattr(asyncio, "create_subprocess_exec", forbidden)
+    connect = socket.socket.connect
+    policy = asyncio.get_event_loop_policy()
+    create_loop = policy.new_event_loop
+
+    def new_event_loop():
+        # Windows' stdlib loop initializes its private socketpair with connect().
+        # Permit only loop construction, before any test coroutine can run;
+        # all connections made by workflow/test code still fail below.
+        with monkeypatch.context() as initialization:
+            initialization.setattr(socket.socket, "connect", connect)
+            return create_loop()
+
+    monkeypatch.setattr(policy, "new_event_loop", new_event_loop)
     monkeypatch.setattr(socket.socket, "connect", forbidden)
     monkeypatch.setattr(workflow, "_default_adapter_factory", forbidden)
 
 
 def exact_choice(prompt):
     return prompt.split("'")[1]
+
+
+def test_network_guard_still_blocks_connections_inside_async_work():
+    async def attempt():
+        with (
+            socket.socket() as client,
+            pytest.raises(pytest.fail.Exception, match="must not invoke"),
+        ):
+            client.connect(("127.0.0.1", 9))
+
+    asyncio.run(attempt())
 
 
 def fake_review(request):
@@ -269,10 +293,22 @@ def test_task_cancellation_propagates(monkeypatch):
                 MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=lambda **_: Waiting()
             )
         )
-        await started.wait()
-        task.cancel()
-        with pytest.raises(asyncio.CancelledError):
-            await task
+        startup = asyncio.create_task(started.wait())
+        try:
+            done, _ = await asyncio.wait(
+                {task, startup}, timeout=5, return_when=asyncio.FIRST_COMPLETED
+            )
+            if task in done:
+                await task  # Surface an early setup error instead of waiting forever.
+                pytest.fail("Workflow returned before the fake adapter started")
+            assert startup in done, "Fake adapter did not start within five seconds"
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.wait_for(task, timeout=5)
+        finally:
+            for pending in (task, startup):
+                pending.cancel()
+            await asyncio.wait_for(asyncio.gather(task, startup, return_exceptions=True), timeout=5)
 
     asyncio.run(exercise())
     assert cleaned == [True]
