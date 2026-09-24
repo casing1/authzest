@@ -73,17 +73,23 @@ scan은 Python 파일 두 개를 읽고 `GET /reports/{report_id}` 등록 하나
 직접 받지 않습니다. 소스에는 고정된 가상 보고서 조회와 데이터 반환 전 정책 결정이 있지만
 실행 가능한 인증 튜토리얼은 아닙니다. 이번 검증에서 서버를 시작하거나 모듈을 import하지 마세요.
 
-실제 principal 검증·HTTP endpoint 동작·데이터베이스 소유 정보·토큰 만료·Codex 제안 연동은
-별도 작업입니다. scanner는 정책 함수의 의미를 추론하지 않습니다. 이 예제는 `proposal-check`의
+실제 principal 검증·HTTP endpoint 동작·데이터베이스 소유 정보·토큰 만료·Codex 패치 제안 연동은
+별도 작업입니다. opt-in [읽기 전용 Codex 소유 정책 검토](CODEX_OWNER_REVIEW.md)는 패키지
+snapshot으로 검토·사례 초안만 만들고 이 예제를 실행하지 않습니다.
+scanner는 정책 함수의 의미를 추론하지 않습니다. 이 예제는 `proposal-check`의
 좁은 지원 구문, 기존 복사본 적용 흐름이나 고정 소스·런타임 fixture 허용 목록을 확대하지 않습니다.
 기본 scan은 소스 전용을 유지하며 제공자·계정 사용·소스 공유·자동 패치 적용은 없습니다.
 
 ## 행렬 출처와 호환성
 
-정책 행렬과 정확한 예상값은 assistant가 작성한 개발 자료이며 사람이 작성했거나 독립적으로
-승인한 정답 label이 아닙니다. 정책 결정과 관리자 검토는
-[#73](https://github.com/casing1/authzest/issues/73)에서 추적하며 행렬 작성 자체가 정책 승인은 아닙니다.
-같은 로직에서 구현과 예상값을 함께 도출하지 말고 예상값을 구현 변경과 별도로 검토하세요.
+관리자는 2026-09-24에 인증된 신원·정확한 `reports:read` scope·소유자 일치를 모두 요구하고
+관리자 예외 없이 정보가 없으면 거절하는 정책 기준을 승인했습니다. 정책 행렬과 정확한 예상값
+28개는 계속 assistant 작성 개발 자료이며 사람이 작성했거나 독립적으로 승인한 정답 label은
+아닙니다. 기록한 상태는 `criteria-approved-label-review-pending`이며 label 전체 승인이 아닙니다.
+정책 결정과 관리자 검토는 [#73](https://github.com/casing1/authzest/issues/73)과
+[#75](https://github.com/casing1/authzest/issues/75)에서 추적합니다. 같은 로직에서 구현과 예상값을
+함께 도출하지 말고 예상값을 구현 변경과 별도로 검토하세요. 정책 승인은 소스 공유·계정 사용·
+패치 적용·실행을 승인하지 않습니다.
 
 고정된 `tests/fixtures/ai_evaluation/v1` corpus·label·held-out 분리·해시는 그대로입니다.
 기존 소스 전용 scope 선언 예제의 인가는 계속 unknown이며 새 정책 단위 테스트로 판정을

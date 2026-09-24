@@ -1,4 +1,4 @@
-"""Version-scoped, opt-in Codex stdio transport for the packaged fixture only.
+"""Version-scoped, opt-in Codex stdio transport for fixed packaged requests only.
 
 The Codex installation and its managed authentication are trusted dependencies.
 This is not a general agent launcher or a sandbox for an untrusted executable.
@@ -13,10 +13,11 @@ import os
 import re
 import signal
 from collections import deque
+from collections.abc import Callable
 from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, TypeVar
 
 from authzest.codex.contracts import MAX_JSON_BYTES, CodexAnalysisRequest, canonical, decode
 from authzest.codex.fixture_draft import (
@@ -27,6 +28,14 @@ from authzest.codex.fixture_draft import (
     fixture_prompt,
     validate_fixture_draft,
 )
+from authzest.codex.owner_policy_review import (
+    OwnerPolicyReview,
+    owner_policy_output_schema,
+    owner_policy_prompt,
+    validate_owner_policy_draft,
+)
+
+_ReviewT = TypeVar("_ReviewT")
 
 SUPPORTED_CODEX_VERSION = "0.153.0"
 MAX_STREAM_BYTES = 2 * 1024 * 1024
@@ -533,7 +542,7 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
 
 
 class CodexAppServerAdapter:
-    """Single-use, single-turn, fixture-only adapter. No application-level retries.
+    """Single-use, single-turn, owned-request adapter. No application-level retries.
 
     The built-in provider can perform its own transport retries. The wall-clock
     limit includes metadata startup and generation but is not a token/dollar cap.
@@ -568,9 +577,41 @@ class CodexAppServerAdapter:
         return (await self.draft(request)).review.payload_json
 
     async def draft(self, request: CodexAnalysisRequest) -> FixtureDraft:
+        """Draft only the original exact packaged debug-configuration change."""
+        self._check_sharing(request)
+        prompt, schema = fixture_prompt(request), fixture_output_schema(request)
+        return await self._turn(
+            request,
+            prompt,
+            schema,
+            lambda raw, usage: validate_fixture_draft(raw, request, usage=usage),
+        )
+
+    async def review_owner_policy(self, request: CodexAnalysisRequest) -> OwnerPolicyReview:
+        """Review only the exact packaged owner-policy sources; never produce a patch."""
+        self._check_sharing(request)
+        prompt, schema = owner_policy_prompt(request), owner_policy_output_schema(request)
+        return await self._turn(
+            request,
+            prompt,
+            schema,
+            lambda raw, usage: validate_owner_policy_draft(raw, request, usage=usage),
+        )
+
+    def _check_sharing(self, request: CodexAnalysisRequest) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
             raise AppServerError("A fresh exact-request sharing decision is required")
-        prompt, schema = fixture_prompt(request), fixture_output_schema(request)
+
+    async def _turn(
+        self,
+        request: CodexAnalysisRequest,
+        prompt: str,
+        schema: dict[str, Any],
+        validate: Callable[[str, dict | None], _ReviewT],
+    ) -> _ReviewT:
+        # Only the two explicitly guarded public entry points supply prompts/schema.
+        # Recheck the sharing gate here before consuming this single-use transport.
+        self._check_sharing(request)
         self.consumed = True
         model = request.to_dict()["config"]["model"]
         try:
@@ -676,9 +717,9 @@ class CodexAppServerAdapter:
                         for item in turn_result.get("turn", {}).get("items", []):
                             _check_item(item)
                         raw, usage = await _finish(session, thread_id, turn_id)
-                        draft = validate_fixture_draft(raw, request, usage=usage)
+                        result = validate(raw, usage)
                         self.warnings_seen = session.warnings_seen
                         self.retry_notifications_seen = session.retry_notifications_seen
-                        return draft
+                        return result
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
-            raise AppServerError("Codex fixture request failed; no proposal was applied") from exc
+            raise AppServerError("Codex owned request failed; no changes were applied") from exc

@@ -48,10 +48,11 @@ def test_independently_authored_owner_policy_cases(case):
 
 def test_case_metadata_and_complete_three_condition_matrix():
     assert CORPUS["authorship"] == "assistant-authored expected values; not human-authored"
-    assert CORPUS["policy_review"] == {
-        "status": "pending-maintainer-review",
-        "approval": None,
-    }
+    assert CORPUS["policy_review"]["status"] == "criteria-approved-label-review-pending"
+    approval = CORPUS["policy_review"]["approval"]
+    assert approval["date"] == "2026-09-24"
+    assert approval["individual_expected_labels"] == "not-independently-reviewed"
+    assert approval["scope"].startswith("Policy criteria only:")
     assert CORPUS["frozen_evaluation_corpus"] is False
     assert len({case["id"] for case in CORPUS["cases"]}) == len(CORPUS["cases"])
     assert all(type(case["expected"]) is bool for case in CORPUS["cases"])
