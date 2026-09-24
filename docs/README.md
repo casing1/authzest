@@ -40,6 +40,7 @@ docs/
 | Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)         |
 | Source-only proposal declaration comparison     | [Proposal check](guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](i18n/ko/guides/PROPOSAL_CHECK.md)          |
 | Integrated review and prose test draft          | [Review demo](guides/REVIEW_DEMO.md)                      | [통합 검토 시연](i18n/ko/guides/REVIEW_DEMO.md)             |
+| Owned report policy and unit-test example       | [Owner policy](guides/OWNER_POLICY.md)                    | [소유 보고서 정책](i18n/ko/guides/OWNER_POLICY.md)          |
 | Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)     |
 | Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)            |
 | Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)       |
@@ -74,6 +75,9 @@ exit `0` means comparison processing completed, not that declarations matched or
 [#71's integrated review demo](guides/REVIEW_DEMO.md) ([한국어](i18n/ko/guides/REVIEW_DEMO.md))
 combines a fixed mock diff, declaration comparison and non-executable prose test draft in memory.
 It requires no input files or POSIX reader, calls no provider and grants no application or execution.
+[#73's owned report policy](guides/OWNER_POLICY.md) ([한국어](i18n/ko/guides/OWNER_POLICY.md)) is a
+separate checkout example: developer tests execute only its pure policy function, while scanner tests
+read the FastAPI source without importing it. It adds no authentication service or product runtime mode.
 [#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
 adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
 separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source

@@ -42,6 +42,9 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Adds the unreleased [`authzest review-demo`](docs/guides/REVIEW_DEMO.md): one in-memory mock example
   combining exact diff, declaration results and a prose-only test draft, also available with `--json`.
   No input files, provider, application or execution; not a runtime authorization check.
+- Adds a source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md), with a pure
+  owner/scope policy, independent developer unit tests and a separately scanned FastAPI reference.
+  This is not real authentication, an endpoint runtime test or a new product execution mode.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.

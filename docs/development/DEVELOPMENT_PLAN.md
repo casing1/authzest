@@ -108,6 +108,11 @@ exact diff, comparison and identity-bound, non-executable prose test draft in me
 provider calls, input files, application or execution. Acceptance and merge status are tracked in
 [#71](https://github.com/casing1/authzest/issues/71). These post-alpha.3 source additions do not change
 published assets or complete broader #35.
+[#73's owned report policy](../guides/OWNER_POLICY.md) adds a separate checkout example with a pure
+default-deny policy, an independent assistant-authored matrix and non-importing scanner evidence.
+Developer unit tests call only the policy function, not the FastAPI application or authentication
+provider. Real authentication, endpoint runtime acceptance and Codex integration remain separate;
+[issue #73](https://github.com/casing1/authzest/issues/73) records policy review and acceptance status.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -249,6 +254,11 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       regression-test draft with separate template provenance. This records source implementation;
       [issue #71](https://github.com/casing1/authzest/issues/71) tracks acceptance and merge status.
       Generated executable tests, live-model drafting and application integration remain separate work.
+- [x] Implement [#73's owned policy example](../guides/OWNER_POLICY.md): explicit authenticated/scope/
+      owner conditions, independent expected values and developer pure-function regression tests,
+      separate from static FastAPI inventory checks. This source slice is not generated tests or
+      endpoint execution; [issue #73](https://github.com/casing1/authzest/issues/73) tracks review and acceptance.
+      Frozen evaluation labels, Codex scope, fixture execution allowlists and broader #35 remain unchanged.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

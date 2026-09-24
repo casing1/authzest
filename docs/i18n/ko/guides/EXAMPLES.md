@@ -17,6 +17,11 @@
 아래 명령은 `authzest`가 PATH에 있다는 가정이며, 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
 검증 근거와 한계는 [릴리스 기록](../releases/RELEASING.md)을 참고하세요.
 
+후속 [소유 보고서 정책 예제](OWNER_POLICY.md)는 #73을 포함한 checkout에만 있으며 alpha.3
+fixture 압축 파일에는 없습니다. scanner 경로는 계속 소스 전용입니다. 별도로 설명하는 개발용
+단위 테스트는 순수 정책 모듈만 의도적으로 import·호출하고 FastAPI 애플리케이션은 실행하지 않습니다.
+새 제품 런타임 모드나 endpoint 인가 테스트가 아닙니다.
+
 ## 라우트 등록 예제
 
 [등록 예제](../../../../examples/fastapi_inventory/)는 파일 간 연결과 반복 router mount를 다룹니다.

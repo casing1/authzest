@@ -104,6 +104,11 @@ alpha.2 이후 도입한 [오프라인 AI 계약](../reference/AI_CONTRACT.md)�
 적용·실행은 추가하지 않습니다. 완료 조건과 병합 상태는
 [#71](https://github.com/casing1/authzest/issues/71)에서 추적합니다. alpha.3 이후 소스에 추가한
 기능은 공개 산출물을 바꾸거나 더 넓은 #35를 완료하지 않습니다.
+[#73 소유 보고서 정책](../guides/OWNER_POLICY.md)은 기본 거절 순수 정책, assistant 작성 독립
+행렬과 import 없는 scanner 근거를 갖춘 별도 checkout 예제를 추가합니다. 개발용 단위 테스트는
+정책 함수만 호출하며 FastAPI 애플리케이션·인증 제공자는 실행하지 않습니다. 실제 인증·endpoint
+런타임 완료 조건·Codex 연동은 별도 작업이며 정책 검토와 완료 상태는
+[이슈 #73](https://github.com/casing1/authzest/issues/73)에서 기록합니다.
 중첩 의존성 그래프, 인증·인가 분류, finding 스키마, 일반 저장소 AI 검토와 기존 checkout 패치 적용은
 아직 구현되지 않았습니다.
 [#48 적용 데모](../guides/FIXTURE_APPLICATION.md)는 새 POSIX fixture 복사본만 변경합니다.
@@ -245,6 +250,11 @@ fixture 평가에서 일치·오탐·미탐·unknown 사례를 기록하고, 지
       초안이 대상입니다. 소스 구현을 기록한 항목이며 완료 조건과 병합 상태는
       [이슈 #71](https://github.com/casing1/authzest/issues/71)에서 추적합니다.
       실행 가능한 테스트 생성·실제 모델 초안·적용 연동은 별도 작업입니다.
+- [x] [#73 소유 정책 예제](../guides/OWNER_POLICY.md)를 구현합니다. 명시적인 인증·scope·소유자
+      조건, 독립 예상값과 개발용 순수 함수 회귀 테스트를 정적 FastAPI 목록화 검사와 분리합니다.
+      이 소스 단계는 생성 테스트나 endpoint 실행이 아니며 검토·완료 조건은
+      [이슈 #73](https://github.com/casing1/authzest/issues/73)에서 추적합니다.
+      고정 평가 label·Codex 범위·fixture 실행 허용 목록·더 넓은 #35는 그대로입니다.
 - [ ] 격리된 임시 workspace에서 근거에 연결된 설명, 방어적 회귀 테스트 초안과 검토 가능한 diff를 만듭니다.
       제안 중에는 스캔한 소스를 실행하거나 사용자의 worktree를 수정하지 않습니다.
 - [ ] 이유, 대상 파일, 정확한 diff, 소스 revision/내용 식별값과 검증 계획을 제시합니다.

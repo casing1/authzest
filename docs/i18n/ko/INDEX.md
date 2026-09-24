@@ -40,6 +40,7 @@ docs/
 | 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)         |
 | 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)          |
 | 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)             |
+| 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)          |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)     |
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
@@ -74,6 +75,9 @@ docs/
 [#71 통합 검토 시연](guides/REVIEW_DEMO.md)([English](../../guides/REVIEW_DEMO.md))은 메모리에서
 고정 mock diff·선언 비교·실행 불가 설명문 테스트 초안을 함께 표시합니다. 입력 파일이나 POSIX
 reader가 필요 없고 제공자를 호출하거나 적용·실행을 허가하지 않습니다.
+[#73 소유 보고서 정책](guides/OWNER_POLICY.md)([English](../../guides/OWNER_POLICY.md))은 별도
+checkout 예제입니다. 개발용 테스트는 순수 정책 함수만 실행하고 scanner 검사는 FastAPI 소스를
+import 없이 읽습니다. 인증 서비스나 제품 런타임 모드를 추가하지 않습니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.

@@ -31,10 +31,10 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: python -m pip install -e '.[dev]'
-      - name: Check declaration APIs, review demo and CLI platform boundary
+      - name: Check declaration APIs, review demo and owned policy
         run: >-
           python -m pytest tests/test_declaration_check.py tests/test_proposal_check_cli.py
-          tests/test_review_demo.py
+          tests/test_review_demo.py tests/test_owner_policy.py
 
   frontend:
     runs-on: ubuntu-latest
