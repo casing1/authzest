@@ -7,6 +7,7 @@ import subprocess
 from types import SimpleNamespace
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from authzest.cli import app
@@ -277,9 +278,10 @@ def test_task_cancellation_propagates(monkeypatch):
     assert cleaned == [True]
 
 
-def test_cli_help_and_preview_work_without_provider():
-    help_result = runner.invoke(app, ["codex-owner-review", "--help"])
-    assert help_result.exit_code == 0 and "preview-only" in help_result.output
+@pytest.mark.parametrize("color", [False, True])
+def test_cli_help_and_preview_work_without_provider(color):
+    help_result = runner.invoke(app, ["codex-owner-review", "--help"], color=color)
+    assert help_result.exit_code == 0 and "--preview-only" in unstyle(help_result.output)
     result = runner.invoke(app, ["codex-owner-review", "--model", MODEL, "--preview-only"])
     assert result.exit_code == 0
     preview = json.loads(result.output)
