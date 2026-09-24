@@ -18,8 +18,9 @@ This slice has no generated code, diff, patch application, HTTP endpoint tests o
 application, endpoint or policy function. A valid result may retain unknowns or say no supported
 change is needed; it never has to invent a patch. General repository review and the broader
 [#35 workflow](https://github.com/casing1/authzest/issues/35) remain unfinished.
-Offline tests and previews are not a live-model acceptance result. Actual Codex validation for this
-new command remains pending separate source-sharing and account-usage approval.
+Offline tests and previews are not a live-model acceptance result. One separately approved live
+attempt failed on 2026-09-24 without an accepted draft; live-model acceptance remains pending.
+The attempt and its limits are recorded below. Another provider attempt requires fresh approval.
 
 ## Preview before sharing
 
@@ -78,6 +79,31 @@ Codex installation remains an assumption, not an executable sandbox guarantee.
 The official [App Server documentation](https://learn.chatgpt.com/docs/app-server) describes the
 underlying interface. AuthZest's exact sharing envelope, version pin and read-only result contract
 are narrower application rules, not general Codex limitations.
+
+## Live attempt on 2026-09-24
+
+The source CLI at commit `c5be74d6e65c7716ab3eff12ce2f0169fd889b2f` was tried once with Codex
+`0.153.0`, the existing managed ChatGPT login and the exact requested model `gpt-6-astra`.
+The user separately approved the two public source snapshots, policy and static evidence, at most
+one application-issued turn and 120 seconds. Under that approval, the assistant compared the full
+sharing envelope and entered the exact sharing phrase. This was not independent human review of
+model-authored case expectations.
+
+The CLI returned `review-failed`, exit `1`, after `98828.2639` ms (about 98.8 seconds), with no
+accepted draft. Returned model identity, usage, warning count and retry count were `null`/unknown.
+The detailed failure stage and cause were intentionally redacted, so this result does not establish
+a timeout, authentication or quota failure. `application_turn_attempts=1` records the local attempt;
+it does not establish how many turns the server accepted or the amount of account usage.
+
+No further provider attempt was made. No target, application, policy-function or generated-code
+execution, HTTP testing or patch application occurred. The feature worktree and original `main` checkout were
+clean after the run, and both maintained example source hashes were unchanged. Execution remains
+`not-run`, authorization remains `unknown`, and the independent developer labels remain unreviewed.
+This failed attempt does not complete live acceptance, broader #35 or a release.
+
+The one-attempt approval is consumed. The proposed next work, not yet begun, is a safe redacted
+failure-stage diagnostic design with offline tests, followed by a new live attempt only after fresh
+source-sharing and account-usage approval. No automatic retry is authorized by the failed result.
 
 ## Interpret the result
 

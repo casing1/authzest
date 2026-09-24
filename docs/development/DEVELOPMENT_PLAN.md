@@ -117,8 +117,9 @@ the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any l
 [#75's read-only Codex owner review](../guides/CODEX_OWNER_REVIEW.md) connects two packaged snapshots,
 explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
 Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
-not-run and authorization unknown. Live-model acceptance is pending; no code, diff or application
-execution is added, and the independent case labels are not sent to the model.
+not-run and authorization unknown. One separately approved live attempt failed without an accepted
+draft on 2026-09-24; live acceptance remains pending and another attempt needs fresh approval.
+No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -271,8 +272,11 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       Validate evidence-linked answers and non-executable defensive case drafts without patching or
       source execution. This records the source implementation, not live-model acceptance or merge;
       [issue #75](https://github.com/casing1/authzest/issues/75) tracks those separate gates.
-- [ ] Obtain separate bounded source-sharing/account-use consent and validate the owner-policy live
-      review. Review model-authored case expectations independently; schema validity is not policy truth.
+- [ ] Complete the owner-policy live review with separate bounded source-sharing/account-use consent.
+      The approved 2026-09-24 attempt returned `review-failed` with no accepted draft or known usage;
+      no AuthZest retry was made. Next, design safe redacted failure-stage diagnostics and offline tests
+      before requesting fresh approval for another live attempt; this follow-up has not begun.
+      Review model-authored case expectations independently; schema validity is not policy truth.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

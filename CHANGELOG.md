@@ -21,8 +21,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   App Server request on POSIX. Use only two packaged owner-policy source snapshots, explicit policy
   and static evidence, not the independent case labels or arbitrary paths. Validate evidence-linked
   review answers and 1–16 non-executable defensive case drafts; expected values remain model-authored
-  and unreviewed, execution not-run and authorization unknown. No generated code, patch, application
-  execution or new live-model acceptance; existing fixture workflows and published alpha.3 are unchanged.
+  and unreviewed, execution not-run and authorization unknown. One separately approved live attempt
+  on 2026-09-24 at `c5be74d` returned `review-failed` after about 98.8 seconds, without an accepted
+  draft or known usage. No AuthZest retry, patch application or target/generated-code execution occurred; live
+  acceptance remains pending and another attempt needs fresh approval. Existing fixture workflows
+  and published alpha.3 are unchanged; the guide records the bounded result and remaining unknowns.
 - Add #73's source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md): default-deny
   pure policy requiring authenticated identity, the exact reports:read scope and matching ownership,
   with an independent assistant-authored regression matrix and separate non-importing source inventory
