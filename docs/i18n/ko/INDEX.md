@@ -30,30 +30,31 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| 문서                                   | English                                                         | 한국어                                              |
-| -------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------- |
-| 프로젝트 소개와 설치                   | [README](../../../README.md)                                    | [프로젝트 소개](README.md)                          |
-| 문서 목차                              | [Index](../../README.md)                                        | [문서 목차](INDEX.md)                               |
-| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)        |
-| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)              |
-| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                          |
-| 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)         |
-| 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)          |
-| 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)             |
-| 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)          |
-| 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)     |
-| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)            |
-| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)       |
-| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)          |
-| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)           | [리포트 계약](reference/REPORT_CONTRACT.md)         |
-| 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md) |
-| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                        |
-| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)          |
-| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)              |
-| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                           |
-| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                            |
-| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)                 | [위협 모델](reference/threat-model.md)              |
-| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)        | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)            |
+| 문서                                   | English                                                         | 한국어                                               |
+| -------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- |
+| 프로젝트 소개와 설치                   | [README](../../../README.md)                                    | [프로젝트 소개](README.md)                           |
+| 문서 목차                              | [Index](../../README.md)                                        | [문서 목차](INDEX.md)                                |
+| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)         |
+| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)               |
+| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                           |
+| 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)          |
+| 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)           |
+| 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)              |
+| 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)           |
+| 소유 정책의 읽기 전용 Codex 검토       | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md) |
+| 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)      |
+| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)             |
+| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)        |
+| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)           |
+| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)           | [리포트 계약](reference/REPORT_CONTRACT.md)          |
+| 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)  |
+| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                         |
+| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)           |
+| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)               |
+| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                            |
+| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                             |
+| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)                 | [위협 모델](reference/threat-model.md)               |
+| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)        | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)             |
 
 ## 올바른 버전의 문서 읽기
 
@@ -78,6 +79,11 @@ reader가 필요 없고 제공자를 호출하거나 적용·실행을 허가하
 [#73 소유 보고서 정책](guides/OWNER_POLICY.md)([English](../../guides/OWNER_POLICY.md))은 별도
 checkout 예제입니다. 개발용 테스트는 순수 정책 함수만 실행하고 scanner 검사는 FastAPI 소스를
 import 없이 읽습니다. 인증 서비스나 제품 런타임 모드를 추가하지 않습니다.
+[#75 읽기 전용 Codex 소유 정책 검토](guides/CODEX_OWNER_REVIEW.md)
+([English](../../guides/CODEX_OWNER_REVIEW.md))는 모든 지원 OS에서 패키지 내 두 소스의 정확한
+입력을 오프라인으로 미리 보고, POSIX 제공자 경로에서 정확한 공유 동의를 요구합니다.
+검토와 구조화된 방어적 사례는 미검토 초안, 실행은 not-run, 인가는 unknown을 유지합니다.
+패치·대상 실행·새로운 실제 모델 인수 검증을 주장하지 않으며 alpha.3는 그대로입니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.

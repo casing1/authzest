@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #75's [`codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): a full offline JSON preview
+  on all supported OSes and an exact-envelope sharing decision before a read-only, pinned Codex
+  App Server request on POSIX. Use only two packaged owner-policy source snapshots, explicit policy
+  and static evidence, not the independent case labels or arbitrary paths. Validate evidence-linked
+  review answers and 1–16 non-executable defensive case drafts; expected values remain model-authored
+  and unreviewed, execution not-run and authorization unknown. No generated code, patch, application
+  execution or new live-model acceptance; existing fixture workflows and published alpha.3 are unchanged.
 - Add #73's source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md): default-deny
   pure policy requiring authenticated identity, the exact reports:read scope and matching ownership,
   with an independent assistant-authored regression matrix and separate non-importing source inventory
@@ -72,6 +79,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Documentation
 
+- Record the maintainer's 2026-09-24 approval of the owner-policy criteria separately from pending
+  independent review of the 28 assistant-authored expected labels and separate live-usage consent.
 - Synchronize all four README languages and English/Korean guides after verified alpha.3 publication
   in #58. Record immutable source, main/tag workflows, public asset hashes and observed checks; preserve
   historical evidence and the remaining broader #35 scope. No tag, asset or package-version change.

@@ -224,6 +224,50 @@ def codex_fixture(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("codex-owner-review")
+def codex_owner_review(
+    model: Annotated[
+        str, typer.Option(help="Exact Codex model identifier; no automatic fallback.")
+    ],
+    timeout_seconds: Annotated[
+        float,
+        typer.Option(help="One adapter attempt timeout in seconds, greater than 0 up to 120."),
+    ] = 120,
+    preview_only: Annotated[
+        bool,
+        typer.Option(
+            "--preview-only", help="Print the complete input preview offline; no account use."
+        ),
+    ] = False,
+) -> None:
+    """Review the packaged owner policy; no patches or generated test execution."""
+    from authzest.runner.codex_owner_review import (
+        OwnerReviewInputError,
+        build_owner_review_preview,
+        run_codex_owner_review,
+    )
+
+    try:
+        result = (
+            build_owner_review_preview(model, timeout_seconds=timeout_seconds)
+            if preview_only
+            else asyncio.run(
+                run_codex_owner_review(model, timeout_seconds=timeout_seconds, emit=typer.echo)
+            )
+        )
+    except OwnerReviewInputError as exc:
+        typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
+        raise typer.Exit(code=2) from exc
+    except (asyncio.CancelledError, KeyboardInterrupt):
+        typer.echo(json.dumps({"status": "cancelled", "execution_status": "not-run"}))
+        raise typer.Exit(code=130) from None
+    except Exception:
+        typer.echo(json.dumps({"status": "review-failed", "execution_status": "not-run"}))
+        raise typer.Exit(code=1) from None
+    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    raise typer.Exit(code=result.get("exit_code", 0))
+
+
 @app.command("fixture-demo")
 def fixture_demo() -> None:
     """Try an offline mock proposal with separate copy-edit, source-check and restore choices."""

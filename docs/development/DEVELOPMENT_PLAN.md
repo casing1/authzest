@@ -111,8 +111,14 @@ published assets or complete broader #35.
 [#73's owned report policy](../guides/OWNER_POLICY.md) adds a separate checkout example with a pure
 default-deny policy, an independent assistant-authored matrix and non-importing scanner evidence.
 Developer unit tests call only the policy function, not the FastAPI application or authentication
-provider. Real authentication, endpoint runtime acceptance and Codex integration remain separate;
-[issue #73](https://github.com/casing1/authzest/issues/73) records policy review and acceptance status.
+provider. Real authentication and endpoint runtime acceptance remain separate;
+[issue #73](https://github.com/casing1/authzest/issues/73) records acceptance. The maintainer approved
+the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any live account use.
+[#75's read-only Codex owner review](../guides/CODEX_OWNER_REVIEW.md) connects two packaged snapshots,
+explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
+Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
+not-run and authorization unknown. Live-model acceptance is pending; no code, diff or application
+execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -259,6 +265,14 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       separate from static FastAPI inventory checks. This source slice is not generated tests or
       endpoint execution; [issue #73](https://github.com/casing1/authzest/issues/73) tracks review and acceptance.
       Frozen evaluation labels, Codex scope, fixture execution allowlists and broader #35 remain unchanged.
+- [x] Implement [#75's read-only owner-policy review](../guides/CODEX_OWNER_REVIEW.md): preview two
+      packaged source snapshots, policy and static evidence offline on all supported OSes; bind exact
+      sharing consent to the whole request envelope for a single pinned POSIX App Server request.
+      Validate evidence-linked answers and non-executable defensive case drafts without patching or
+      source execution. This records the source implementation, not live-model acceptance or merge;
+      [issue #75](https://github.com/casing1/authzest/issues/75) tracks those separate gates.
+- [ ] Obtain separate bounded source-sharing/account-use consent and validate the owner-policy live
+      review. Review model-authored case expectations independently; schema validity is not policy truth.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification
