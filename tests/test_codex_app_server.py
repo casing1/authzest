@@ -20,6 +20,7 @@ from authzest.codex.contracts import (
     identity,
     validate_response,
 )
+from authzest.codex.diagnostics import FailureDiagnostic, sanitize_failure
 from authzest.codex.fixture_draft import (
     FIXTURE_AFTER,
     FIXTURE_SOURCE,
@@ -494,7 +495,7 @@ def test_cancellation_reaps_wrapper_and_descendant(context, fake_factory):
     assert_descendant_stopped(fake)
 
 
-def cli_process(fake, tmp_path, answer):
+def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
     """Exercise the real CLI and real adapter, resolving only this test's fake codex."""
     executable = fake.executable.with_name("codex")
     fake.executable.rename(executable)
@@ -514,7 +515,7 @@ def cli_process(fake, tmp_path, answer):
             "-B",
             "-m",
             "authzest.cli",
-            "codex-fixture",
+            command,
             "--model",
             "fixture-test-model",
             "--timeout-seconds",
@@ -528,7 +529,12 @@ def cli_process(fake, tmp_path, answer):
         timeout=20,
         check=False,
     )
-    marker = '{\n  "kind": "codex-owned-fixture-workflow"'
+    kind = (
+        "codex-owner-review-workflow"
+        if command == "codex-owner-review"
+        else "codex-owned-fixture-workflow"
+    )
+    marker = '{\n  "kind": "' + kind + '"'
     summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
     return result, summary, temporary_root
 
@@ -1183,3 +1189,330 @@ def test_owner_review_cancellation_reaps_child_and_descendant(owner_context, fak
     asyncio.run(cancel())
     assert_stopped(fake)
     assert_descendant_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "case,stage,code,progress",
+    [
+        ("wrong-version", "startup", "version-unsupported", "not-attempted"),
+        ("malformed", "startup", "protocol-rejected", "not-attempted"),
+        ("bad-config", "configuration", "configuration-rejected", "not-attempted"),
+        ("missing-config", "configuration", "configuration-rejected", "not-attempted"),
+        ("missing-auth", "account-check", "authentication-required", "not-attempted"),
+        ("api-key-auth", "account-check", "authentication-required", "not-attempted"),
+        ("missing-model", "model-check", "model-unavailable", "not-attempted"),
+        ("thread-model", "thread-start", "protocol-rejected", "not-attempted"),
+        ("diagnostic-rpc-error:turn/start", "turn-start", "request-rejected", "attempted"),
+        ("diagnostic-malformed-result:turn/start", "turn-start", "protocol-rejected", "attempted"),
+        ("diagnostic-invalid-turn-id", "turn-start", "protocol-rejected", "attempted"),
+        ("turn-result-tool", "turn-start", "protocol-rejected", "acknowledged"),
+        ("wrong-turn", "turn-stream", "protocol-rejected", "acknowledged"),
+        ("failed-turn", "turn-stream", "turn-failed", "acknowledged"),
+        ("bad-final-json", "response-validation", "response-invalid", "acknowledged"),
+        ("retry:eof", "turn-stream", "transport-error", "acknowledged"),
+    ],
+)
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_failure_diagnostic_is_bounded_and_uses_local_phase_only(
+    context, owner_context, fake_factory, case, stage, code, progress, kind
+):
+    request = context if kind == "fixture" else owner_context
+    response = None if kind == "fixture" else owner_response_data(request)
+    fake = fake_factory(case, request=request, response=response)
+    transport = adapter(request, fake)
+    assert transport.failure_diagnostic is None
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(method(request))
+    diagnostic = sanitize_failure(transport.failure_diagnostic)
+    assert diagnostic == {"stage": stage, "code": code, "turn_start": progress}
+    assert "FAKE_SECRET" not in canonical(diagnostic) + str(error.value)
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == (0 if progress == "not-attempted" else 1)
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_success_does_not_retain_a_failure_diagnostic(context, owner_context, fake_factory, kind):
+    request = context if kind == "fixture" else owner_context
+    fake = fake_factory(
+        request=request, response=None if kind == "fixture" else owner_response_data(request)
+    )
+    transport = adapter(request, fake)
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    asyncio.run(method(request))
+    assert transport.failure_diagnostic is None
+    assert transport.warnings_seen == 0
+    with pytest.raises(AppServerError):
+        asyncio.run(method(request))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "request-validation", "request-invalid", "not-attempted"
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_swapped_request_keeps_contract_error_and_redacted_diagnostic(
+    context, owner_context, fake_factory, kind
+):
+    request = owner_context if kind == "fixture" else context
+    fake = fake_factory()
+    transport = adapter(request, fake)
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    with pytest.raises(ContractError):
+        asyncio.run(method(request))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "request-validation", "request-invalid", "not-attempted"
+    )
+    assert transport.consumed is False
+    assert not fake.events()
+
+
+@pytest.mark.parametrize(
+    "case,stage,progress",
+    [
+        ("diagnostic-hang:initialize", "startup", "not-attempted"),
+        ("diagnostic-hang:config/read", "configuration", "not-attempted"),
+        ("diagnostic-hang:account/read", "account-check", "not-attempted"),
+        ("diagnostic-hang:model/list", "model-check", "not-attempted"),
+        ("diagnostic-hang:thread/start", "thread-start", "not-attempted"),
+        ("diagnostic-hang:turn/start", "turn-start", "attempted"),
+        ("hang", "turn-stream", "acknowledged"),
+    ],
+)
+@pytest.mark.parametrize("stop", ["timeout", "cancel"])
+def test_failure_phase_survives_timeout_cancellation_and_cleanup(
+    context, fake_factory, case, stage, progress, stop
+):
+    fake = fake_factory(case)
+    transport = CodexAppServerAdapter(
+        context.request_id,
+        executable=str(fake.executable),
+        timeout_seconds=1 if stop == "timeout" else 5,
+    )
+
+    async def run():
+        if stop == "timeout":
+            with pytest.raises(AppServerError):
+                await transport.draft(context)
+            return
+        task = asyncio.create_task(transport.draft(context))
+        expected_method = case.split(":", 1)[1] if ":" in case else "turn/start"
+        try:
+            async with asyncio.timeout(5):
+                while expected_method not in fake.methods():
+                    if task.done():
+                        await task
+                        pytest.fail("Transport exited before the cancellation checkpoint")
+                    await asyncio.sleep(0.01)
+                if case == "hang":
+                    while transport._stage != "turn-stream":
+                        await asyncio.sleep(0.01)
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        finally:
+            if not task.done():
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    asyncio.run(run())
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        stage, "timeout" if stop == "timeout" else "cancelled", progress
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") <= 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("primary_failure", [False, True])
+def test_cleanup_failure_does_not_replace_first_useful_diagnostic(
+    context, fake_factory, monkeypatch, primary_failure
+):
+    fake = fake_factory("missing-auth" if primary_failure else "happy")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def fail_after_stop(process):
+        nonlocal stopped
+        await stop(process)
+        stopped += 1
+        if stopped == 2:
+            raise OSError("FAKE_SECRET_CLEANUP_PATH")
+
+    monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    expected = (
+        FailureDiagnostic("account-check", "authentication-required", "not-attempted")
+        if primary_failure
+        else FailureDiagnostic("cleanup", "cleanup-failed", "acknowledged")
+    )
+    assert transport.failure_diagnostic == expected
+    assert "FAKE_SECRET" not in str(error.value) + canonical(sanitize_failure(expected))
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert_stopped(fake)
+
+
+def test_startup_os_error_does_not_expose_executable_path(context, tmp_path):
+    transport = CodexAppServerAdapter(
+        context.request_id, executable=str(tmp_path / "FAKE_SECRET_EXECUTABLE")
+    )
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "startup", "transport-error", "not-attempted"
+    )
+    assert "FAKE_SECRET" not in str(error.value)
+
+
+@pytest.mark.parametrize("code", ["FAKE_SECRET", None, [], True])
+def test_app_server_error_diagnostic_code_is_closed(code):
+    with pytest.raises(ValueError, match="Invalid bounded App Server error code"):
+        AppServerError("redacted", code=code)
+
+
+def test_turn_start_write_failure_is_only_locally_attempted(context, fake_factory, monkeypatch):
+    fake = fake_factory()
+    transport = adapter(context, fake)
+    send = app_server._Session.send
+
+    async def fail_write(session, message):
+        if message.get("method") == "turn/start":
+            raise BrokenPipeError("FAKE_SECRET_WRITE_PATH")
+        await send(session, message)
+
+    monkeypatch.setattr(app_server._Session, "send", fail_write)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "turn-start", "transport-error", "attempted"
+    )
+    assert "FAKE_SECRET" not in str(error.value)
+    assert "turn/start" not in fake.methods()
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("cleanup_error", [OSError, TimeoutError])
+@pytest.mark.parametrize("during_cleanup", [False, True])
+def test_cancellation_propagates_even_when_cleanup_also_fails(
+    context, fake_factory, monkeypatch, cleanup_error, during_cleanup
+):
+    fake = fake_factory("happy" if during_cleanup else "hang")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def run():
+        cleanup_started = asyncio.Event()
+        release_cleanup = asyncio.Event()
+
+        async def fail_after_stop(process):
+            nonlocal stopped
+            await stop(process)
+            stopped += 1
+            if stopped == 2:
+                if during_cleanup:
+                    cleanup_started.set()
+                    await release_cleanup.wait()
+                raise cleanup_error("FAKE_SECRET_CLEANUP")
+
+        monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+        task = asyncio.create_task(transport.draft(context))
+        try:
+            async with asyncio.timeout(5):
+                if during_cleanup:
+                    await cleanup_started.wait()
+                else:
+                    while transport._stage != "turn-stream":
+                        if task.done():
+                            await task
+                            pytest.fail("Exited before cancellation checkpoint")
+                        await asyncio.sleep(0.01)
+            task.cancel()
+            if during_cleanup:
+                # Deliver cancellation to the shield before cleanup itself fails.
+                await asyncio.sleep(0)
+                release_cleanup.set()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        finally:
+            release_cleanup.set()
+            if not task.done():
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    asyncio.run(run())
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "cleanup" if during_cleanup else "turn-stream", "cancelled", "acknowledged"
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert_stopped(fake)
+
+
+def test_primary_protocol_failure_survives_cleanup_timeout(context, fake_factory, monkeypatch):
+    fake = fake_factory("wrong-turn")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def fail_after_stop(process):
+        nonlocal stopped
+        await stop(process)
+        stopped += 1
+        if stopped == 2:
+            raise TimeoutError("FAKE_SECRET_CLEANUP_TIMEOUT")
+
+    monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+    with pytest.raises(AppServerError, match="turn identity mismatch"):
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "turn-stream", "protocol-rejected", "acknowledged"
+    )
+    assert_stopped(fake)
+
+
+def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
+    owner_context, fake_factory, tmp_path
+):
+    from authzest.runner.codex_owner_review import build_owner_review_preview
+
+    response = owner_response_data(owner_context)
+    response["FAKE_SECRET_UNSUPPORTED_FIELD"] = "FAKE_SECRET_MODEL_OUTPUT"
+    fake = fake_factory(request=owner_context, response=response)
+    preview = build_owner_review_preview("fixture-test-model", timeout_seconds=5)
+    process, summary, temporary_root = cli_process(
+        fake, tmp_path, f"share {preview['sharing_id']}\n", command="codex-owner-review"
+    )
+    assert process.returncode == 1
+    assert summary["status"] == "review-failed"
+    assert summary["failure"] == {
+        "stage": "response-validation",
+        "code": "response-invalid",
+        "turn_start": "acknowledged",
+    }
+    for key in (
+        "draft",
+        "usage",
+        "returned_identity",
+        "provider_warning_count",
+        "provider_retry_notification_count",
+    ):
+        assert summary[key] is None
+    assert summary["application_turn_attempts"] == 1
+    assert summary["execution_status"] == "not-run"
+    assert summary["original_checkout_modified"] is False
+    assert fake.methods().count("turn/start") == 1
+    assert "FAKE_SECRET" not in process.stdout + process.stderr
+    assert not list(temporary_root.iterdir())
+    assert_stopped(fake)

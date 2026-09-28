@@ -101,9 +101,41 @@ clean after the run, and both maintained example source hashes were unchanged. E
 `not-run`, authorization remains `unknown`, and the independent developer labels remain unreviewed.
 This failed attempt does not complete live acceptance, broader #35 or a release.
 
-The one-attempt approval is consumed. The proposed next work, not yet begun, is a safe redacted
-failure-stage diagnostic design with offline tests, followed by a new live attempt only after fresh
+The one-attempt approval is consumed. The source-only diagnostic addition below does not recover
+the historical failure's cause or authorize another attempt. A new live attempt still requires fresh
 source-sharing and account-usage approval. No automatic retry is authorized by the failed result.
+
+## Redacted failure diagnostics — source addition on 2026-09-28
+
+The final result now includes `failure`: `null` when no failure is reported, or an object containing
+only the allowlisted strings `stage`, `code` and `turn_start`. This records the adapter's local
+failure boundary, not an unfiltered provider error or a proven root cause. For example,
+`stage=turn-stream` with `code=protocol-rejected` means a checked protocol condition failed while
+processing the turn stream; it does not by itself establish authentication, quota or network failure.
+
+Stages distinguish adapter setup, request validation, startup, configuration, account/model checks,
+thread/turn start, turn streaming, response/result validation and cleanup. Unclassified failures use
+`unknown`; unsupported or malformed diagnostic values from an adapter are replaced with a safe
+fallback. Fixed codes such as `timeout`, `transport-error` and `response-invalid` help distinguish
+failure categories without copying exception text.
+
+| `turn_start`    | Local observation                                                                |
+| --------------- | -------------------------------------------------------------------------------- |
+| `not-attempted` | No local `turn/start` send attempt was recorded.                                 |
+| `attempted`     | A local send was attempted; a matching valid turn-start reply was not confirmed. |
+| `acknowledged`  | A matching reply with a valid turn ID was confirmed.                             |
+| `unknown`       | The available diagnostic does not establish the turn-start state.                |
+
+None of these states attests to the served model, billing, execution or completion. The existing
+`application_turn_attempts` is not a count of server-accepted turns. Failed results keep usage,
+warning count and retry count `null`; the diagnostic does not infer them from transport progress.
+Its three fields never include raw provider messages, logs, exception text, paths, identifiers,
+account details or partial model output.
+
+This addition is checked offline and tracked in [PR #76](https://github.com/casing1/authzest/pull/76);
+it is not a new live-model result, a release or completed acceptance. Cancellation still propagates
+to the CLI's exit `130`. The version pin, sharing envelope, limits and no-retry rule remain unchanged;
+diagnostics grant no additional provider, source, tool or execution authority.
 
 ## Interpret the result
 

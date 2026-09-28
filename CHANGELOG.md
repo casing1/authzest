@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add source-only redacted failure diagnostics for `codex-owner-review` on 2026-09-28: a nullable
+  `failure` object with allowlisted `stage`, `code` and `turn_start` strings, plus offline regressions.
+  Distinguish local send attempts from acknowledged turn-start replies without exposing raw provider
+  errors, logs, identifiers or partial output, or inferring billing, completion or failed-run usage.
+  Preserve cancellation, version/sharing limits and no-retry behavior. This does not reconstruct the
+  2026-09-24 failure or add another live result; live acceptance and fresh approval remain necessary.
 - Add #75's [`codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): a full offline JSON preview
   on all supported OSes and an exact-envelope sharing decision before a read-only, pinned Codex
   App Server request on POSIX. Use only two packaged owner-policy source snapshots, explicit policy

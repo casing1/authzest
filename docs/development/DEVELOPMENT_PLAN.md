@@ -119,6 +119,8 @@ explicit policy and static evidence to a full offline preview and exact-sharing-
 Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
 not-run and authorization unknown. One separately approved live attempt failed without an accepted
 draft on 2026-09-24; live acceptance remains pending and another attempt needs fresh approval.
+The 2026-09-28 source addition exposes only allowlisted failure stage/code/turn-start diagnostics
+and offline tests; it does not recover that historical cause or constitute another live result.
 No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
@@ -272,10 +274,15 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       Validate evidence-linked answers and non-executable defensive case drafts without patching or
       source execution. This records the source implementation, not live-model acceptance or merge;
       [issue #75](https://github.com/casing1/authzest/issues/75) tracks those separate gates.
+- [x] Implement source-only redacted failure diagnostics and offline regressions for owner-policy
+      review. Expose only allowlisted stage/code/turn-start states, never raw provider errors or partial
+      output. Keep failure usage unknown, cancellation propagation and the existing sharing/execution
+      limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this does not
+      reconstruct the 2026-09-24 failure or record a new live attempt, merge or release.
 - [ ] Complete the owner-policy live review with separate bounded source-sharing/account-use consent.
       The approved 2026-09-24 attempt returned `review-failed` with no accepted draft or known usage;
-      no AuthZest retry was made. Next, design safe redacted failure-stage diagnostics and offline tests
-      before requesting fresh approval for another live attempt; this follow-up has not begun.
+      no AuthZest retry was made. After reviewing the offline diagnostic changes, request fresh approval
+      before another live attempt; the original one-attempt approval is consumed.
       Review model-authored case expectations independently; schema validity is not policy truth.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.

@@ -23,6 +23,7 @@ from authzest.codex.contracts import (
     canonical,
     identity,
 )
+from authzest.codex.diagnostics import sanitize_failure
 from authzest.codex.fixture_draft import HOST_INSTRUCTIONS, MAX_RETRY_NOTIFICATIONS
 from authzest.codex.owner_policy_review import (
     build_owner_policy_request,
@@ -40,6 +41,20 @@ def _default_adapter_factory(**kwargs):
     from authzest.codex.app_server import CodexAppServerAdapter
 
     return CodexAppServerAdapter(**kwargs)
+
+
+def _failure_snapshot(adapter: Any, *, stage: str, code: str) -> dict[str, str]:
+    """Read only a closed diagnostic, never exception text or a provider payload."""
+    try:
+        value = getattr(adapter, "failure_diagnostic", None)
+    except Exception:
+        value = None
+    failure = sanitize_failure(value, stage=stage, code=code)
+    if code == "timeout" and failure["code"] == "cancelled":
+        # The outer deadline cancels the adapter. Keep its observed phase/progress,
+        # but distinguish this deadline from a caller's propagated cancellation.
+        failure["code"] = "timeout"
+    return failure
 
 
 def build_owner_review_preview(model: str, *, timeout_seconds: float = 120) -> dict[str, Any]:
@@ -136,6 +151,7 @@ async def run_codex_owner_review(
         "provider_retry_notification_count": None,
         "latency_ms": None,
         "draft": None,
+        "failure": None,
         "original_checkout_modified": False,
         "execution_status": "not-run",
         "authorization_status": "unknown",
@@ -148,13 +164,31 @@ async def run_codex_owner_review(
     # not an authenticated approval service or a freshness check of a checkout.
     current = build_owner_review_preview(model, timeout_seconds=timeout_seconds)
     if current != preview:
-        result.update(status="preview-changed", exit_code=1)
+        result.update(
+            status="preview-changed",
+            exit_code=1,
+            failure={
+                "stage": "request-validation",
+                "code": "request-invalid",
+                "turn_start": "not-attempted",
+            },
+        )
         return result
     request = build_owner_policy_request(model)
     if request.request_id != preview["request_id"]:
-        result.update(status="preview-changed", exit_code=1)
+        result.update(
+            status="preview-changed",
+            exit_code=1,
+            failure={
+                "stage": "request-validation",
+                "code": "request-invalid",
+                "turn_start": "not-attempted",
+            },
+        )
         return result
     started = perf_counter()
+    adapter = None
+    stage = "adapter-setup"
     try:
         factory = adapter_factory if adapter_factory is not None else _default_adapter_factory
         async with asyncio.timeout(timeout_seconds):
@@ -163,13 +197,26 @@ async def run_codex_owner_review(
                 timeout_seconds=timeout_seconds,
             )
             result["application_turn_attempts"] = 1
+            stage = "unknown"
             draft = await adapter.review_owner_policy(request)
+        stage = "result-validation"
         checked = validate_owner_policy_result(draft, request)
     except asyncio.CancelledError:
         raise
-    except Exception:
+    except Exception as exc:
         # Never emit provider exceptions, partial model content, logs or account details.
-        result.update(status="review-failed", exit_code=1)
+        code = (
+            "timeout"
+            if isinstance(exc, TimeoutError)
+            else "response-invalid"
+            if stage == "result-validation" and isinstance(exc, ContractError)
+            else "unexpected-error"
+        )
+        # A successfully returned adapter no longer owns a later host-validation failure.
+        failure = _failure_snapshot(
+            None if stage == "result-validation" else adapter, stage=stage, code=code
+        )
+        result.update(status="review-failed", exit_code=1, failure=failure)
         return result
     finally:
         result["latency_ms"] = (perf_counter() - started) * 1000

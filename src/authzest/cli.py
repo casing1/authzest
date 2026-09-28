@@ -241,6 +241,7 @@ def codex_owner_review(
     ] = False,
 ) -> None:
     """Review the packaged owner policy; no patches or generated test execution."""
+    from authzest.codex.diagnostics import sanitize_failure
     from authzest.runner.codex_owner_review import (
         OwnerReviewInputError,
         build_owner_review_preview,
@@ -259,10 +260,26 @@ def codex_owner_review(
         typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
         raise typer.Exit(code=2) from exc
     except (asyncio.CancelledError, KeyboardInterrupt):
-        typer.echo(json.dumps({"status": "cancelled", "execution_status": "not-run"}))
+        typer.echo(
+            json.dumps(
+                {
+                    "status": "cancelled",
+                    "execution_status": "not-run",
+                    "failure": sanitize_failure(None, code="cancelled"),
+                }
+            )
+        )
         raise typer.Exit(code=130) from None
     except Exception:
-        typer.echo(json.dumps({"status": "review-failed", "execution_status": "not-run"}))
+        typer.echo(
+            json.dumps(
+                {
+                    "status": "review-failed",
+                    "execution_status": "not-run",
+                    "failure": sanitize_failure(None),
+                }
+            )
+        )
         raise typer.Exit(code=1) from None
     typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
     raise typer.Exit(code=result.get("exit_code", 0))

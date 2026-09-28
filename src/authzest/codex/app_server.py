@@ -19,7 +19,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, TypeVar
 
-from authzest.codex.contracts import MAX_JSON_BYTES, CodexAnalysisRequest, canonical, decode
+from authzest.codex.contracts import (
+    MAX_JSON_BYTES,
+    CodexAnalysisRequest,
+    ContractError,
+    canonical,
+    decode,
+)
+from authzest.codex.diagnostics import FAILURE_CODES, FailureDiagnostic
 from authzest.codex.fixture_draft import (
     HOST_INSTRUCTIONS,
     MAX_RETRY_NOTIFICATIONS,
@@ -133,6 +140,12 @@ CONFIG = {
 class AppServerError(RuntimeError):
     """Stable redacted error; never include an RPC error body or process output."""
 
+    def __init__(self, message: str, *, code: str = "protocol-rejected"):
+        if type(code) is not str or code not in FAILURE_CODES:
+            raise ValueError("Invalid bounded App Server error code")
+        super().__init__(message)
+        self.code = code
+
 
 def _environment() -> dict[str, str]:
     # Preserve the existing auth location, never copy tokens or repurpose home.
@@ -150,7 +163,9 @@ def _arguments(executable: str, disabled_servers: tuple[str, ...]) -> list[str]:
         args.extend(("-c", f"{key}={canonical(value)}"))
     for name in disabled_servers:
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", name):
-            raise AppServerError("Unsupported inherited MCP configuration")
+            raise AppServerError(
+                "Unsupported inherited MCP configuration", code="configuration-rejected"
+            )
         args.extend(("-c", f"mcp_servers.{name}.enabled=false"))
     return [*args, "app-server", "--listen", "stdio://"]
 
@@ -164,7 +179,12 @@ async def _stop(process: asyncio.subprocess.Process) -> None:
 
 
 @asynccontextmanager
-async def _process(args: list[str], cwd: Path):
+async def _process(
+    args: list[str],
+    cwd: Path,
+    *,
+    on_failure: Callable[[BaseException, bool], None] | None = None,
+):
     process = await asyncio.create_subprocess_exec(
         *args,
         cwd=cwd,
@@ -175,20 +195,46 @@ async def _process(args: list[str], cwd: Path):
         limit=MAX_JSON_BYTES + 1,
         start_new_session=True,
     )
+    primary_error: BaseException | None = None
     try:
         yield process
+    except BaseException as exc:
+        primary_error = exc
+        if on_failure is not None:
+            on_failure(exc, False)
+        raise
     finally:
         # Shield cleanup from a single caller cancellation, then still propagate it.
         cleanup = asyncio.create_task(_stop(process))
         try:
             await asyncio.shield(cleanup)
-        except asyncio.CancelledError:
-            await cleanup
-            raise
+        except asyncio.CancelledError as cancelled:
+            if on_failure is not None:
+                on_failure(cancelled, True)
+            try:
+                await cleanup
+            except BaseException as exc:
+                if on_failure is not None:
+                    on_failure(exc, True)
+            if primary_error is None:
+                # A subsequent cleanup error must not convert cancellation into
+                # a normal provider failure (or defeat the outer timeout scope).
+                raise cancelled from None
+        except BaseException as exc:
+            if on_failure is not None:
+                on_failure(exc, True)
+            if primary_error is None:
+                raise
 
 
 class _Session:
-    def __init__(self, process: asyncio.subprocess.Process):
+    def __init__(
+        self,
+        process: asyncio.subprocess.Process,
+        *,
+        on_stage: Callable[[str], None] | None = None,
+        on_turn_attempt: Callable[[], None] | None = None,
+    ):
         self.process = process
         self.sequence = 0
         self.total_bytes = 0
@@ -200,6 +246,8 @@ class _Session:
         self.turn_requested = False
         self.turn_id: str | None = None
         self.request_method: str | None = None
+        self.on_stage = on_stage
+        self.on_turn_attempt = on_turn_attempt
 
     def check_retry(self, params: dict[str, Any]) -> None:
         if (
@@ -222,7 +270,7 @@ class _Session:
             or set(error) - {"message", "codexErrorInfo", "additionalDetails", "misalignment"}
             or error.get("misalignment") is not None
         ):
-            raise AppServerError("Codex reported a non-recoverable error")
+            raise AppServerError("Codex reported a non-recoverable error", code="turn-failed")
         message, details = error.get("message"), error.get("additionalDetails")
         if (
             type(message) is not str
@@ -240,7 +288,7 @@ class _Session:
                 "responseStreamDisconnected",
             }
         ):
-            raise AppServerError("Codex reported a non-recoverable error")
+            raise AppServerError("Codex reported a non-recoverable error", code="turn-failed")
         status_info = next(iter(info.values()))
         if type(status_info) is not dict or set(status_info) - {"httpStatusCode"}:
             raise AppServerError("Invalid Codex recovery metadata")
@@ -248,7 +296,7 @@ class _Session:
         if status is not None and (
             type(status) is not int or not (status in (200, 408) or 500 <= status <= 599)
         ):
-            raise AppServerError("Codex reported a non-recoverable HTTP status")
+            raise AppServerError("Codex reported a non-recoverable HTTP status", code="turn-failed")
 
     def check_warning(self, params: dict[str, Any]) -> None:
         if (
@@ -316,7 +364,10 @@ class _Session:
                 or self.total_bytes > MAX_STREAM_BYTES
                 or self.events > MAX_EVENTS
             ):
-                raise AppServerError("Incomplete or oversized Codex stream")
+                raise AppServerError(
+                    "Incomplete or oversized Codex stream",
+                    code="transport-error" if not line else "protocol-rejected",
+                )
             value = decode(line.decode("utf-8"))
         except (ValueError, UnicodeError) as exc:
             raise AppServerError("Invalid Codex protocol message") from exc
@@ -350,11 +401,25 @@ class _Session:
         return value
 
     async def request(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
+        if self.on_stage is not None:
+            self.on_stage(
+                {
+                    "initialize": "startup",
+                    "config/read": "configuration",
+                    "remoteControl/status/read": "configuration",
+                    "account/read": "account-check",
+                    "model/list": "model-check",
+                    "thread/start": "thread-start",
+                    "turn/start": "turn-start",
+                }.get(method, "unknown")
+            )
         self.sequence += 1
         request_id = self.sequence
         self.request_method = method
         if method == "turn/start":
             self.turn_requested = True
+            if self.on_turn_attempt is not None:
+                self.on_turn_attempt()
         try:
             await self.send({"id": request_id, "method": method, "params": params})
             while True:
@@ -372,7 +437,9 @@ class _Session:
                     continue
                 if type(value["id"]) is not int or value["id"] != request_id:
                     raise AppServerError("Unexpected Codex response identity")
-                if "error" in value or type(value.get("result")) is not dict:
+                if "error" in value:
+                    raise AppServerError("Codex request failed", code="request-rejected")
+                if type(value.get("result")) is not dict:
                     raise AppServerError("Codex request failed")
                 return value["result"]
         finally:
@@ -391,11 +458,13 @@ class _Session:
         if not isinstance(agent, str) or not re.search(
             rf"/{re.escape(SUPPORTED_CODEX_VERSION)}(?:\s|$)", agent
         ):
-            raise AppServerError("Unsupported Codex App Server version")
+            raise AppServerError("Unsupported Codex App Server version", code="version-unsupported")
         await self.send({"method": "initialized", "params": {}})
         result = await self.request("config/read", {"includeLayers": False})
         if type(result.get("config")) is not dict:
-            raise AppServerError("Missing effective Codex configuration")
+            raise AppServerError(
+                "Missing effective Codex configuration", code="configuration-rejected"
+            )
         return result["config"]
 
 
@@ -403,13 +472,19 @@ def _check_config(config: dict[str, Any], *, require_disabled_mcp: bool) -> tupl
     # Absence/null means no explicit model endpoint override. Reject all other
     # values, including empty strings and official URLs, for this narrow workflow.
     if config.get("openai_base_url") is not None:
-        raise AppServerError("A model endpoint override is unsupported for ChatGPT login")
+        raise AppServerError(
+            "A model endpoint override is unsupported for ChatGPT login",
+            code="configuration-rejected",
+        )
     for path, expected in CONFIG.items():
         value: Any = config
         for part in path.split("."):
             value = value.get(part) if isinstance(value, dict) else None
         if type(value) is not type(expected) or value != expected:
-            raise AppServerError("Effective Codex configuration does not meet the boundary")
+            raise AppServerError(
+                "Effective Codex configuration does not meet the boundary",
+                code="configuration-rejected",
+            )
     if any(
         config.get(key)
         for key in (
@@ -419,15 +494,23 @@ def _check_config(config: dict[str, Any], *, require_disabled_mcp: bool) -> tupl
             "experimental_thread_store_endpoint",
         )
     ):
-        raise AppServerError("Inherited external context configuration is unsupported")
+        raise AppServerError(
+            "Inherited external context configuration is unsupported", code="configuration-rejected"
+        )
     servers = config.get("mcp_servers", {})
     if type(servers) is not dict or len(servers) > 64:
-        raise AppServerError("Unsupported inherited MCP configuration")
+        raise AppServerError(
+            "Unsupported inherited MCP configuration", code="configuration-rejected"
+        )
     for name, data in servers.items():
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", name) or type(data) is not dict:
-            raise AppServerError("Unsupported inherited MCP configuration")
+            raise AppServerError(
+                "Unsupported inherited MCP configuration", code="configuration-rejected"
+            )
         if require_disabled_mcp and data.get("enabled") is not False:
-            raise AppServerError("An inherited MCP server is still enabled")
+            raise AppServerError(
+                "An inherited MCP server is still enabled", code="configuration-rejected"
+            )
     return tuple(sorted(servers))
 
 
@@ -535,7 +618,9 @@ async def _finish(session: _Session, thread_id: str, turn_id: str) -> tuple[str,
                 if consumed_retries != session.retry_notifications_seen:
                     raise AppServerError("Codex recovery notification ordering mismatch")
                 if turn.get("status") != "completed" or turn.get("error") is not None:
-                    raise AppServerError("Codex turn did not complete successfully")
+                    raise AppServerError(
+                        "Codex turn did not complete successfully", code="turn-failed"
+                    )
                 if len(final_messages) != 1:
                     raise AppServerError("Missing or ambiguous Codex final output")
                 return next(iter(final_messages.values())), usage
@@ -571,6 +656,47 @@ class CodexAppServerAdapter:
         self.consumed = False
         self.warnings_seen: int | None = None
         self.retry_notifications_seen: int | None = None
+        self.failure_diagnostic: FailureDiagnostic | None = None
+        self._stage = "adapter-setup"
+        self._turn_start = "not-attempted"
+
+    def _begin_request(self) -> None:
+        self.failure_diagnostic = None
+        self.warnings_seen = None
+        self.retry_notifications_seen = None
+        self._stage = "request-validation"
+        self._turn_start = "not-attempted"
+
+    def _set_stage(self, stage: str) -> None:
+        self._stage = stage
+
+    def _mark_turn_attempt(self) -> None:
+        # A local send attempt, not a claim that the provider accepted or billed it.
+        self._turn_start = "attempted"
+
+    def _record_failure(self, error: BaseException, cleanup: bool = False) -> None:
+        self.warnings_seen = None
+        self.retry_notifications_seen = None
+        if self.failure_diagnostic is not None:
+            return
+        stage = "cleanup" if cleanup else self._stage
+        if isinstance(error, asyncio.CancelledError):
+            code = "cancelled"
+        elif cleanup or stage == "cleanup":
+            code = "cleanup-failed"
+        elif isinstance(error, TimeoutError):
+            code = "timeout"
+        elif type(error) is AppServerError:
+            code = error.code
+            if type(code) is not str or code not in FAILURE_CODES:
+                code = "unexpected-error"
+        elif isinstance(error, ContractError):
+            code = "request-invalid" if stage == "request-validation" else "response-invalid"
+        elif isinstance(error, OSError):
+            code = "transport-error"
+        else:
+            code = "unexpected-error"
+        self.failure_diagnostic = FailureDiagnostic(stage, code, self._turn_start)
 
     async def analyze(self, request: CodexAnalysisRequest) -> str:
         """Satisfy the review-only adapter protocol without extending its JSON shape."""
@@ -578,8 +704,13 @@ class CodexAppServerAdapter:
 
     async def draft(self, request: CodexAnalysisRequest) -> FixtureDraft:
         """Draft only the original exact packaged debug-configuration change."""
-        self._check_sharing(request)
-        prompt, schema = fixture_prompt(request), fixture_output_schema(request)
+        self._begin_request()
+        try:
+            self._check_sharing(request)
+            prompt, schema = fixture_prompt(request), fixture_output_schema(request)
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
         return await self._turn(
             request,
             prompt,
@@ -589,8 +720,13 @@ class CodexAppServerAdapter:
 
     async def review_owner_policy(self, request: CodexAnalysisRequest) -> OwnerPolicyReview:
         """Review only the exact packaged owner-policy sources; never produce a patch."""
-        self._check_sharing(request)
-        prompt, schema = owner_policy_prompt(request), owner_policy_output_schema(request)
+        self._begin_request()
+        try:
+            self._check_sharing(request)
+            prompt, schema = owner_policy_prompt(request), owner_policy_output_schema(request)
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
         return await self._turn(
             request,
             prompt,
@@ -600,7 +736,9 @@ class CodexAppServerAdapter:
 
     def _check_sharing(self, request: CodexAnalysisRequest) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
-            raise AppServerError("A fresh exact-request sharing decision is required")
+            raise AppServerError(
+                "A fresh exact-request sharing decision is required", code="request-invalid"
+            )
 
     async def _turn(
         self,
@@ -613,19 +751,31 @@ class CodexAppServerAdapter:
         # Recheck the sharing gate here before consuming this single-use transport.
         self._check_sharing(request)
         self.consumed = True
-        model = request.to_dict()["config"]["model"]
+        deadline = asyncio.timeout(self.timeout_seconds)
         try:
-            async with asyncio.timeout(self.timeout_seconds):
+            model = request.to_dict()["config"]["model"]
+            async with deadline:
+                self._stage = "startup"
                 with TemporaryDirectory(prefix="authzest-codex-empty-") as directory:
                     cwd = Path(directory).resolve()
                     # No thread is created by discovery. Empty TOML maps merge, so enumerate
                     # inherited MCP names without logging settings, then disable each on restart.
-                    async with _process(_arguments(self.executable, ()), cwd) as process:
-                        discovery = _Session(process)
+                    async with _process(
+                        _arguments(self.executable, ()), cwd, on_failure=self._record_failure
+                    ) as process:
+                        discovery = _Session(process, on_stage=self._set_stage)
                         config = await discovery.initialize()
                         servers = _check_config(config, require_disabled_mcp=False)
-                    async with _process(_arguments(self.executable, servers), cwd) as process:
-                        session = _Session(process)
+                        self._stage = "cleanup"
+                    self._stage = "startup"
+                    async with _process(
+                        _arguments(self.executable, servers), cwd, on_failure=self._record_failure
+                    ) as process:
+                        session = _Session(
+                            process,
+                            on_stage=self._set_stage,
+                            on_turn_attempt=self._mark_turn_attempt,
+                        )
                         session.total_bytes = discovery.total_bytes
                         session.events = discovery.events
                         session.warnings_seen = discovery.warnings_seen
@@ -633,21 +783,30 @@ class CodexAppServerAdapter:
                         _check_config(config, require_disabled_mcp=True)
                         remote = await session.request("remoteControl/status/read", {})
                         if remote.get("status") != "disabled":
-                            raise AppServerError("Remote Codex control must be disabled")
+                            raise AppServerError(
+                                "Remote Codex control must be disabled",
+                                code="configuration-rejected",
+                            )
                         account = await session.request("account/read", {"refreshToken": False})
                         if (account.get("account") or {}).get("type") != "chatgpt":
-                            raise AppServerError("Existing ChatGPT login is required")
+                            raise AppServerError(
+                                "Existing ChatGPT login is required", code="authentication-required"
+                            )
                         models = await session.request(
                             "model/list", {"limit": 100, "includeHidden": False}
                         )
                         candidates = [m for m in models.get("data", []) if m.get("model") == model]
                         if len(candidates) != 1:
                             raise AppServerError(
-                                "Requested model is not in the visible Codex catalog"
+                                "Requested model is not in the visible Codex catalog",
+                                code="model-unavailable",
                             )
                         effort = candidates[0].get("defaultReasoningEffort")
                         if effort not in {"none", "minimal", "low", "medium", "high"}:
-                            raise AppServerError("Unsupported model reasoning configuration")
+                            raise AppServerError(
+                                "Unsupported model reasoning configuration",
+                                code="configuration-rejected",
+                            )
                         started = await session.request(
                             "thread/start",
                             {
@@ -710,16 +869,37 @@ class CodexAppServerAdapter:
                             },
                         )
                         turn_id = _identifier(turn_result.get("turn", {}).get("id"))
+                        self._turn_start = "acknowledged"
                         session.turn_id = turn_id
                         for event in session.pending:
                             if event["method"] == "error":
                                 session.check_retry(event["params"])
                         for item in turn_result.get("turn", {}).get("items", []):
                             _check_item(item)
+                        self._stage = "turn-stream"
                         raw, usage = await _finish(session, thread_id, turn_id)
+                        self._stage = "response-validation"
                         result = validate(raw, usage)
-                        self.warnings_seen = session.warnings_seen
-                        self.retry_notifications_seen = session.retry_notifications_seen
-                        return result
-        except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
-            raise AppServerError("Codex owned request failed; no changes were applied") from exc
+                        self._stage = "cleanup"
+            # Publish successful metadata only after all process/directory cleanup.
+            self.warnings_seen = session.warnings_seen
+            self.retry_notifications_seen = session.retry_notifications_seen
+            return result
+        except BaseException as exc:
+            self._record_failure(exc)
+            # Only this scope's actual expiry may relabel its cancellation;
+            # an unrelated cleanup TimeoutError is not the request deadline.
+            if (
+                isinstance(exc, TimeoutError)
+                and deadline.expired()
+                and self.failure_diagnostic.code == "cancelled"
+            ):
+                self.failure_diagnostic = FailureDiagnostic(
+                    self.failure_diagnostic.stage, "timeout", self.failure_diagnostic.turn_start
+                )
+            if isinstance(exc, (OSError, ValueError, KeyError, TypeError, AttributeError)):
+                raise AppServerError(
+                    "Codex owned request failed; no changes were applied",
+                    code=self.failure_diagnostic.code,
+                ) from exc
+            raise

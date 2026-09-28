@@ -12,6 +12,7 @@ from typer.testing import CliRunner
 
 from authzest.cli import app
 from authzest.codex.contracts import canonical, decode, identity
+from authzest.codex.diagnostics import FailureDiagnostic
 from authzest.codex.mock import scripted_response
 from authzest.codex.owner_policy_review import OwnerPolicyReview, validate_owner_policy_draft
 from authzest.runner import codex_owner_review as workflow
@@ -155,6 +156,7 @@ def test_decline_has_no_adapter_or_account_use(answer, fake_adapter):
     assert result["application_turn_attempts"] == 0
     assert result["usage"] is None and result["draft"] is None
     assert result["latency_ms"] is None
+    assert result["failure"] is None
     assert result["original_checkout_modified"] is False
     assert result["execution_status"] == "not-run"
     assert result["sharing_id"] == json.loads(output[0])["sharing_id"]
@@ -196,6 +198,7 @@ def test_exact_share_produces_draft_not_verification(fake_adapter):
     assert len(calls) == 2 and result["application_turn_attempts"] == 1
     assert calls[0][1]["approved_request_id"] == result["request_id"]
     assert result["status"] == "draft-ready"
+    assert result["failure"] is None
     assert result["usage"] == {"input_tokens": 10, "output_tokens": 20}
     assert result["draft"]["case_review_status"] == "unreviewed"
     assert result["draft"]["execution_status"] == "not-run"
@@ -234,6 +237,11 @@ def test_changed_preview_requires_fresh_decision(monkeypatch, fake_adapter):
     )
     assert result["status"] == "preview-changed"
     assert result["exit_code"] == 1 and calls == []
+    assert result["failure"] == {
+        "stage": "request-validation",
+        "code": "request-invalid",
+        "turn_start": "not-attempted",
+    }
 
 
 @pytest.mark.parametrize("failure", ["error", "forged", "timeout"])
@@ -271,6 +279,158 @@ def test_failed_review_redacts_output_and_does_not_retry(failure, monkeypatch):
     assert len(calls) == 1 and result["draft"] is None and result["usage"] is None
     assert sentinel not in canonical(result) + "".join(output)
     assert cleaned == ([True] if failure == "timeout" else [])
+    assert result["failure"] == {
+        "stage": "result-validation" if failure == "forged" else "unknown",
+        "code": {
+            "error": "unexpected-error",
+            "forged": "response-invalid",
+            "timeout": "timeout",
+        }[failure],
+        "turn_start": "unknown",
+    }
+
+
+def test_adapter_factory_failure_reports_setup_without_raw_detail(monkeypatch):
+    monkeypatch.setattr(workflow, "os", SimpleNamespace(name="posix"))
+
+    def fail(**_):
+        raise OSError("PRIVATE FACTORY PATH AND TOKEN")
+
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=fail
+        )
+    )
+    assert result["application_turn_attempts"] == 0
+    assert result["failure"] == {
+        "stage": "adapter-setup",
+        "code": "unexpected-error",
+        "turn_start": "unknown",
+    }
+    assert "PRIVATE" not in canonical(result)
+
+
+@pytest.mark.parametrize("snapshot", ["typed", "dict", "poisoned-property", "forged"])
+def test_failure_snapshot_is_revalidated_and_never_leaks_details(snapshot, monkeypatch):
+    monkeypatch.setattr(workflow, "os", SimpleNamespace(name="posix"))
+    sentinel = "PRIVATE AUTH TOKEN OR PROVIDER RESPONSE"
+    calls = []
+
+    class Failing:
+        @property
+        def failure_diagnostic(self):
+            if snapshot == "poisoned-property":
+                raise RuntimeError(sentinel)
+            if snapshot == "dict":
+                return {"stage": sentinel, "code": sentinel, "turn_start": sentinel}
+            diagnostic = FailureDiagnostic("turn-stream", "protocol-rejected", "acknowledged")
+            if snapshot == "forged":
+                object.__setattr__(diagnostic, "stage", sentinel)
+            return diagnostic
+
+        async def review_owner_policy(self, request):
+            calls.append(request.request_id)
+            raise RuntimeError(sentinel)
+
+    output = []
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=output.append, adapter_factory=lambda **_: Failing()
+        )
+    )
+    assert len(calls) == 1
+    assert result["failure"] == (
+        {"stage": "turn-stream", "code": "protocol-rejected", "turn_start": "acknowledged"}
+        if snapshot == "typed"
+        else {"stage": "unknown", "code": "unexpected-error", "turn_start": "unknown"}
+    )
+    assert result["draft"] is None and result["usage"] is None
+    assert result["provider_warning_count"] is None
+    assert result["provider_retry_notification_count"] is None
+    assert sentinel not in canonical(result) + "".join(output)
+
+
+def test_outer_timeout_preserves_adapter_phase_but_not_cancelled_code(monkeypatch):
+    monkeypatch.setattr(workflow, "os", SimpleNamespace(name="posix"))
+    calls = []
+
+    class Waiting:
+        failure_diagnostic = None
+
+        async def review_owner_policy(self, request):
+            calls.append(request.request_id)
+            try:
+                await asyncio.Event().wait()
+            except asyncio.CancelledError:
+                self.failure_diagnostic = FailureDiagnostic(
+                    "turn-stream", "cancelled", "acknowledged"
+                )
+                raise
+
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL,
+            timeout_seconds=0.01,
+            read=exact_choice,
+            emit=lambda _: None,
+            adapter_factory=lambda **_: Waiting(),
+        )
+    )
+    assert len(calls) == 1
+    assert result["status"] == "review-failed" and result["exit_code"] == 1
+    assert result["failure"] == {
+        "stage": "turn-stream",
+        "code": "timeout",
+        "turn_start": "acknowledged",
+    }
+
+
+def test_runner_validation_ignores_stale_adapter_diagnostic(monkeypatch):
+    monkeypatch.setattr(workflow, "os", SimpleNamespace(name="posix"))
+
+    class Forged:
+        failure_diagnostic = FailureDiagnostic("turn-stream", "turn-failed", "acknowledged")
+
+        async def review_owner_policy(self, request):
+            return OwnerPolicyReview("PRIVATE INVALID OUTPUT")
+
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=lambda _: None, adapter_factory=lambda **_: Forged()
+        )
+    )
+    assert result["failure"] == {
+        "stage": "result-validation",
+        "code": "response-invalid",
+        "turn_start": "unknown",
+    }
+    assert "PRIVATE" not in canonical(result)
+
+
+def test_outer_deadline_does_not_replace_an_earlier_failure(monkeypatch):
+    monkeypatch.setattr(workflow, "os", SimpleNamespace(name="posix"))
+
+    class SlowCleanup:
+        failure_diagnostic = FailureDiagnostic("turn-stream", "protocol-rejected", "acknowledged")
+
+        async def review_owner_policy(self, request):
+            # The transport saved the primary failure before awaiting cleanup.
+            await asyncio.Event().wait()
+
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL,
+            timeout_seconds=0.01,
+            read=exact_choice,
+            emit=lambda _: None,
+            adapter_factory=lambda **_: SlowCleanup(),
+        )
+    )
+    assert result["failure"] == {
+        "stage": "turn-stream",
+        "code": "protocol-rejected",
+        "turn_start": "acknowledged",
+    }
 
 
 def test_task_cancellation_propagates(monkeypatch):
@@ -358,4 +518,9 @@ def test_cli_failure_and_cancellation_are_redacted(error, code, status, monkeypa
     result = runner.invoke(app, ["codex-owner-review", "--model", MODEL])
     assert result.exit_code == code
     assert json.loads(result.output)["status"] == status
+    assert json.loads(result.output)["failure"] == {
+        "stage": "unknown",
+        "code": "cancelled" if code == 130 else "unexpected-error",
+        "turn_start": "unknown",
+    }
     assert "PRIVATE CLI ERROR" not in result.output

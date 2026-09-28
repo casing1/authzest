@@ -36,6 +36,7 @@ jobs:
           python -m pytest tests/test_declaration_check.py tests/test_proposal_check_cli.py
           tests/test_review_demo.py tests/test_owner_policy.py
           tests/test_owner_policy_review.py tests/test_codex_owner_review_cli.py
+          tests/test_codex_diagnostics.py
 
   frontend:
     runs-on: ubuntu-latest
