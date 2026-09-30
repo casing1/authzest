@@ -16,21 +16,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record a second, separately approved source-CLI owner-review attempt on 2026-09-30 at `324505d`:
+  `review-failed`, exit `1`, after about 84.8 seconds, with `response-validation` / `response-invalid`
+  and `turn_start=acknowledged`. No draft was accepted; returned identity, usage and warning/retry
+  counts remain unknown. The raw response was not retained, so the exact rejected condition is unknown.
+  The unchanged public-source sharing envelope and one-turn/120-second limit were used, without
+  AuthZest retry, model fallback, source execution or patch application. Source hashes and the original
+  checkout were preserved. Both live attempts remain unsuccessful; fresh approval would be required
+  for another attempt. Bounded offline reason-code/schema-validator checks are only a proposed next step.
 - Add source-only redacted failure diagnostics for `codex-owner-review` on 2026-09-28: a nullable
   `failure` object with allowlisted `stage`, `code` and `turn_start` strings, plus offline regressions.
   Distinguish local send attempts from acknowledged turn-start replies without exposing raw provider
   errors, logs, identifiers or partial output, or inferring billing, completion or failed-run usage.
-  Preserve cancellation, version/sharing limits and no-retry behavior. This does not reconstruct the
-  2026-09-24 failure or add another live result; live acceptance and fresh approval remain necessary.
+  Preserve cancellation, version/sharing limits and no-retry behavior. This offline implementation
+  itself does not reconstruct the 2026-09-24 failure or add a live result; subsequent evidence is recorded separately.
 - Add #75's [`codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): a full offline JSON preview
   on all supported OSes and an exact-envelope sharing decision before a read-only, pinned Codex
   App Server request on POSIX. Use only two packaged owner-policy source snapshots, explicit policy
   and static evidence, not the independent case labels or arbitrary paths. Validate evidence-linked
   review answers and 1–16 non-executable defensive case drafts; expected values remain model-authored
-  and unreviewed, execution not-run and authorization unknown. One separately approved live attempt
+  and unreviewed, execution not-run and authorization unknown. The first separately approved live attempt
   on 2026-09-24 at `c5be74d` returned `review-failed` after about 98.8 seconds, without an accepted
-  draft or known usage. No AuthZest retry, patch application or target/generated-code execution occurred; live
-  acceptance remains pending and another attempt needs fresh approval. Existing fixture workflows
+  draft or known usage. No AuthZest retry, patch application or target/generated-code execution occurred.
+  The second attempt is recorded above; live acceptance remains pending and another attempt needs fresh approval. Existing fixture workflows
   and published alpha.3 are unchanged; the guide records the bounded result and remaining unknowns.
 - Add #73's source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md): default-deny
   pure policy requiring authenticated identity, the exact reports:read scope and matching ownership,

@@ -117,10 +117,11 @@ the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any l
 [#75's read-only Codex owner review](../guides/CODEX_OWNER_REVIEW.md) connects two packaged snapshots,
 explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
 Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
-not-run and authorization unknown. One separately approved live attempt failed without an accepted
-draft on 2026-09-24; live acceptance remains pending and another attempt needs fresh approval.
-The 2026-09-28 source addition exposes only allowlisted failure stage/code/turn-start diagnostics
-and offline tests; it does not recover that historical cause or constitute another live result.
+not-run and authorization unknown. Two separately approved live attempts failed without an accepted
+draft on 2026-09-24 and 2026-09-30; live acceptance remains pending and another attempt needs fresh approval.
+The latest attempt at `324505d` returned `response-validation` / `response-invalid` with
+`turn_start=acknowledged` after about 84.8 seconds. Usage and the exact rejected condition remain unknown.
+The 2026-09-28 diagnostic implementation itself was offline; it does not recover the older failure's cause.
 No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
@@ -277,12 +278,15 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
 - [x] Implement source-only redacted failure diagnostics and offline regressions for owner-policy
       review. Expose only allowlisted stage/code/turn-start states, never raw provider errors or partial
       output. Keep failure usage unknown, cancellation propagation and the existing sharing/execution
-      limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this does not
-      reconstruct the 2026-09-24 failure or record a new live attempt, merge or release.
+      limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this implementation
+      itself does not reconstruct the 2026-09-24 failure or record a live attempt, merge or release.
 - [ ] Complete the owner-policy live review with separate bounded source-sharing/account-use consent.
-      The approved 2026-09-24 attempt returned `review-failed` with no accepted draft or known usage;
-      no AuthZest retry was made. After reviewing the offline diagnostic changes, request fresh approval
-      before another live attempt; the original one-attempt approval is consumed.
+      Both separately approved attempts on 2026-09-24 and 2026-09-30 returned `review-failed` with no
+      accepted draft or known usage; no AuthZest retry was made. The latest diagnostic identifies
+      `response-validation` / `response-invalid` / `acknowledged`, not the exact rejected condition.
+      Both one-attempt approvals are consumed. Proposed next step: offline bounded reason-code
+      diagnostics and schema-versus-validator checks before considering a fresh live-approval request;
+      this follow-up is not yet implemented or approved.
       Review model-authored case expectations independently; schema validity is not policy truth.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.

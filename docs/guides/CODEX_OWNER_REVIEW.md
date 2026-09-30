@@ -18,9 +18,10 @@ This slice has no generated code, diff, patch application, HTTP endpoint tests o
 application, endpoint or policy function. A valid result may retain unknowns or say no supported
 change is needed; it never has to invent a patch. General repository review and the broader
 [#35 workflow](https://github.com/casing1/authzest/issues/35) remain unfinished.
-Offline tests and previews are not a live-model acceptance result. One separately approved live
-attempt failed on 2026-09-24 without an accepted draft; live-model acceptance remains pending.
-The attempt and its limits are recorded below. Another provider attempt requires fresh approval.
+Offline tests and previews are not a live-model acceptance result. Two separately approved live
+attempts failed on 2026-09-24 and 2026-09-30 without an accepted draft; live-model acceptance remains
+pending. The latest diagnostic identifies response validation, not the exact rejected condition.
+Both attempts and their limits are recorded below. Another provider attempt requires fresh approval.
 
 ## Preview before sharing
 
@@ -95,15 +96,15 @@ The detailed failure stage and cause were intentionally redacted, so this result
 a timeout, authentication or quota failure. `application_turn_attempts=1` records the local attempt;
 it does not establish how many turns the server accepted or the amount of account usage.
 
-No further provider attempt was made. No target, application, policy-function or generated-code
+No further provider attempt was made during that run. No target, application, policy-function or generated-code
 execution, HTTP testing or patch application occurred. The feature worktree and original `main` checkout were
 clean after the run, and both maintained example source hashes were unchanged. Execution remains
 `not-run`, authorization remains `unknown`, and the independent developer labels remain unreviewed.
 This failed attempt does not complete live acceptance, broader #35 or a release.
 
-The one-attempt approval is consumed. The source-only diagnostic addition below does not recover
-the historical failure's cause or authorize another attempt. A new live attempt still requires fresh
-source-sharing and account-usage approval. No automatic retry is authorized by the failed result.
+That one-attempt approval was consumed. The source-only diagnostic addition below does not recover
+the historical failure's cause or authorize another attempt. The 2026-09-30 attempt below used fresh,
+separate source-sharing and account-usage approval. No automatic retry is authorized by either failed result.
 
 ## Redacted failure diagnostics — source addition on 2026-09-28
 
@@ -132,10 +133,42 @@ warning count and retry count `null`; the diagnostic does not infer them from tr
 Its three fields never include raw provider messages, logs, exception text, paths, identifiers,
 account details or partial model output.
 
-This addition is checked offline and tracked in [PR #76](https://github.com/casing1/authzest/pull/76);
-it is not a new live-model result, a release or completed acceptance. Cancellation still propagates
+The diagnostic implementation was checked offline and is tracked in [PR #76](https://github.com/casing1/authzest/pull/76);
+that implementation itself was not a new live-model result, a release or completed acceptance. Cancellation still propagates
 to the CLI's exit `130`. The version pin, sharing envelope, limits and no-retry rule remain unchanged;
 diagnostics grant no additional provider, source, tool or execution authority.
+
+## Live attempt on 2026-09-30
+
+The source CLI at commit `324505d446bc25d78072b83fe23c4c3d4b7a24ed` was tried once with Codex
+`0.153.0`, the existing managed ChatGPT login and the exact requested model `gpt-6-astra`.
+Fresh consent covered the same two public source snapshots, policy and static evidence, at most
+one application-issued turn and 120 seconds. The sharing envelope remained
+`share-eb98405cadcdc6234501d513dec8be6c37f1e4c06a50438b260ab40d38c481a7`.
+
+The CLI returned `review-failed`, exit `1`, after `84767.8105` ms (about 84.8 seconds), with no
+accepted draft. Its redacted diagnostic was `stage=response-validation`, `code=response-invalid`,
+`turn_start=acknowledged`. This identifies the local response-validation boundary and a matching
+valid turn-start reply; it does not identify the exact rejected field, content or validation condition.
+The raw response was not retained. This result does not establish authentication, quota or network
+failure, nor independently attest to the served model, billing or target execution.
+Static control-flow inspection shows that this stage follows a matching `turn/completed` event with
+`status=completed`, no reported turn error and exactly one bounded final message. This supports a
+host-observed protocol completion before local validation failed, not valid JSON, semantic correctness
+or an accepted review result.
+
+Returned model identity, usage, warning count and retry count were `null`/unknown.
+`application_turn_attempts=1` records the local workflow attempt, not a server-accepted turn count
+or usage cap. No AuthZest retry, model fallback, target/application/policy/generated-code execution,
+HTTP test or patch application occurred. Both maintained example source hashes and the original
+clean `main` checkout were unchanged. Execution remains `not-run`, authorization remains `unknown`,
+and the independent developer labels remain unreviewed.
+
+This fresh one-attempt approval is now consumed. Live acceptance, broader #35, merge and release
+remain incomplete. The proposed next step is an offline review of bounded diagnostic reason codes
+and schema-versus-validator consistency before considering another separately approved live attempt;
+that follow-up is not implemented or approved by this result. The 2026-09-24 failure's cause remains
+unknown, and the newer diagnostic does not reconstruct it.
 
 ## Interpret the result
 
