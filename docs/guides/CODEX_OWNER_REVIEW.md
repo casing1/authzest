@@ -18,10 +18,11 @@ This slice has no generated code, diff, patch application, HTTP endpoint tests o
 application, endpoint or policy function. A valid result may retain unknowns or say no supported
 change is needed; it never has to invent a patch. General repository review and the broader
 [#35 workflow](https://github.com/casing1/authzest/issues/35) remain unfinished.
-Offline tests and previews are not a live-model acceptance result. Two separately approved live
-attempts failed on 2026-09-24 and 2026-09-30 without an accepted draft; live-model acceptance remains
-pending. The latest diagnostic identifies response validation, not the exact rejected condition.
-Both attempts and their limits are recorded below. Another provider attempt requires fresh approval.
+Offline tests and previews are not a live-model acceptance result. After two unsuccessful attempts
+on 2026-09-24 and 2026-09-30, a separately approved live run on 2026-10-01 at `9257bd7` returned
+`draft-ready`: one evidence-linked answer and ten structured cases passed host validation.
+This completes the narrow read-only provider acceptance, not case-label approval or endpoint testing.
+All three attempts and their limits are recorded below. Another provider attempt requires fresh approval.
 
 ## Preview before sharing
 
@@ -225,12 +226,64 @@ deadline at the observed phase rather than depending on startup speed; product t
 Ruff, 14 documentation-checker tests, Markdown formatting and the 54-document / 26-pair / 936-link
 audit passed. These are offline results, not live provider or policy-correctness evidence.
 
-No provider/account call was made for this follow-up, and live-model acceptance remains pending.
+No provider/account call was made during this offline follow-up. At that point live acceptance remained pending;
+the separately approved successful run is recorded next.
 The prompt/schema change changes the preview's `sharing_id`; the two
 historical one-attempt approvals remain consumed and do not cover the new envelope. Inspect the new
 preview and obtain fresh bounded approval before any further provider attempt. Version pin, source
 scope, timeout/turn limits, no-retry behavior and all separate execution/application boundaries are
 unchanged. This source-only work does not merge PR #76 or publish a release.
+
+## Successful live review on 2026-10-01
+
+The source CLI at `9257bd7cbe8ebe06f03b963e51fafdd5547c5e64` used trusted Codex `0.153.0`,
+the existing managed ChatGPT login and the exact requested model `gpt-6-astra`. Fresh maintainer
+approval covered one application-issued turn, at most 120 seconds, and only the displayed public
+`main.py`/`policy.py` snapshots, policy, static evidence, instructions/schema and limits. The assistant
+compared the complete preview and entered its exact sharing phrase under that approval.
+
+- `draft-ready`, exit `0`, after `73982.08925` ms (about **74.0 seconds**), with `failure=null`.
+- One answer and **ten** structured cases passed the source CLI's request, evidence, schema and final
+  result validation. The answer retained `hypothesis`, stated that no source change was supported,
+  and separated pure-policy observations from unknown authentication and endpoint enforcement.
+- Returned identity: provider `codex-app-server`, model `gpt-6-astra`, adapter `0.1`, prompt
+  `owner-policy-review-v2`. This is the negotiated thread model, not independently attested serving.
+- Provider-reported usage: **7,994 input / 2,242 output tokens**; one warning and zero retry
+  notifications. This is observed usage, not a token/dollar cap or billing attestation.
+- `application_turn_attempts=1`; no AuthZest retry, model fallback, patch, HTTP test or target,
+  application, policy-function or generated-code execution. Both maintained source hashes and the
+  original clean `main` checkout were unchanged. The feature worktree was clean immediately afterward.
+- Sharing ID: `share-25714d98829317ec630c87264ea9595618f7fd1db25ce5dd99598c4be54bc044`.
+  Request ID: `request-c7767829b1d516f91f7ceaaa0cfae276f9485d96930296703e658a910251c90c`.
+
+The returned case IDs and suggested expectations were:
+
+| Case ID                | Suggested expectation | Policy boundary                                       |
+| ---------------------- | --------------------- | ----------------------------------------------------- |
+| owner-read             | allow                 | Authenticated exact owner with the literal read scope |
+| nonowner-admin         | deny                  | Admin scope does not override ownership               |
+| unauthenticated-owner  | deny                  | Ownership and scope do not replace authentication     |
+| missing-principal      | deny                  | Missing principal context                             |
+| missing-report         | deny                  | Missing report context                                |
+| wildcard-only          | deny                  | Wildcard does not replace literal `reports:read`      |
+| blank-identities       | deny                  | Equal whitespace-only identifiers remain invalid      |
+| empty-report-id        | deny                  | Report identifier must be nonblank                    |
+| no-owner-normalization | deny                  | A trailing-space identity is not normalized           |
+| exact-padded-owner     | allow                 | Nonblank padded identities match exactly              |
+
+The assistant compared these suggestions with the displayed policy source without executing it;
+that review does not make them user-approved or independent evaluation labels. Cases remain
+`model-authored`/`unreviewed`, execution `not-run`, and authorization `unknown`. The fixed developer
+matrix was not shared or changed. This single success does not establish future provider reliability
+or recover either earlier response's exact rejected condition.
+
+The exact code head had all ten GitHub checks passing, including 2,451 Linux tests, 513 Windows
+tests with 18 expected unsupported POSIX-reader skips, frontend checks and CodeQL.
+[CI evidence](https://github.com/casing1/authzest/actions/runs/36809340356).
+The assistant's latest-commit source review found no additional regression. Historical automated
+Codex PR reviews cover older heads and are not treated as acceptance of this code.
+[PR #76](https://github.com/casing1/authzest/pull/76) tracks final-head reviews, documentation checks and merge.
+Published alpha.3, package version and broader #35 remain unchanged. This one-call approval is consumed.
 
 ## Interpret the result
 

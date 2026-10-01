@@ -48,10 +48,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Adds the unreleased [`authzest codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): an offline
   full-input preview on all supported OSes and, after exact sharing consent, a read-only Codex review
   of two packaged owner-policy snapshots on supported POSIX systems. Outputs remain unreviewed
-  defensive case drafts, not executed tests or patches. Two separately approved live attempts failed
-  without an accepted draft on 2026-09-24 and 2026-09-30; the latest reported
-  `response-validation` / `response-invalid`, not an exact cause. Live acceptance remains pending
-  and another attempt needs fresh approval.
+  defensive case drafts, not executed tests or patches. After two unsuccessful attempts, one freshly
+  approved live run on 2026-10-01 returned `draft-ready` in about 74 seconds: one answer and ten cases
+  passed host validation. This is narrow provider acceptance, not case-label approval or endpoint
+  verification. Another attempt needs fresh approval; published alpha.3 is unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.

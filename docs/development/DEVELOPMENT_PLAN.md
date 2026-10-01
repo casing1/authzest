@@ -118,15 +118,19 @@ the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any l
 explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
 Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
 not-run and authorization unknown. Two separately approved live attempts failed without an accepted
-draft on 2026-09-24 and 2026-09-30; live acceptance remains pending and another attempt needs fresh approval.
-The latest attempt at `324505d` returned `response-validation` / `response-invalid` with
+draft on 2026-09-24 and 2026-09-30. The earlier attempt at `324505d` returned `response-validation` / `response-invalid` with
 `turn_start=acknowledged` after about 84.8 seconds. Usage and the exact rejected condition remain unknown.
 The 2026-09-28 diagnostic implementation itself was offline; it does not recover the older failure's cause.
 The separately approved offline follow-up adds fixed per-rule validation codes and aligns prompt
 `owner-policy-review-v2` with supported schema constraints, while retaining strict host-only checks.
 Its 2,451-test full offline suite and 531-test portable subset passed on 2026-10-01; it adds no live
 attempt or acceptance evidence. The changed sharing
-envelope requires fresh consent, and the historical approvals remain consumed.
+envelope required fresh consent. A separately approved run at `9257bd7` on 2026-10-01 returned
+`draft-ready` in about 74 seconds: one answer and ten cases passed host validation, with 7,994 input /
+2,242 output tokens reported. No retry or source execution occurred. Narrow provider acceptance is
+complete; case expectations remain unreviewed and broader #35 remains open. All three approvals
+are consumed; another provider call needs fresh consent. [PR #76](https://github.com/casing1/authzest/pull/76)
+tracks final checks and merge; published alpha.3 is unchanged.
 No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
@@ -291,14 +295,14 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       exact evidence coverage, uniqueness, UTF-8 validity and global result budgets. The full 2,451-test
       offline suite and 531-test portable subset passed; this does not establish live compatibility
       with pinned Codex or authorize another call.
-- [ ] Complete the owner-policy live review with separate bounded source-sharing/account-use consent.
-      Both separately approved attempts on 2026-09-24 and 2026-09-30 returned `review-failed` with no
-      accepted draft or known usage; no AuthZest retry was made. The latest diagnostic identifies
-      `response-validation` / `response-invalid` / `acknowledged`, not the exact rejected condition.
-      Both one-attempt approvals are consumed. Offline follow-up verification passed; complete the
-      current-head CI/review gates before requesting fresh live approval for the changed envelope. Do not merge
-      or release this slice while its live acceptance and required review gates remain pending.
-      Review model-authored case expectations independently; schema validity is not policy truth.
+- [x] Complete the narrow owner-policy live review with separate bounded source-sharing/account-use
+      consent. After two earlier failures, one approved run at `9257bd7` on 2026-10-01 returned
+      `draft-ready` in about 74 seconds with one answer and ten host-valid cases. Provider-reported
+      usage was 7,994 input / 2,242 output tokens; no retry, fallback or target execution occurred.
+      Exact code-head CI and assistant source review passed; PR #76 tracks final documentation checks
+      and merge. Historical automated reviews cover older heads, not this new code.
+      Review model-authored case expectations independently; they remain unreviewed, execution not-run
+      and authorization unknown. Another call needs fresh consent; broader #35 and release remain separate.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

@@ -83,7 +83,8 @@ import 없이 읽습니다. 인증 서비스나 제품 런타임 모드를 추�
 ([English](../../guides/CODEX_OWNER_REVIEW.md))는 모든 지원 OS에서 패키지 내 두 소스의 정확한
 입력을 오프라인으로 미리 보고, POSIX 제공자 경로에서 정확한 공유 동의를 요구합니다.
 검토와 구조화된 방어적 사례는 미검토 초안, 실행은 not-run, 인가는 unknown을 유지합니다.
-패치·대상 실행·새로운 실제 모델 인수 검증을 주장하지 않으며 alpha.3는 그대로입니다.
+별도로 승인받은 2026-10-01 실제 시도에서 답변 1개·사례 10개가 host 검증을 통과했습니다.
+패치·대상 실행은 없었으며 alpha.3는 그대로입니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.

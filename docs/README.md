@@ -83,7 +83,8 @@ read the FastAPI source without importing it. It adds no authentication service 
 ([한국어](i18n/ko/guides/CODEX_OWNER_REVIEW.md)) previews the exact packaged two-source input offline
 on all supported OSes, then requires exact sharing consent for its POSIX provider path. Its review
 and structured defensive cases remain unreviewed drafts, with execution not-run and authorization
-unknown. No patch, target execution or new live-model acceptance is claimed; alpha.3 is unchanged.
+unknown. One separately approved live run on 2026-10-01 returned a host-valid answer and ten cases;
+no patch or target execution occurred, and alpha.3 is unchanged.
 [#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
 adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
 separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source

@@ -49,9 +49,10 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 미출시 [`authzest codex-owner-review`](guides/CODEX_OWNER_REVIEW.md) 추가: 모든 지원 OS에서
   전체 입력을 오프라인으로 미리 보고, 정확한 공유 동의 후 지원 POSIX 시스템에서 패키지 내
   소유 정책 snapshot 두 개를 Codex로 읽기 전용 검토함. 출력은 미검토 방어적 사례 초안이며
-  실행한 테스트나 패치가 아님. 각각 별도로 승인받은 2026-09-24·2026-09-30 실제 시도 2회 모두
-  수용한 초안 없이 실패했으며, 최근 결과는 정확한 원인이 아닌 `response-validation` /
-  `response-invalid` 분류를 기록함. 실제 모델 인수 검증은 대기 중이고 다음 시도에는 새로운 승인이 필요함
+  실행한 테스트나 패치가 아님. 이전 두 번의 실패 이후 새로 승인받은 2026-10-01 실제 시도에서
+  약 74초 만에 `draft-ready`를 받았고 답변 1개·사례 10개가 host 검증을 통과함. 제한된 제공자
+  인수 검증이며 사례 정답 승인이나 endpoint 검증은 아님. 다음 시도에는 새 승인이 필요하고
+  공개 alpha.3는 그대로임
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
