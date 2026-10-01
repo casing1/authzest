@@ -37,7 +37,13 @@ This prints one complete JSON preview and exits without prompting, launching Cod
 account or making a network request. It requires neither Codex nor a login. There is no `--json`,
 arbitrary path or automatic-approval option. The preview includes the request, task prompt, host
 instructions, output schema and limits, along with the `sharing_id` to which approval is bound.
-This ID covers that entire sharing envelope, not just the request ID. Codex adds its own harness
+This ID covers that entire sharing envelope and a fresh per-invocation `invocation_nonce`, not just
+the request ID. `sharing_content_id` separately identifies the stable displayed content. Identical
+content has the same content ID but a different confirmation phrase on each invocation, including
+`--preview-only`. An offline preview's phrase cannot approve a later interactive run. Revalidation
+reuses that invocation's nonce before its one adapter construction; no CLI nonce override is accepted.
+The nonce is a public local challenge, not a secret or authenticated proof of human review.
+Codex adds its own harness
 context, so the preview is not a claim to show the model's entire context.
 
 The task/source input is limited to:
@@ -284,6 +290,28 @@ The assistant's latest-commit source review found no additional regression. Hist
 Codex PR reviews cover older heads and are not treated as acceptance of this code.
 [PR #76](https://github.com/casing1/authzest/pull/76) tracks final-head reviews, documentation checks and merge.
 Published alpha.3, package version and broader #35 remain unchanged. This one-call approval is consumed.
+
+## Review follow-up: fresh invocation confirmation
+
+The code review at `299e651` identified that the earlier content-only sharing phrase could be copied
+into another identical invocation. The [review thread](https://github.com/casing1/authzest/pull/76#discussion_r4152362908)
+is addressed by a fresh 128-bit random nonce per invocation, included in its displayed `sharing_id`.
+The runner rebuilds the preview with that same nonce before constructing its one single-use adapter.
+A captured old phrase is rejected before any adapter/provider use, even when the model, timeout,
+request and sharing content are identical. The content hash remains separate for comparison.
+
+This follow-up changes only local confirmation and result metadata, not the model's request,
+instructions, prompt, output schema, transport, deadline, source snapshots or execution boundaries.
+The local nonce is not sent as task data to Codex and does not create an authenticated approval
+service or prevent deliberate automation by a caller controlling the process and its current input.
+Historical phrases recorded above are evidence of those earlier runs, never reusable approval.
+Offline tests cover fresh identities, stale-phrase rejection, same-nonce revalidation and the real
+source CLI with a fake App Server reading its actual displayed challenge. No new live provider run
+was made; the 2026-10-01 success remains evidence at `9257bd7`, not a live run of this follow-up.
+Follow-up verification passed: **2,463** full offline tests in 163.18 seconds, **542** portable-subset
+tests and **152** focused owner-CLI/schema tests. Ruff and Markdown formatting passed, as did the
+14 documentation tests and 54-document / 26-pair / 936-link audit. Final-head CI and automated
+re-review remain separate merge gates.
 
 ## Interpret the result
 

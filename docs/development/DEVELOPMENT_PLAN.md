@@ -303,6 +303,12 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       and merge. Historical automated reviews cover older heads, not this new code.
       Review model-authored case expectations independently; they remain unreviewed, execution not-run
       and authorization unknown. Another call needs fresh consent; broader #35 and release remain separate.
+- [x] Address the final-head review's stale sharing-phrase reuse with a fresh per-invocation nonce and
+      separate content identity. Same-input reruns reject the old phrase before adapter construction;
+      the current challenge is revalidated once. Cover the real source CLI with a fake provider.
+      The full 2,463-test offline suite and 542-test portable subset passed.
+      Model task data and transport remain unchanged; no additional live run is claimed. Final-head
+      re-review and CI remain merge gates in PR #76.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

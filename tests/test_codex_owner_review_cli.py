@@ -119,12 +119,17 @@ def test_invalid_model_before_payload_preparation(model, monkeypatch):
         workflow.build_owner_review_preview(model)
 
 
-def test_preview_is_stable_portable_and_binds_all_shared_content(monkeypatch):
+def test_preview_content_is_stable_portable_and_binds_all_shared_content(monkeypatch):
     monkeypatch.setattr(workflow, "os", SimpleNamespace(name="nt"))
-    preview = workflow.build_owner_review_preview(MODEL)
-    assert preview == workflow.build_owner_review_preview(MODEL)
+    nonce = "1" * 32
+    preview = workflow.build_owner_review_preview(MODEL, invocation_nonce=nonce)
+    assert preview == workflow.build_owner_review_preview(MODEL, invocation_nonce=nonce)
     sharing_id = preview.pop("sharing_id")
     assert sharing_id == "share-" + identity(preview)
+    content = {
+        k: v for k, v in preview.items() if k not in {"sharing_content_id", "invocation_nonce"}
+    }
+    assert preview["sharing_content_id"] == "content-" + identity(content)
     request = preview["request"]
     assert {item["data"]["path"] for item in request["evidence"] if item["kind"] == "source"} == {
         "main.py",
@@ -137,9 +142,84 @@ def test_preview_is_stable_portable_and_binds_all_shared_content(monkeypatch):
     assert preview["limits"]["token_hard_cap"] is None
     assert preview["limits"]["codex_internal_transport_retries_hard_capped"] is False
     assert (
-        workflow.build_owner_review_preview(MODEL, timeout_seconds=60)["sharing_id"] != sharing_id
+        workflow.build_owner_review_preview(MODEL, timeout_seconds=60, invocation_nonce=nonce)[
+            "sharing_id"
+        ]
+        != sharing_id
     )
-    assert workflow.build_owner_review_preview("another-model")["sharing_id"] != sharing_id
+    assert (
+        workflow.build_owner_review_preview("another-model", invocation_nonce=nonce)["sharing_id"]
+        != sharing_id
+    )
+
+
+def test_fresh_previews_keep_payload_identity_but_change_confirmation():
+    first = workflow.build_owner_review_preview(MODEL)
+    second = workflow.build_owner_review_preview(MODEL)
+    assert first["invocation_nonce"] != second["invocation_nonce"]
+    assert first["sharing_id"] != second["sharing_id"]
+    assert first["sharing_content_id"] == second["sharing_content_id"]
+    for key in ("request_id", "request", "prompt", "host_instructions", "output_schema", "limits"):
+        assert first[key] == second[key]
+    assert "invocation_nonce" not in first["request"]
+
+
+@pytest.mark.parametrize("nonce", [True, 1, "", "1" * 31, "1" * 33, "A" * 32, "é" * 32, []])
+def test_invalid_reconstruction_nonce_stops_before_payload_preparation(nonce, monkeypatch):
+    monkeypatch.setattr(workflow, "build_owner_policy_request", lambda *_: pytest.fail("No input"))
+    with pytest.raises(workflow.OwnerReviewInputError, match="invocation nonce"):
+        workflow.build_owner_review_preview(MODEL, invocation_nonce=nonce)
+
+
+def test_old_approved_phrase_cannot_construct_an_adapter_in_a_new_invocation(fake_adapter):
+    factory, calls = fake_adapter
+    outputs = []
+    first = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=outputs.append, adapter_factory=factory
+        )
+    )
+    assert first["status"] == "draft-ready" and len(calls) == 2
+    calls.clear()
+    second = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL,
+            read=lambda _: f"share {first['sharing_id']}",
+            emit=outputs.append,
+            adapter_factory=factory,
+        )
+    )
+    assert second["status"] == "not-shared" and second["sharing_decision"] == "decline"
+    assert second["application_turn_attempts"] == 0 and calls == []
+    assert first["sharing_content_id"] == second["sharing_content_id"]
+    assert first["request_id"] == second["request_id"]
+    assert first["invocation_nonce"] != second["invocation_nonce"]
+
+
+def test_each_workflow_generates_one_challenge_and_revalidates_that_same_challenge(
+    fake_adapter, monkeypatch
+):
+    factory, calls = fake_adapter
+    generated = []
+
+    def nonce(size):
+        assert size == 16
+        generated.append(size)
+        return "2" * 32
+
+    monkeypatch.setattr(workflow.secrets, "token_hex", nonce)
+    output = []
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=output.append, adapter_factory=factory
+        )
+    )
+    preview = json.loads(output[0])
+    assert generated == [16]
+    assert result["invocation_nonce"] == preview["invocation_nonce"] == "2" * 32
+    assert result["sharing_id"] == preview["sharing_id"]
+    assert result["sharing_content_id"] == preview["sharing_content_id"]
+    assert result["status"] == "draft-ready" and len(calls) == 2
 
 
 @pytest.mark.parametrize("answer", ["", "cancel", "approve", "share wrong", " share wrong"])

@@ -11,6 +11,7 @@ import asyncio
 import json
 import math
 import os
+import secrets
 from collections.abc import Callable
 from hashlib import sha256
 from time import perf_counter
@@ -58,8 +59,15 @@ def _failure_snapshot(adapter: Any, *, stage: str, code: str) -> dict[str, str]:
     return failure
 
 
-def build_owner_review_preview(model: str, *, timeout_seconds: float = 120) -> dict[str, Any]:
-    """Preview the complete task payload, not ambient Codex harness/account context."""
+def build_owner_review_preview(
+    model: str, *, timeout_seconds: float = 120, invocation_nonce: str | None = None
+) -> dict[str, Any]:
+    """Preview the task with a fresh local confirmation challenge.
+
+    Explicit nonces only reconstruct an existing invocation for revalidation;
+    new CLI invocations never accept a caller-selected nonce. This is not an
+    authenticated approval service or proof that a human reviewed the payload.
+    """
     if (
         type(timeout_seconds) not in (int, float)
         or not math.isfinite(timeout_seconds)
@@ -70,6 +78,13 @@ def build_owner_review_preview(model: str, *, timeout_seconds: float = 120) -> d
         AdapterConfig(model=model, temperature=None)
     except ContractError as exc:
         raise OwnerReviewInputError("An explicit valid model identifier is required") from exc
+    nonce = secrets.token_hex(16) if invocation_nonce is None else invocation_nonce
+    if (
+        type(nonce) is not str
+        or len(nonce) != 32
+        or any(c not in "0123456789abcdef" for c in nonce)
+    ):
+        raise OwnerReviewInputError("An invocation nonce must contain 32 lowercase hex characters")
     request = build_owner_policy_request(model)
     prompt = owner_policy_prompt(request)
     schema = owner_policy_output_schema(request)
@@ -106,7 +121,12 @@ def build_owner_review_preview(model: str, *, timeout_seconds: float = 120) -> d
             "file edits or test execution are authorized. This is not a security verdict."
         ),
     }
-    return {**preview, "sharing_id": "share-" + identity(preview)}
+    challenged = {
+        **preview,
+        "sharing_content_id": "content-" + identity(preview),
+        "invocation_nonce": nonce,
+    }
+    return {**challenged, "sharing_id": "share-" + identity(challenged)}
 
 
 async def run_codex_owner_review(
@@ -140,6 +160,8 @@ async def run_codex_owner_review(
         "exit_code": 0,
         "request_id": preview["request_id"],
         "sharing_id": preview["sharing_id"],
+        "sharing_content_id": preview["sharing_content_id"],
+        "invocation_nonce": preview["invocation_nonce"],
         "sharing_decision": choice,
         "limits": preview["limits"],
         "application_turn_attempts": 0,
@@ -161,9 +183,12 @@ async def run_codex_owner_review(
         return result
     if os.name != "posix":
         raise OwnerReviewInputError("Live owner-policy review requires supported POSIX operations")
-    # Bind the displayed in-memory data, instructions, schema and limits. This is
-    # not an authenticated approval service or a freshness check of a checkout.
-    current = build_owner_review_preview(model, timeout_seconds=timeout_seconds)
+    # Bind this invocation's challenge and complete displayed content before the
+    # one adapter construction. Revalidation must not create another challenge.
+    # This is not an authenticated approval service or checkout freshness check.
+    current = build_owner_review_preview(
+        model, timeout_seconds=timeout_seconds, invocation_nonce=preview["invocation_nonce"]
+    )
     if current != preview:
         result.update(
             status="preview-changed",

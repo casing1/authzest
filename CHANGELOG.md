@@ -91,6 +91,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Bind owner-review confirmation to a fresh local invocation nonce, with a separate stable content
+  identity. Reject a captured phrase from an identical prior invocation before constructing an adapter;
+  revalidate the same nonce for the current single attempt. Add offline stale-phrase and actual-CLI
+  fake-provider regressions. Full suite: 2,463 passed; portable subset: 542 passed. No CLI nonce
+  override, new provider call or changed model task payload.
 - Normalize logical source labels to POSIX form when comparing proposal baseline evidence on
   Windows, without changing legacy scan display paths or registration identities. Add nested-label
   regressions and a scoped Windows CI job; the file-reading CLI remains POSIX-only.

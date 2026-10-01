@@ -509,26 +509,66 @@ def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
         "PYTHONDONTWRITEBYTECODE": "1",
         "TMPDIR": str(temporary_root),
     }
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-B",
-            "-m",
-            "authzest.cli",
-            command,
-            "--model",
-            "fixture-test-model",
-            "--timeout-seconds",
-            "5",
-        ],
-        cwd=tmp_path,
-        env=environment,
-        input=answer,
-        text=True,
-        capture_output=True,
-        timeout=20,
-        check=False,
-    )
+    arguments = [
+        sys.executable,
+        "-B",
+        "-m",
+        "authzest.cli",
+        command,
+        "--model",
+        "fixture-test-model",
+        "--timeout-seconds",
+        "5",
+    ]
+    if answer is None:
+        assert command == "codex-owner-review"
+
+        async def confirm_displayed_challenge():
+            # Only this fake-provider test confirms the actual displayed phrase;
+            # no nonce override or automatic-approval product option is added.
+            child = await asyncio.create_subprocess_exec(
+                *arguments,
+                cwd=tmp_path,
+                env=environment,
+                stdin=asyncio.subprocess.PIPE,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                limit=524_288,
+            )
+            try:
+                async with asyncio.timeout(20):
+                    header = b"\nType 'share "
+                    ending = b"' to confirm; Enter declines, 'cancel' cancels: "
+                    prefix = await child.stdout.readuntil(header)
+                    suffix = await child.stdout.readuntil(ending)
+                    preview = json.loads(prefix[: -len(header)])
+                    assert suffix[: -len(ending)].decode() == preview["sharing_id"]
+                    output, error = await child.communicate(
+                        f"share {preview['sharing_id']}\n".encode()
+                    )
+                    return subprocess.CompletedProcess(
+                        arguments,
+                        child.returncode,
+                        (prefix + suffix + output).decode(),
+                        error.decode(),
+                    )
+            finally:
+                if child.returncode is None:
+                    child.kill()
+                    await child.wait()
+
+        result = asyncio.run(confirm_displayed_challenge())
+    else:
+        result = subprocess.run(
+            arguments,
+            cwd=tmp_path,
+            env=environment,
+            input=answer,
+            text=True,
+            capture_output=True,
+            timeout=20,
+            check=False,
+        )
     kind = (
         "codex-owner-review-workflow"
         if command == "codex-owner-review"
@@ -1515,8 +1555,6 @@ def test_primary_protocol_failure_survives_cleanup_timeout(context, fake_factory
 def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
     owner_context, fake_factory, tmp_path, mutation, code
 ):
-    from authzest.runner.codex_owner_review import build_owner_review_preview
-
     response = owner_response_data(owner_context)
     answer = response["answers"][0]
     case = response["cases"][0]
@@ -1542,9 +1580,8 @@ def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
     else:
         case["principal"]["subject"] = "FAKE_SECRET_SUBJECT\n"
     fake = fake_factory(request=owner_context, response=response)
-    preview = build_owner_review_preview("fixture-test-model", timeout_seconds=5)
     process, summary, temporary_root = cli_process(
-        fake, tmp_path, f"share {preview['sharing_id']}\n", command="codex-owner-review"
+        fake, tmp_path, None, command="codex-owner-review"
     )
     assert process.returncode == 1
     assert summary["status"] == "review-failed"
@@ -1568,3 +1605,21 @@ def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
     assert "FAKE_SECRET" not in process.stdout + process.stderr
     assert not list(temporary_root.iterdir())
     assert_stopped(fake)
+
+
+def test_real_owner_cli_rejects_another_invocations_phrase_without_starting_codex(
+    owner_context, fake_factory, tmp_path
+):
+    from authzest.runner.codex_owner_review import build_owner_review_preview
+
+    old = build_owner_review_preview("fixture-test-model", timeout_seconds=5)
+    fake = fake_factory(request=owner_context, response=owner_response_data(owner_context))
+    process, summary, temporary_root = cli_process(
+        fake, tmp_path, f"share {old['sharing_id']}\n", command="codex-owner-review"
+    )
+    assert process.returncode == 0 and summary["status"] == "not-shared"
+    assert summary["sharing_id"] != old["sharing_id"]
+    assert summary["invocation_nonce"] != old["invocation_nonce"]
+    assert summary["sharing_content_id"] == old["sharing_content_id"]
+    assert summary["application_turn_attempts"] == 0 and not fake.events()
+    assert not list(temporary_root.iterdir())

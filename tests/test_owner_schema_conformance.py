@@ -402,7 +402,8 @@ def test_schema_acceptance_never_promotes_labels_or_executes_sources(
 
 def test_prompt_v2_and_schema_changes_require_a_different_sharing_identity(monkeypatch):
     assert OWNER_POLICY_PROMPT_VERSION == "owner-policy-review-v2"
-    preview = workflow.build_owner_review_preview("gpt-6-astra")
+    nonce = "1" * 32
+    preview = workflow.build_owner_review_preview("gpt-6-astra", invocation_nonce=nonce)
     assert preview["sharing_id"] != (
         "share-eb98405cadcdc6234501d513dec8be6c37f1e4c06a50438b260ab40d38c481a7"
     )
@@ -414,4 +415,7 @@ def test_prompt_v2_and_schema_changes_require_a_different_sharing_identity(monke
         return schema
 
     monkeypatch.setattr(workflow, "owner_policy_output_schema", changed_schema)
-    assert workflow.build_owner_review_preview("gpt-6-astra")["sharing_id"] != preview["sharing_id"]
+    assert (
+        workflow.build_owner_review_preview("gpt-6-astra", invocation_nonce=nonce)["sharing_id"]
+        != preview["sharing_id"]
+    )
