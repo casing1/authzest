@@ -111,8 +111,27 @@ published assets or complete broader #35.
 [#73's owned report policy](../guides/OWNER_POLICY.md) adds a separate checkout example with a pure
 default-deny policy, an independent assistant-authored matrix and non-importing scanner evidence.
 Developer unit tests call only the policy function, not the FastAPI application or authentication
-provider. Real authentication, endpoint runtime acceptance and Codex integration remain separate;
-[issue #73](https://github.com/casing1/authzest/issues/73) records policy review and acceptance status.
+provider. Real authentication and endpoint runtime acceptance remain separate;
+[issue #73](https://github.com/casing1/authzest/issues/73) records acceptance. The maintainer approved
+the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any live account use.
+[#75's read-only Codex owner review](../guides/CODEX_OWNER_REVIEW.md) connects two packaged snapshots,
+explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
+Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
+not-run and authorization unknown. Two separately approved live attempts failed without an accepted
+draft on 2026-09-24 and 2026-09-30. The earlier attempt at `324505d` returned `response-validation` / `response-invalid` with
+`turn_start=acknowledged` after about 84.8 seconds. Usage and the exact rejected condition remain unknown.
+The 2026-09-28 diagnostic implementation itself was offline; it does not recover the older failure's cause.
+The separately approved offline follow-up adds fixed per-rule validation codes and aligns prompt
+`owner-policy-review-v2` with supported schema constraints, while retaining strict host-only checks.
+Its 2,451-test full offline suite and 531-test portable subset passed on 2026-10-01; it adds no live
+attempt or acceptance evidence. The changed sharing
+envelope required fresh consent. A separately approved run at `9257bd7` on 2026-10-01 returned
+`draft-ready` in about 74 seconds: one answer and ten cases passed host validation, with 7,994 input /
+2,242 output tokens reported. No retry or source execution occurred. Narrow provider acceptance is
+complete; case expectations remain unreviewed and broader #35 remains open. All three approvals
+are consumed; another provider call needs fresh consent. [PR #76](https://github.com/casing1/authzest/pull/76)
+tracks final checks and merge; published alpha.3 is unchanged.
+No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
 The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
@@ -259,6 +278,37 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       separate from static FastAPI inventory checks. This source slice is not generated tests or
       endpoint execution; [issue #73](https://github.com/casing1/authzest/issues/73) tracks review and acceptance.
       Frozen evaluation labels, Codex scope, fixture execution allowlists and broader #35 remain unchanged.
+- [x] Implement [#75's read-only owner-policy review](../guides/CODEX_OWNER_REVIEW.md): preview two
+      packaged source snapshots, policy and static evidence offline on all supported OSes; bind exact
+      sharing consent to the whole request envelope for a single pinned POSIX App Server request.
+      Validate evidence-linked answers and non-executable defensive case drafts without patching or
+      source execution. This records the source implementation, not live-model acceptance or merge;
+      [issue #75](https://github.com/casing1/authzest/issues/75) tracks those separate gates.
+- [x] Implement source-only redacted failure diagnostics and offline regressions for owner-policy
+      review. Expose only allowlisted stage/code/turn-start states, never raw provider errors or partial
+      output. Keep failure usage unknown, cancellation propagation and the existing sharing/execution
+      limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this implementation
+      itself does not reconstruct the 2026-09-24 failure or record a live attempt, merge or release.
+- [x] Implement the approved offline owner-review contract alignment: closed per-rule validation
+      codes in the existing three-field diagnostic, prompt version `owner-policy-review-v2`, supported
+      schema constraints and schema-versus-host conformance cases. Retain fail-closed host checks for
+      exact evidence coverage, uniqueness, UTF-8 validity and global result budgets. The full 2,451-test
+      offline suite and 531-test portable subset passed; this does not establish live compatibility
+      with pinned Codex or authorize another call.
+- [x] Complete the narrow owner-policy live review with separate bounded source-sharing/account-use
+      consent. After two earlier failures, one approved run at `9257bd7` on 2026-10-01 returned
+      `draft-ready` in about 74 seconds with one answer and ten host-valid cases. Provider-reported
+      usage was 7,994 input / 2,242 output tokens; no retry, fallback or target execution occurred.
+      Exact code-head CI and assistant source review passed; PR #76 tracks final documentation checks
+      and merge. Historical automated reviews cover older heads, not this new code.
+      Review model-authored case expectations independently; they remain unreviewed, execution not-run
+      and authorization unknown. Another call needs fresh consent; broader #35 and release remain separate.
+- [x] Address the final-head review's stale sharing-phrase reuse with a fresh per-invocation nonce and
+      separate content identity. Same-input reruns reject the old phrase before adapter construction;
+      the current challenge is revalidated once. Cover the real source CLI with a fake provider.
+      The full 2,463-test offline suite and 542-test portable subset passed.
+      Model task data and transport remain unchanged; no additional live run is claimed. Final-head
+      re-review and CI remain merge gates in PR #76.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
 - [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification

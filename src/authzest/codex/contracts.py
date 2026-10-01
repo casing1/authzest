@@ -15,6 +15,7 @@ from hashlib import sha256
 from pathlib import PurePosixPath
 from typing import Any, Literal
 
+from authzest.codex.diagnostics import VALIDATION_CODES
 from authzest.models import REPORT_SCHEMA_VERSION, ScanReport
 
 AI_SCHEMA_VERSION = "1.0"
@@ -27,6 +28,20 @@ Mode = Literal["model-only", "evidence-plus-model"]
 class ContractError(ValueError):
     """Invalid input/output. Messages never include source or provider output."""
 
+    def __init__(self, message: str, *, code: str = "response-invalid") -> None:
+        super().__init__(message)
+        # The message is never used to derive diagnostics. Recheck at export, too:
+        # exceptions are mutable and custom adapters can forge their attributes.
+        self.code = code if type(code) is str and code in VALIDATION_CODES else "response-invalid"
+
+
+def contract_failure_code(error: object) -> str:
+    """Export only a closed rule code from an exact local exception, never its text."""
+    if type(error) is not ContractError:
+        return "response-invalid"
+    code = getattr(error, "code", None)
+    return code if type(code) is str and code in VALIDATION_CODES else "response-invalid"
+
 
 def canonical(value: Any) -> str:
     try:
@@ -34,49 +49,49 @@ def canonical(value: Any) -> str:
             value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
         )
     except (ValueError, TypeError, RecursionError) as exc:
-        raise ContractError("Not a finite JSON value") from exc
+        raise ContractError("Not a finite JSON value", code="validation-json") from exc
 
 
 def identity(value: Any) -> str:
     try:
         return sha256(canonical(value).encode("utf-8")).hexdigest()
     except UnicodeError as exc:
-        raise ContractError("Invalid Unicode") from exc
+        raise ContractError("Invalid Unicode", code="validation-text") from exc
 
 
 def _object(value: Any, fields: set[str]) -> dict[str, Any]:
     if type(value) is not dict or set(value) != fields:
-        raise ContractError("Unexpected object fields")
+        raise ContractError("Unexpected object fields", code="validation-shape")
     return value
 
 
 def _text(value: Any, limit: int = 4096) -> str:
     if type(value) is not str or not value.strip() or len(value) > limit:
-        raise ContractError("Invalid text")
+        raise ContractError("Invalid text", code="validation-text")
     if any(ord(char) < 32 and char not in "\n\t\r" for char in value):
-        raise ContractError("Invalid control character")
+        raise ContractError("Invalid control character", code="validation-text")
     try:
         value.encode("utf-8")
     except UnicodeError as exc:
-        raise ContractError("Invalid Unicode") from exc
+        raise ContractError("Invalid Unicode", code="validation-text") from exc
     return value
 
 
 def _list(value: Any, limit: int = 256) -> list[Any]:
     if type(value) is not list or len(value) > limit:
-        raise ContractError("Invalid collection")
+        raise ContractError("Invalid collection", code="validation-shape")
     return value
 
 
 def _integer(value: Any, minimum: int = 0) -> int:
     if type(value) is not int or not minimum <= value <= 1_000_000_000:
-        raise ContractError("Invalid integer")
+        raise ContractError("Invalid integer", code="validation-shape")
     return value
 
 
 def _unique(values: list[str]) -> None:
     if len(set(values)) != len(values):
-        raise ContractError("Duplicate identifier")
+        raise ContractError("Duplicate identifier", code="validation-duplicate")
 
 
 def decode(raw: str) -> dict[str, Any]:
@@ -85,37 +100,41 @@ def decode(raw: str) -> dict[str, Any]:
         return dict(items)
 
     def constant(_: str) -> None:
-        raise ContractError("Non-finite JSON number")
+        raise ContractError("Non-finite JSON number", code="validation-json")
 
     if type(raw) is not str:
-        raise ContractError("Expected JSON text")
+        raise ContractError("Expected JSON text", code="validation-json")
     try:
         if len(raw) > MAX_JSON_BYTES or len(raw.encode("utf-8")) > MAX_JSON_BYTES:
-            raise ContractError("JSON size limit exceeded")
+            raise ContractError("JSON size limit exceeded", code="validation-budget")
         value = json.loads(raw, object_pairs_hook=pairs, parse_constant=constant)
+    except ContractError as exc:
+        # Preserve the historical public message while retaining the first local
+        # rule (e.g. duplicate keys or budget), not inspecting exception text.
+        raise ContractError("Invalid JSON", code=contract_failure_code(exc)) from exc
     except (ValueError, UnicodeError, RecursionError) as exc:
-        raise ContractError("Invalid JSON") from exc
+        raise ContractError("Invalid JSON", code="validation-json") from exc
     if type(value) is not dict:
-        raise ContractError("Expected JSON object")
+        raise ContractError("Expected JSON object", code="validation-shape")
     pending = [(value, 0)]
     visited = 0
     while pending:
         item, depth = pending.pop()
         visited += 1
         if depth > 32 or visited > 8192:
-            raise ContractError("JSON structural limit exceeded")
+            raise ContractError("JSON structural limit exceeded", code="validation-budget")
         if isinstance(item, dict):
             pending.extend((child, depth + 1) for child in item.values())
             pending.extend((key, depth + 1) for key in item)
         elif isinstance(item, list):
             pending.extend((child, depth + 1) for child in item)
         elif isinstance(item, float) and not math.isfinite(item):
-            raise ContractError("Non-finite JSON number")
+            raise ContractError("Non-finite JSON number", code="validation-json")
         elif isinstance(item, str):
             try:
                 item.encode("utf-8")
             except UnicodeError as exc:
-                raise ContractError("Invalid Unicode") from exc
+                raise ContractError("Invalid Unicode", code="validation-text") from exc
     return value
 
 
@@ -415,13 +434,17 @@ def validate_response(raw: str, request: CodexAnalysisRequest) -> ValidatedRespo
         data["schema_version"] != payload["schema_version"]
         or data["request_id"] != request.request_id
     ):
-        raise ContractError("Response version or request identity mismatch")
+        raise ContractError(
+            "Response version or request identity mismatch", code="validation-identity"
+        )
     expected_identity = {
         key: payload["config"][key]
         for key in ("provider", "model", "adapter_version", "prompt_version")
     }
     if data["identity"] != expected_identity:
-        raise ContractError("Provider/model/version substitution rejected")
+        raise ContractError(
+            "Provider/model/version substitution rejected", code="validation-identity"
+        )
     allowed = {item["id"] for item in payload["evidence"]}
     questions = {question["id"] for question in payload["questions"]}
     answers = _list(data["answers"], 32)
@@ -447,27 +470,40 @@ def validate_response(raw: str, request: CodexAnalysisRequest) -> ValidatedRespo
         ]
     )
     if {answer["question_id"] for answer in answers} != questions:
-        raise ContractError("Responses must cover exactly the supplied questions")
+        raise ContractError(
+            "Responses must cover exactly the supplied questions",
+            code="validation-question-coverage",
+        )
     for answer in answers:
         if answer["status"] not in ("hypothesis", "unknown"):
-            raise ContractError("Unsupported certainty; no confirmed findings are allowed")
+            raise ContractError(
+                "Unsupported certainty; no confirmed findings are allowed", code="validation-status"
+            )
         _text(answer["explanation"])
         refs = [_text(ref, 128) for ref in _list(answer["evidence_ids"])]
         _unique(refs)
         if not refs or not set(refs) <= allowed:
-            raise ContractError("Missing or nonexistent evidence reference")
+            raise ContractError(
+                "Missing or nonexistent evidence reference", code="validation-evidence"
+            )
         for field in ("assumptions", "unknowns", "review_questions"):
             for value in _list(answer[field], 32):
                 _text(value)
         if answer["status"] == "unknown":
             if answer["answer"] is not None or not answer["unknowns"]:
-                raise ContractError("Unknown requires abstention and an explicit limitation")
+                raise ContractError(
+                    "Unknown requires abstention and an explicit limitation",
+                    code="validation-abstention",
+                )
         else:
             _text(answer["answer"])
     usage = data["usage"]
     if usage is not None:
-        _object(usage, {"input_tokens", "output_tokens"})
-        for value in usage.values():
-            if value is not None:
-                _integer(value)
+        try:
+            _object(usage, {"input_tokens", "output_tokens"})
+            for value in usage.values():
+                if value is not None:
+                    _integer(value)
+        except ContractError as exc:
+            raise ContractError("Invalid usage metadata", code="validation-usage") from exc
     return ValidatedResponse(canonical(data))

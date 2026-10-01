@@ -3,8 +3,13 @@
   "kind": "maintained-owner-policy-unit-cases",
   "authorship": "assistant-authored expected values; not human-authored",
   "policy_review": {
-    "status": "pending-maintainer-review",
-    "approval": null
+    "status": "criteria-approved-label-review-pending",
+    "approval": {
+      "date": "2026-09-24",
+      "scope": "Policy criteria only: authenticated, exact reports:read scope and matching owner; no admin exception; missing information denies.",
+      "basis": "Maintainer accepted the stated criteria and bounded implementation in conversation.",
+      "individual_expected_labels": "not-independently-reviewed"
+    }
   },
   "scope": "Trusted synthetic principal and report metadata; pure policy unit tests only.",
   "frozen_evaluation_corpus": false,

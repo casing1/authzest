@@ -1,0 +1,262 @@
+"""Separate sharing consent for a fixed, read-only owner-policy review.
+
+The preview is portable and has no filesystem, account or process effects. Only
+the exact interactive sharing choice constructs the opt-in App Server adapter.
+Model output is untrusted data, never test code, patch authority or a verdict.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import math
+import os
+import secrets
+from collections.abc import Callable
+from hashlib import sha256
+from time import perf_counter
+from typing import Any
+
+from authzest.codex.contracts import (
+    MAX_JSON_BYTES,
+    AdapterConfig,
+    ContractError,
+    canonical,
+    contract_failure_code,
+    identity,
+)
+from authzest.codex.diagnostics import sanitize_failure
+from authzest.codex.fixture_draft import HOST_INSTRUCTIONS, MAX_RETRY_NOTIFICATIONS
+from authzest.codex.owner_policy_review import (
+    build_owner_policy_request,
+    owner_policy_output_schema,
+    owner_policy_prompt,
+    validate_owner_policy_result,
+)
+
+
+class OwnerReviewInputError(ValueError):
+    """Stable local input error containing no provider output or credentials."""
+
+
+def _default_adapter_factory(**kwargs):
+    from authzest.codex.app_server import CodexAppServerAdapter
+
+    return CodexAppServerAdapter(**kwargs)
+
+
+def _failure_snapshot(adapter: Any, *, stage: str, code: str) -> dict[str, str]:
+    """Read only a closed diagnostic, never exception text or a provider payload."""
+    try:
+        value = getattr(adapter, "failure_diagnostic", None)
+    except Exception:
+        value = None
+    failure = sanitize_failure(value, stage=stage, code=code)
+    if code == "timeout" and failure["code"] == "cancelled":
+        # The outer deadline cancels the adapter. Keep its observed phase/progress,
+        # but distinguish this deadline from a caller's propagated cancellation.
+        failure["code"] = "timeout"
+    return failure
+
+
+def build_owner_review_preview(
+    model: str, *, timeout_seconds: float = 120, invocation_nonce: str | None = None
+) -> dict[str, Any]:
+    """Preview the task with a fresh local confirmation challenge.
+
+    Explicit nonces only reconstruct an existing invocation for revalidation;
+    new CLI invocations never accept a caller-selected nonce. This is not an
+    authenticated approval service or proof that a human reviewed the payload.
+    """
+    if (
+        type(timeout_seconds) not in (int, float)
+        or not math.isfinite(timeout_seconds)
+        or not 0 < timeout_seconds <= 120
+    ):
+        raise OwnerReviewInputError("Timeout must be finite and greater than 0, up to 120 seconds")
+    try:
+        AdapterConfig(model=model, temperature=None)
+    except ContractError as exc:
+        raise OwnerReviewInputError("An explicit valid model identifier is required") from exc
+    nonce = secrets.token_hex(16) if invocation_nonce is None else invocation_nonce
+    if (
+        type(nonce) is not str
+        or len(nonce) != 32
+        or any(c not in "0123456789abcdef" for c in nonce)
+    ):
+        raise OwnerReviewInputError("An invocation nonce must contain 32 lowercase hex characters")
+    request = build_owner_policy_request(model)
+    prompt = owner_policy_prompt(request)
+    schema = owner_policy_output_schema(request)
+    limits = {
+        "timeout_seconds": float(timeout_seconds),
+        "max_response_bytes": MAX_JSON_BYTES,
+        "max_application_turn_attempts": 1,
+        "application_retries": 0,
+        "max_accepted_retry_notifications": MAX_RETRY_NOTIFICATIONS,
+        "codex_internal_transport_retries_hard_capped": False,
+        "token_hard_cap": None,
+        "dollar_hard_cap": None,
+    }
+    preview = {
+        "kind": "codex-owner-review-sharing-preview",
+        "request_id": request.request_id,
+        "source_scope": "packaged-owned-policy/main.py+policy.py",
+        "request": request.to_dict(),
+        "host_instructions": HOST_INSTRUCTIONS,
+        "prompt": prompt,
+        "prompt_sha256": sha256(prompt.encode("utf-8")).hexdigest(),
+        "output_schema": schema,
+        "output_schema_sha256": sha256(canonical(schema).encode("utf-8")).hexdigest(),
+        "limits": limits,
+        "limits_sha256": sha256(canonical(limits).encode("utf-8")).hexdigest(),
+        "sharing": (
+            "Send only the displayed packaged source snapshots, policy and static evidence "
+            "with these host instructions and schema through local Codex App Server to OpenAI "
+            "using your existing ChatGPT login. Codex adds its own harness context; account "
+            "data handling applies. No evaluation labels, arbitrary repository files or API-key "
+            "input. One application attempt, no model fallback. Codex internal transport "
+            "retries and token/dollar use are not hard-capped. Returned review/case drafts "
+            "are untrusted, unreviewed and not executed. No tools, source execution, patches, "
+            "file edits or test execution are authorized. This is not a security verdict."
+        ),
+    }
+    challenged = {
+        **preview,
+        "sharing_content_id": "content-" + identity(preview),
+        "invocation_nonce": nonce,
+    }
+    return {**challenged, "sharing_id": "share-" + identity(challenged)}
+
+
+async def run_codex_owner_review(
+    model: str,
+    *,
+    timeout_seconds: float = 120,
+    read: Callable[[str], str] = input,
+    emit: Callable[[str], Any] = print,
+    adapter_factory: Callable[..., Any] | None = None,
+) -> dict[str, Any]:
+    """Request one review after full-input consent; never apply or execute its output."""
+    preview = build_owner_review_preview(model, timeout_seconds=timeout_seconds)
+    # Escape all free-form text, including model content, when displaying JSON.
+    emit(json.dumps(preview, ensure_ascii=True, indent=2, allow_nan=False))
+    try:
+        answer = read(
+            f"Type 'share {preview['sharing_id']}' to confirm; Enter declines, 'cancel' cancels: "
+        )
+    except (EOFError, KeyboardInterrupt):
+        answer = "cancel"
+    choice = (
+        "approve"
+        if answer == f"share {preview['sharing_id']}"
+        else "cancel"
+        if answer == "cancel"
+        else "decline"
+    )
+    result: dict[str, Any] = {
+        "kind": "codex-owner-review-workflow",
+        "status": "not-shared",
+        "exit_code": 0,
+        "request_id": preview["request_id"],
+        "sharing_id": preview["sharing_id"],
+        "sharing_content_id": preview["sharing_content_id"],
+        "invocation_nonce": preview["invocation_nonce"],
+        "sharing_decision": choice,
+        "limits": preview["limits"],
+        "application_turn_attempts": 0,
+        "returned_identity": None,
+        "model_identity_basis": (
+            "negotiated-thread-model; not independently served-model attestation"
+        ),
+        "usage": None,
+        "provider_warning_count": None,
+        "provider_retry_notification_count": None,
+        "latency_ms": None,
+        "draft": None,
+        "failure": None,
+        "original_checkout_modified": False,
+        "execution_status": "not-run",
+        "authorization_status": "unknown",
+    }
+    if choice != "approve":
+        return result
+    if os.name != "posix":
+        raise OwnerReviewInputError("Live owner-policy review requires supported POSIX operations")
+    # Bind this invocation's challenge and complete displayed content before the
+    # one adapter construction. Revalidation must not create another challenge.
+    # This is not an authenticated approval service or checkout freshness check.
+    current = build_owner_review_preview(
+        model, timeout_seconds=timeout_seconds, invocation_nonce=preview["invocation_nonce"]
+    )
+    if current != preview:
+        result.update(
+            status="preview-changed",
+            exit_code=1,
+            failure={
+                "stage": "request-validation",
+                "code": "request-invalid",
+                "turn_start": "not-attempted",
+            },
+        )
+        return result
+    request = build_owner_policy_request(model)
+    if request.request_id != preview["request_id"]:
+        result.update(
+            status="preview-changed",
+            exit_code=1,
+            failure={
+                "stage": "request-validation",
+                "code": "request-invalid",
+                "turn_start": "not-attempted",
+            },
+        )
+        return result
+    started = perf_counter()
+    adapter = None
+    stage = "adapter-setup"
+    try:
+        factory = adapter_factory if adapter_factory is not None else _default_adapter_factory
+        async with asyncio.timeout(timeout_seconds):
+            adapter = factory(
+                approved_request_id=request.request_id,
+                timeout_seconds=timeout_seconds,
+            )
+            result["application_turn_attempts"] = 1
+            stage = "unknown"
+            draft = await adapter.review_owner_policy(request)
+        stage = "result-validation"
+        checked = validate_owner_policy_result(draft, request)
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        # Never emit provider exceptions, partial model content, logs or account details.
+        code = (
+            "timeout"
+            if isinstance(exc, TimeoutError)
+            else contract_failure_code(exc)
+            if stage == "result-validation" and isinstance(exc, ContractError)
+            else "unexpected-error"
+        )
+        # A successfully returned adapter no longer owns a later host-validation failure.
+        failure = _failure_snapshot(
+            None if stage == "result-validation" else adapter, stage=stage, code=code
+        )
+        result.update(status="review-failed", exit_code=1, failure=failure)
+        return result
+    finally:
+        result["latency_ms"] = (perf_counter() - started) * 1000
+    review = checked.review.to_dict()
+    result.update(
+        status="draft-ready",
+        draft=checked.to_dict(),
+        returned_identity=review["identity"],
+        usage=review["usage"],
+    )
+    warnings = getattr(adapter, "warnings_seen", None)
+    retries = getattr(adapter, "retry_notifications_seen", None)
+    if type(warnings) is int and 0 <= warnings <= 4096:
+        result["provider_warning_count"] = warnings
+    if type(retries) is int and 0 <= retries <= MAX_RETRY_NOTIFICATIONS:
+        result["provider_retry_notification_count"] = retries
+    return result

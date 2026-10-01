@@ -77,17 +77,24 @@ lookup and a policy decision before returning data, but it is not a runnable aut
 Do not start its server or import it as part of this validation.
 
 Real principal verification, HTTP endpoint behavior, database ownership, token expiry and integration
-with Codex proposals remain separate work. The scanner does not infer the policy function's semantics.
+with Codex patch proposals remain separate work. The opt-in [read-only Codex owner review](CODEX_OWNER_REVIEW.md)
+uses packaged snapshots and produces review/case drafts only; it does not execute this example.
+The scanner does not infer the policy function's semantics.
 This example does not expand the narrow syntax accepted by `proposal-check`, existing copy-application
 flows or the fixed source/runtime fixture allowlists. Default scans remain source-only; there is no
 provider/account use, source sharing or automatic patch application.
 
 ## Matrix provenance and compatibility
 
-The policy matrix and its exact expected values are assistant-authored development material, not
-human-authored or independently approved reference labels. Policy decisions and maintainer review are
-tracked in [#73](https://github.com/casing1/authzest/issues/73); writing a matrix is not policy approval.
-Review expected values separately from implementation changes rather than deriving both from the same logic.
+The maintainer approved the policy criteria on 2026-09-24: authenticated identity, exact `reports:read`
+scope and matching ownership are all required; there is no admin exception and missing information
+is denied. The policy matrix and all 28 exact expected values remain assistant-authored development
+material, not human-authored or independently approved reference labels. The recorded status is
+`criteria-approved-label-review-pending`, not blanket approval of those labels. Policy decisions and
+maintainer review are tracked in [#73](https://github.com/casing1/authzest/issues/73) and
+[#75](https://github.com/casing1/authzest/issues/75). Review expected values separately from implementation
+changes rather than deriving both from the same logic. Policy approval does not approve source sharing,
+account use, patch application or execution.
 
 The frozen `tests/fixtures/ai_evaluation/v1` corpus, labels, held-out split and hash are unchanged.
 Its source-only declared-scope examples still have unknown authorization; this new policy unit test

@@ -13,12 +13,25 @@ import pytest
 
 from authzest.codex import app_server
 from authzest.codex.app_server import CONFIG, AppServerError, CodexAppServerAdapter
-from authzest.codex.contracts import canonical, validate_response
+from authzest.codex.contracts import (
+    CodexAnalysisRequest,
+    ContractError,
+    canonical,
+    identity,
+    validate_response,
+)
+from authzest.codex.diagnostics import FailureDiagnostic, sanitize_failure
 from authzest.codex.fixture_draft import (
     FIXTURE_AFTER,
     FIXTURE_SOURCE,
     build_fixture_request,
     validate_fixture_draft,
+)
+from authzest.codex.owner_policy_review import (
+    build_owner_policy_request,
+    owner_policy_output_schema,
+    owner_policy_prompt,
+    validate_owner_policy_draft,
 )
 from test_fixture_draft import response_data
 
@@ -61,6 +74,44 @@ def context():
     return build_fixture_request("fixture-test-model")
 
 
+@pytest.fixture
+def owner_context():
+    return build_owner_policy_request("fixture-test-model")
+
+
+def owner_response_data(request):
+    """Maintainer test data, not a live-model response or executed regression case."""
+    evidence_ids = [item["id"] for item in request.to_dict()["evidence"]]
+    return {
+        "answers": [
+            {
+                "question_id": "review",
+                "status": "hypothesis",
+                "answer": "Policy requires authenticated owners with reports:read.",
+                "explanation": "Source does not establish trusted authentication.",
+                "evidence_ids": evidence_ids,
+                "assumptions": [],
+                "unknowns": ["Authentication is unconfigured."],
+                "review_questions": [],
+            }
+        ],
+        "cases": [
+            {
+                "id": "owner-read",
+                "principal": {
+                    "subject": "alice",
+                    "authenticated": True,
+                    "scopes": ["reports:read"],
+                },
+                "report": {"report_id": "report-001", "owner_id": "alice"},
+                "expected": True,
+                "reason": "Trusted owner with required scope.",
+                "evidence_ids": evidence_ids,
+            }
+        ],
+    }
+
+
 def nested_config():
     result = {}
     for key, value in CONFIG.items():
@@ -96,20 +147,21 @@ def fake_factory(tmp_path, context):
     count = 0
     children = []
 
-    def create(case="happy", *, endpoint_overrides=None):
+    def create(case="happy", *, endpoint_overrides=None, request=None, response=None):
         nonlocal count
         count += 1
         directory = tmp_path / str(count)
         directory.mkdir()
         executable = directory / "fake-codex"
         log = directory / "events.jsonl"
+        selected_request = context if request is None else request
         settings = {
             "case": case,
             "log": str(log),
             "config": nested_config(),
             "endpoint_overrides": endpoint_overrides or {},
-            "model": context.to_dict()["config"]["model"],
-            "raw": canonical(response_data(context)),
+            "model": selected_request.to_dict()["config"]["model"],
+            "raw": canonical(response_data(selected_request) if response is None else response),
         }
         helper = Path(__file__).parent / "helpers/fake_codex_server.py"
         executable.write_text(
@@ -443,7 +495,7 @@ def test_cancellation_reaps_wrapper_and_descendant(context, fake_factory):
     assert_descendant_stopped(fake)
 
 
-def cli_process(fake, tmp_path, answer):
+def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
     """Exercise the real CLI and real adapter, resolving only this test's fake codex."""
     executable = fake.executable.with_name("codex")
     fake.executable.rename(executable)
@@ -457,27 +509,72 @@ def cli_process(fake, tmp_path, answer):
         "PYTHONDONTWRITEBYTECODE": "1",
         "TMPDIR": str(temporary_root),
     }
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-B",
-            "-m",
-            "authzest.cli",
-            "codex-fixture",
-            "--model",
-            "fixture-test-model",
-            "--timeout-seconds",
-            "5",
-        ],
-        cwd=tmp_path,
-        env=environment,
-        input=answer,
-        text=True,
-        capture_output=True,
-        timeout=20,
-        check=False,
+    arguments = [
+        sys.executable,
+        "-B",
+        "-m",
+        "authzest.cli",
+        command,
+        "--model",
+        "fixture-test-model",
+        "--timeout-seconds",
+        "5",
+    ]
+    if answer is None:
+        assert command == "codex-owner-review"
+
+        async def confirm_displayed_challenge():
+            # Only this fake-provider test confirms the actual displayed phrase;
+            # no nonce override or automatic-approval product option is added.
+            child = await asyncio.create_subprocess_exec(
+                *arguments,
+                cwd=tmp_path,
+                env=environment,
+                stdin=asyncio.subprocess.PIPE,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                limit=524_288,
+            )
+            try:
+                async with asyncio.timeout(20):
+                    header = b"\nType 'share "
+                    ending = b"' to confirm; Enter declines, 'cancel' cancels: "
+                    prefix = await child.stdout.readuntil(header)
+                    suffix = await child.stdout.readuntil(ending)
+                    preview = json.loads(prefix[: -len(header)])
+                    assert suffix[: -len(ending)].decode() == preview["sharing_id"]
+                    output, error = await child.communicate(
+                        f"share {preview['sharing_id']}\n".encode()
+                    )
+                    return subprocess.CompletedProcess(
+                        arguments,
+                        child.returncode,
+                        (prefix + suffix + output).decode(),
+                        error.decode(),
+                    )
+            finally:
+                if child.returncode is None:
+                    child.kill()
+                    await child.wait()
+
+        result = asyncio.run(confirm_displayed_challenge())
+    else:
+        result = subprocess.run(
+            arguments,
+            cwd=tmp_path,
+            env=environment,
+            input=answer,
+            text=True,
+            capture_output=True,
+            timeout=20,
+            check=False,
+        )
+    kind = (
+        "codex-owner-review-workflow"
+        if command == "codex-owner-review"
+        else "codex-owned-fixture-workflow"
     )
-    marker = '{\n  "kind": "codex-owned-fixture-workflow"'
+    marker = '{\n  "kind": "' + kind + '"'
     summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
     return result, summary, temporary_root
 
@@ -898,3 +995,631 @@ def test_retry_cannot_hide_queued_recovery_or_accept_unscoped_turn_evidence(
     assert fake.methods().count("turn/start") == 1
     assert len(fake.starts()) == 2
     assert_stopped(fake)
+
+
+def test_owner_review_uses_same_bounded_transport_without_a_proposal(owner_context, fake_factory):
+    response = owner_response_data(owner_context)
+    fake = fake_factory(request=owner_context, response=response)
+    transport = adapter(owner_context, fake)
+    result = asyncio.run(transport.review_owner_policy(owner_context))
+    expected = validate_owner_policy_draft(
+        canonical(response), owner_context, usage={"input_tokens": 123, "output_tokens": 45}
+    )
+    assert result.to_dict() == expected.to_dict()
+    assert not hasattr(result, "proposal")
+    assert transport.warnings_seen == 0
+    assert transport.retry_notifications_seen == 0
+    assert fake.methods() == [
+        "initialize",
+        "initialized",
+        "config/read",
+        "initialize",
+        "initialized",
+        "config/read",
+        "remoteControl/status/read",
+        "account/read",
+        "model/list",
+        "thread/start",
+        "turn/start",
+    ]
+    calls = {
+        event["message"]["method"]: event["message"]["params"]
+        for event in fake.events()
+        if event["event"] == "request"
+    }
+    assert calls["turn/start"]["input"] == [
+        {"type": "text", "text": owner_policy_prompt(owner_context)}
+    ]
+    assert calls["turn/start"]["outputSchema"] == owner_policy_output_schema(owner_context)
+    assert calls["turn/start"]["sandboxPolicy"] == {"type": "readOnly", "networkAccess": False}
+    assert calls["thread/start"]["baseInstructions"] == app_server.BASE_INSTRUCTIONS
+    assert calls["thread/start"]["developerInstructions"] == app_server.BASE_INSTRUCTIONS
+    assert calls["thread/start"]["ephemeral"] is True
+    assert calls["thread/start"]["allowProviderModelFallback"] is False
+    assert calls["thread/start"]["dynamicTools"] == []
+    assert calls["thread/start"]["runtimeWorkspaceRoots"] == []
+    assert len(fake.starts()) == 2
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("mutation", ["approval", "model", "source", "policy", "question"])
+def test_owner_review_rejects_unapproved_or_nonpackaged_request_before_child(
+    owner_context, fake_factory, mutation
+):
+    payload = owner_context.to_dict()
+    if mutation == "model":
+        payload["config"]["model"] = "different-model"
+    elif mutation == "question":
+        payload["questions"][0]["text"] = "Unapproved question."
+    elif mutation in {"source", "policy"}:
+        evidence = next(item for item in payload["evidence"] if item["kind"] == mutation)
+        if mutation == "source":
+            evidence["data"]["text"] += "\n# Unapproved source change.\n"
+            payload["source_identity"] = identity(
+                {
+                    item["data"]["path"]: item["data"]["text"]
+                    for item in payload["evidence"]
+                    if item["kind"] == "source"
+                }
+            )
+        else:
+            evidence["data"] = "Unapproved owner-policy change."
+        evidence["id"] = "ev-" + identity({"kind": evidence["kind"], "data": evidence["data"]})
+    changed = CodexAnalysisRequest(canonical(payload))
+    fake = fake_factory(request=owner_context, response=owner_response_data(owner_context))
+    # Source/policy/question mutation must fail the fixed request boundary even if
+    # a caller supplies its ID; model selection must match the approved snapshot.
+    approved_id = changed.request_id
+    if mutation == "approval":
+        approved_id = "request-different"
+    elif mutation == "model":
+        approved_id = owner_context.request_id
+    transport = CodexAppServerAdapter(approved_id, executable=str(fake.executable))
+    with pytest.raises((AppServerError, ContractError)):
+        asyncio.run(transport.review_owner_policy(changed))
+    assert not fake.log.exists()
+    assert transport.consumed is False
+
+
+@pytest.mark.parametrize("method", ["draft", "analyze", "review_owner_policy"])
+def test_public_entry_points_cannot_cross_their_fixed_request_boundaries(
+    context, owner_context, fake_factory, method
+):
+    request = context if method == "review_owner_policy" else owner_context
+    fake = fake_factory()
+    transport = adapter(request, fake)
+    with pytest.raises(ContractError):
+        asyncio.run(getattr(transport, method)(request))
+    assert not fake.log.exists()
+    assert transport.consumed is False
+
+
+@pytest.mark.parametrize("case", ["happy", "rpc-error"])
+@pytest.mark.parametrize("first", ["draft", "review_owner_policy"])
+@pytest.mark.parametrize("second", ["draft", "analyze", "review_owner_policy"])
+def test_owner_and_fixture_methods_share_one_consumed_gate(
+    context, owner_context, fake_factory, case, first, second
+):
+    request = owner_context if first == "review_owner_policy" else context
+    response = owner_response_data(request) if first == "review_owner_policy" else None
+    fake = fake_factory(case, request=request, response=response)
+    transport = adapter(request, fake)
+    if case == "happy":
+        asyncio.run(getattr(transport, first)(request))
+    else:
+        with pytest.raises(AppServerError):
+            asyncio.run(getattr(transport, first)(request))
+    starts = len(fake.starts())
+    with pytest.raises(AppServerError, match="fresh exact-request"):
+        asyncio.run(getattr(transport, second)(request))
+    assert len(fake.starts()) == starts
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["citation", "patch", "commands", "execution", "identity", "confirmed"]
+)
+def test_owner_model_contract_failure_is_redacted_and_does_not_publish_metadata(
+    owner_context, fake_factory, mutation
+):
+    response = owner_response_data(owner_context)
+    if mutation == "citation":
+        response["answers"][0]["evidence_ids"] = ["ev-" + "a" * 64]
+    elif mutation == "patch":
+        response["after_text"] = "FAKE_SECRET_UNREQUESTED_PATCH"
+    elif mutation == "commands":
+        response["cases"][0]["command"] = "FAKE_SECRET_UNREQUESTED_COMMAND"
+    elif mutation == "execution":
+        response["cases"][0]["execution"] = "passed"
+    elif mutation == "identity":
+        response["request_id"] = "FAKE_SECRET_UNTRUSTED_IDENTITY"
+    else:
+        response["answers"][0]["status"] = "confirmed"
+    fake = fake_factory("warning:during-turn:unscoped", request=owner_context, response=response)
+    transport = adapter(owner_context, fake)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.review_owner_policy(owner_context))
+    assert "FAKE_SECRET" not in str(error.value)
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert transport.consumed is True
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "case", ["tool-request", "tool-item", "bad-final-json", "wrong-thread", "wrong-turn"]
+)
+def test_owner_review_preserves_protocol_denials_and_child_cleanup(
+    owner_context, fake_factory, monkeypatch, case
+):
+    fake = fake_factory(case, request=owner_context, response=owner_response_data(owner_context))
+    transport = adapter(owner_context, fake)
+    original = app_server._Session.send
+    sent = []
+
+    async def capture(self, message):
+        sent.append(message)
+        await original(self, message)
+
+    monkeypatch.setattr(app_server._Session, "send", capture)
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.review_owner_policy(owner_context))
+    if case == "tool-request":
+        assert {"id": "server-tool", "error": {"code": -32601, "message": "Denied"}} in sent
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("case", ["missing-usage", "warning-per-session", "retry:partial-reset"])
+def test_owner_review_metadata_remains_transport_bound(owner_context, fake_factory, case):
+    fake = fake_factory(case, request=owner_context, response=owner_response_data(owner_context))
+    transport = adapter(owner_context, fake)
+    result = asyncio.run(transport.review_owner_policy(owner_context))
+    assert result.review.to_dict()["usage"] == (
+        None if case == "missing-usage" else {"input_tokens": 123, "output_tokens": 45}
+    )
+    assert transport.warnings_seen == (2 if case == "warning-per-session" else 0)
+    assert transport.retry_notifications_seen == (1 if case.startswith("retry:") else 0)
+    assert "FAKE_SECRET" not in canonical(result.to_dict())
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+def test_owner_review_timeout_reaps_child_and_descendant(owner_context, fake_factory):
+    fake = fake_factory(
+        "descendant", request=owner_context, response=owner_response_data(owner_context)
+    )
+    transport = CodexAppServerAdapter(
+        owner_context.request_id, executable=str(fake.executable), timeout_seconds=2
+    )
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.review_owner_policy(owner_context))
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+    assert_descendant_stopped(fake)
+
+
+def test_owner_review_cancellation_reaps_child_and_descendant(owner_context, fake_factory):
+    fake = fake_factory(
+        "descendant", request=owner_context, response=owner_response_data(owner_context)
+    )
+
+    async def cancel():
+        transport = adapter(owner_context, fake)
+        task = asyncio.create_task(transport.review_owner_policy(owner_context))
+        try:
+            async with asyncio.timeout(5):
+                while not any(event["event"] == "descendant" for event in fake.events()):
+                    await asyncio.sleep(0.01)
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+            assert transport.consumed is True
+            assert transport.warnings_seen is None
+            assert transport.retry_notifications_seen is None
+        finally:
+            if not task.done():
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    asyncio.run(cancel())
+    assert_stopped(fake)
+    assert_descendant_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "case,stage,code,progress",
+    [
+        ("wrong-version", "startup", "version-unsupported", "not-attempted"),
+        ("malformed", "startup", "protocol-rejected", "not-attempted"),
+        ("bad-config", "configuration", "configuration-rejected", "not-attempted"),
+        ("missing-config", "configuration", "configuration-rejected", "not-attempted"),
+        ("missing-auth", "account-check", "authentication-required", "not-attempted"),
+        ("api-key-auth", "account-check", "authentication-required", "not-attempted"),
+        ("missing-model", "model-check", "model-unavailable", "not-attempted"),
+        ("thread-model", "thread-start", "protocol-rejected", "not-attempted"),
+        ("diagnostic-rpc-error:turn/start", "turn-start", "request-rejected", "attempted"),
+        ("diagnostic-malformed-result:turn/start", "turn-start", "protocol-rejected", "attempted"),
+        ("diagnostic-invalid-turn-id", "turn-start", "protocol-rejected", "attempted"),
+        ("turn-result-tool", "turn-start", "protocol-rejected", "acknowledged"),
+        ("wrong-turn", "turn-stream", "protocol-rejected", "acknowledged"),
+        ("failed-turn", "turn-stream", "turn-failed", "acknowledged"),
+        ("bad-final-json", "response-validation", "response-invalid", "acknowledged"),
+        ("retry:eof", "turn-stream", "transport-error", "acknowledged"),
+    ],
+)
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_failure_diagnostic_is_bounded_and_uses_local_phase_only(
+    context, owner_context, fake_factory, case, stage, code, progress, kind
+):
+    request = context if kind == "fixture" else owner_context
+    response = None if kind == "fixture" else owner_response_data(request)
+    fake = fake_factory(case, request=request, response=response)
+    transport = adapter(request, fake)
+    assert transport.failure_diagnostic is None
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(method(request))
+    diagnostic = sanitize_failure(transport.failure_diagnostic)
+    if kind == "owner" and case == "bad-final-json":
+        code = "validation-json"
+    assert diagnostic == {"stage": stage, "code": code, "turn_start": progress}
+    assert "FAKE_SECRET" not in canonical(diagnostic) + str(error.value)
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == (0 if progress == "not-attempted" else 1)
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_success_does_not_retain_a_failure_diagnostic(context, owner_context, fake_factory, kind):
+    request = context if kind == "fixture" else owner_context
+    fake = fake_factory(
+        request=request, response=None if kind == "fixture" else owner_response_data(request)
+    )
+    transport = adapter(request, fake)
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    asyncio.run(method(request))
+    assert transport.failure_diagnostic is None
+    assert transport.warnings_seen == 0
+    with pytest.raises(AppServerError):
+        asyncio.run(method(request))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "request-validation", "request-invalid", "not-attempted"
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("kind", ["fixture", "owner"])
+def test_swapped_request_keeps_contract_error_and_redacted_diagnostic(
+    context, owner_context, fake_factory, kind
+):
+    request = owner_context if kind == "fixture" else context
+    fake = fake_factory()
+    transport = adapter(request, fake)
+    method = transport.draft if kind == "fixture" else transport.review_owner_policy
+    with pytest.raises(ContractError):
+        asyncio.run(method(request))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "request-validation", "request-invalid", "not-attempted"
+    )
+    assert transport.consumed is False
+    assert not fake.events()
+
+
+@pytest.mark.parametrize(
+    "case,stage,progress",
+    [
+        ("diagnostic-hang:initialize", "startup", "not-attempted"),
+        ("diagnostic-hang:config/read", "configuration", "not-attempted"),
+        ("diagnostic-hang:account/read", "account-check", "not-attempted"),
+        ("diagnostic-hang:model/list", "model-check", "not-attempted"),
+        ("diagnostic-hang:thread/start", "thread-start", "not-attempted"),
+        ("diagnostic-hang:turn/start", "turn-start", "attempted"),
+        ("hang", "turn-stream", "acknowledged"),
+    ],
+)
+@pytest.mark.parametrize("stop", ["timeout", "cancel"])
+def test_failure_phase_survives_timeout_cancellation_and_cleanup(
+    context, fake_factory, case, stage, progress, stop, monkeypatch
+):
+    fake = fake_factory(case)
+    real_timeout = asyncio.timeout
+    deadlines = []
+
+    def capture_deadline(seconds):
+        deadline = real_timeout(seconds)
+        deadlines.append(deadline)
+        return deadline
+
+    if stop == "timeout":
+        monkeypatch.setattr(app_server.asyncio, "timeout", capture_deadline)
+    transport = CodexAppServerAdapter(
+        context.request_id,
+        executable=str(fake.executable),
+        timeout_seconds=5,
+    )
+
+    async def run():
+        task = asyncio.create_task(transport.draft(context))
+        expected_method = case.split(":", 1)[1] if ":" in case else "turn/start"
+        try:
+            async with real_timeout(5):
+                while expected_method not in fake.methods():
+                    if task.done():
+                        await task
+                        pytest.fail("Transport exited before the failure checkpoint")
+                    await asyncio.sleep(0.01)
+                if case == "hang":
+                    while transport._stage != "turn-stream":
+                        await asyncio.sleep(0.01)
+            if stop == "timeout":
+                # Expire the real adapter deadline only at the observed phase.
+                # Startup speed/load must not choose which boundary this tests.
+                assert len(deadlines) == 1
+                deadlines[0].reschedule(asyncio.get_running_loop().time())
+                with pytest.raises(AppServerError):
+                    await task
+            else:
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
+        finally:
+            if not task.done():
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    asyncio.run(run())
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        stage, "timeout" if stop == "timeout" else "cancelled", progress
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") <= 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("primary_failure", [False, True])
+def test_cleanup_failure_does_not_replace_first_useful_diagnostic(
+    context, fake_factory, monkeypatch, primary_failure
+):
+    fake = fake_factory("missing-auth" if primary_failure else "happy")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def fail_after_stop(process):
+        nonlocal stopped
+        await stop(process)
+        stopped += 1
+        if stopped == 2:
+            raise OSError("FAKE_SECRET_CLEANUP_PATH")
+
+    monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    expected = (
+        FailureDiagnostic("account-check", "authentication-required", "not-attempted")
+        if primary_failure
+        else FailureDiagnostic("cleanup", "cleanup-failed", "acknowledged")
+    )
+    assert transport.failure_diagnostic == expected
+    assert "FAKE_SECRET" not in str(error.value) + canonical(sanitize_failure(expected))
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert_stopped(fake)
+
+
+def test_startup_os_error_does_not_expose_executable_path(context, tmp_path):
+    transport = CodexAppServerAdapter(
+        context.request_id, executable=str(tmp_path / "FAKE_SECRET_EXECUTABLE")
+    )
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "startup", "transport-error", "not-attempted"
+    )
+    assert "FAKE_SECRET" not in str(error.value)
+
+
+@pytest.mark.parametrize("code", ["FAKE_SECRET", None, [], True])
+def test_app_server_error_diagnostic_code_is_closed(code):
+    with pytest.raises(ValueError, match="Invalid bounded App Server error code"):
+        AppServerError("redacted", code=code)
+
+
+def test_turn_start_write_failure_is_only_locally_attempted(context, fake_factory, monkeypatch):
+    fake = fake_factory()
+    transport = adapter(context, fake)
+    send = app_server._Session.send
+
+    async def fail_write(session, message):
+        if message.get("method") == "turn/start":
+            raise BrokenPipeError("FAKE_SECRET_WRITE_PATH")
+        await send(session, message)
+
+    monkeypatch.setattr(app_server._Session, "send", fail_write)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "turn-start", "transport-error", "attempted"
+    )
+    assert "FAKE_SECRET" not in str(error.value)
+    assert "turn/start" not in fake.methods()
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("cleanup_error", [OSError, TimeoutError])
+@pytest.mark.parametrize("during_cleanup", [False, True])
+def test_cancellation_propagates_even_when_cleanup_also_fails(
+    context, fake_factory, monkeypatch, cleanup_error, during_cleanup
+):
+    fake = fake_factory("happy" if during_cleanup else "hang")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def run():
+        cleanup_started = asyncio.Event()
+        release_cleanup = asyncio.Event()
+
+        async def fail_after_stop(process):
+            nonlocal stopped
+            await stop(process)
+            stopped += 1
+            if stopped == 2:
+                if during_cleanup:
+                    cleanup_started.set()
+                    await release_cleanup.wait()
+                raise cleanup_error("FAKE_SECRET_CLEANUP")
+
+        monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+        task = asyncio.create_task(transport.draft(context))
+        try:
+            async with asyncio.timeout(5):
+                if during_cleanup:
+                    await cleanup_started.wait()
+                else:
+                    while transport._stage != "turn-stream":
+                        if task.done():
+                            await task
+                            pytest.fail("Exited before cancellation checkpoint")
+                        await asyncio.sleep(0.01)
+            task.cancel()
+            if during_cleanup:
+                # Deliver cancellation to the shield before cleanup itself fails.
+                await asyncio.sleep(0)
+                release_cleanup.set()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        finally:
+            release_cleanup.set()
+            if not task.done():
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    asyncio.run(run())
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "cleanup" if during_cleanup else "turn-stream", "cancelled", "acknowledged"
+    )
+    assert transport.warnings_seen is None
+    assert transport.retry_notifications_seen is None
+    assert_stopped(fake)
+
+
+def test_primary_protocol_failure_survives_cleanup_timeout(context, fake_factory, monkeypatch):
+    fake = fake_factory("wrong-turn")
+    transport = adapter(context, fake)
+    stop = app_server._stop
+    stopped = 0
+
+    async def fail_after_stop(process):
+        nonlocal stopped
+        await stop(process)
+        stopped += 1
+        if stopped == 2:
+            raise TimeoutError("FAKE_SECRET_CLEANUP_TIMEOUT")
+
+    monkeypatch.setattr(app_server, "_stop", fail_after_stop)
+    with pytest.raises(AppServerError, match="turn identity mismatch"):
+        asyncio.run(transport.draft(context))
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "turn-stream", "protocol-rejected", "acknowledged"
+    )
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "mutation,code",
+    [
+        ("shape", "validation-shape"),
+        ("question", "validation-question-coverage"),
+        ("status", "validation-status"),
+        ("abstention", "validation-abstention"),
+        ("evidence", "validation-evidence"),
+        ("text", "validation-text"),
+        ("duplicate", "validation-duplicate"),
+        ("case-id", "validation-case-id"),
+        ("case-value", "validation-case-value"),
+    ],
+)
+def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
+    owner_context, fake_factory, tmp_path, mutation, code
+):
+    response = owner_response_data(owner_context)
+    answer = response["answers"][0]
+    case = response["cases"][0]
+    if mutation == "shape":
+        response["FAKE_SECRET_UNSUPPORTED_FIELD"] = "FAKE_SECRET_MODEL_OUTPUT"
+    elif mutation == "question":
+        answer["question_id"] = "FAKE_SECRET_QUESTION"
+    elif mutation == "status":
+        answer["status"] = "FAKE_SECRET_STATUS"
+    elif mutation == "abstention":
+        answer.update(status="unknown", answer="FAKE_SECRET_ANSWER")
+    elif mutation == "evidence":
+        # All IDs are valid, but required source coverage is incomplete.
+        answer["evidence_ids"] = [
+            item["id"] for item in owner_context.to_dict()["evidence"] if item["kind"] == "policy"
+        ]
+    elif mutation == "text":
+        case["reason"] = "FAKE_SECRET\x01"
+    elif mutation == "duplicate":
+        case["principal"]["scopes"] = ["FAKE_SECRET_SCOPE", "FAKE_SECRET_SCOPE"]
+    elif mutation == "case-id":
+        case["id"] = "FAKE_SECRET_INVALID/ID"
+    else:
+        case["principal"]["subject"] = "FAKE_SECRET_SUBJECT\n"
+    fake = fake_factory(request=owner_context, response=response)
+    process, summary, temporary_root = cli_process(
+        fake, tmp_path, None, command="codex-owner-review"
+    )
+    assert process.returncode == 1
+    assert summary["status"] == "review-failed"
+    assert summary["failure"] == {
+        "stage": "response-validation",
+        "code": code,
+        "turn_start": "acknowledged",
+    }
+    for key in (
+        "draft",
+        "usage",
+        "returned_identity",
+        "provider_warning_count",
+        "provider_retry_notification_count",
+    ):
+        assert summary[key] is None
+    assert summary["application_turn_attempts"] == 1
+    assert summary["execution_status"] == "not-run"
+    assert summary["original_checkout_modified"] is False
+    assert fake.methods().count("turn/start") == 1
+    assert "FAKE_SECRET" not in process.stdout + process.stderr
+    assert not list(temporary_root.iterdir())
+    assert_stopped(fake)
+
+
+def test_real_owner_cli_rejects_another_invocations_phrase_without_starting_codex(
+    owner_context, fake_factory, tmp_path
+):
+    from authzest.runner.codex_owner_review import build_owner_review_preview
+
+    old = build_owner_review_preview("fixture-test-model", timeout_seconds=5)
+    fake = fake_factory(request=owner_context, response=owner_response_data(owner_context))
+    process, summary, temporary_root = cli_process(
+        fake, tmp_path, f"share {old['sharing_id']}\n", command="codex-owner-review"
+    )
+    assert process.returncode == 0 and summary["status"] == "not-shared"
+    assert summary["sharing_id"] != old["sharing_id"]
+    assert summary["invocation_nonce"] != old["invocation_nonce"]
+    assert summary["sharing_content_id"] == old["sharing_content_id"]
+    assert summary["application_turn_attempts"] == 0 and not fake.events()
+    assert not list(temporary_root.iterdir())

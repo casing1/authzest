@@ -414,6 +414,8 @@ def main():
         if "id" not in message:
             continue
         method = message.get("method")
+        if case == f"diagnostic-hang:{method}":
+            time.sleep(3600)
         result = {}
         if method == "initialize":
             if case == "warning-per-session":
@@ -571,6 +573,8 @@ def main():
             disconnected_stream_error(case, "before-turn-response")
             settings_notification(case, "before-turn-response")
             result = {"turn": {"id": "turn-fixture", "items": []}}
+            if case == "diagnostic-invalid-turn-id":
+                result["turn"]["id"] = "FAKE_SECRET/invalid"
             if case == "turn-result-tool":
                 result["turn"]["items"] = [{"type": "commandExecution", "id": "command"}]
         else:
@@ -583,6 +587,10 @@ def main():
             response["id"] = True
         if case == "rpc-error":
             response = {"id": message["id"], "error": {"message": "FAKE_SECRET_RESPONSE"}}
+        if case == f"diagnostic-rpc-error:{method}":
+            response = {"id": message["id"], "error": {"message": "FAKE_SECRET_RESPONSE"}}
+        if case == f"diagnostic-malformed-result:{method}":
+            response = {"id": message["id"], "result": "FAKE_SECRET_INVALID_RESULT"}
         send(response)
         if method == "turn/start":
             finish(case)

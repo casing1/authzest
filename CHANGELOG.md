@@ -16,6 +16,44 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record one successful, freshly approved owner-review source-CLI run on 2026-10-01 at `9257bd7`:
+  `draft-ready`, exit `0`, about 74 seconds, one answer and ten host-valid defensive case drafts.
+  Provider-reported usage was 7,994 input / 2,242 output tokens, one warning and zero retry notifications.
+  Keep model-authored expectations unreviewed, execution not-run and authorization unknown; no retry,
+  fallback, patch or target execution. Synchronize all four README languages and English/Korean guides.
+  This completes narrow provider acceptance, not broader #35 or a release; alpha.3 remains unchanged.
+- Add source-only owner-review contract alignment: fixed `validation-*` reason codes within the
+  existing three-field failure diagnostic, prompt `owner-policy-review-v2`, supported schema
+  constraints and offline schema-versus-host conformance cases. Codes expose the first failed rule,
+  not rejected values or provider text. Keep strict host-only evidence, uniqueness, UTF-8 and global
+  budget checks, plus the `response-invalid` fallback. The full 2,451-test offline suite and
+  531-test portable subset passed on 2026-10-01; phase-synchronized timeout regressions avoid startup-speed dependence;
+  the offline implementation adds no provider call, live-compatibility claim, merge or release. The changed sharing envelope
+  requires fresh approval; both historical approvals remain consumed.
+- Record a second, separately approved source-CLI owner-review attempt on 2026-09-30 at `324505d`:
+  `review-failed`, exit `1`, after about 84.8 seconds, with `response-validation` / `response-invalid`
+  and `turn_start=acknowledged`. No draft was accepted; returned identity, usage and warning/retry
+  counts remain unknown. The raw response was not retained, so the exact rejected condition is unknown.
+  The unchanged public-source sharing envelope and one-turn/120-second limit were used, without
+  AuthZest retry, model fallback, source execution or patch application. Source hashes and the original
+  checkout were preserved. Those two attempts were unsuccessful; the subsequent offline alignment
+  and separately approved 2026-10-01 success are recorded above. Earlier exact rejection causes remain unknown.
+- Add source-only redacted failure diagnostics for `codex-owner-review` on 2026-09-28: a nullable
+  `failure` object with allowlisted `stage`, `code` and `turn_start` strings, plus offline regressions.
+  Distinguish local send attempts from acknowledged turn-start replies without exposing raw provider
+  errors, logs, identifiers or partial output, or inferring billing, completion or failed-run usage.
+  Preserve cancellation, version/sharing limits and no-retry behavior. This offline implementation
+  itself does not reconstruct the 2026-09-24 failure or add a live result; subsequent evidence is recorded separately.
+- Add #75's [`codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): a full offline JSON preview
+  on all supported OSes and an exact-envelope sharing decision before a read-only, pinned Codex
+  App Server request on POSIX. Use only two packaged owner-policy source snapshots, explicit policy
+  and static evidence, not the independent case labels or arbitrary paths. Validate evidence-linked
+  review answers and 1–16 non-executable defensive case drafts; expected values remain model-authored
+  and unreviewed, execution not-run and authorization unknown. The first separately approved live attempt
+  on 2026-09-24 at `c5be74d` returned `review-failed` after about 98.8 seconds, without an accepted
+  draft or known usage. No AuthZest retry, patch application or target/generated-code execution occurred.
+  Subsequent attempts are recorded above; another provider attempt needs fresh approval. Existing fixture workflows
+  and published alpha.3 are unchanged; the guide records the bounded result and remaining unknowns.
 - Add #73's source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md): default-deny
   pure policy requiring authenticated identity, the exact reports:read scope and matching ownership,
   with an independent assistant-authored regression matrix and separate non-importing source inventory
@@ -53,6 +91,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Bind owner-review confirmation to a fresh local invocation nonce, with a separate stable content
+  identity. Reject a captured phrase from an identical prior invocation before constructing an adapter;
+  revalidate the same nonce for the current single attempt. Add offline stale-phrase and actual-CLI
+  fake-provider regressions. Full suite: 2,463 passed; portable subset: 542 passed. No CLI nonce
+  override, new provider call or changed model task payload.
 - Normalize logical source labels to POSIX form when comparing proposal baseline evidence on
   Windows, without changing legacy scan display paths or registration identities. Add nested-label
   regressions and a scoped Windows CI job; the file-reading CLI remains POSIX-only.
@@ -72,6 +115,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Documentation
 
+- Record the maintainer's 2026-09-24 approval of the owner-policy criteria separately from pending
+  independent review of the 28 assistant-authored expected labels and separate live-usage consent.
 - Synchronize all four README languages and English/Korean guides after verified alpha.3 publication
   in #58. Record immutable source, main/tag workflows, public asset hashes and observed checks; preserve
   historical evidence and the remaining broader #35 scope. No tag, asset or package-version change.
