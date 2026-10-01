@@ -24,6 +24,7 @@ from authzest.codex.contracts import (
     CodexAnalysisRequest,
     ContractError,
     canonical,
+    contract_failure_code,
     decode,
 )
 from authzest.codex.diagnostics import FAILURE_CODES, FailureDiagnostic
@@ -659,13 +660,15 @@ class CodexAppServerAdapter:
         self.failure_diagnostic: FailureDiagnostic | None = None
         self._stage = "adapter-setup"
         self._turn_start = "not-attempted"
+        self._detailed_validation = False
 
-    def _begin_request(self) -> None:
+    def _begin_request(self, *, detailed_validation: bool = False) -> None:
         self.failure_diagnostic = None
         self.warnings_seen = None
         self.retry_notifications_seen = None
         self._stage = "request-validation"
         self._turn_start = "not-attempted"
+        self._detailed_validation = detailed_validation
 
     def _set_stage(self, stage: str) -> None:
         self._stage = stage
@@ -691,7 +694,13 @@ class CodexAppServerAdapter:
             if type(code) is not str or code not in FAILURE_CODES:
                 code = "unexpected-error"
         elif isinstance(error, ContractError):
-            code = "request-invalid" if stage == "request-validation" else "response-invalid"
+            code = (
+                "request-invalid"
+                if stage == "request-validation"
+                else contract_failure_code(error)
+                if self._detailed_validation and stage == "response-validation"
+                else "response-invalid"
+            )
         elif isinstance(error, OSError):
             code = "transport-error"
         else:
@@ -720,7 +729,7 @@ class CodexAppServerAdapter:
 
     async def review_owner_policy(self, request: CodexAnalysisRequest) -> OwnerPolicyReview:
         """Review only the exact packaged owner-policy sources; never produce a patch."""
-        self._begin_request()
+        self._begin_request(detailed_validation=True)
         try:
             self._check_sharing(request)
             prompt, schema = owner_policy_prompt(request), owner_policy_output_schema(request)

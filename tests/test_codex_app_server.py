@@ -1225,6 +1225,8 @@ def test_failure_diagnostic_is_bounded_and_uses_local_phase_only(
     with pytest.raises(AppServerError) as error:
         asyncio.run(method(request))
     diagnostic = sanitize_failure(transport.failure_diagnostic)
+    if kind == "owner" and case == "bad-final-json":
+        code = "validation-json"
     assert diagnostic == {"stage": stage, "code": code, "turn_start": progress}
     assert "FAKE_SECRET" not in canonical(diagnostic) + str(error.value)
     assert transport.warnings_seen is None
@@ -1286,35 +1288,49 @@ def test_swapped_request_keeps_contract_error_and_redacted_diagnostic(
 )
 @pytest.mark.parametrize("stop", ["timeout", "cancel"])
 def test_failure_phase_survives_timeout_cancellation_and_cleanup(
-    context, fake_factory, case, stage, progress, stop
+    context, fake_factory, case, stage, progress, stop, monkeypatch
 ):
     fake = fake_factory(case)
+    real_timeout = asyncio.timeout
+    deadlines = []
+
+    def capture_deadline(seconds):
+        deadline = real_timeout(seconds)
+        deadlines.append(deadline)
+        return deadline
+
+    if stop == "timeout":
+        monkeypatch.setattr(app_server.asyncio, "timeout", capture_deadline)
     transport = CodexAppServerAdapter(
         context.request_id,
         executable=str(fake.executable),
-        timeout_seconds=1 if stop == "timeout" else 5,
+        timeout_seconds=5,
     )
 
     async def run():
-        if stop == "timeout":
-            with pytest.raises(AppServerError):
-                await transport.draft(context)
-            return
         task = asyncio.create_task(transport.draft(context))
         expected_method = case.split(":", 1)[1] if ":" in case else "turn/start"
         try:
-            async with asyncio.timeout(5):
+            async with real_timeout(5):
                 while expected_method not in fake.methods():
                     if task.done():
                         await task
-                        pytest.fail("Transport exited before the cancellation checkpoint")
+                        pytest.fail("Transport exited before the failure checkpoint")
                     await asyncio.sleep(0.01)
                 if case == "hang":
                     while transport._stage != "turn-stream":
                         await asyncio.sleep(0.01)
-            task.cancel()
-            with pytest.raises(asyncio.CancelledError):
-                await task
+            if stop == "timeout":
+                # Expire the real adapter deadline only at the observed phase.
+                # Startup speed/load must not choose which boundary this tests.
+                assert len(deadlines) == 1
+                deadlines[0].reschedule(asyncio.get_running_loop().time())
+                with pytest.raises(AppServerError):
+                    await task
+            else:
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
         finally:
             if not task.done():
                 task.cancel()
@@ -1482,13 +1498,49 @@ def test_primary_protocol_failure_survives_cleanup_timeout(context, fake_factory
     assert_stopped(fake)
 
 
+@pytest.mark.parametrize(
+    "mutation,code",
+    [
+        ("shape", "validation-shape"),
+        ("question", "validation-question-coverage"),
+        ("status", "validation-status"),
+        ("abstention", "validation-abstention"),
+        ("evidence", "validation-evidence"),
+        ("text", "validation-text"),
+        ("duplicate", "validation-duplicate"),
+        ("case-id", "validation-case-id"),
+        ("case-value", "validation-case-value"),
+    ],
+)
 def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
-    owner_context, fake_factory, tmp_path
+    owner_context, fake_factory, tmp_path, mutation, code
 ):
     from authzest.runner.codex_owner_review import build_owner_review_preview
 
     response = owner_response_data(owner_context)
-    response["FAKE_SECRET_UNSUPPORTED_FIELD"] = "FAKE_SECRET_MODEL_OUTPUT"
+    answer = response["answers"][0]
+    case = response["cases"][0]
+    if mutation == "shape":
+        response["FAKE_SECRET_UNSUPPORTED_FIELD"] = "FAKE_SECRET_MODEL_OUTPUT"
+    elif mutation == "question":
+        answer["question_id"] = "FAKE_SECRET_QUESTION"
+    elif mutation == "status":
+        answer["status"] = "FAKE_SECRET_STATUS"
+    elif mutation == "abstention":
+        answer.update(status="unknown", answer="FAKE_SECRET_ANSWER")
+    elif mutation == "evidence":
+        # All IDs are valid, but required source coverage is incomplete.
+        answer["evidence_ids"] = [
+            item["id"] for item in owner_context.to_dict()["evidence"] if item["kind"] == "policy"
+        ]
+    elif mutation == "text":
+        case["reason"] = "FAKE_SECRET\x01"
+    elif mutation == "duplicate":
+        case["principal"]["scopes"] = ["FAKE_SECRET_SCOPE", "FAKE_SECRET_SCOPE"]
+    elif mutation == "case-id":
+        case["id"] = "FAKE_SECRET_INVALID/ID"
+    else:
+        case["principal"]["subject"] = "FAKE_SECRET_SUBJECT\n"
     fake = fake_factory(request=owner_context, response=response)
     preview = build_owner_review_preview("fixture-test-model", timeout_seconds=5)
     process, summary, temporary_root = cli_process(
@@ -1498,7 +1550,7 @@ def test_real_owner_cli_serializes_only_bounded_failure_from_fake_process(
     assert summary["status"] == "review-failed"
     assert summary["failure"] == {
         "stage": "response-validation",
-        "code": "response-invalid",
+        "code": code,
         "turn_start": "acknowledged",
     }
     for key in (

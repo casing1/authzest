@@ -122,6 +122,11 @@ draft on 2026-09-24 and 2026-09-30; live acceptance remains pending and another 
 The latest attempt at `324505d` returned `response-validation` / `response-invalid` with
 `turn_start=acknowledged` after about 84.8 seconds. Usage and the exact rejected condition remain unknown.
 The 2026-09-28 diagnostic implementation itself was offline; it does not recover the older failure's cause.
+The separately approved offline follow-up adds fixed per-rule validation codes and aligns prompt
+`owner-policy-review-v2` with supported schema constraints, while retaining strict host-only checks.
+Its 2,451-test full offline suite and 531-test portable subset passed on 2026-10-01; it adds no live
+attempt or acceptance evidence. The changed sharing
+envelope requires fresh consent, and the historical approvals remain consumed.
 No code, diff or application execution is added, and the independent case labels are not sent to the model.
 Nested dependency graphs, authentication/authorization classification, finding
 schemas, general repository AI review and existing-checkout patch application are not implemented.
@@ -280,13 +285,19 @@ Broader proposal scope, generated regression-test drafts and the complete #35 ga
       output. Keep failure usage unknown, cancellation propagation and the existing sharing/execution
       limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this implementation
       itself does not reconstruct the 2026-09-24 failure or record a live attempt, merge or release.
+- [x] Implement the approved offline owner-review contract alignment: closed per-rule validation
+      codes in the existing three-field diagnostic, prompt version `owner-policy-review-v2`, supported
+      schema constraints and schema-versus-host conformance cases. Retain fail-closed host checks for
+      exact evidence coverage, uniqueness, UTF-8 validity and global result budgets. The full 2,451-test
+      offline suite and 531-test portable subset passed; this does not establish live compatibility
+      with pinned Codex or authorize another call.
 - [ ] Complete the owner-policy live review with separate bounded source-sharing/account-use consent.
       Both separately approved attempts on 2026-09-24 and 2026-09-30 returned `review-failed` with no
       accepted draft or known usage; no AuthZest retry was made. The latest diagnostic identifies
       `response-validation` / `response-invalid` / `acknowledged`, not the exact rejected condition.
-      Both one-attempt approvals are consumed. Proposed next step: offline bounded reason-code
-      diagnostics and schema-versus-validator checks before considering a fresh live-approval request;
-      this follow-up is not yet implemented or approved.
+      Both one-attempt approvals are consumed. Offline follow-up verification passed; complete the
+      current-head CI/review gates before requesting fresh live approval for the changed envelope. Do not merge
+      or release this slice while its live acceptance and required review gates remain pending.
       Review model-authored case expectations independently; schema validity is not policy truth.
 - [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
       an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.

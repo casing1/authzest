@@ -30,7 +30,20 @@ from authzest.models import ScanReport
 from authzest.parser.fastapi import FastAPIRouteParser
 
 OWNER_POLICY_REVIEW_SCHEMA_VERSION = "1.0"
-OWNER_POLICY_PROMPT_VERSION = "owner-policy-review-v1"
+OWNER_POLICY_PROMPT_VERSION = "owner-policy-review-v2"
+# Use explicit Python str.strip whitespace, not engine-dependent regex \s semantics.
+# Avoid unverified lookaround support in the provider's regex subset. A final newline
+# can precede $ in schema engines; host validation still rejects it in case identifiers.
+# Do not exclude surrogate code units in provider regexes: ECMAScript without the
+# Unicode flag would also reject valid non-BMP characters. The host checks UTF-8.
+_TEXT_CHAR = r"[^\u0000-\u0008\u000b\u000c\u000e-\u001f]"
+_NONBLANK_TEXT_CHAR = (
+    r"[^\u0000-\u0020\u0085\u00a0\u1680\u2000-\u200a"
+    r"\u2028\u2029\u202f\u205f\u3000]"
+)
+_TEXT_PATTERN = "^" + _TEXT_CHAR + "*" + _NONBLANK_TEXT_CHAR + _TEXT_CHAR + "*$"
+_NULLABLE_ID_PATTERN = r"^[^\u0000-\u001f]*$"
+_CASE_ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
 OWNER_POLICY_TEXT = (
     "For this maintained synthetic example, allow report reads only when an already trusted "
     "principal is authenticated, has the literal reports:read scope, and exactly matches "
@@ -171,7 +184,10 @@ def build_owner_policy_request(model: str) -> CodexAnalysisRequest:
         or policy.diagnostics
         or policy.routes
     ):
-        raise ContractError("Maintained owner-policy source is outside the expected subset")
+        raise ContractError(
+            "Maintained owner-policy source is outside the expected subset",
+            code="validation-identity",
+        )
     report = ScanReport(root=root, python_files=2, routes=main.routes)
     return prepare_request(
         report,
@@ -192,12 +208,16 @@ def build_owner_policy_request(model: str) -> CodexAnalysisRequest:
 
 def _owned_request(request: CodexAnalysisRequest) -> dict[str, Any]:
     if type(request) is not CodexAnalysisRequest:
-        raise ContractError("Expected the packaged owner-policy request")
+        raise ContractError(
+            "Expected the packaged owner-policy request", code="validation-identity"
+        )
     checked = CodexAnalysisRequest(getattr(request, "payload_json", None))
     payload = checked.to_dict()
     expected = build_owner_policy_request(payload["config"]["model"])
     if checked.request_id != expected.request_id:
-        raise ContractError("Only the exact packaged owner-policy request is supported")
+        raise ContractError(
+            "Only the exact packaged owner-policy request is supported", code="validation-identity"
+        )
     return payload
 
 
@@ -220,23 +240,48 @@ def owner_policy_prompt(request: CodexAnalysisRequest) -> str:
         "id, principal, report, expected boolean, reason and evidence_ids. Cite at least "
         "policy.py and policy evidence for every case. Principal is null or an object "
         "with subject, authenticated and scopes; report is null or an object with report_id "
-        "and owner_id. IDs are bounded synthetic strings or null; scopes are strings. "
+        "and owner_id. Case IDs are unique ASCII identifiers matching "
+        "[A-Za-z0-9][A-Za-z0-9._-]{0,63}. Subject, report_id and owner_id are null or strings "
+        "of at most 128 characters without U+0000 through U+001F or surrogate code points. "
+        "Empty and whitespace-only identifiers are allowed as denial-boundary inputs and "
+        "are not normalized. Scopes are unique nonblank strings of at most 128 characters; "
+        "there are at most 16 scopes. All other text is nonblank and at most 4096 characters. "
+        "Scopes and other text may contain tab, newline and carriage return, but no other "
+        "U+0000 through U+001F controls or surrogate code points. "
         "The cases are proposed pure-policy inputs, not HTTP requests or authentication "
         "credentials. Expected labels are your unreviewed suggestions, not maintainer "
         "labels or executed results. Never claim they passed or that authorization is secure.\n"
         "Do not provide code, commands, diffs, replacements, approvals, execution results, "
         "request identities, provider identity, usage, or host status fields. The host binds "
         "identities and marks the draft unreviewed, not-run, and authorization unknown.\n"
+        "Every evidence_ids list must contain unique supplied evidence IDs; answer citations "
+        "must include main.py, policy.py and the explicit policy, and case citations must "
+        "include policy.py and the explicit policy. Citation coverage, uniqueness and the "
+        "total UTF-8 JSON budget are separately enforced by the host, not fully expressed "
+        "by the output schema. The host also rejects terminal newline characters in case "
+        "IDs, subject, report_id and owner_id, and rejects lone surrogate code points in "
+        "all text, even if a schema regex accepts them. "
+        "Keep the complete response concise and well below 262144 "
+        "UTF-8 bytes because host-bound review metadata also counts toward that limit.\n"
         "REQUEST DATA:\n" + canonical(payload)
     )
 
 
 def owner_policy_output_schema(request: CodexAnalysisRequest) -> dict[str, Any]:
-    """Strict structured output; host validation separately enforces citation coverage."""
+    """Bounded output; the host also checks citations, uniqueness, UTF-8, and budgets.
+
+    Lone-surrogate validity remains host-only for cross-engine regex compatibility.
+    """
     payload = _owned_request(request)
     evidence_ids = [item["id"] for item in payload["evidence"]]
-    text = {"type": "string", "minLength": 1, "maxLength": 4096}
-    nullable_id = {"anyOf": [{"type": "string", "maxLength": 128}, {"type": "null"}]}
+    text = {"type": "string", "minLength": 1, "maxLength": 4096, "pattern": _TEXT_PATTERN}
+    nullable_id = {
+        "description": "Null or a synthetic identifier; empty/blank strings remain denial inputs.",
+        "anyOf": [
+            {"type": "string", "maxLength": 128, "pattern": _NULLABLE_ID_PATTERN},
+            {"type": "null"},
+        ],
+    }
 
     def object_schema(fields: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -246,14 +291,25 @@ def owner_policy_output_schema(request: CodexAnalysisRequest) -> dict[str, Any]:
             "additionalProperties": False,
         }
 
-    def texts() -> dict[str, Any]:
-        return {"type": "array", "items": dict(text), "maxItems": 32}
+    def texts(*, minimum: int = 0) -> dict[str, Any]:
+        return {"type": "array", "items": dict(text), "minItems": minimum, "maxItems": 32}
 
-    def refs() -> dict[str, Any]:
+    def refs(*, answer: bool = False) -> dict[str, Any]:
+        required = [
+            item["id"]
+            for item in payload["evidence"]
+            if item["kind"] == "policy"
+            or (item["kind"] == "source" and (answer or item["data"]["path"] == "policy.py"))
+        ]
         return {
             "type": "array",
+            "description": (
+                "Unique supplied evidence IDs; host-enforced required coverage: "
+                + ", ".join(required)
+                + "."
+            ),
             "items": {"type": "string", "enum": evidence_ids},
-            "minItems": 2,
+            "minItems": len(required),
             "maxItems": len(evidence_ids),
         }
 
@@ -263,32 +319,37 @@ def owner_policy_output_schema(request: CodexAnalysisRequest) -> dict[str, Any]:
             "authenticated": {"type": "boolean"},
             "scopes": {
                 "type": "array",
-                "items": {"type": "string", "minLength": 1, "maxLength": 128},
+                "description": "Unique nonblank synthetic scope strings; no normalization.",
+                "items": {**text, "maxLength": 128},
                 "maxItems": 16,
             },
         }
     )
     report = object_schema({"report_id": nullable_id, "owner_id": nullable_id})
-    answer = object_schema(
-        {
-            "question_id": {
-                "type": "string",
-                "enum": [question["id"] for question in payload["questions"]],
-            },
-            "status": {"type": "string", "enum": ["hypothesis", "unknown"]},
-            "answer": {"anyOf": [dict(text), {"type": "null"}]},
-            "explanation": dict(text),
-            "evidence_ids": refs(),
-            "assumptions": texts(),
-            "unknowns": texts(),
-            "review_questions": texts(),
-        }
-    )
+
+    def answer_schema(status: str) -> dict[str, Any]:
+        return object_schema(
+            {
+                "question_id": {
+                    "type": "string",
+                    "enum": [question["id"] for question in payload["questions"]],
+                },
+                "status": {"type": "string", "enum": [status]},
+                "answer": {"type": "null"} if status == "unknown" else dict(text),
+                "explanation": dict(text),
+                "evidence_ids": refs(answer=True),
+                "assumptions": texts(),
+                "unknowns": texts(minimum=1 if status == "unknown" else 0),
+                "review_questions": texts(),
+            }
+        )
+
+    answer = {"anyOf": [answer_schema("hypothesis"), answer_schema("unknown")]}
     case = object_schema(
         {
             "id": {
                 "type": "string",
-                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+                "pattern": _CASE_ID_PATTERN,
                 "minLength": 1,
                 "maxLength": 64,
             },
@@ -301,6 +362,12 @@ def owner_policy_output_schema(request: CodexAnalysisRequest) -> dict[str, Any]:
     )
     return {
         "title": "AuthZest owner-policy review " + OWNER_POLICY_REVIEW_SCHEMA_VERSION,
+        "description": (
+            "A structural draft only. The host additionally enforces citation coverage, "
+            "unique evidence/case/scope IDs, terminal-newline identifier rejection, "
+            "lone-surrogate rejection, and total UTF-8/structural budgets, including "
+            "host-bound metadata. Keep the complete response concise."
+        ),
         **object_schema(
             {
                 "answers": {
@@ -320,17 +387,21 @@ def _nullable_case_id(value: Any) -> None:
     if value is None:
         return
     if type(value) is not str or len(value) > 128 or any(ord(char) < 32 for char in value):
-        raise ContractError("Invalid synthetic case identifier")
+        raise ContractError("Invalid synthetic case identifier", code="validation-case-value")
     try:
         value.encode("utf-8")
     except UnicodeError as exc:
-        raise ContractError("Invalid synthetic case identifier") from exc
+        raise ContractError(
+            "Invalid synthetic case identifier", code="validation-case-value"
+        ) from exc
 
 
 def _validate_cases(value: Any, payload: dict[str, Any]) -> list[dict[str, Any]]:
     cases = _list(value, 16)
     if not cases:
-        raise ContractError("At least one defensive case draft is required")
+        raise ContractError(
+            "At least one defensive case draft is required", code="validation-shape"
+        )
     allowed = {item["id"] for item in payload["evidence"]}
     required = {
         item["id"]
@@ -343,14 +414,16 @@ def _validate_cases(value: Any, payload: dict[str, Any]) -> list[dict[str, Any]]
         _object(case, {"id", "principal", "report", "expected", "reason", "evidence_ids"})
         case_id = _text(case["id"], 64)
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}", case_id):
-            raise ContractError("Invalid defensive case ID")
+            raise ContractError("Invalid defensive case ID", code="validation-case-id")
         identifiers.append(case_id)
         principal = case["principal"]
         if principal is not None:
             _object(principal, {"subject", "authenticated", "scopes"})
             _nullable_case_id(principal["subject"])
             if type(principal["authenticated"]) is not bool:
-                raise ContractError("Expected a synthetic authentication boolean")
+                raise ContractError(
+                    "Expected a synthetic authentication boolean", code="validation-case-value"
+                )
             scopes = [_text(scope, 128) for scope in _list(principal["scopes"], 16)]
             _unique(scopes)
         report = case["report"]
@@ -359,12 +432,18 @@ def _validate_cases(value: Any, payload: dict[str, Any]) -> list[dict[str, Any]]
             _nullable_case_id(report["report_id"])
             _nullable_case_id(report["owner_id"])
         if type(case["expected"]) is not bool:
-            raise ContractError("Expected a proposed policy boolean, not an execution result")
+            raise ContractError(
+                "Expected a proposed policy boolean, not an execution result",
+                code="validation-case-value",
+            )
         _text(case["reason"])
         refs = [_text(ref, 128) for ref in _list(case["evidence_ids"], len(allowed))]
         _unique(refs)
         if not required <= set(refs) <= allowed:
-            raise ContractError("Case draft must cite policy.py and explicit policy evidence")
+            raise ContractError(
+                "Case draft must cite policy.py and explicit policy evidence",
+                code="validation-evidence",
+            )
     _unique(identifiers)
     return cases
 
@@ -395,7 +474,10 @@ def validate_owner_policy_draft(
     )
     required = {item["id"] for item in payload["evidence"] if item["kind"] in ("source", "policy")}
     if any(not required <= set(answer["evidence_ids"]) for answer in data["answers"]):
-        raise ContractError("Review must cite both source snapshots and explicit policy evidence")
+        raise ContractError(
+            "Review must cite both source snapshots and explicit policy evidence",
+            code="validation-evidence",
+        )
     cases = _validate_cases(data["cases"], payload)
     result_json = canonical(
         {
@@ -421,7 +503,7 @@ def validate_owner_policy_result(
 ) -> OwnerPolicyReview:
     """Revalidate adapter outputs; a forged typed object cannot supply host status claims."""
     if type(value) is not OwnerPolicyReview:
-        raise ContractError("Expected an owner-policy review draft")
+        raise ContractError("Expected an owner-policy review draft", code="validation-shape")
     data = decode(getattr(value, "payload_json", None))
     _object(
         data,
@@ -439,12 +521,14 @@ def validate_owner_policy_result(
         },
     )
     if type(data["review"]) is not dict or not {"answers", "usage"} <= data["review"].keys():
-        raise ContractError("Missing bound review data")
+        raise ContractError("Missing bound review data", code="validation-shape")
     expected = validate_owner_policy_draft(
         canonical({"answers": data["review"]["answers"], "cases": data["cases"]}),
         request,
         usage=data["review"]["usage"],
     )
     if canonical(data) != expected.payload_json:
-        raise ContractError("Owner-policy draft identity or host metadata mismatch")
+        raise ContractError(
+            "Owner-policy draft identity or host metadata mismatch", code="validation-identity"
+        )
     return expected

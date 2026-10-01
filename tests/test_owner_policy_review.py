@@ -242,7 +242,7 @@ def test_every_boundary_rejects_changed_owned_request(context, helper, mutation)
     request = changed_request(context, mutation)
     raw = canonical(response_data(context))
     result = validate_owner_policy_draft(raw, context, usage=None)
-    with pytest.raises(ContractError, match="exact packaged owner-policy"):
+    with pytest.raises(ContractError, match="exact packaged owner-policy") as caught:
         if helper == "prompt":
             owner_policy_prompt(request)
         elif helper == "schema":
@@ -251,16 +251,23 @@ def test_every_boundary_rejects_changed_owned_request(context, helper, mutation)
             validate_owner_policy_draft(raw, request, usage=None)
         else:
             validate_owner_policy_result(result, request)
+    assert caught.value.code == "validation-identity"
 
 
 def test_prompt_exactly_previews_request_and_excludes_case_labels(context):
     prompt = owner_policy_prompt(context)
+    assert OWNER_POLICY_PROMPT_VERSION == "owner-policy-review-v2"
     assert OWNER_POLICY_PROMPT_VERSION in prompt
     assert "Do not use tools" in prompt
     assert "not executable tests" in prompt
     assert "unreviewed suggestions" in prompt
     assert "do not invent a vulnerability or force a patch" in prompt
     assert "not-run" in prompt
+    assert "unique supplied evidence IDs" in prompt
+    assert "Empty and whitespace-only identifiers are allowed" in prompt
+    assert "surrogate code points" in prompt
+    assert "terminal newline characters" in prompt
+    assert "host-bound review metadata also counts" in prompt
     assert json.loads(prompt.split("REQUEST DATA:\n", 1)[1]) == context.to_dict()
     assert "owner-read" not in prompt
 
@@ -271,14 +278,35 @@ def test_schema_has_exact_keys_at_every_object_and_no_host_fields(context):
     assert set(schema["properties"]) == {"answers", "cases"}
     assert schema["properties"]["cases"]["minItems"] == 1
     assert schema["properties"]["cases"]["maxItems"] == 16
-    assert schema["properties"]["answers"]["items"]["properties"]["status"]["enum"] == [
-        "hypothesis",
-        "unknown",
-    ]
+    hypothesis, unknown = schema["properties"]["answers"]["items"]["anyOf"]
+    assert hypothesis["properties"]["status"]["enum"] == ["hypothesis"]
+    assert hypothesis["properties"]["answer"]["type"] == "string"
+    assert hypothesis["properties"]["unknowns"]["minItems"] == 0
+    assert unknown["properties"]["status"]["enum"] == ["unknown"]
+    assert unknown["properties"]["answer"] == {"type": "null"}
+    assert unknown["properties"]["unknowns"]["minItems"] == 1
+    required_refs = {
+        item["id"] for item in context.to_dict()["evidence"] if item["kind"] in ("source", "policy")
+    }
+    for branch in (hypothesis, unknown):
+        refs = branch["properties"]["evidence_ids"]
+        assert refs["minItems"] == 3
+        assert all(ref in refs["description"] for ref in required_refs)
+    assert schema["properties"]["cases"]["items"]["properties"]["evidence_ids"]["minItems"] == 2
     pending = [schema]
     while pending:
         item = pending.pop()
         if isinstance(item, dict):
+            assert (
+                not {"uniqueItems", "contains", "if", "then", "else", "allOf", "not", "oneOf"}
+                & item.keys()
+            )
+            if "pattern" in item:
+                assert "(?" not in item["pattern"]
+                # Surrogate code-unit exclusions would reject valid non-BMP text
+                # in ECMAScript engines without Unicode-mode regular expressions.
+                assert r"\ud800" not in item["pattern"]
+                assert r"\udfff" not in item["pattern"]
             if item.get("type") == "object":
                 assert item["additionalProperties"] is False
                 assert set(item["required"]) == set(item["properties"])
@@ -380,16 +408,40 @@ def test_every_answer_must_cite_both_exact_sources_and_policy(context, kind):
         or (item["kind"] == "source" and item["data"]["path"] == kind)
     )
     raw["answers"][0]["evidence_ids"].remove(evidence_id)
-    with pytest.raises(ContractError, match="both source snapshots"):
+    with pytest.raises(ContractError, match="both source snapshots") as caught:
         validate_owner_policy_draft(canonical(raw), context, usage=None)
+    assert caught.value.code == "validation-evidence"
 
 
 @pytest.mark.parametrize("index", [0, 1])
 def test_every_case_must_cite_policy_source_and_policy(context, index):
     raw = response_data(context)
     raw["cases"][0]["evidence_ids"].pop(index)
-    with pytest.raises(ContractError, match="cite policy.py"):
+    with pytest.raises(ContractError, match="cite policy.py") as caught:
         validate_owner_policy_draft(canonical(raw), context, usage=None)
+    assert caught.value.code == "validation-evidence"
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "code"),
+    [
+        ("id", "case;command", "validation-case-id"),
+        ("id", "case\n", "validation-case-id"),
+        ("principal", 1, "validation-shape"),
+        ("subject", "alice\n", "validation-case-value"),
+        ("subject", 1, "validation-case-value"),
+        ("authenticated", 1, "validation-case-value"),
+        ("expected", 1, "validation-case-value"),
+    ],
+)
+def test_owner_rule_diagnostics_use_fixed_codes(context, field, value, code):
+    raw = response_data(context)
+    case = raw["cases"][0]
+    target = case["principal"] if field in {"subject", "authenticated"} else case
+    target[field] = value
+    with pytest.raises(ContractError) as caught:
+        validate_owner_policy_draft(canonical(raw), context, usage=None)
+    assert caught.value.code == code
 
 
 @pytest.mark.parametrize(
@@ -532,8 +584,9 @@ def test_host_bound_result_metadata_also_counts_toward_json_budget(context):
     assert 1 <= remaining <= 4096
     raw["answers"][0]["unknowns"].append("a" * remaining)
     assert len(canonical(raw).encode("utf-8")) == MAX_JSON_BYTES
-    with pytest.raises(ContractError):
+    with pytest.raises(ContractError) as caught:
         validate_owner_policy_draft(canonical(raw), context, usage=None)
+    assert caught.value.code == "validation-budget"
 
 
 @pytest.mark.parametrize(

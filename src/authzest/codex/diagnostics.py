@@ -2,6 +2,24 @@
 
 from dataclasses import dataclass
 
+VALIDATION_CODES = frozenset(
+    {
+        "validation-json",
+        "validation-budget",
+        "validation-shape",
+        "validation-text",
+        "validation-duplicate",
+        "validation-question-coverage",
+        "validation-status",
+        "validation-evidence",
+        "validation-abstention",
+        "validation-case-id",
+        "validation-case-value",
+        "validation-identity",
+        "validation-usage",
+    }
+)
+
 FAILURE_STAGES = frozenset(
     {
         "adapter-setup",
@@ -19,23 +37,26 @@ FAILURE_STAGES = frozenset(
         "unknown",
     }
 )
-FAILURE_CODES = frozenset(
-    {
-        "unexpected-error",
-        "timeout",
-        "cancelled",
-        "transport-error",
-        "protocol-rejected",
-        "configuration-rejected",
-        "version-unsupported",
-        "authentication-required",
-        "model-unavailable",
-        "request-rejected",
-        "turn-failed",
-        "response-invalid",
-        "request-invalid",
-        "cleanup-failed",
-    }
+FAILURE_CODES = (
+    frozenset(
+        {
+            "unexpected-error",
+            "timeout",
+            "cancelled",
+            "transport-error",
+            "protocol-rejected",
+            "configuration-rejected",
+            "version-unsupported",
+            "authentication-required",
+            "model-unavailable",
+            "request-rejected",
+            "turn-failed",
+            "response-invalid",
+            "request-invalid",
+            "cleanup-failed",
+        }
+    )
+    | VALIDATION_CODES
 )
 TURN_START_STATES = frozenset({"not-attempted", "attempted", "acknowledged", "unknown"})
 

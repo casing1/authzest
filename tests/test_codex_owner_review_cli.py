@@ -11,8 +11,8 @@ from click import unstyle
 from typer.testing import CliRunner
 
 from authzest.cli import app
-from authzest.codex.contracts import canonical, decode, identity
-from authzest.codex.diagnostics import FailureDiagnostic
+from authzest.codex.contracts import ContractError, canonical, decode, identity
+from authzest.codex.diagnostics import VALIDATION_CODES, FailureDiagnostic
 from authzest.codex.mock import scripted_response
 from authzest.codex.owner_policy_review import OwnerPolicyReview, validate_owner_policy_draft
 from authzest.runner import codex_owner_review as workflow
@@ -283,7 +283,7 @@ def test_failed_review_redacts_output_and_does_not_retry(failure, monkeypatch):
         "stage": "result-validation" if failure == "forged" else "unknown",
         "code": {
             "error": "unexpected-error",
-            "forged": "response-invalid",
+            "forged": "validation-identity",
             "timeout": "timeout",
         }[failure],
         "turn_start": "unknown",
@@ -401,10 +401,50 @@ def test_runner_validation_ignores_stale_adapter_diagnostic(monkeypatch):
     )
     assert result["failure"] == {
         "stage": "result-validation",
-        "code": "response-invalid",
+        "code": "validation-json",
         "turn_start": "unknown",
     }
     assert "PRIVATE" not in canonical(result)
+
+
+@pytest.mark.parametrize("code", sorted(VALIDATION_CODES))
+def test_runner_exports_only_fixed_host_rule_not_exception_text(code, fake_adapter, monkeypatch):
+    factory, calls = fake_adapter
+
+    def reject(*_):
+        raise ContractError("PRIVATE PROVIDER OUTPUT", code=code)
+
+    monkeypatch.setattr(workflow, "validate_owner_policy_result", reject)
+    output = []
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            MODEL, read=exact_choice, emit=output.append, adapter_factory=factory
+        )
+    )
+    assert len(calls) == 2
+    assert result["failure"] == {
+        "stage": "result-validation",
+        "code": code,
+        "turn_start": "unknown",
+    }
+    assert result["draft"] is None and result["usage"] is None
+    assert result["execution_status"] == "not-run" and result["authorization_status"] == "unknown"
+    assert "PRIVATE" not in canonical(result) + "".join(output)
+
+
+def test_historical_v1_sharing_approval_does_not_cover_v2(fake_adapter):
+    factory, calls = fake_adapter
+    historical = "share-eb98405cadcdc6234501d513dec8be6c37f1e4c06a50438b260ab40d38c481a7"
+    result = asyncio.run(
+        workflow.run_codex_owner_review(
+            "gpt-6-astra",
+            read=lambda _: f"share {historical}",
+            emit=lambda _: None,
+            adapter_factory=factory,
+        )
+    )
+    assert result["sharing_id"] != historical
+    assert result["status"] == "not-shared" and calls == []
 
 
 def test_outer_deadline_does_not_replace_an_earlier_failure(monkeypatch):

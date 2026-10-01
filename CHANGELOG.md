@@ -16,6 +16,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add source-only owner-review contract alignment: fixed `validation-*` reason codes within the
+  existing three-field failure diagnostic, prompt `owner-policy-review-v2`, supported schema
+  constraints and offline schema-versus-host conformance cases. Codes expose the first failed rule,
+  not rejected values or provider text. Keep strict host-only evidence, uniqueness, UTF-8 and global
+  budget checks, plus the `response-invalid` fallback. The full 2,451-test offline suite and
+  531-test portable subset passed on 2026-10-01; phase-synchronized timeout regressions avoid startup-speed dependence;
+  no provider call, live-compatibility claim, merge or release is added. The changed sharing envelope
+  requires fresh approval; both historical approvals remain consumed.
 - Record a second, separately approved source-CLI owner-review attempt on 2026-09-30 at `324505d`:
   `review-failed`, exit `1`, after about 84.8 seconds, with `response-validation` / `response-invalid`
   and `turn_start=acknowledged`. No draft was accepted; returned identity, usage and warning/retry
@@ -23,7 +31,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   The unchanged public-source sharing envelope and one-turn/120-second limit were used, without
   AuthZest retry, model fallback, source execution or patch application. Source hashes and the original
   checkout were preserved. Both live attempts remain unsuccessful; fresh approval would be required
-  for another attempt. Bounded offline reason-code/schema-validator checks are only a proposed next step.
+  for another attempt. The subsequent offline reason-code/schema-validator work is recorded separately above.
 - Add source-only redacted failure diagnostics for `codex-owner-review` on 2026-09-28: a nullable
   `failure` object with allowlisted `stage`, `code` and `turn_start` strings, plus offline regressions.
   Distinguish local send attempts from acknowledged turn-start replies without exposing raw provider

@@ -165,10 +165,72 @@ clean `main` checkout were unchanged. Execution remains `not-run`, authorization
 and the independent developer labels remain unreviewed.
 
 This fresh one-attempt approval is now consumed. Live acceptance, broader #35, merge and release
-remain incomplete. The proposed next step is an offline review of bounded diagnostic reason codes
-and schema-versus-validator consistency before considering another separately approved live attempt;
-that follow-up is not implemented or approved by this result. The 2026-09-24 failure's cause remains
-unknown, and the newer diagnostic does not reconstruct it.
+remain incomplete. The subsequently approved offline follow-up below does not authorize another
+provider attempt. The 2026-09-24 failure's cause remains unknown, and the newer diagnostic does not
+reconstruct it.
+
+## Offline contract alignment — prompt version 2
+
+The source follow-up adds fixed validation reason codes without retaining rejected provider output.
+The failure object still has exactly three fields: `stage`, `code` and `turn_start`. A recognized
+owner-review validation failure can now identify the first failed rule with one of these codes:
+
+| Code                           | Local validation category                                      |
+| ------------------------------ | -------------------------------------------------------------- |
+| `validation-json`              | JSON decoding or JSON-value validity                           |
+| `validation-budget`            | Bounded input or result limits                                 |
+| `validation-shape`             | Required object, field, collection or type shape               |
+| `validation-text`              | Bounded, nonblank text and allowed characters                  |
+| `validation-duplicate`         | Identifiers, references or scopes that must be unique          |
+| `validation-question-coverage` | Coverage of the requested question set                         |
+| `validation-status`            | Supported answer status                                        |
+| `validation-evidence`          | Allowed or required evidence references                        |
+| `validation-abstention`        | Consistent unknown status, null answer and explicit limitation |
+| `validation-case-id`           | Bounded synthetic case identifier                              |
+| `validation-case-value`        | Allowed synthetic case value                                   |
+| `validation-identity`          | Request, source or result identity binding                     |
+| `validation-usage`             | Allowed usage shape or value                                   |
+
+These closed codes contain no field values, paths, identifiers or exception text. They describe the
+first failing check, not an exhaustive error list or a proven provider-side cause. Unclassified
+response-validation failures retain `response-invalid`; malformed adapter diagnostics still receive
+a safe fallback. No new code reconstructs either historical response or turns a rejected draft into
+an accepted result.
+
+The owner-review prompt is now `owner-policy-review-v2`. The output schema uses nested `anyOf`
+branches to align `hypothesis` with a nonblank answer and `unknown` with a null answer plus at least
+one explicit unknown. It also represents supported text/control-character limits and citation-list
+minimums. Nullable synthetic subject/report identifiers still allow empty or whitespace-only strings
+as negative-case data, but not control characters; they are not normalized into valid identities.
+The prompt makes required source/policy citations and the bounded case-data rules explicit.
+
+This schema design follows the documented Structured Outputs subset, including nested `anyOf`
+and supported string/array constraints, rather than unsupported conditional composition.
+See the official [Structured Outputs guide](https://developers.openai.com/api/docs/guides/structured-outputs).
+This is not confirmation that the pinned Codex `0.153.0` transport accepts the revised schema in a
+live call. Host validation remains authoritative and fail-closed: exact evidence coverage, uniqueness,
+UTF-8 validity and global serialized-result budgets still require host checks and are not all
+expressed by the provider schema. Conservative regex anchors can also allow a terminal newline
+that the host rejects in identifiers. Surrogate-range exclusions are deliberately absent from
+schema regexes because UTF-16 engines can otherwise reject valid non-BMP text; the host still
+rejects lone surrogates. The offline conformance suite uses Python `jsonschema`, not the live
+provider's schema engine. Its cases distinguish schema-enforced constraints
+from these deliberately retained host-only checks; JSON Schema validity is not policy correctness.
+
+Offline verification on 2026-10-01 passed: 2,451 full-suite tests, the 531-test portable CI subset,
+and 79 schema/host conformance cases. Five separate JavaScript Ajv schema checks and non-BMP
+regex checks in default/Unicode modes also passed. Source CLI preview/decline and fake-provider
+failure serialization passed without a real provider. Timeout regressions now expire the real test
+deadline at the observed phase rather than depending on startup speed; product timeouts are unchanged.
+Ruff, 14 documentation-checker tests, Markdown formatting and the 54-document / 26-pair / 936-link
+audit passed. These are offline results, not live provider or policy-correctness evidence.
+
+No provider/account call was made for this follow-up, and live-model acceptance remains pending.
+The prompt/schema change changes the preview's `sharing_id`; the two
+historical one-attempt approvals remain consumed and do not cover the new envelope. Inspect the new
+preview and obtain fresh bounded approval before any further provider attempt. Version pin, source
+scope, timeout/turn limits, no-retry behavior and all separate execution/application boundaries are
+unchanged. This source-only work does not merge PR #76 or publish a release.
 
 ## Interpret the result
 

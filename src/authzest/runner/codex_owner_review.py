@@ -21,6 +21,7 @@ from authzest.codex.contracts import (
     AdapterConfig,
     ContractError,
     canonical,
+    contract_failure_code,
     identity,
 )
 from authzest.codex.diagnostics import sanitize_failure
@@ -208,7 +209,7 @@ async def run_codex_owner_review(
         code = (
             "timeout"
             if isinstance(exc, TimeoutError)
-            else "response-invalid"
+            else contract_failure_code(exc)
             if stage == "result-validation" and isinstance(exc, ContractError)
             else "unexpected-error"
         )
