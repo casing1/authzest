@@ -9,371 +9,142 @@
 
 ## Product direction
 
-Build an installable, CLI-first, source-aware FastAPI access-control review and improvement tool for an
-OSS course. The final demo must connect Codex to source evidence, reviewable defensive regression-test
-and patch proposals, an explicit approve/decline decision, approved-only patch application, and separately
-approved isolated verification with a change record. Codex integration is a core product goal, not a
-later optional explanation feature. The full flow remains unfinished. #33/#46/#48 are offline slices;
-[#50](../guides/CODEX_FIXTURE.md) adds an opt-in owned-fixture App Server draft; one live draft/apply/restore check passed.
-The later [#54 acceptance](../guides/RUNTIME_VERIFICATION.md) completed the separately approved fixed
-runtime check and restoration. This narrow workflow is included in published alpha.3; broader #35
-acceptance, generated regression-test drafts and general repository integration remain unfinished.
+Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The core deliverable is
+one bounded, owned access-control scenario: source evidence → reviewed defensive reproduction/case plan
+→ Codex recommendation or valid no-change → exact-diff approve/decline → approved new-copy application
+→ separately approved observations → inspectable recovery records. Codex is a core goal, not an optional
+explanation add-on. Keep deterministic scan useful without an AI account.
 
-The static core must still produce useful, repeatable evidence without an AI provider. Each Codex use
-is opt-in; external data sharing, applying a specific patch, and executing a verification plan require
-distinct permissions. An AI assumption must never become a confirmed finding merely because it is generated.
+Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The existing
+local API/React dashboard is optional and shows static inventory; it does not yet present Codex decisions.
+Improve CLI usability before adding an AI GUI, deployment or a second adapter. Model improvements do
+not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
+value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
 
-The existing local API and dashboard are optional interfaces to the same core. Website deployment,
-a native desktop shell, and new UI features are not prerequisites for the CLI milestone. Keep the
-`analyzer`, `parser`, `runner`, and `codex` boundaries independent of transports.
+## Current baseline — 2026-10-02
 
-The [roadmap issue](https://github.com/casing1/authzest/issues/1) is the public task tracker. This document
-explains ordering and completion criteria. Split a task into a bounded issue before implementation;
-mark it complete only when its acceptance criteria and required PR checks pass and it merges.
+Baseline main: `142a0dc71c70a95554e837d7a95eda5629038c82`, PR #76 merged on 2026-10-01.
+Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
+[release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
-Model upgrades are not a reason to replace the core with an autonomous agent. Treat the benefit of
-evidence-assisted AI over a direct model as a measurable hypothesis; see the [model strategy](MODEL_STRATEGY.md).
-Limit syntax expansion to maintained use cases. Prioritize evidence identity and evaluation over new UI
-features, extra adapters, or a general-purpose Python interpreter.
+| Implemented                                   | Actual boundary                                                                                                                        |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Installed CLI, local API/UI and static parser | Bounded FastAPI route/registration/local-inherited dependency declarations; no complete Python interpretation or authorization verdict |
+| Evidence, proposal and expectation contracts  | Exact identities/references, draft expectations and read-only comparison; schema `1.2`                                                 |
+| Mock review/walkthrough and copy application  | Separate source/apply/check/restore decisions; new owned single-file POSIX copy, not arbitrary checkout editing                        |
+| Opt-in App Server fixture workflow            | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                       |
+| Owned report policy example                   | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance        |
+| Read-only owner Codex review (#75 / PR #76)   | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof   |
 
-## Seven-week delivery plan
+The recorded owner review at `9257bd7` took about 74 seconds. Its model-authored ten-case expectations
+remain **unreviewed**, execution not-run and authorization unknown. The maintainer approved policy
+criteria, not these labels or the separate 28 assistant-authored developer-test labels.
+[#77](https://github.com/casing1/authzest/issues/77) preserves the exact review envelope/digest.
+A host-valid response proves shape/reference checks, not semantic correctness.
 
-As of 2026-09-10, approximately 11–12 weeks remain and the course has no mandated feature list. Allocate
-only **seven development weeks**; leave **four to five weeks outside that plan** for exams, slippage,
-and final submission preparation. These are working-week estimates, not seven uninterrupted calendar
-weeks or a commitment to fill all remaining time. Pause development during exams and reduce scope if needed.
+Published [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) remains
+package `0.1.0a3`, schema `1.2`. Main has newer unreleased commands; unchanged version output is not proof
+that a binary contains them. Do not rewrite existing tags/assets. Windows supports scan; the current
+fixture application/runtime mode is supported only on tested POSIX platforms.
 
-| Development week | Bounded outcome                                                         | Completion gate                                                                                       |
-| ---------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| 1                | Reliability baseline and report contract (#31, #32)                     | Reproducible demo; versioned diagnostics and distinct registration evidence tested                    |
-| 2                | Route-local dependency evidence (#28)                                   | Supported declarations, ordinary DI, and unresolved cases have source-backed expectations             |
-| 3                | Inherited context (#29) and a small policy-labelled fixture set         | Repeated mounts remain distinct; public/authentication/authorization expectations are explicit        |
-| 4                | Offline proposal and approval contract after #33                        | Mock responses, invalid references, exact-diff approval, stale input, and decline paths tested        |
-| 5                | One opt-in Codex integration and a small owned-fixture improvement flow | Review → approve/decline → approved patch → separately approved isolated verification demonstrated    |
-| 6                | Failure/recovery cases, installation, and a small three-mode evaluation | Failed tests, stale approval, user edits, and recovery handled; actual usage and limitations recorded |
-| 7                | Freeze a coherent CLI demo and submission evidence                      | Reproducible demo, reviewed documentation, issue/PR/test history, and release checklist ready         |
+## One milestone map
 
-A new preview release is conditional on its checks, not required every week.
-[v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2), package `0.1.0a2`, was
-published after #28/#29 and release issue #39. Bilingual changelog checks, three-OS builds, and fresh
-downloaded-artifact fixture checks passed for its exact commit; see the [release record](../releases/RELEASING.md).
-The later [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3), package
-`0.1.0a3`, was published on 2026-09-12 after exact-main/tag builds and fresh artifact checks; the public
-downloads then passed checksum/content verification. It adds the bounded Codex fixture workflow while retaining schema `1.2`.
-Consumer-device clean installation and upgrades remain unverified. Future releases need their own checks.
-This does not restart the seven-week plan or consume the exam buffer. Week 5 does not require
-finishing all deterministic findings first. Demonstrate one bounded, user-approved improvement flow on
-a maintained owned fixture, not a general autonomous scanner. If provider or execution approval is absent,
-retain an explicitly labelled mock demo and report the live integration as incomplete. If the schedule
-slips, cut extra rules, UI work, multiple integrations, and broader execution support; preserve the core
-approval flow, reviewable evidence, tests, and honest evaluation. Do not silently consume the exam/submission
-buffer to expand features.
+GitHub milestone numbers below are phase identifiers, not development-week numbers or exact release manifests.
 
-## Current baseline
+| Phase                                       | Current status    | Completion gate / remaining tracking                                 |
+| ------------------------------------------- | ----------------- | -------------------------------------------------------------------- |
+| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                         |
+| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                         |
+| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results      |
+| 04 — User-approved Codex workflow           | Open              | #35 epic; #77/#80/#81/#82 core gates, #78 coordination               |
+| 05 — CLI usability and prerelease readiness | Open              | #79 human-readable CLI, #83 candidate/install/artifact/release gates |
+| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze       |
 
-- [x] Installable Python CLI with `scan`, `doctor`, `ui`, and basic text/JSON reports.
-- [x] Optional workspace-bound local API and React dashboard.
-- [x] FastAPI/APIRouter owner recognition ([#19](https://github.com/casing1/authzest/issues/19)).
-- [x] Literal same-file router prefixes and registrations ([#21](https://github.com/casing1/authzest/issues/21)).
-- [x] Repository-local static router imports and cross-file registration ([#25](https://github.com/casing1/authzest/issues/25)).
-- [x] Documented source-syntax subset and limitations in the [parser scope](../reference/PARSER_SCOPE.md).
-- [x] Python/frontend CI, CLI/API fixture regressions, required CodeQL checks, and issue-linked
-      merge-commit workflow.
-- [x] PyInstaller packaging and the published `v0.1.0-alpha.1` preview with checksums.
-- [x] Publish `v0.1.0-alpha.2` with schema `1.2`, local/inherited evidence, and checked three-platform
-      binaries ([#39](https://github.com/casing1/authzest/issues/39), [PR #40](https://github.com/casing1/authzest/pull/40)).
-- [x] Publish `v0.1.0-alpha.3` with bounded Codex drafting, separate copy/check/restore decisions and
-      verified public assets ([#56](https://github.com/casing1/authzest/issues/56)); POSIX fixture runtime only.
-- [x] Maintained [source-only demo](../guides/EXAMPLES.md), exact inventory regression, and documentation checks in CI.
+Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
+and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
+milestone fields. Closed 01–03 and historical item assignments are preserved. No due dates are invented. At audit start 04 had 31 closed issue/PR items
+and two open issues; an item-count percentage is **not** product or effort completion. Keep closed
+historical items in their original phases.
 
-The parser/report/dependency improvements introduced in alpha.2
-(`7cc359acbb864ef6d31e3b536787857da4f7e09c`) are retained in alpha.3
-(`99be6f5614d283befa2a421b64f84958b680f92f`); consult the
-[changelog](../../CHANGELOG.md) and release record before equating later `main` changes with those binaries.
+## Remaining backlog and order
 
-Current-source JSON uses schema `1.2`, structured diagnostics, bounded/partial status, distinct
-source registration evidence, and route-local plus inherited dependency declarations; see the [report contract](../reference/REPORT_CONTRACT.md).
-The [offline AI contracts](../reference/AI_CONTRACT.md), introduced after alpha.2, now support the
-published alpha.3 fixture command. Mock evaluation scripts/corpus and #48's demo remain source-checkout
-tools, not standalone binary commands or installed repository fixtures.
-The unreleased [#65 `fixture-demo`](../guides/FIXTURE_DEMO.md) instead packages its own fixed mock
-walkthrough, reusing separate copy/source-check/restore decisions without Codex or fixture-source execution.
-The merged [#67 failure-handling follow-up](../guides/CODEX_FIXTURE.md#unreleased-failure-handling)
-aligns the existing Codex source/runtime and development runtime paths without expanding execution.
-[#69 `proposal-check`](../guides/PROPOSAL_CHECK.md) is implemented in the source checkout:
-it compares declaration targets with supported single-source snapshots from validated preview bundles.
-Policy intent stays not-evaluated; runtime verification stays not-run and authorization remains unknown.
-[#71 `review-demo`](../guides/REVIEW_DEMO.md) composes one packaged mock declaration example's
-exact diff, comparison and identity-bound, non-executable prose test draft in memory. It adds no
-provider calls, input files, application or execution. Acceptance and merge status are tracked in
-[#71](https://github.com/casing1/authzest/issues/71). These post-alpha.3 source additions do not change
-published assets or complete broader #35.
-[#73's owned report policy](../guides/OWNER_POLICY.md) adds a separate checkout example with a pure
-default-deny policy, an independent assistant-authored matrix and non-importing scanner evidence.
-Developer unit tests call only the policy function, not the FastAPI application or authentication
-provider. Real authentication and endpoint runtime acceptance remain separate;
-[issue #73](https://github.com/casing1/authzest/issues/73) records acceptance. The maintainer approved
-the policy criteria on 2026-09-24, not the 28 assistant-authored labels or any live account use.
-[#75's read-only Codex owner review](../guides/CODEX_OWNER_REVIEW.md) connects two packaged snapshots,
-explicit policy and static evidence to a full offline preview and exact-sharing-gated POSIX request.
-Its evidence-linked answers and structured defensive cases remain unreviewed drafts, execution
-not-run and authorization unknown. Two separately approved live attempts failed without an accepted
-draft on 2026-09-24 and 2026-09-30. The earlier attempt at `324505d` returned `response-validation` / `response-invalid` with
-`turn_start=acknowledged` after about 84.8 seconds. Usage and the exact rejected condition remain unknown.
-The 2026-09-28 diagnostic implementation itself was offline; it does not recover the older failure's cause.
-The separately approved offline follow-up adds fixed per-rule validation codes and aligns prompt
-`owner-policy-review-v2` with supported schema constraints, while retaining strict host-only checks.
-Its 2,451-test full offline suite and 531-test portable subset passed on 2026-10-01; it adds no live
-attempt or acceptance evidence. The changed sharing
-envelope required fresh consent. A separately approved run at `9257bd7` on 2026-10-01 returned
-`draft-ready` in about 74 seconds: one answer and ten cases passed host validation, with 7,994 input /
-2,242 output tokens reported. No retry or source execution occurred. Narrow provider acceptance is
-complete; case expectations remain unreviewed and broader #35 remains open. All three approvals
-are consumed; another provider call needs fresh consent. [PR #76](https://github.com/casing1/authzest/pull/76)
-tracks final checks and merge; published alpha.3 is unchanged.
-No code, diff or application execution is added, and the independent case labels are not sent to the model.
-Nested dependency graphs, authentication/authorization classification, finding
-schemas, general repository AI review and existing-checkout patch application are not implemented.
-The [#48 application demo](../guides/FIXTURE_APPLICATION.md) changes only a fresh POSIX fixture copy.
-The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) uses pinned Codex 0.153.0 and at most one
-application-issued turn after sharing approval; one owned-fixture live check passed. It only accepts the maintained
-debug-setting change and retains separate copy-application/restoration decisions. That live check did not
-run verification. #52 adds an optional, separately approved fixed-source check of the applied copy;
-that static-only mode leaves runtime verification `not-run` and supplies no new live-model evidence.
-#54 adds a separate opt-in [runtime plan](../guides/RUNTIME_VERIFICATION.md) for the exact bundled
-configuration/health fixture, not arbitrary source or authorization testing. One separately approved
-source-live draft/apply/runtime/restore check passed for #54. Alpha.3's independently checked public
-assets have separate packaging evidence; neither expands that live run's scope or completes broader #35.
-`scan` does not execute the target application or Codex.
-Explicitly running `doctor` can invoke an installed Codex CLI for diagnostics.
+| Priority     | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Now          | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | Offline formatter/fake-provider tests; complete sharing preview and separate decisions remain visible                            |
+| Now          | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Offline states/identities/plan contract; pending labels prevent verified results, not contract implementation                    |
+| Next         | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | #77 + explicitly reviewed exact case set + fresh separately approved execution plan                                              |
+| Then         | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | Review design first; implementation depends on #80; exact owned single-file diff or valid no-change                              |
+| Core gate    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                            |
+| Preview gate | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                         |
+| Evaluation   | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82 |
+| Delivery     | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                        |
 
-## Prerequisite — Evidence and diagnostics contract
+Immediate work: brief the maintainer, then implement #79 CLI readability and #77 offline contracts in
+separate issue-linked PRs. No real model call, case-label approval or target execution is needed for
+those implementation tests. Do not block all offline work on the pending ten-label decision.
 
-- [x] Define a versioned report, compatibility policy, and deterministic ordering
-      ([#32](https://github.com/casing1/authzest/issues/32)).
-- [x] Give route registrations distinct stable identities with original handler, application, and
-      include-site provenance, including identical-path repeated mounts.
-- [x] Represent known unresolved reasons, source/read errors, and bounded analysis explicitly; document
-      and test text/JSON output and CLI exit semantics without claiming exhaustive unsupported-pattern detection.
+For #79, define human-readable defaults and explicit JSON compatibility: one final result on stdout
+in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only
+JSON. Preserve exact identity-bound sharing content before consent; summaries alone are insufficient.
+Document the default-output migration rather than claiming unchanged stdout behavior.
 
-Completion: positive, repeated-mount, dynamic, malformed-source, and stable-order fixtures exercise the
-current-source contract. Route-local declarations (#28) and inherited registration context (#29) are
-included in alpha.2 and retained in alpha.3. The offline AI contract (#33) underlies the published bounded
-fixture workflow; broader #35 work remains, without claiming complete Python coverage or runtime registration certainty.
+A future preview may follow #77/#79 without waiting for complete #35 if its implemented scope and
+limitations are explicit. It still requires #83's own checks; a docs PR or passing mock is not a release gate.
 
-## Milestone 1 — Dependency evidence
+## Core acceptance and defensive PoC
 
-1. [x] Collect route-local declarations ([#28](https://github.com/casing1/authzest/issues/28)):
-       parameter defaults, supported inline `Annotated`, and decorator `dependencies`.
-       Recognize actual `Depends`/`Security` imports, aliases, and shadowing. Record kind, target,
-       source position, declaration level, resolution state, and statically known scopes.
-       `reference` identifies simple/dotted-name syntax, not callable/import resolution or protection.
-2. [x] Propagate application/router/`include_router` evidence to each route registration
-       ([#29](https://github.com/casing1/authzest/issues/29)), using #32's registration identity and retaining
-       distinct repeated-mount contexts rather than grouping by path or handler alone.
-       Keep route-local `dependencies` unchanged and expose the combined source context in
-       `effective_dependencies`, not as a runtime execution order or authorization verdict.
-3. [ ] Resolve a documented subset of dependency references and nested dependency relationships.
-       Keep missing, cyclic, dynamic, overridden, or unsupported relationships explicit rather than guessing.
-4. [ ] Expose unresolved evidence and parsing limitations in reports instead of treating missing
-       evidence as a negative security result.
+- [ ] Exact case review and fixed verification-plan contracts accepted (#77).
+- [ ] Readable CLI results, retained records and documented text/JSON streams accepted (#79).
+- [ ] Maintained fixed policy worker produces expected-versus-observed results under a new separate approval (#80).
+- [ ] Reviewed bounded defensive reproduction and evidence-linked remediation/no-change accepted (#81).
+- [ ] Installed coherent end-to-end flow, failure/refusal/user-edit/recovery cases and required reviews pass (#82); only then close #35.
+- [ ] Frozen independent reference review and measured evaluation, or explicit unavailable evidence, recorded (#84).
+- [ ] Exact distribution claims, reproducible demo and course evidence freeze accepted (#83/#85).
 
-Completion: supported local fixtures have the expected declaration evidence and original source positions
-in CLI/API reports. Existing route fields remain compatible or a deliberate schema change is documented.
-Each issue includes positive, ordinary non-security, and unresolved cases; scanned source is never executed.
+“PoC” means local synthetic **defensive regression reproduction** for an explicitly owned pure policy,
+not an internet exploit or executing AI-written Python/shell. Model-authored cases are data consumed by
+a fixed reviewed decoder/harness. Pure-policy observations do not test HTTP authentication, dependencies,
+DB or real endpoint enforcement. A child process is not an OS/network sandbox.
 
-## Milestone 2 — Interpretation and report contract
+The current correct policy must allow a no-change/unknown result. If a negative scenario is necessary,
+propose a clearly labelled intentionally incorrect test-only variant for maintainer design review
+before implementation; do not invent a production vulnerability to force a patch.
 
-- [ ] Distinguish authentication (who the caller is) from authorization (what they may access).
-- [ ] Define the supported evidence rules, explicitly public endpoints, and unsupported middleware,
-      overrides, custom checks, and object-level policies before choosing classification labels.
-- [ ] Represent observed declarations separately from authentication evidence, authorization evidence,
-      and unknown/incomplete analysis. Neither `Depends` nor `Security` alone proves protection.
-- [ ] Extend the prerequisite report contract for policy evidence and eventual findings, maintaining
-      deterministic ordering, source-path handling, and text/JSON compatibility.
-- [ ] Extend the prerequisite CLI exit contract when eventual findings are introduced.
-      A successful scan or zero routes must not be described as a security pass.
-- [ ] Add a small maintained local fixture corpus with expected policy annotations and expected results.
-      Include public endpoints, ordinary DI, authentication checks, role/ownership scenarios, and unresolved cases.
+Source sharing, exact-case label review, exact-diff approval/application, before/after checks and restore
+are separate bound decisions. Changes to relevant source/cases/plan require fresh decisions. Planning
+approval, tool permission or an earlier live run cannot authorize them. Record applied/checked/restored/
+failed/not-run/unknown distinctly and preserve originals and later user edits.
 
-Completion: a reviewer can explain every reported state from source evidence and the documented rule.
-The fixture corpus reports matches, false positives, false negatives, and unknown cases; unsupported
-application behavior is not silently declared safe or vulnerable.
+## Schedule: keep the existing seven-week budget
 
-The current [report contract](../reference/REPORT_CONTRACT.md) retains exit code 0 for a returned report by default,
-even when analysis is partial. Opt-in `--strict` returns 1 for known partial analysis; invalid repository
-input returns 2. Structured diagnostics record selected unresolved cases and source/read errors, not every
-unsupported declaration. Neither `bounded` status nor exit code 0 means complete analysis or a security pass.
+The seven **development** weeks agreed on 2026-09-10 include work already done; this audit does not
+start a fresh seven-week plan. The original remaining-calendar estimate is historical, not a current
+submission date. Confirm the actual course date/rubric before adding deadlines.
 
-## Milestone 3 — Explainable deterministic checks
+Foundation/evidence/offline contracts and partial live integration already consume the early delivery
+budget. Use remaining working sessions for the focused core/usability gates, then evaluation/failure/
+installation checks and demo freeze. Preserve the separate exam/slippage/submission buffer; do not
+fill it with optional features. If time or provider approval is unavailable, cut optional scope and
+report the live/verification gap honestly. Do not call an incomplete core complete.
 
-- [ ] Add narrowly scoped source checks against documented or user-declared access-control expectations;
-      absence of a recognizable dependency alone is not a vulnerability.
-- [ ] Attach source evidence and separate severity, confidence, and analysis completeness.
-- [ ] Add reasoned suppression, regression cases, and stable finding export on top of the existing JSON report.
-- [ ] Document how findings should be reviewed and what the tool cannot establish, including general
-      runtime authorization correctness and object ownership guarantees.
+## Deliberately deferred
 
-Completion: every rule has matching, nonmatching, and unresolved fixtures and an explanation that can be
-reviewed without AI. Checks run locally on source code without generating or executing exploitation steps.
+General nested dependency/callable interpretation, broad authentication/security classification,
+multi-file/existing-checkout transactions, arbitrary repositories/apps/generated code execution,
+additional adapters, AI dashboard/deployment and signing/notarization are not prerequisites for the
+bounded course core. Open a separately justified issue before reconsidering one. The static parser
+still needs maintained regressions, but finishing a complete deterministic vulnerability engine is
+not a dependency of the Codex improvement demo.
 
-## Milestone 4 — Codex-assisted, user-approved improvement
+## Working rules
 
-This is the final-demo target after the evidence/report contract and initial dependency fixtures.
-Implement a bounded end-to-end flow before expanding rules or adding a second integration. The offline
-contract and mocks in [#33](https://github.com/casing1/authzest/issues/33) remain prerequisites;
-[#35](https://github.com/casing1/authzest/issues/35) tracks the bounded Codex proposal, approval, application,
-and verification workflow. The offline slices and the narrowly scoped #50 adapter do not complete it;
-one owned-fixture live draft/apply/restore check passed for #50. #52's source-configuration check does
-not complete runtime verification. #54's exact configuration/health fixture completed separately approved
-source-live runtime acceptance; alpha.3 subsequently passed its distinct package/publication gates.
-Broader proposal scope, generated regression-test drafts and the complete #35 gate remain separate work.
+Use focused issue → short-lived branch → meaningful implementation/tests → bilingual docs → PR →
+exact-head required CI and resolved review conversations → merge commit. Assign casing1, relevant
+existing labels and a verified milestone to every issue/PR; #1 deliberately spans phases without a
+single milestone. Preserve historical authorship and approvals. Mark criteria complete only when
+actually satisfied and merged; do not inflate commit counts.
 
-- [x] Define evidence-linked explanations and offline evaluation
-      ([#33](https://github.com/casing1/authzest/issues/33)): minimized immutable requests, strict response/reference
-      validation, mock lifecycle tests, and a frozen three-mode harness. Policy criteria are maintainer-approved;
-      labels are assistant-authored/code-checked and mock scores do not establish live model performance.
-- [x] Implement the offline proposal/decision slice ([#46](https://github.com/casing1/authzest/issues/46)):
-      exact-content diff previews, bound explicit decisions, expiry and supplied stale-state checks.
-      The [contract](../reference/PROPOSAL_CONTRACT.md) does not apply files, execute checks, or authenticate consent.
-- [x] Add [#48's owned-fixture copy application](../guides/FIXTURE_APPLICATION.md): explicit terminal
-      decisions, single-session consumption, POSIX file/state checks, atomic single-file replacement,
-      retained records and separately confirmed restoration. Existing checkouts and verification remain untouched.
-- [x] Validate [#50's fixed-fixture sharing and adapter boundary](../guides/CODEX_FIXTURE.md):
-      exact-request approval, minimized input, timeout/cancellation and separate copy-application decisions.
-      Broader input sharing and verification permissions need their own design and acceptance evidence.
-- [x] Complete one owned-fixture live draft/apply/restore check of the selected, version-pinned Codex
-      App Server adapter. The assistant entered approval phrases under user authorization, not independent
-      human review. The bounded fixture command keeps suggestions separate from static reports;
-      that #50 slice added no second transport or verification executor.
-- [x] Complete offline validation of #52's optional source-configuration check: a separate exact-plan
-      decision, fixed AST configuration subprocess with pinned source hashes, bounded output/time, honest skip/failure records, and
-      independently offered restoration. This is not target execution or runtime/security-fix verification.
-- [x] Add [#61's offline expectation manifest](../reference/EXPECTATION_CONTRACT.md): exact proposal,
-      baseline registration/source and policy references bound to caller-authored declaration/intent targets.
-      This unreleased post-alpha.3 contract stays draft/not-run, changes no frozen corpus and grants no approval
-      or execution. Generated tests, runtime observations and approval/execution integration remain separate work.
-- [x] Add [#63's offline CLI presentation](../guides/PROPOSAL_PREVIEW.md): revalidate one bounded JSON
-      bundle and display the exact diff, linked source/policy evidence, expected outcomes and limitations.
-      This source-only post-alpha.3 addition stays draft/not-run; no provider, approval, application or
-      execution integration is added. The broader presentation/approval acceptance item below remains open.
-- [x] Add [#65's packaged offline walkthrough](../guides/FIXTURE_DEMO.md): expose a maintained mock
-      draft and separate copy-application, fixed source-configuration check and restoration decisions
-      through `fixture-demo`, without checkout fixture files or provider calls. This unreleased POSIX
-      source slice adds no runtime selector or arbitrary bundle executor and does not complete #35.
-- [x] Merge [#67's failure-handling alignment](../guides/CODEX_FIXTURE.md#unreleased-failure-handling)
-      for existing Codex source/runtime paths and the development runtime script, retaining separate
-      restoration decisions and honest setup/unknown-execution failure records without expanding scope.
-- [x] Implement [#69's source-only declaration comparison](../guides/PROPOSAL_CHECK.md).
-      Implemented in source: bounded dependency-count/scope comparison, explicit unknown/not-evaluated
-      outcomes and offline CLI text/JSON. No provider, source execution, patch application or approval;
-      generated tests, runtime authorization and broader #35 acceptance remain separate work.
-- [x] Implement [#71's in-memory integrated review](../guides/REVIEW_DEMO.md): one packaged mock case,
-      exact diff/evidence/expectations, existing declaration comparison and a non-executable prose
-      regression-test draft with separate template provenance. This records source implementation;
-      [issue #71](https://github.com/casing1/authzest/issues/71) tracks acceptance and merge status.
-      Generated executable tests, live-model drafting and application integration remain separate work.
-- [x] Implement [#73's owned policy example](../guides/OWNER_POLICY.md): explicit authenticated/scope/
-      owner conditions, independent expected values and developer pure-function regression tests,
-      separate from static FastAPI inventory checks. This source slice is not generated tests or
-      endpoint execution; [issue #73](https://github.com/casing1/authzest/issues/73) tracks review and acceptance.
-      Frozen evaluation labels, Codex scope, fixture execution allowlists and broader #35 remain unchanged.
-- [x] Implement [#75's read-only owner-policy review](../guides/CODEX_OWNER_REVIEW.md): preview two
-      packaged source snapshots, policy and static evidence offline on all supported OSes; bind exact
-      sharing consent to the whole request envelope for a single pinned POSIX App Server request.
-      Validate evidence-linked answers and non-executable defensive case drafts without patching or
-      source execution. This records the source implementation, not live-model acceptance or merge;
-      [issue #75](https://github.com/casing1/authzest/issues/75) tracks those separate gates.
-- [x] Implement source-only redacted failure diagnostics and offline regressions for owner-policy
-      review. Expose only allowlisted stage/code/turn-start states, never raw provider errors or partial
-      output. Keep failure usage unknown, cancellation propagation and the existing sharing/execution
-      limits. [PR #76](https://github.com/casing1/authzest/pull/76) tracks acceptance; this implementation
-      itself does not reconstruct the 2026-09-24 failure or record a live attempt, merge or release.
-- [x] Implement the approved offline owner-review contract alignment: closed per-rule validation
-      codes in the existing three-field diagnostic, prompt version `owner-policy-review-v2`, supported
-      schema constraints and schema-versus-host conformance cases. Retain fail-closed host checks for
-      exact evidence coverage, uniqueness, UTF-8 validity and global result budgets. The full 2,451-test
-      offline suite and 531-test portable subset passed; this does not establish live compatibility
-      with pinned Codex or authorize another call.
-- [x] Complete the narrow owner-policy live review with separate bounded source-sharing/account-use
-      consent. After two earlier failures, one approved run at `9257bd7` on 2026-10-01 returned
-      `draft-ready` in about 74 seconds with one answer and ten host-valid cases. Provider-reported
-      usage was 7,994 input / 2,242 output tokens; no retry, fallback or target execution occurred.
-      Exact code-head CI and assistant source review passed; PR #76 tracks final documentation checks
-      and merge. Historical automated reviews cover older heads, not this new code.
-      Review model-authored case expectations independently; they remain unreviewed, execution not-run
-      and authorization unknown. Another call needs fresh consent; broader #35 and release remain separate.
-- [x] Address the final-head review's stale sharing-phrase reuse with a fresh per-invocation nonce and
-      separate content identity. Same-input reruns reject the old phrase before adapter construction;
-      the current challenge is revalidated once. Cover the real source CLI with a fake provider.
-      The full 2,463-test offline suite and 542-test portable subset passed.
-      Model task data and transport remain unchanged; no additional live run is claimed. Final-head
-      re-review and CI remain merge gates in PR #76.
-- [ ] Generate evidence-linked explanations, defensive regression-test drafts, and a reviewable diff in
-      an isolated temporary workspace. Do not execute scanned source or write the user's worktree while proposing.
-- [ ] Present rationale, affected files, the exact diff, source revision/content identity, and verification
-      plan. Bind approval to that proposal; decline/cancel changes nothing, and changed inputs invalidate approval.
-- [ ] Apply only the approved diff after rechecking its preconditions. Preserve existing user edits,
-      record before/after content identities, and provide recoverable changes without resetting unrelated work.
-- [x] Implement and validate a separately approved bounded runtime plan for the exact maintained
-      configuration/health fixture (#54), including one source-live draft/apply/runtime/restore check.
-      Source mode remains the default. Record fixed checks, exits, results, and failures.
-      Applying a patch or passing a test is not proof
-      of general authorization correctness. Never label failed or unrun verification as a successful fix.
-- [ ] Compare static-only, model-only, and evidence-assisted model modes on frozen, human-labelled fixtures,
-      with held-out cases, repeated trials, actual usage, and limitations as described in the [model strategy](MODEL_STRATEGY.md).
-
-Completion: one maintained fixture demonstrates evidence → Codex review/proposal → approve or decline →
-approved patch → separately approved verification → change/result record. Tests cover invalid citations,
-provider failure, changed source or diff, pre-existing user edits, declined/cancelled requests, failed
-verification, and recovery conflicts. The default scan and CI remain offline and do not require credentials.
-Do not substitute Codex's settings-dependent tool approvals for AuthZest's exact-proposal approval gate.
-
-## Milestone 5 — CLI release and OSS evaluation
-
-Release preparation can proceed alongside the milestones above; packaging is already present and does not
-need to be rebuilt as a new product.
-
-- [x] For alpha.2, check four owned source-only fixtures through built/relocated binaries and fresh
-      downloaded-artifact jobs on Linux x64, macOS arm64, and Windows x64; verify checksums (#39).
-- [x] For alpha.3, pass three-platform build/fresh-download gates, including fixed POSIX runtime and
-      Windows unsupported/no-worker checks. Verify all six public assets against checksums and tag-CI
-      bytes; the downloaded macOS binary additionally passed seven scan checks and one runtime check.
-- [ ] Run the installed CLI/binary against the maintained policy fixture corpus in CI, beyond the
-      existing in-process CLI/API regression tests.
-- [ ] Verify clean installation, execution, and upgrade for each advertised OS/architecture.
-- [ ] Define a tested support matrix and reproducible Python dependency constraints/build manifest rather
-      than assuming every allowed dependency version is equivalent.
-- [x] Verify alpha.2 release notes, both changelogs, tag/package version, and actual binary contents together (#39).
-      The release script checks tag/version spelling and matching dated, nonempty English/Korean entries;
-      it does not replace the semantic content and artifact review performed for alpha.2.
-- [x] Publish alpha.2 from the verified `main` commit after its artifact gates pass (#39).
-- [x] Publish alpha.3 from `99be6f5614d283befa2a421b64f84958b680f92f` after separate version/content and
-      exact-main/tag checks, then verify public assets (#56). See the [release record](../releases/RELEASING.md).
-- [ ] Repeat version, content, artifact, publication, and documentation checks for each future release.
-- [ ] Preserve issue decisions, meaningful commits, PR discussion, CI evidence, and a short reproducible demo.
-- [ ] Consider signing/notarization separately before broader binary distribution.
-
-Completion: the documented CLI demo works from a clean installation, release claims match the downloaded
-binary, and changes can be traced from issue to test to PR. Do not inflate commit counts or publish a new
-release for every documentation edit. See the [release guide](../releases/RELEASING.md).
-
-## Execution scope and deliberate exclusions
-
-The bounded verification in milestone 4 belongs to the core demo, but it is never an implicit part of
-`scan` or permission to execute an arbitrary repository. Start only with a maintained owned fixture and
-a reviewed defensive regression plan in an isolated environment with explicit input/output scope,
-timeouts, and protection against unintended data changes. Test drafts are untrusted until reviewed.
-
-Internet-target scanning, exploit-PoC generation or execution, autonomous offensive workflows, and arbitrary
-repository execution are out of scope. Broader runtime coverage or additional execution environments need
-a separate design issue; they are not a condition for the seven-week deliverable.
-
-## Working checklist
-
-Before implementation, record the issue, supported subset, completion criteria, and a branch from current
-`main`. During implementation, add tests alongside each behavior and avoid unrelated refactoring.
-Before merge, update the English source and required translations together, verify links and commands,
-and pass Python, frontend, and CodeQL checks. Use meaningful commits and a merge commit, then synchronize
-the roadmap and remove the working branch. See [contributing](../../CONTRIBUTING.md) and
-[branch rules](BRANCH_RULES.md).
+English documents require Korean counterparts; the root README additionally requires Japanese and
+Russian. Update guides only for implemented behavior and keep links/commands/status/limitations aligned.
+No planning change grants paid/manual reviews, source transmission, case review, patch/execution or
+publication. See [contributing](../../CONTRIBUTING.md) and [branch rules](BRANCH_RULES.md).
