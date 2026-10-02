@@ -51,19 +51,18 @@ fixture application/runtime mode is supported only on tested POSIX platforms.
 
 GitHub milestone numbers below are phase identifiers, not development-week numbers or exact release manifests.
 
-| Phase                                       | Status at audit           | Completion gate / remaining tracking                                 |
-| ------------------------------------------- | ------------------------- | -------------------------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved         | Completed foundation history                                         |
-| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved         | Completed evidence/release follow-up history                         |
-| 03 — Offline AI contract and evaluation     | Closed; preserved         | #33 contracts/mock evaluation; not actual model-quality results      |
-| 04 — User-approved Codex workflow           | Open                      | #35 epic; #77/#80/#81/#82 core gates, #78 coordination               |
-| 05 — CLI usability and prerelease readiness | Proposed; not yet created | #79 human-readable CLI, #83 candidate/install/artifact/release gates |
-| 06 — Evaluation and course delivery         | Proposed; not yet created | #84 reviewed comparison, #85 reproducible demo/evidence freeze       |
+| Phase                                       | Current status    | Completion gate / remaining tracking                                 |
+| ------------------------------------------- | ----------------- | -------------------------------------------------------------------- |
+| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                         |
+| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                         |
+| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results      |
+| 04 — User-approved Codex workflow           | Open              | #35 epic; #77/#80/#81/#82 core gates, #78 coordination               |
+| 05 — CLI usability and prerelease readiness | Open              | #79 human-readable CLI, #83 candidate/install/artifact/release gates |
+| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze       |
 
-Milestone mutation is pending GitHub CLI reauthentication under
-[#78](https://github.com/casing1/authzest/issues/78); the working connector cannot write milestones and
-there is no connected browser. New #79/#83/#84/#85 temporarily carry 04; move/read back their fields
-when 05/06 actually exist. No due dates are invented. At audit start 04 had 31 closed issue/PR items
+Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
+and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
+milestone fields. Closed 01–03 and historical item assignments are preserved. No due dates are invented. At audit start 04 had 31 closed issue/PR items
 and two open issues; an item-count percentage is **not** product or effort completion. Keep closed
 historical items in their original phases.
 

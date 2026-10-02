@@ -51,19 +51,18 @@ adapter보다 CLI 사용성을 먼저 개선합니다. 모델 발전 때문에 �
 
 아래 GitHub 단계 번호는 개발 주차나 정확한 배포 기능 목록이 아닙니다.
 
-| 단계                                        | 점검 당시 상태   | 완료 조건 / 남은 추적                                 |
-| ------------------------------------------- | ---------------- | ----------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | 종료·보존        | 완료된 기반 기록                                      |
-| 02 — Source evidence and alpha.2 follow-up  | 종료·보존        | 완료된 근거/릴리즈 후속 기록                          |
-| 03 — Offline AI contract and evaluation     | 종료·보존        | #33 계약/mock 평가이며 실제 모델 품질 결과는 아님     |
-| 04 — User-approved Codex workflow           | 열림             | #35 상위 이슈; #77/#80/#81/#82 핵심 gate, #78 정비    |
-| 05 — CLI usability and prerelease readiness | 제안·아직 미생성 | #79 사람이 읽는 CLI, #83 후보/설치/산출물/릴리즈 gate |
-| 06 — Evaluation and course delivery         | 제안·아직 미생성 | #84 독립 검토 비교, #85 재현 시연/근거 고정           |
+| 단계                                        | 현재 상태 | 완료 조건 / 남은 추적                                 |
+| ------------------------------------------- | --------- | ----------------------------------------------------- |
+| 01 — CLI foundation and alpha.1 follow-up   | 종료·보존 | 완료된 기반 기록                                      |
+| 02 — Source evidence and alpha.2 follow-up  | 종료·보존 | 완료된 근거/릴리즈 후속 기록                          |
+| 03 — Offline AI contract and evaluation     | 종료·보존 | #33 계약/mock 평가이며 실제 모델 품질 결과는 아님     |
+| 04 — User-approved Codex workflow           | 열림      | #35 상위 이슈; #77/#80/#81/#82 핵심 gate, #78 정비    |
+| 05 — CLI usability and prerelease readiness | 열림      | #79 사람이 읽는 CLI, #83 후보/설치/산출물/릴리즈 gate |
+| 06 — Evaluation and course delivery         | 열림      | #84 독립 검토 비교, #85 재현 시연/근거 고정           |
 
-마일스톤 변경은 [#78](https://github.com/casing1/authzest/issues/78)에서 GitHub CLI 재인증 대기입니다.
-작동하는 connector에는 마일스톤 쓰기 기능이 없고 연결 브라우저도 없습니다.
-신규 #79/#83/#84/#85는 04에 임시 배정하며 05/06이 실제 생성된 뒤 이동/필드를 대조합니다.
-임의 기한은 넣지 않습니다. 점검 시작 때 04는 종료된 이슈/PR 31개·열린 이슈 2개였지만 항목 수의
+[#78](https://github.com/casing1/authzest/issues/78)에서 인증을 확인해 04 설명을 정비하고 05/06을
+실제 생성했습니다. #79/#83은 05, #84/#85는 06에 배정했으며 담당자·라벨·마일스톤 필드를
+대조합니다. 완료된 01–03과 과거 항목의 배정은 보존하고 임의 기한은 넣지 않습니다. 점검 시작 때 04는 종료된 이슈/PR 31개·열린 이슈 2개였지만 항목 수의
 완료율은 제품/노력 완료율이 **아닙니다**. 과거 종료 항목은 원래 단계에 보존합니다.
 
 ## 남은 작업과 진행 순서
