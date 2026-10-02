@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0",
+  "kind": "proposed-owner-case-label-review",
+  "case_authorship": "model-authored",
+  "label_review_status": "pending-maintainer-review",
+  "origin": {
+    "code_head": "9257bd7cbe8ebe06f03b963e51fafdd5547c5e64",
+    "date": "2026-10-01",
+    "request_id": "request-c7767829b1d516f91f7ceaaa0cfae276f9485d96930296703e658a910251c90c",
+    "source_identity": "c31d103bb03a8eb5f521a666541891fa67eee3024b923d88905b0a3f8e79a1b8",
+    "identity": {
+      "adapter_version": "0.1",
+      "model": "gpt-6-astra",
+      "prompt_version": "owner-policy-review-v2",
+      "provider": "codex-app-server"
+    },
+    "prompt_sha256": "64061643d70a22c2089a8d22593e3988913300a366a8681220395c596707f0ab",
+    "output_schema_sha256": "f8b82318f993802bbddfbdc6a1fe8be2fa7d5d3ca92d38e5f2cb76db40d0b5d1"
+  },
+  "source_sha256": {
+    "main.py": "73f73c8ca2ee5de206c158b98c422b74d355da74fda167be8babb153d03a951b",
+    "policy.py": "faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04"
+  },
+  "scope": "Ten exact synthetic pure-policy cases only; label review is not sharing, account, execution or patch authority. Authentication and HTTP enforcement remain unknown.",
+  "cases": [
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": true,
+      "id": "owner-read",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": "subject-a"
+      },
+      "reason": "Suggest allow for authenticated exact ownership with the literal read scope and nonblank context.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "nonowner-admin",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read",
+          "admin"
+        ],
+        "subject": "subject-b"
+      },
+      "reason": "Suggest deny for ownership mismatch; an administrator scope supplies no exception.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "unauthenticated-owner",
+      "principal": {
+        "authenticated": false,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": "subject-a"
+      },
+      "reason": "Suggest deny despite ownership and scope because authentication is false.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "missing-principal",
+      "principal": null,
+      "reason": "Suggest deny when principal context is missing.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "missing-report",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": "subject-a"
+      },
+      "reason": "Suggest deny when report context is missing.",
+      "report": null
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "wildcard-only",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:*"
+        ],
+        "subject": "subject-a"
+      },
+      "reason": "Suggest deny because a wildcard does not supply the literal read scope.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "blank-identities",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": " "
+      },
+      "reason": "Suggest deny for blank identifiers even when subject and owner are equal.",
+      "report": {
+        "owner_id": " ",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "empty-report-id",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": "subject-a"
+      },
+      "reason": "Suggest deny for an empty report identifier despite otherwise sufficient context.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": ""
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": false,
+      "id": "no-owner-normalization",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": "subject-a "
+      },
+      "reason": "Suggest deny because trailing whitespace is not removed for ownership comparison.",
+      "report": {
+        "owner_id": "subject-a",
+        "report_id": "report-a"
+      }
+    },
+    {
+      "evidence_ids": [
+        "ev-e378d16550f2c152f8f9ed9bec66eecf9ea8f0fea54a61a564d9d07e1cbb5a7f",
+        "ev-17fee189f1fcfce63049982f845149cd25e760b6dbd4e01553bf5df922870133"
+      ],
+      "expected": true,
+      "id": "exact-padded-owner",
+      "principal": {
+        "authenticated": true,
+        "scopes": [
+          "reports:read"
+        ],
+        "subject": " subject-a "
+      },
+      "reason": "Suggest allow when nonblank padded identifiers match exactly; the policy does not normalize or reject all surrounding whitespace.",
+      "report": {
+        "owner_id": " subject-a ",
+        "report_id": "report-a"
+      }
+    }
+  ]
+}

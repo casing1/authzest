@@ -362,3 +362,10 @@ demonstrate endpoint authorization.
 Default `scan`, offline evaluation labels and existing fixture execution allowlists stay unchanged.
 No approval token from this command can apply a patch or execute a test. Any future patch/verification
 flow needs a separately reviewed design and distinct user decisions.
+
+## Offline case review and fixed-plan data
+
+The unreleased [owner case-plan Python API](../reference/OWNER_CASE_PLAN.md) binds caller-recorded
+label decisions to an exact validated draft, request, source and case set. It adds no CLI command,
+provider call, executor or target execution. The recorded ten real case labels still await separate
+maintainer review; implementation tests record only test-owned choices, not that approval.

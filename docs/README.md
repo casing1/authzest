@@ -11,12 +11,12 @@ The local dashboard is optional and does not require website deployment.
 
 ## Current work — 2026-10-02
 
-PR #76 is merged; read-only owner-policy Codex review is implemented in newer main, not published alpha.3.
-Its model-authored cases remain unreviewed/not-run. Next are
-[#79 readable CLI output](https://github.com/casing1/authzest/issues/79) and
-[#77 offline case review / fixed plans](https://github.com/casing1/authzest/issues/77), followed by a
-reviewed fixed policy harness and bounded remediation/acceptance. The current dashboard displays static
-inventory; it is not an AI review/approval viewer. Planned readable output is not implemented yet.
+PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
+and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
+source additions, not published alpha.3 features. The recorded ten model-authored labels remain
+unreviewed/not-run; #77 stays open for that review. The contract has no executor or new CLI command.
+Next is #80's reviewed fixed policy harness, then bounded remediation/acceptance. The current dashboard
+displays static inventory; it is not an AI review/approval viewer.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records
@@ -55,6 +55,7 @@ docs/
 | Integrated review and prose test draft          | [Review demo](guides/REVIEW_DEMO.md)                      | [통합 검토 시연](i18n/ko/guides/REVIEW_DEMO.md)              |
 | Owned report policy and unit-test example       | [Owner policy](guides/OWNER_POLICY.md)                    | [소유 보고서 정책](i18n/ko/guides/OWNER_POLICY.md)           |
 | Read-only owner-policy Codex review             | [Codex owner review](guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](i18n/ko/guides/CODEX_OWNER_REVIEW.md) |
+| Offline owner-case review and fixed plans       | [Owner case plan](reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](i18n/ko/reference/OWNER_CASE_PLAN.md)  |
 | Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)      |
 | Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)             |
 | Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)        |

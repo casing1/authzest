@@ -39,6 +39,7 @@ jobs:
           tests/test_codex_diagnostics.py
           tests/test_owner_schema_conformance.py
           tests/test_cli_output.py
+          tests/test_owner_case_plan.py
 
   frontend:
     runs-on: ubuntu-latest
