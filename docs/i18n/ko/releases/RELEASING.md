@@ -165,6 +165,16 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    명령별 timeout 기본값은 45초이며 `--expected-version`으로 `pyproject.toml` 대신 예상 PEP 440 버전을
    지정할 수 있습니다.
 
+   고정 오프라인 모델 표기 `offline-release-smoke-model`로 `codex-owner-review --preview-only`의
+   텍스트/JSON도 검사합니다. 전체 소스/요청 내용·식별 해시·제한·텍스트 요약이 신뢰하는 checkout과
+   일치해야 하고 CLI 호출마다 새 nonce를 요구합니다. 실행 파일당 검사 2개를 추가하여 binary 모드는
+   18개, checksum 확인 artifact 모드는 9개입니다. 미리보기 자식 환경은 최소 변수만 허용하고
+   계정 관련 변수와 외부 실행 경로를 제외하며 PATH에는 임시 실행 파일 디렉터리만 둡니다.
+   이는 OS sandbox가 아니며 공유·사례 예상값 승인·정책 실행·인가 판정을 부여하지 않습니다.
+   기준 생성은 표준 라이브러리 전용 core 모듈을 사용하므로 기존 의존성 없는 `python -I` artifact
+   검사도 유지합니다. 같은 버전 관리 smoke 스크립트를 세 플랫폼 빌드/다운로드 작업에서 사용하며,
+   단위 테스트나 로컬 플랫폼 하나의 성공만으로 모든 native 산출물 통과를 주장하지 않습니다.
+
    별도 [런타임 smoke](../guides/RUNTIME_VERIFICATION.md)는 실제 native 부모·worker와 이동한
    복사본에서 고정 내장 AFTER fixture를 검사합니다. POSIX는 정확한 debug/ASGI health 관찰에
    성공해야 하며 Windows는 worker 없이 지원 불가를 반환해야 합니다. Codex를 호출하거나

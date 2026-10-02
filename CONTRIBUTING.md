@@ -141,7 +141,10 @@ python scripts/smoke_release.py --binary dist/authzest
 ```
 
 On Windows, use `--binary dist/authzest.exe`. This bounded smoke checks source-only fixtures, report parity,
-CLI exits, and a relocated copy without invoking Codex or scanned application code. It does not establish
+CLI exits, complete offline owner-preview human/JSON envelopes and a relocated copy without invoking
+Codex or scanned application code. Preview checks use a fixed offline model label, fresh invocation
+identities and a minimal child environment; they do not approve sharing or case labels. Binary mode
+has 18 checks, checksum-aware artifact mode 9. This is not an OS sandbox and does not establish
 consumer-device installation or upgrade support. Explicitly running the optional `doctor` can invoke an installed Codex CLI through
 `codex --version` and `codex login status`; it does not start an AI scan. A successful login does not
 enable AI scanning or approve source sharing. The separate [owned-fixture Codex command](docs/guides/CODEX_FIXTURE.md)

@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -23,6 +24,10 @@ FIXTURES = {
     "fastapi_inheritance": ("bounded", 1, 3),
     "fastapi_partial": ("partial", 1, 1),
 }
+OWNER_PREVIEW_MODEL = "offline-release-smoke-model"
+SHARING_ENVELOPE_MARKER = (
+    "Complete sharing envelope (authoritative JSON; review every field before consent)\n"
+)
 
 
 class SmokeError(RuntimeError):
@@ -80,6 +85,22 @@ def child_environment(bin_directory: Path) -> dict[str, str]:
     return environment
 
 
+def preview_environment(bin_directory: Path) -> dict[str, str]:
+    """No ambient credentials or Codex on PATH; this is not an OS sandbox."""
+    allowed = {"SYSTEMROOT", "WINDIR", "TEMP", "TMP", "TMPDIR", "LANG", "LC_ALL"}
+    environment = {key: value for key, value in os.environ.items() if key.upper() in allowed}
+    environment.update(
+        PATH=str(bin_directory),
+        PYTHONNOUSERSITE="1",
+        PYTHONDONTWRITEBYTECODE="1",
+        PYTHONUTF8="1",
+        PYTHONIOENCODING="utf-8",
+        NO_COLOR="1",
+        TERM="dumb",
+    )
+    return environment
+
+
 def run_command(
     binary: Path,
     arguments: list[str],
@@ -133,6 +154,80 @@ def source_report(fixture: Path) -> dict[str, Any]:
         return authzest.runner.ScanRunner().run(fixture).to_dict()
     finally:
         sys.path.pop(0)
+
+
+def source_owner_preview() -> dict[str, Any]:
+    """Build the trusted checkout baseline without importing policy or CLI dependencies."""
+    source = CHECKOUT / "src"
+    sys.path.insert(0, str(source))
+    try:
+        from authzest.runner import codex_owner_review
+
+        if not Path(codex_owner_review.__file__).resolve().is_relative_to(source):
+            raise SmokeError("Expected owner-preview builder is not loaded from this checkout.")
+        return codex_owner_review.build_owner_review_preview(
+            OWNER_PREVIEW_MODEL, invocation_nonce="0" * 32
+        )
+    finally:
+        sys.path.pop(0)
+
+
+def check_owner_preview(
+    output: str, expected: dict[str, Any], *, as_json: bool, seen_nonces: set[str]
+) -> None:
+    from authzest.codex.contracts import ContractError, decode, identity
+
+    raw = output
+    if not as_json:
+        if output.count(SHARING_ENVELOPE_MARKER) != 1:
+            raise SmokeError("Owner preview must include one complete sharing envelope.")
+        _, raw = output.split(SHARING_ENVELOPE_MARKER, 1)
+    try:
+        actual = decode(raw)
+        nonce = actual.get("invocation_nonce")
+        if type(nonce) is not str or re.fullmatch(r"[0-9a-f]{32}", nonce) is None:
+            raise SmokeError("Owner preview has an invalid invocation nonce.")
+        challenged = {key: value for key, value in actual.items() if key != "sharing_id"}
+        if actual.get("sharing_id") != "share-" + identity(challenged):
+            raise SmokeError("Owner preview sharing identity does not match its envelope.")
+        stable = {
+            key: value
+            for key, value in challenged.items()
+            if key not in {"sharing_content_id", "invocation_nonce"}
+        }
+        if actual.get("sharing_content_id") != "content-" + identity(stable):
+            raise SmokeError("Owner preview content identity does not match its envelope.")
+    except ContractError as exc:
+        raise SmokeError("Owner preview is not bounded, duplicate-free, finite JSON.") from exc
+    expected_stable = {
+        key: value
+        for key, value in expected.items()
+        if key not in {"sharing_content_id", "sharing_id", "invocation_nonce"}
+    }
+    difference = first_difference(expected_stable, stable)
+    if difference:
+        raise SmokeError(f"Owner preview differs from the checkout: {difference}")
+    if not as_json:
+        scope_keys = (
+            "source_scope",
+            "request_id",
+            "sharing_id",
+            "sharing_content_id",
+            "invocation_nonce",
+        )
+        scope_lines = [
+            json.dumps(key) + ": " + json.dumps(actual[key], ensure_ascii=True, allow_nan=False)
+            for key in scope_keys
+        ]
+        expected_header = (
+            "Source-sharing preview - not shared; no approval implied\n\n"
+            "Source scope / confirmation identity\n" + "\n".join(scope_lines) + "\n\n"
+        )
+        if output.split(SHARING_ENVELOPE_MARKER, 1)[0] != expected_header:
+            raise SmokeError("Owner preview human summary does not match its complete envelope.")
+    if nonce in seen_nonces:
+        raise SmokeError("Owner preview reused an invocation nonce across CLI calls.")
+    seen_nonces.add(nonce)
 
 
 def normalized_report(payload: object, root: Path) -> dict[str, Any]:
@@ -200,6 +295,9 @@ def smoke_binary(
             # Downloads can lose +x. Only modify the selected, verified temporary copy.
             copied.chmod(copied.stat().st_mode | stat.S_IXUSR)
         environment = child_environment(bin_directory)
+        preview_env = preview_environment(bin_directory)
+        expected_preview = source_owner_preview()
+        seen_nonces: set[str] = set()
         fixtures = []
         for name, (status, files, routes) in FIXTURES.items():
             source = CHECKOUT / "examples" / name
@@ -270,8 +368,21 @@ def smoke_binary(
                 allow_stderr=True,
             )
             checks.append(f"{label}: text scan and invalid-root exit=2")
+            for as_json in (False, True):
+                arguments = [
+                    "codex-owner-review",
+                    "--model",
+                    OWNER_PREVIEW_MODEL,
+                    "--preview-only",
+                ] + (["--json"] if as_json else [])
+                output = run_command(executable, arguments, 0, cwd, preview_env, timeout)
+                check_owner_preview(
+                    output, expected_preview, as_json=as_json, seen_nonces=seen_nonces
+                )
+                checks.append(f"{label}: owner preview {'JSON' if as_json else 'human'}")
             print(
-                f"PASS {label}: version/help, four owned fixtures, strict/JSON/text, invalid root",
+                f"PASS {label}: version/help, four owned fixtures, strict/JSON/text, invalid root, "
+                "complete owner previews (human/JSON)",
                 flush=True,
             )
     return checks

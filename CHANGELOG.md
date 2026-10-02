@@ -98,6 +98,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- Extend #83's versioned release smoke with offline owner-preview human/JSON envelope, packaged
+  source/task, identity, summary and fresh-nonce checks for selected/relocated binaries and verified
+  artifacts. Use a minimal preview-child environment without ambient credentials or Codex on PATH;
+  retain dependency-free artifact verification and add Windows smoke-driver regressions. Binary
+  mode now has 18 checks, artifact mode 9. No model call, label approval, policy execution or release;
+  this does not establish clean-device installation, all-platform native acceptance or OS isolation.
+
 - Make #79's `codex-owner-review`, `codex-fixture` and `fixture-demo` readable by default; reuse safe
   section/diff formatting in proposal preview/check and review demo. Scripts must add `--json` for
   one final stdout result, including application failures, with full interactive previews/prompts on
