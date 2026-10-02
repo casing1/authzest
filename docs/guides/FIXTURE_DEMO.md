@@ -27,12 +27,20 @@ With the current source installation on PATH, run from any working directory:
 ```bash
 authzest fixture-demo --help
 authzest fixture-demo
+authzest fixture-demo --json
 ```
 
 For a locally built executable containing this change, use its exact path instead of `authzest`.
 The command accepts no target path, bundle, model, runtime selector or automatic-approval option.
-Only `--help` is available. Read the displayed evidence, exact diff, identifiers and limits before
+Only `--json` and help are available. Read the displayed evidence, exact diff, identifiers and limits before
 answering each prompt; placeholder identifiers below are not literal values to enter.
+
+Default output uses readable sections and preserves mock provenance; quoted source/diff text is not
+executable. `--json` prints one final result object on stdout, including application failures and
+cancellation, with complete previews/prompts on stderr. Parse stdout only. CLI parsing errors/help
+are not result objects; default input errors remain redacted JSON on stderr. JSON fields and retained
+records are unchanged, and missing observations remain unknown, never a security pass. Protect logs
+containing preview source. The option does not approve any step or enable a provider/runtime call.
 
 1. Type the exact displayed `apply <proposal-id>` to apply that proposal to the new copy.
 2. After application, inspect the fixed source-configuration plan. Type `verify <plan-id>` to

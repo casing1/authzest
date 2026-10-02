@@ -41,9 +41,9 @@ def bundle_file(tmp_path, bundle):
 
 def assert_invalid(result):
     assert result.exit_code == 2, result.output
-    assert result.stdout == ""
-    assert result.stderr.isascii()
-    error = json.loads(result.stderr)
+    assert not (result.stdout and result.stderr)
+    assert result.output.isascii()
+    error = json.loads(result.stdout or result.stderr)
     assert set(error) == {"status", "detail"}
     assert error["status"] == "invalid-input" and error["detail"]
     return error

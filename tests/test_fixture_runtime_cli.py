@@ -381,7 +381,9 @@ def test_outer_runtime_failure_never_claims_not_run(monkeypatch, capsys, entry, 
 
     if entry == "codex":
         monkeypatch.setattr(workflow, "run_codex_fixture", fail)
-        result = runner.invoke(app, ["codex-fixture", "--model", MODEL, "--runtime-check"])
+        result = runner.invoke(
+            app, ["codex-fixture", "--model", MODEL, "--runtime-check", "--json"]
+        )
         output = result.stdout
     else:
         monkeypatch.setattr("sys.argv", ["demo_verify", "--runtime-check"])

@@ -598,7 +598,9 @@ def test_task_cancellation_propagates(monkeypatch):
 def test_cli_help_and_preview_work_without_provider(color):
     help_result = runner.invoke(app, ["codex-owner-review", "--help"], color=color)
     assert help_result.exit_code == 0 and "--preview-only" in unstyle(help_result.output)
-    result = runner.invoke(app, ["codex-owner-review", "--model", MODEL, "--preview-only"])
+    result = runner.invoke(
+        app, ["codex-owner-review", "--model", MODEL, "--preview-only", "--json"]
+    )
     assert result.exit_code == 0
     preview = json.loads(result.output)
     assert preview["kind"] == "codex-owner-review-sharing-preview"
@@ -635,7 +637,7 @@ def test_cli_failure_and_cancellation_are_redacted(error, code, status, monkeypa
         raise error("PRIVATE CLI ERROR")
 
     monkeypatch.setattr(workflow, "run_codex_owner_review", fail)
-    result = runner.invoke(app, ["codex-owner-review", "--model", MODEL])
+    result = runner.invoke(app, ["codex-owner-review", "--model", MODEL, "--json"])
     assert result.exit_code == code
     assert json.loads(result.output)["status"] == status
     assert json.loads(result.output)["failure"] == {

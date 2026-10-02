@@ -81,6 +81,12 @@ authzest proposal-check "$preview_dir/bundle.json" --json
 
 ## 결과·종료 코드·입력 처리
 
+기본 출력은 비교 결과를 읽기 쉬운 영역으로 표시하며 JSON 문서가 아닙니다. `--json`을 사용하면
+완전한 결과 하나를 stdout으로 보냅니다. 이 모드에서는 애플리케이션 수준 오류도 비식별화한 JSON
+오류 하나를 stdout으로 보내며 기본 모드 오류는 stderr에 유지합니다. CLI 파싱 오류·도움말은
+결과 객체가 아닙니다. 현재 소스의 스트림 전환이며 필드·종료 코드는 유지합니다. 소스 텍스트는
+인용·ASCII 이스케이프하고 미확인 관찰값을 통과로 만들어내지 않습니다.
+
 `status: completed`와 종료 `0`은 비교 처리가 끝났다는 뜻이며 결과에 `mismatched`, `unknown`,
 `not-evaluated`가 있어도 같습니다. 전체 일치 요약이나 보안 통과가 아니므로 개별 결과를 확인하세요.
 런타임 검증은 `not-run`, 인가는 `unknown`, 적용은 `false`, 제공자 호출은 0회를 유지합니다.

@@ -326,7 +326,9 @@ def test_cli_preserves_recovery_metadata_when_asyncio_replaces_cancellation(
                 raise KeyboardInterrupt() from None
 
         monkeypatch.setattr(cli.asyncio, "run", converting_run)
-    args = ["codex-fixture", "--model", MODEL] + (["--runtime-check"] if runtime_check else [])
+    args = ["codex-fixture", "--model", MODEL, "--json"] + (
+        ["--runtime-check"] if runtime_check else []
+    )
     command = runner.invoke(cli.app, args)
     assert command.exit_code == 130
     summary = json.loads(command.stdout)

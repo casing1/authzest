@@ -9,6 +9,7 @@ from typing import Annotated
 import typer
 
 from authzest import __version__
+from authzest.cli_output import WorkflowOutput, format_record, section
 from authzest.diagnostics import collect_diagnostics
 from authzest.runner import ScanRunner
 
@@ -160,17 +161,25 @@ def codex_fixture(
             "separate verification approval required.",
         ),
     ] = False,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="One final JSON on stdout; interaction on stderr.")
+    ] = False,
 ) -> None:
     """Separately approve Codex review, fixture-copy edits, fixed checks and restore."""
     from authzest.runner._fixture_workspace import WorkspaceInitializationError
     from authzest.runner.codex_fixture import FixtureInputError, run_codex_fixture
 
     recovery: dict[str, object] = {}
+    output = WorkflowOutput(as_json)
 
     async def run_with_recovery() -> dict:
         try:
             return await run_codex_fixture(
-                model, timeout_seconds=timeout_seconds, runtime_check=runtime_check, emit=typer.echo
+                model,
+                timeout_seconds=timeout_seconds,
+                runtime_check=runtime_check,
+                emit=output.emit,
+                read=output.read,
             )
         except (asyncio.CancelledError, KeyboardInterrupt) as exc:
             # Capture metadata inside the coroutine: asyncio.run may translate task
@@ -193,34 +202,29 @@ def codex_fixture(
     try:
         result = asyncio.run(run_with_recovery())
     except FixtureInputError as exc:
-        typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
+        output.finish({"status": "invalid-input", "detail": str(exc)}, error=True)
         raise typer.Exit(code=2) from exc
     except (asyncio.CancelledError, KeyboardInterrupt):
-        typer.echo(
-            json.dumps(
-                {
-                    "status": "cancelled",
-                    "exit_code": 130,
-                    **({} if runtime_check else {"runtime_verification_status": "not-run"}),
-                    "detail": "Interrupted; inspect the retained workspace record if created.",
-                    **recovery,
-                },
-                ensure_ascii=True,
-            )
+        output.finish(
+            {
+                "status": "cancelled",
+                "exit_code": 130,
+                **({} if runtime_check else {"runtime_verification_status": "not-run"}),
+                "detail": "Interrupted; inspect the retained workspace record if created.",
+                **recovery,
+            }
         )
         raise typer.Exit(code=130) from None
     except Exception:
-        typer.echo(
-            json.dumps(
-                {
-                    "status": "workflow-failed",
-                    **({} if runtime_check else {"runtime_verification_status": "not-run"}),
-                    "detail": "Inspect the retained workspace record if created.",
-                }
-            )
+        output.finish(
+            {
+                "status": "workflow-failed",
+                **({} if runtime_check else {"runtime_verification_status": "not-run"}),
+                "detail": "Inspect the retained workspace record if created.",
+            }
         )
         raise typer.Exit(code=1) from None
-    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    output.finish(result)
     raise typer.Exit(code=result["exit_code"])
 
 
@@ -239,6 +243,10 @@ def codex_owner_review(
             "--preview-only", help="Print the complete input preview offline; no account use."
         ),
     ] = False,
+    as_json: Annotated[
+        bool,
+        typer.Option("--json", help="One final/preview JSON on stdout; interaction on stderr."),
+    ] = False,
 ) -> None:
     """Review the packaged owner policy; no patches or generated test execution."""
     from authzest.codex.diagnostics import sanitize_failure
@@ -248,50 +256,54 @@ def codex_owner_review(
         run_codex_owner_review,
     )
 
+    output = WorkflowOutput(as_json)
     try:
         result = (
             build_owner_review_preview(model, timeout_seconds=timeout_seconds)
             if preview_only
             else asyncio.run(
-                run_codex_owner_review(model, timeout_seconds=timeout_seconds, emit=typer.echo)
+                run_codex_owner_review(
+                    model, timeout_seconds=timeout_seconds, emit=output.emit, read=output.read
+                )
             )
         )
     except OwnerReviewInputError as exc:
-        typer.echo(json.dumps({"status": "invalid-input", "detail": str(exc)}), err=True)
+        output.finish({"status": "invalid-input", "detail": str(exc)}, error=True)
         raise typer.Exit(code=2) from exc
     except (asyncio.CancelledError, KeyboardInterrupt):
-        typer.echo(
-            json.dumps(
-                {
-                    "status": "cancelled",
-                    "execution_status": "not-run",
-                    "failure": sanitize_failure(None, code="cancelled"),
-                }
-            )
+        output.finish(
+            {
+                "status": "cancelled",
+                "execution_status": "not-run",
+                "failure": sanitize_failure(None, code="cancelled"),
+            }
         )
         raise typer.Exit(code=130) from None
     except Exception:
-        typer.echo(
-            json.dumps(
-                {
-                    "status": "review-failed",
-                    "execution_status": "not-run",
-                    "failure": sanitize_failure(None),
-                }
-            )
+        output.finish(
+            {
+                "status": "review-failed",
+                "execution_status": "not-run",
+                "failure": sanitize_failure(None),
+            }
         )
         raise typer.Exit(code=1) from None
-    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    output.finish(result, preview=preview_only)
     raise typer.Exit(code=result.get("exit_code", 0))
 
 
 @app.command("fixture-demo")
-def fixture_demo() -> None:
+def fixture_demo(
+    as_json: Annotated[
+        bool, typer.Option("--json", help="One final JSON on stdout; interaction on stderr.")
+    ] = False,
+) -> None:
     """Try an offline mock proposal with separate copy-edit, source-check and restore choices."""
     from authzest.runner.fixture_demo import run_fixture_demo
 
+    output = WorkflowOutput(as_json)
     try:
-        result = asyncio.run(run_fixture_demo(emit=typer.echo))
+        result = asyncio.run(run_fixture_demo(emit=output.emit, read=output.read))
     except (asyncio.CancelledError, KeyboardInterrupt):
         result = {
             "status": "cancelled",
@@ -310,29 +322,24 @@ def fixture_demo() -> None:
             "runtime_verification_status": "not-run",
             "detail": "Inspect the retained workspace record if created.",
         }
-    typer.echo(json.dumps(result, ensure_ascii=True, indent=2, allow_nan=False))
+    output.finish(result)
     raise typer.Exit(code=result["exit_code"])
 
 
 def _format_proposal_preview(view: dict) -> str:
-    def quoted(value) -> str:
-        return json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False)
-
     lines = [
         "Offline proposal preview - draft / not-run / authorization unknown",
         "Not applied. Supplied snapshots only; not approval or verification.",
-        "Bundle: " + quoted(view["bundle_id"]),
+        section("Bundle", view["bundle_id"]),
     ]
     for title, key in (("Request", "request"), ("Review", "review"), ("Evidence", "evidence")):
-        lines.extend(("", title, quoted(view[key])))
+        lines.extend(("", section(title, view[key])))
     proposal = view["proposal"]
-    lines.extend(("", "Proposal", quoted({k: v for k, v in proposal.items() if k != "changes"})))
+    lines.extend(("", section("Proposal", {k: v for k, v in proposal.items() if k != "changes"})))
     for change in proposal["changes"]:
-        lines.append(quoted({k: v for k, v in change.items() if k != "diff"}))
-        lines.append("Exact diff (each line is quoted):")
-        lines.extend(quoted(line) for line in change["diff"].split("\n"))
-    lines.extend(("", "Expectations", quoted(view["expectations"])))
-    lines.extend(("", "Limitations", quoted(view["limitations"])))
+        lines.append(section("Change", change))
+    lines.extend(("", section("Expectations", view["expectations"])))
+    lines.extend(("", section("Limitations", view["limitations"])))
     return "\n".join(lines)
 
 
@@ -354,12 +361,10 @@ def proposal_preview_command(
             else _format_proposal_preview(view)
         )
     except PreviewInputError as exc:
-        typer.echo(
-            json.dumps({"status": "invalid-input", "detail": str(exc)}, ensure_ascii=True), err=True
-        )
+        WorkflowOutput(as_json).finish({"status": "invalid-input", "detail": str(exc)}, error=True)
         raise typer.Exit(code=2) from None
     except KeyboardInterrupt:
-        typer.echo('{"status": "cancelled"}', err=True)
+        WorkflowOutput(as_json).finish({"status": "cancelled"}, error=True)
         raise typer.Exit(code=130) from None
     typer.echo(output)
 
@@ -384,40 +389,37 @@ def proposal_check_command(
             if as_json
             else (
                 "Offline source declaration comparison - authorization unknown / runtime not-run\n"
-                "Completed processing is not approval or a security pass. Not applied.\n" + payload
+                "Completed processing is not approval or a security pass. Not applied.\n"
+                + format_record(result, title="Source declaration comparison")
             )
         )
     except PreviewInputError as exc:
-        typer.echo(
-            json.dumps({"status": "invalid-input", "detail": str(exc)}, ensure_ascii=True),
-            err=True,
-        )
+        WorkflowOutput(as_json).finish({"status": "invalid-input", "detail": str(exc)}, error=True)
         raise typer.Exit(code=2) from None
     except KeyboardInterrupt:
-        typer.echo('{"status": "cancelled"}', err=True)
+        WorkflowOutput(as_json).finish({"status": "cancelled"}, error=True)
         raise typer.Exit(code=130) from None
     except Exception:
-        typer.echo(
-            '{"status": "comparison-failed", "detail": "Offline comparison failed."}', err=True
+        WorkflowOutput(as_json).finish(
+            {"status": "comparison-failed", "detail": "Offline comparison failed."}, error=True
         )
         raise typer.Exit(code=1) from None
     typer.echo(output)
 
 
 def _format_review_demo(view: dict) -> str:
-    def quoted(value) -> str:
-        return json.dumps(value, ensure_ascii=True, indent=2, allow_nan=False)
-
     return "\n\n".join(
         [
             "Offline integrated review demo - caller-authored mock; no live model",
             "Read-only. Declaration matches are not authorization or runtime verification.",
-            "Demo provenance\n" + quoted(view["demo"]),
+            section("Demo provenance", view["demo"]),
             _format_proposal_preview(view["preview"]),
-            "Source declaration comparison\n" + quoted(view["comparison"]),
-            "Defensive regression-test draft (prose only; not executable; not run)\n"
-            + quoted(view["regression_test_draft"]),
-            "Review limitations\n" + quoted(view["limitations"]),
+            section("Source declaration comparison", view["comparison"]),
+            section(
+                "Defensive regression-test draft (prose only; not executable; not run)",
+                view["regression_test_draft"],
+            ),
+            section("Review limitations", view["limitations"]),
         ]
     )
 
@@ -437,12 +439,11 @@ def review_demo_command(
             else _format_review_demo(view)
         )
     except KeyboardInterrupt:
-        typer.echo('{"status": "cancelled"}', err=True)
+        WorkflowOutput(as_json).finish({"status": "cancelled"}, error=True)
         raise typer.Exit(code=130) from None
     except Exception:
-        typer.echo(
-            '{"status": "review-failed", "detail": "Offline review composition failed."}',
-            err=True,
+        WorkflowOutput(as_json).finish(
+            {"status": "review-failed", "detail": "Offline review composition failed."}, error=True
         )
         raise typer.Exit(code=1) from None
     typer.echo(output)

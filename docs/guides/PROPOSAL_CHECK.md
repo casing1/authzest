@@ -84,6 +84,12 @@ or an empty scope set never classifies an endpoint as public, safe or vulnerable
 
 ## Results, exits and input handling
 
+Default output presents comparison results as readable sections, not a JSON document. Use `--json`
+for one complete result on stdout. Application-level errors also return one redacted JSON error on
+stdout in that mode; default errors remain on stderr. CLI parsing errors/help are not result objects.
+This current-source stream migration preserves fields and exit codes. Source text is quoted and
+ASCII-escaped; unknown observations remain unknown, never fabricated as a pass.
+
 `status: completed` and exit `0` mean that comparison processing finished, even when results contain
 `mismatched`, `unknown` or `not-evaluated`. They are neither an all-matched summary nor a security
 pass. Inspect the individual results. Runtime verification stays `not-run`, authorization stays

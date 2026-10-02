@@ -36,6 +36,12 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
+- 現在の未リリースソースでは `codex-owner-review`・`codex-fixture`・`fixture-demo` を読みやすく
+  表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
+  出します。オフラインの `--preview-only --json` は完全な owner-review プレビュー一つを返します。
+  スクリプトは JSON を明示的に選び、フィールド・記録された判断・個別承認は変わりません。
+  unknown は合格ではありません。[出力と移行の契約](../../guides/CODEX_OWNER_REVIEW.md#interpret-the-result)を
+  参照してください。公開済み alpha.3 の表示は変更せず、GUI や新しい提供者/実行権限は追加しません
 - 未リリースの読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) をソースに追加：
   対応 POSIX システムで bundle の正確な diff・根拠・期待結果を表示し、承認や実行は行わない
 - 未リリースの [`authzest proposal-check`](../../guides/PROPOSAL_CHECK.md) で、対応範囲内の変更前後の

@@ -92,8 +92,10 @@ or the pure Python APIs.
 
 The selected input must be a regular UTF-8 file within the size limit. A final-component symlink,
 FIFO or other special file, a detected change during reading, invalid UTF-8, malformed JSON or
-inconsistent artifact binding produces exit code `2`, an error on stderr and no partial preview on
-stdout. The reader does not promise to reject symlinks in parent directories or provide a snapshot
+inconsistent artifact binding produces exit code `2` and no partial preview. In default mode, the small
+redacted JSON error goes to stderr; with `--json`, one error object goes to stdout with no stderr
+diagnostic. This current-source stream migration does not change the error fields or exit code.
+CLI parsing errors/help are not result objects. The reader does not promise to reject symlinks in parent directories or provide a snapshot
 guarantee against a hostile concurrent writer. Use a file and directory you control.
 The byte bound is not a wall-clock timeout for filesystem access.
 

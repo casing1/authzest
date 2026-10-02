@@ -31,11 +31,14 @@ model ID you intend to request. No model is selected automatically. From any sup
 
 ```bash
 authzest codex-owner-review --model MODEL --preview-only
+authzest codex-owner-review --model MODEL --preview-only --json
 ```
 
-This prints one complete JSON preview and exits without prompting, launching Codex, accessing an
-account or making a network request. It requires neither Codex nor a login. There is no `--json`,
-arbitrary path or automatic-approval option. The preview includes the request, task prompt, host
+Both commands exit without prompting, launching Codex, accessing an account or making a network
+request, and require neither Codex nor a login. In current unreleased source, the default presents a
+readable scope/identity summary followed by the complete authoritative JSON envelope. Add `--json`
+for one complete preview object on stdout. There is no arbitrary path or automatic-approval option.
+The preview includes the request, task prompt, host
 instructions, output schema and limits, along with the `sharing_id` to which approval is bound.
 This ID covers that entire sharing envelope and a fresh per-invocation `invocation_nonce`, not just
 the request ID. `sharing_content_id` separately identifies the stable displayed content. Identical
@@ -315,8 +318,24 @@ re-review remain separate merge gates.
 
 ## Interpret the result
 
-Interactive mode prints the preview, asks for consent and then prints a final JSON result. Its whole
-terminal output is not one JSON document; use `--preview-only` for a single preview document.
+Current unreleased source defaults to readable sections for scope, evidence, rationale, case drafts,
+identity, decisions and final status. Source/model text and exact diff lines are quoted and ASCII-escaped;
+missing usage/observations remain unknown, not zero or passed. Case provenance remains model-authored
+and unreviewed. A successful workflow is not an authorization/security pass.
+
+For machine consumers, add `--json`: stdout contains exactly one final result object, including
+application-level failures/cancellation; full previews and prompts go to stderr. `--preview-only --json`
+instead produces one complete offline preview, with no prompt or provider process. This changes the
+previous mixed/default JSON display: scripts must explicitly select `--json` and parse stdout only.
+JSON fields, record semantics, exit codes and exact consent checks are unchanged. CLI parsing errors
+(such as an unknown option), help and process-level interruption before result handling are not result
+documents. Human-mode input errors retain their small redacted JSON diagnostic on stderr.
+
+The complete sharing envelope remains visible before consent; no abbreviated summary grants sharing,
+application or execution authority. Prompts use stderr in both modes, without normalizing answers.
+Do not combine stderr with stdout when parsing JSON, and protect any captured preview log: it contains
+the source/policy payload being reviewed. These display changes made no new live provider call and are
+not added retroactively to the published alpha.3 binaries.
 
 A validated draft contains evidence-linked review answers and 1–16 structured defensive cases.
 Each case describes principal/report inputs, an expected boolean and a reason; these are data for

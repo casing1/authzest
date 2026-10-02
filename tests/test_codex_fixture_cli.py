@@ -528,7 +528,7 @@ def test_cli_renders_provider_warning_count_without_inventing_usage(
         lambda *args, **kwargs: session_type(*args, **{**kwargs, "parent": tmp_path}),
     )
     result = runner.invoke(
-        app, ["codex-fixture", "--model", MODEL], input=f"share {request.request_id}\n\n"
+        app, ["codex-fixture", "--model", MODEL, "--json"], input=f"share {request.request_id}\n\n"
     )
     assert result.exit_code == 0, result.output
     marker = '{\n  "kind": "codex-owned-fixture-workflow"'
@@ -560,7 +560,7 @@ def test_cli_retry_notification_summary_is_bounded(tmp_path, monkeypatch, count,
         lambda *args, **kwargs: session_type(*args, **{**kwargs, "parent": tmp_path}),
     )
     result = runner.invoke(
-        app, ["codex-fixture", "--model", MODEL], input=f"share {request.request_id}\n\n"
+        app, ["codex-fixture", "--model", MODEL, "--json"], input=f"share {request.request_id}\n\n"
     )
     assert result.exit_code == 0, result.output
     marker = '{\n  "kind": "codex-owned-fixture-workflow"'
@@ -858,6 +858,8 @@ def test_cli_renders_historical_configuration_pass_after_separately_confirmed_re
         return answer
 
     async def offline_workflow(model, *, emit, **kwargs):
+        kwargs.pop("read", None)  # This test supplies exact choices instead of terminal input.
+
         def capture(text):
             previews.append(json.loads(text))
             emit(text)
@@ -867,7 +869,7 @@ def test_cli_renders_historical_configuration_pass_after_separately_confirmed_re
         )
 
     monkeypatch.setattr(workflow, "run_codex_fixture", offline_workflow)
-    result = runner.invoke(app, ["codex-fixture", "--model", MODEL])
+    result = runner.invoke(app, ["codex-fixture", "--model", MODEL, "--json"])
     assert result.exit_code == 0, result.output
     marker = '{\n  "kind": "codex-owned-fixture-workflow"'
     summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
@@ -969,7 +971,7 @@ def test_cli_interrupted_or_unknown_workflow_does_not_claim_verification_never_s
         raise failure("SECRET-LOCAL-EXCEPTION")
 
     monkeypatch.setattr(workflow, "run_codex_fixture", fail)
-    result = runner.invoke(app, ["codex-fixture", "--model", MODEL])
+    result = runner.invoke(app, ["codex-fixture", "--model", MODEL, "--json"])
     assert result.exit_code == (130 if failure is KeyboardInterrupt else 1)
     summary = json.loads(result.stdout)
     assert summary["status"] == ("cancelled" if failure is KeyboardInterrupt else "workflow-failed")

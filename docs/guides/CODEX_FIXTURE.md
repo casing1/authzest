@@ -58,6 +58,21 @@ See the official [authentication guide](https://learn.chatgpt.com/docs/auth) for
 The [App Server documentation](https://learn.chatgpt.com/docs/app-server) describes its managed ChatGPT
 authentication; the restrictions here are AuthZest's narrower fixture workflow, not general Codex limits.
 
+## Current-source output and JSON migration
+
+The current unreleased source defaults to readable preview/result sections, with quoted source text
+and exact diff lines. Before sharing, it still shows the complete authoritative sharing envelope;
+scope summaries never replace consent review. Application, checking and restoration remain separate
+exact-phrase decisions. Unknown usage or observations are not converted to zero or a security pass.
+
+For scripts using this source version, add `--json`: stdout contains one final result object, including
+application-level failures/cancellation, while complete previews and prompts go to stderr. Parse
+stdout only; do not combine streams. CLI parsing errors/help are not result objects. Default-mode
+input errors keep a small redacted JSON diagnostic on stderr. JSON fields, retained records, exit
+codes and execution permissions are unchanged. Protect captured preview logs containing source data.
+This is a display migration, not a new provider call, and the published alpha.3 binaries keep their
+older mixed JSON output. See the [owner-review output contract](CODEX_OWNER_REVIEW.md#interpret-the-result).
+
 ## At most one model turn, separate file approval
 
 After sharing approval, the adapter uses the supported local App Server for at most one application-issued
@@ -124,7 +139,7 @@ exactly; decline/cancel does not apply the draft. After application, the selecte
 source-configuration or opt-in owned-fixture runtime—is optional and separately approved.
 Restoration requires `restore <proposal_id>` and
 refuses detected intervening edits; it does not overwrite user work. The copy, before/after snapshots,
-and `record.json` are retained for inspection; the workflow JSON summary includes request/proposal IDs
+and `record.json` are retained for inspection; the structured result includes request/proposal IDs
 and available usage. The file-operation limits
 and failure meanings in the [copy application guide](FIXTURE_APPLICATION.md) still apply.
 
