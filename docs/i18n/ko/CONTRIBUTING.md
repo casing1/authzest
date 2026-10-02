@@ -142,7 +142,10 @@ python scripts/smoke_release.py --binary dist/authzest
 ```
 
 Windows에서는 `--binary dist/authzest.exe`를 사용합니다. 이 제한된 smoke 검사는 Codex나 스캔 대상 코드를
-실행하지 않고 소스 전용 fixture, 리포트 일치, CLI 종료와 이동 복사본을 확인합니다. 일반 사용자 기기의
+실행하지 않고 소스 전용 fixture, 리포트 일치, CLI 종료, 완전한 오프라인 소유 미리보기의 텍스트/JSON과
+이동 복사본을 확인합니다. 미리보기는 고정 오프라인 모델 표기·호출별 새 식별값·최소 자식 환경을 사용하며
+공유나 사례 예상값을 승인하지 않습니다. binary 모드는 18개, checksum 확인 artifact 모드는 9개입니다.
+OS sandbox가 아니며 일반 사용자 기기의
 설치·업그레이드 지원까지 입증하지는 않습니다. 선택 사항인 `doctor`를 명시적으로 실행하면 설치된 Codex CLI의
 `codex --version`과 `codex login status`를 호출할 수 있으며 AI 스캔을 시작하지는 않습니다.
 로그인 성공이 AI 스캔을 활성화하거나 소스 공유를 승인하지 않습니다. 별도의

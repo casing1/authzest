@@ -171,6 +171,17 @@ checking a local build.
    On Windows use `--binary dist/authzest.exe`. The per-command timeout defaults to 45 seconds;
    `--expected-version` can explicitly select the expected PEP 440 version instead of `pyproject.toml`.
 
+   It also checks human/JSON `codex-owner-review --preview-only` with the fixed offline model label
+   `offline-release-smoke-model`: the complete source/task envelope must match the trusted checkout,
+   including identity hashes, limits, human summary and a fresh invocation nonce for every CLI call.
+   These two extra checks per executable bring binary mode to 18 checks and checksum-aware artifact
+   mode to 9. Preview children receive a minimal environment, no ambient credentials and only the
+   temporary executable directory on PATH. This is not an OS sandbox; preview mode grants no sharing,
+   case-label approval, policy execution or authorization verdict. The controller's baseline uses
+   standard-library-only core modules, so the existing dependency-free `python -I` artifact gate
+   remains supported. The same versioned smoke script runs in all three platform build/download jobs;
+   passing unit tests or one local platform does not establish that all native artifacts pass.
+
    The separate [runtime smoke](../guides/RUNTIME_VERIFICATION.md) checks the actual native parent
    and its worker on the fixed bundled AFTER fixture, plus a relocated copy. POSIX must pass exact
    debug/ASGI health observations; Windows must return unsupported without a worker. It makes no
