@@ -11,12 +11,12 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 
 ## 현재 작업 — 2026-10-02
 
-PR #76이 병합돼 읽기 전용 소유 정책 Codex 검토는 새 main에 구현됐으며 공개 alpha.3에는 없습니다.
-모델 작성 사례는 미검토/미실행입니다. 다음은
-[#79 읽기 쉬운 CLI 출력](https://github.com/casing1/authzest/issues/79)과
-[#77 오프라인 사례 검토/고정 계획](https://github.com/casing1/authzest/issues/77)이며 이후 검토한
-고정 정책 harness·제한된 수정/통합 수용으로 이어집니다. 현재 대시보드는 정적 목록 화면이고 AI
-검토/승인 뷰어는 아닙니다. 계획한 출력 개선은 아직 구현되지 않았습니다.
+PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
+Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
+소스 기능이며 공개 alpha.3에는 없습니다. 기록된 모델 작성 예상값 10개는 미검토/미실행으로,
+#77은 해당 검토를 위해 열어 둡니다. 계약에는 executor나 새 CLI 명령이 없습니다. 다음은 #80의
+검토한 고정 정책 harness이며 이후 제한된 수정/통합 수용으로 이어집니다. 현재 대시보드는
+정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 
 [현재 개발 계획](development/DEVELOPMENT_PLAN.md)에서 우선순위·실제 마일스톤 상태·릴리즈/평가 gate와
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로
@@ -55,6 +55,7 @@ docs/
 | 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)              |
 | 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)           |
 | 소유 정책의 읽기 전용 Codex 검토       | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md) |
+| 오프라인 소유 사례 검토와 고정 계획    | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)  |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)      |
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)             |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)        |

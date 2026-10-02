@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #77's pure [owner-case review/fixed-plan contract](docs/reference/OWNER_CASE_PLAN.md), schema
+  `1.0`: retain exact model-authored inputs, original labels/evidence and source/task identities;
+  record pending/approved/changed/declined caller choices without authenticated approval claims.
+  Preview exact maintained policy bytes, selected labels and a pinned design recipe, revalidating
+  all relationships after changes. No CLI/executor, provider call, case execution or release;
+  the ten real labels remain pending and all plans remain not-run/authorization unknown.
+
 - Record one successful, freshly approved owner-review source-CLI run on 2026-10-01 at `9257bd7`:
   `draft-ready`, exit `0`, about 74 seconds, one answer and ten host-valid defensive case drafts.
   Provider-reported usage was 7,994 input / 2,242 output tokens, one warning and zero retry notifications.

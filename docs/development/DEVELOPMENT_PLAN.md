@@ -23,7 +23,7 @@ value is a hypothesis to measure, not an established advantage; see [model strat
 
 ## Current baseline — 2026-10-02
 
-Baseline main: `142a0dc71c70a95554e837d7a95eda5629038c82`, PR #76 merged on 2026-10-01.
+Implementation base: `c63c1bf106eda69e367ca727126ccf8c00e1e1a2`, PR #90 merged on 2026-10-02.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
@@ -35,6 +35,8 @@ Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PR
 | Opt-in App Server fixture workflow            | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                       |
 | Owned report policy example                   | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance        |
 | Read-only owner Codex review (#75 / PR #76)   | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof   |
+| Readable CLI output (#79 / PR #90)            | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                      |
+| Offline case-review / fixed-plan API (#77)    | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable    |
 
 The recorded owner review at `9257bd7` took about 74 seconds. Its model-authored ten-case expectations
 remain **unreviewed**, execution not-run and authorization unknown. The maintainer approved policy
@@ -51,14 +53,14 @@ fixture application/runtime mode is supported only on tested POSIX platforms.
 
 GitHub milestone numbers below are phase identifiers, not development-week numbers or exact release manifests.
 
-| Phase                                       | Current status    | Completion gate / remaining tracking                                 |
-| ------------------------------------------- | ----------------- | -------------------------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                         |
-| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                         |
-| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results      |
-| 04 — User-approved Codex workflow           | Open              | #35 epic; #77/#80/#81/#82 core gates, #78 coordination               |
-| 05 — CLI usability and prerelease readiness | Open              | #79 human-readable CLI, #83 candidate/install/artifact/release gates |
-| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze       |
+| Phase                                       | Current status    | Completion gate / remaining tracking                            |
+| ------------------------------------------- | ----------------- | --------------------------------------------------------------- |
+| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                    |
+| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                    |
+| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results |
+| 04 — User-approved Codex workflow           | Open              | #35 epic; #77/#80/#81/#82 core gates, #78 coordination          |
+| 05 — CLI usability and prerelease readiness | Open              | #79 completed; #83 candidate/install/artifact/release gates     |
+| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze  |
 
 Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
 and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
@@ -70,8 +72,8 @@ historical items in their original phases.
 
 | Priority     | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                             |
 | ------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Now          | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | Offline formatter/fake-provider tests; complete sharing preview and separate decisions remain visible                            |
-| Now          | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Offline states/identities/plan contract; pending labels prevent verified results, not contract implementation                    |
+| Completed    | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                        |
+| Review gate  | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Offline Python contracts implemented; exact recorded ten-case label approval remains pending; no executor                        |
 | Next         | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | #77 + explicitly reviewed exact case set + fresh separately approved execution plan                                              |
 | Then         | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | Review design first; implementation depends on #80; exact owned single-file diff or valid no-change                              |
 | Core gate    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                            |
@@ -79,22 +81,23 @@ historical items in their original phases.
 | Evaluation   | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82 |
 | Delivery     | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                        |
 
-Immediate work: brief the maintainer, then implement #79 CLI readability and #77 offline contracts in
-separate issue-linked PRs. No real model call, case-label approval or target execution is needed for
-those implementation tests. Do not block all offline work on the pending ten-label decision.
+Immediate work: finish #77's offline contract PR and review the exact recorded labels separately.
+#79 is complete. Next brief the maintainer on #80's fixed policy harness before implementation.
+No real model call, case-label approval or target execution is needed for offline contract tests.
+Do not block all offline work on the pending ten-label decision; do not execute those cases without it.
 
-For #79, define human-readable defaults and explicit JSON compatibility: one final result on stdout
+Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only
 JSON. Preserve exact identity-bound sharing content before consent; summaries alone are insufficient.
-Document the default-output migration rather than claiming unchanged stdout behavior.
+The guides document the default-output migration rather than claiming unchanged stdout behavior.
 
 A future preview may follow #77/#79 without waiting for complete #35 if its implemented scope and
 limitations are explicit. It still requires #83's own checks; a docs PR or passing mock is not a release gate.
 
 ## Core acceptance and defensive PoC
 
-- [ ] Exact case review and fixed verification-plan contracts accepted (#77).
-- [ ] Readable CLI results, retained records and documented text/JSON streams accepted (#79).
+- [ ] Exact case review and fixed verification-plan contracts accepted (#77); the data API exists, but the recorded ten labels still need maintainer review.
+- [x] Readable CLI results, retained records and documented text/JSON streams accepted (#79 / PR #90).
 - [ ] Maintained fixed policy worker produces expected-versus-observed results under a new separate approval (#80).
 - [ ] Reviewed bounded defensive reproduction and evidence-linked remediation/no-change accepted (#81).
 - [ ] Installed coherent end-to-end flow, failure/refusal/user-edit/recovery cases and required reviews pass (#82); only then close #35.

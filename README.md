@@ -31,6 +31,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 ## What the current source supports
 
 - Recognizes statically constructed `FastAPI` and `APIRouter` owners, including supported import aliases.
+- Adds an unreleased Python [owner-case review/fixed-plan API](docs/reference/OWNER_CASE_PLAN.md):
+  bind exact model case data to pending/approved/changed/declined caller records and an inspectable
+  maintained-policy plan. No new CLI or executor; recorded live labels remain pending, every plan
+  is not-run with authorization unknown, and label review grants no execution/sharing/patch authority.
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
