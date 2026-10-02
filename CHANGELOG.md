@@ -91,6 +91,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Update the frontend development lock from brace-expansion 5.0.9 to 5.0.12 for three public DoS
+  advisories (#87), retaining direct dependencies and minimatch 10.2.6. This changes developer/CI
+  dependency selection, not a confirmed endpoint vulnerability or the immutable alpha.3 binaries.
+  Prettier's embedded copy is not replaced by this lock entry; #87 remains open for the separate
+  EditorConfig path. A clean npm audit of the dependency graph is not evidence that bundled copies
+  or every developer-tooling DoS path are safe.
 - Bind owner-review confirmation to a fresh local invocation nonce, with a separate stable content
   identity. Reject a captured phrase from an identical prior invocation before constructing an adapter;
   revalidate the same nonce for the current single attempt. Add offline stale-phrase and actual-CLI
