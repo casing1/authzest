@@ -28,6 +28,27 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 [소스 전용 예제](../guides/EXAMPLES.md)는 파서 회귀 검사와 데모이며
 보안 벤치마크가 아닙니다.
 
+## 현재 제출 우선순위 — 2026-10-02
+
+PR #76은 main `142a0dc`에 병합됐으며 읽기 전용 소유 정책 검토는 앞으로 붙일 adapter가 아니라
+구현된 기능입니다. 모델 작성 10개 사례는 미검토/미실행이고 호스트 형식 검증이 정확성을 증명하지 않습니다.
+바로 할 오프라인 작업은 [#79 CLI 가독성](https://github.com/casing1/authzest/issues/79)과
+[#77 정확한 사례 검토/고정 계획 계약](https://github.com/casing1/authzest/issues/77)입니다.
+정답 승인 대기는 검증 성공을 막되 오프라인 계약 구현 자체를 막지 않습니다.
+
+이후 [#80](https://github.com/casing1/authzest/issues/80)의 유지하는 고정 순수 정책 harness,
+구현 전 [#81](https://github.com/casing1/authzest/issues/81)의 제한된 방어적 재현/수정 설계 검토,
+[#82](https://github.com/casing1/authzest/issues/82)의 통합 결정/관찰/복구 수용으로 진행합니다.
+방어적 PoC는 직접 소유한 합성 회귀 사례 **데이터**이며 AI 생성 Python/shell이나 외부 공격이 아닙니다.
+올바른 정책에 변경 없음도 정상 결과입니다. 필요하면 의도적 오류를 명시한 test-only 변형을 구현 전에
+검토하고 생산 코드 취약점을 꾸며내지 않습니다. 순수 정책 관찰은 HTTP 인증/인가 증명이 아닙니다.
+
+모델을 명시하고 adapter 교체 경계를 유지하되 새 GPT 버전·다른 transport·전체 Python 해석기·AI GUI를
+이 gate보다 우선하지 않습니다. 프롬프트 수정 전에 독립 정답 검토를 고정하고
+[#84](https://github.com/casing1/authzest/issues/84)에서 3개 모드의 가설을 측정합니다.
+실제 공유·사례 정답·정확한 diff 적용·실행에는 별도 한정 결정이 필요하며 이번 계획은 실제 호출 승인이
+아닙니다. 통일한 마일스톤과 기존 작업을 포함하는 개발 7주는 [개발 계획](DEVELOPMENT_PLAN.md)을 참고하세요.
+
 ## 안정적인 계약과 교체 가능한 모델
 
 | 계층                | 책임                                                                  | 뜻하지 않는 것                                  |

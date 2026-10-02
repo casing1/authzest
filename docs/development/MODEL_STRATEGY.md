@@ -30,6 +30,29 @@ and inherited application/router/include context. It does not yet resolve nested
 correctness, or run AI as part of a scan. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
+## Current delivery priorities — 2026-10-02
+
+PR #76 merged at main `142a0dc`; the read-only owner review is implemented, not an upcoming adapter task.
+Its ten model-authored cases remain unreviewed/not-run, and host validation does not establish correctness.
+The next offline work is [#79 CLI readability](https://github.com/casing1/authzest/issues/79) and
+[#77 exact case-review / fixed-plan contracts](https://github.com/casing1/authzest/issues/77).
+Pending label approval prevents a verified result, not offline contract implementation.
+
+Then [#80](https://github.com/casing1/authzest/issues/80) adds one fixed maintained pure-policy harness,
+[#81](https://github.com/casing1/authzest/issues/81) reviews a bounded defensive reproduction/remediation
+design before implementation, and [#82](https://github.com/casing1/authzest/issues/82) accepts the integrated
+decision/observation/recovery flow. Defensive PoC means owned synthetic regression-case **data**, not
+AI-generated Python/shell or an external exploit. A correct-policy no-change result is valid; if needed,
+review a clearly labelled intentionally incorrect test-only variant before implementation rather than
+inventing a production defect. Policy observations do not attest HTTP authentication/authorization.
+
+Keep model selection explicit and the adapter replaceable; do not prioritize a new GPT version, second
+transport, complete Python interpreter or AI GUI over these gates. Freeze independent reference review
+before prompt iteration and measure the three-mode hypothesis under
+[#84](https://github.com/casing1/authzest/issues/84). Actual sharing, case labels, exact-diff application
+and execution still require separate bounded decisions. This planning update grants no live calls.
+See the [development plan](DEVELOPMENT_PLAN.md) for the single milestone map and inclusive seven-week budget.
+
 ## Stable contracts, replaceable models
 
 | Layer                    | Responsibility                                                                                         | Must not imply                                                    |

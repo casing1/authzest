@@ -9,6 +9,19 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
+## Current work — 2026-10-02
+
+PR #76 is merged; read-only owner-policy Codex review is implemented in newer main, not published alpha.3.
+Its model-authored cases remain unreviewed/not-run. Next are
+[#79 readable CLI output](https://github.com/casing1/authzest/issues/79) and
+[#77 offline case review / fixed plans](https://github.com/casing1/authzest/issues/77), followed by a
+reviewed fixed policy harness and bounded remediation/acceptance. The current dashboard displays static
+inventory; it is not an AI review/approval viewer. Planned readable output is not implemented yet.
+
+Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
+release/evaluation gates and the existing seven-development-week budget. Historical completion records
+remain in issues/changelog/releases; issue-count percentages do not measure product completion.
+
 ## Guides and languages
 
 English is the canonical language. Every repository-owned Markdown document has Korean content;
