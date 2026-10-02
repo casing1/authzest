@@ -363,6 +363,9 @@ def test_json_wrappers_are_immutable_but_never_a_trust_boundary(context):
 @pytest.mark.parametrize(
     "raw",
     ['{"origin":null,"origin":null}', '{"x":NaN}', "{}", "[]", "{" + " " * MAX_JSON_BYTES + "}"],
+    # Keep raw byte-budget probes out of pytest's node ID / PYTEST_CURRENT_TEST.
+    # Windows cannot store a 256 KiB parameter representation in that env value.
+    ids=["duplicate-keys", "nonfinite", "incomplete-object", "nonobject-array", "oversize-bytes"],
 )
 def test_invalid_duplicate_nonfinite_and_oversize_json(context, raw):
     _, request, draft, case_set = context
