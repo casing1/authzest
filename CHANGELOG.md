@@ -89,13 +89,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   previews remain draft/not-run with unknown authorization. No generated tests, provider calls,
   CLI integration or new execution/approval authority; published alpha.3 remains unchanged.
 
+### Changed
+
+- Make #79's `codex-owner-review`, `codex-fixture` and `fixture-demo` readable by default; reuse safe
+  section/diff formatting in proposal preview/check and review demo. Scripts must add `--json` for
+  one final stdout result, including application failures, with full interactive previews/prompts on
+  stderr; offline owner-preview JSON remains one complete envelope. Preserve fields, unknown values,
+  mock/model provenance, retained records, exit codes and separate exact approvals. This is an
+  unreleased display/stream migration, not a new provider call, GUI, execution permission or release.
+
 ### Fixed
 
 - Update the frontend development lock from brace-expansion 5.0.9 to 5.0.12 for three public DoS
   advisories (#87), retaining direct dependencies and minimatch 10.2.6. This changes developer/CI
   dependency selection, not a confirmed endpoint vulnerability or the immutable alpha.3 binaries.
-  Prettier's embedded copy is not replaced by this lock entry; #87 remains open for the separate
-  EditorConfig path. A clean npm audit of the dependency graph is not evidence that bundled copies
+  Prettier's embedded copy is not replaced by this lock entry; #89 tracks the separate
+  EditorConfig path after the scoped #87 maintenance merge. A clean npm audit of the dependency graph is not evidence that bundled copies
   or every developer-tooling DoS path are safe.
 - Bind owner-review confirmation to a fresh local invocation nonce, with a separate stable content
   identity. Reject a captured phrase from an identical prior invocation before constructing an adapter;

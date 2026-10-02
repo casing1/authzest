@@ -78,9 +78,15 @@ def test_zero_exit_means_processed_not_a_security_or_expectation_pass(tmp_path, 
     result = runner.invoke(app, ["proposal-check", str(path), *(["--json"] if as_json else [])])
     assert result.exit_code == 0 and result.stderr == ""
     assert result.stdout.isascii()
-    payload = result.stdout if as_json else result.stdout[result.stdout.index("{") :]
-    report = json.loads(payload)
-    assert report == workflow.check_proposal(bundle)
+    report = workflow.check_proposal(bundle)
+    if as_json:
+        assert json.loads(result.stdout) == report
+    else:
+        from authzest.cli_output import format_record
+
+        assert result.stdout.endswith(
+            format_record(report, title="Source declaration comparison") + "\n"
+        )
     assert report["results"][0]["status"] == outcome
     assert report["summary"][outcome] == 1
     assert report["authorization_verdict"] == "unknown"
@@ -146,10 +152,13 @@ def test_untrusted_declaration_and_limitation_strings_are_ascii_escaped(tmp_path
         and "읽기" not in result.stdout
     )
     assert "\\u001b" in result.stdout and "\\u202e" in result.stdout
-    text = result.stdout if as_json else result.stdout[result.stdout.index("{") :]
-    report = json.loads(text)
-    assert report["results"][0]["status"] == "mismatched"
-    assert report["results"][0]["observed"] == {"scopes": sorted(scopes)}
+    if as_json:
+        report = json.loads(result.stdout)
+        assert report["results"][0]["status"] == "mismatched"
+        assert report["results"][0]["observed"] == {"scopes": sorted(scopes)}
+    else:
+        assert '"status": "mismatched"' in result.stdout
+        assert all(json.dumps(scope, ensure_ascii=True) in result.stdout for scope in scopes)
 
 
 @posix_only
@@ -172,8 +181,8 @@ def test_invalid_bundle_input_has_only_redacted_usage_error(tmp_path, kind):
             }[kind]
         )
     result = runner.invoke(app, ["proposal-check", str(path), "--json"])
-    assert result.exit_code == 2 and result.stdout == "" and result.stderr.isascii()
-    payload = json.loads(result.stderr)
+    assert result.exit_code == 2 and result.stderr == "" and result.stdout.isascii()
+    payload = json.loads(result.stdout)
     assert payload["status"] == "invalid-input"
     assert "private-input" not in payload["detail"] and "never-display" not in payload["detail"]
 

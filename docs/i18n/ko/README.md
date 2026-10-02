@@ -35,6 +35,12 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
+- 현재 미출시 소스의 `codex-owner-review`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
+  기본으로 사용합니다. `--json`은 stdout에 최종 결과 하나만 출력하고 완전한 동의 미리보기·질문은
+  stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 미리보기 하나를
+  반환합니다. 스크립트는 JSON을 명시해야 하며 필드·기록한 결정·별도 승인은 유지하고 미확인은
+  통과가 아닙니다. [출력·전환 계약](guides/CODEX_OWNER_REVIEW.md#결과-해석)을 참고하세요.
+  공개 alpha.3는 기존 표시를 유지하며 GUI·새 제공자 호출/실행 권한은 추가하지 않습니다.
 - 소스에 미출시 읽기 전용 [`authzest proposal-preview`](guides/PROPOSAL_PREVIEW.md) 추가:
   지원하는 POSIX 시스템에서 bundle의 정확한 diff·근거·예상 결과를 표시하며 승인·실행은 하지 않음
 - 미출시 [`authzest proposal-check`](guides/PROPOSAL_CHECK.md)로 지원 범위 내 변경 전후 소스

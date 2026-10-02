@@ -377,10 +377,10 @@ def test_cli_prints_summary_and_preserves_runner_exit_code(monkeypatch, exit_cod
         return {"exit_code": exit_code, "runtime_verification_status": "not-run"}
 
     monkeypatch.setattr(workflow, "run_fixture_demo", result)
-    cli = runner.invoke(app, ["fixture-demo"])
+    cli = runner.invoke(app, ["fixture-demo", "--json"])
     assert cli.exit_code == exit_code
-    values = json_stream(cli.stdout)
-    assert values[0]["kind"] == "test-preview" and values[-1]["exit_code"] == exit_code
+    assert json_stream(cli.stderr)[0]["kind"] == "test-preview"
+    assert json.loads(cli.stdout)["exit_code"] == exit_code
 
 
 @pytest.mark.parametrize("failure,expected", [(KeyboardInterrupt, 130), (RuntimeError, 1)])
@@ -389,7 +389,7 @@ def test_cli_unhandled_failures_are_sanitized_and_not_success(monkeypatch, failu
         raise failure("PRIVATE-DEMO-ERROR")
 
     monkeypatch.setattr(workflow, "run_fixture_demo", fail)
-    cli = runner.invoke(app, ["fixture-demo"])
+    cli = runner.invoke(app, ["fixture-demo", "--json"])
     assert cli.exit_code == expected
     result = json.loads(cli.stdout)
     assert "verification_status" not in result
@@ -420,7 +420,7 @@ def test_cli_outside_checkout_uses_no_development_imports_and_leaves_cwd_alone(
 
     monkeypatch.setattr(builtins, "__import__", packaged_only)
     monkeypatch.setattr(workflow, "run_fixture_demo", isolated)
-    cli = runner.invoke(app, ["fixture-demo"])
+    cli = runner.invoke(app, ["fixture-demo", "--json"])
     assert cli.exit_code == 0
     result = json_stream(cli.stdout)[-1]
     assert result["application"]["status"] == "declined"

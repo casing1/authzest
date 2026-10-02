@@ -515,6 +515,7 @@ def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
         "-m",
         "authzest.cli",
         command,
+        "--json",
         "--model",
         "fixture-test-model",
         "--timeout-seconds",
@@ -539,8 +540,8 @@ def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
                 async with asyncio.timeout(20):
                     header = b"\nType 'share "
                     ending = b"' to confirm; Enter declines, 'cancel' cancels: "
-                    prefix = await child.stdout.readuntil(header)
-                    suffix = await child.stdout.readuntil(ending)
+                    prefix = await child.stderr.readuntil(header)
+                    suffix = await child.stderr.readuntil(ending)
                     preview = json.loads(prefix[: -len(header)])
                     assert suffix[: -len(ending)].decode() == preview["sharing_id"]
                     output, error = await child.communicate(
@@ -549,8 +550,8 @@ def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
                     return subprocess.CompletedProcess(
                         arguments,
                         child.returncode,
-                        (prefix + suffix + output).decode(),
-                        error.decode(),
+                        output.decode(),
+                        (prefix + suffix + error).decode(),
                     )
             finally:
                 if child.returncode is None:
@@ -574,8 +575,8 @@ def cli_process(fake, tmp_path, answer, *, command="codex-fixture"):
         if command == "codex-owner-review"
         else "codex-owned-fixture-workflow"
     )
-    marker = '{\n  "kind": "' + kind + '"'
-    summary = json.loads(result.stdout[result.stdout.rindex(marker) :])
+    summary = json.loads(result.stdout)
+    assert summary["kind"] == kind
     return result, summary, temporary_root
 
 

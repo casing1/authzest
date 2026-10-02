@@ -34,6 +34,11 @@ Only `--json` and help are accepted. There are no positional arguments or target
 apply, runtime, approval or export options, and no confirmation prompt. Text output shows the preview,
 comparison, draft and limitations; JSON contains the same composed information. Output is ASCII-escaped.
 
+The shared readable formatter preserves mock provenance, unknown observations and quoted exact diff
+lines. With `--json`, application-level errors also produce one redacted error object on stdout;
+default errors remain on stderr. CLI parsing errors/help are not result objects. This current-source
+stream migration changes no result fields, exit codes, approval or execution permissions.
+
 The maintained source-only case changes one `Security` declaration's `scopes=[]` to
 `scopes=["reports:read"]`, while the effective dependency count stays at one. The declaration targets
 therefore report two `matched` results. Caller-authored restricted policy intent remains one

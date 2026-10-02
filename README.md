@@ -34,6 +34,12 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
+- Current unreleased source makes `codex-owner-review`, `codex-fixture` and `fixture-demo` readable by
+  default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
+  Offline `--preview-only --json` returns one complete owner-review preview. Scripts must explicitly
+  select JSON; fields, recorded decisions and separate approvals are unchanged. Unknown is not a pass.
+  See the [output/migration contract](docs/guides/CODEX_OWNER_REVIEW.md#interpret-the-result).
+  Published alpha.3 retains its older display; no GUI or new provider/execution permission is added.
 - Adds the unreleased, read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md) in source:
   display a bundle's exact diff, evidence and expected outcomes on supported POSIX systems; no approval or execution.
 - Adds the unreleased [`authzest proposal-check`](docs/guides/PROPOSAL_CHECK.md) to compare declaration
