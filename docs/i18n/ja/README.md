@@ -223,12 +223,15 @@ npm --prefix frontend run build
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 検査ツールはドキュメントの実行例を実行せず、翻訳ペア、ローカルリンク、コマンドの一致を確認します。
 整形コマンドは Git が追跡する Markdown が対象なので、新しいガイドは最終確認の前に staging に含めてください。
+[整形ガイド（英語）](../../development/FORMATTING.md)で、書き込みコマンド、維持するルート
+EditorConfig、およびガードの制限を確認してください。
 
 ## 独立した実行ファイル
 

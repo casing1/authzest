@@ -116,6 +116,10 @@ each new release; the published `v0.1.0-alpha.1`, `v0.1.0-alpha.2` and `v0.1.0-a
 
 ## Prepare a release
 
+The [#89 formatting guard](../development/FORMATTING.md) is unreleased developer/CI tooling. That scoped
+mitigation does not create a release or change the package version, existing tags, or alpha.3 assets;
+its bundled dependency follow-up remains under #89/#83. Release preparation below is a separate decision.
+
 Run the following commands from the repository root, with the project's development environment active.
 The command examples use Bash. On Windows, use Git Bash for these commands and the `.exe` binary when
 checking a local build.
@@ -151,6 +155,11 @@ checking a local build.
    npm run format:check
    npm run build
    cd ..
+
+   node --test scripts/check_docs.test.mjs
+   node --test scripts/format.test.mjs
+   node scripts/check_docs.mjs
+   node scripts/format.mjs markdown --check
 
    python scripts/verify_release.py "${AUTHZEST_NEXT_TAG:?Set the unused release tag first}"
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md

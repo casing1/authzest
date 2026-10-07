@@ -216,12 +216,15 @@ For documentation changes, install frontend dependencies as above, then run from
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 The checker compares language pairs, local links, and commands without executing documentation examples.
 The formatting command covers tracked Markdown; include new guides in staging before the final check.
+The [formatting guide](docs/development/FORMATTING.md) explains write commands, the retained root
+EditorConfig, and the guard's limits.
 
 ## Standalone binaries
 

@@ -112,6 +112,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- 저장소 Markdown과 frontend 포맷을 제한된 EditorConfig/대상 guard로 연결합니다
+  ([#89](https://github.com/casing1/authzest/issues/89)). 검토한 루트 설정은 유지하고 명시적인 빈
+  Prettier 옵션 파일을 사용합니다. 개발/CI 경로에 한정한 완화이며 Prettier 내장
+  brace-expansion 5.0.6은 5.0.12 lock 항목과 별개로 남습니다. 실제 DoS나 AuthZest 런타임 결함은
+  입증되지 않았고 남은 후속 작업은 #89/#83에서 추적합니다.
+  [포맷 검사 범위](development/FORMATTING.md)를 참고하세요. 패키지 버전·태그·alpha.3는 그대로입니다.
 - 공개 DoS 권고 3건에 대해 frontend 개발용 lock의 brace-expansion을 5.0.9에서 5.0.12로
   갱신합니다(#87). 직접 의존성과 minimatch 10.2.6은 유지합니다. 개발/CI 의존성 선택 변경이며
   endpoint 취약점을 확정하거나 기존 alpha.3 바이너리를 변경한 것은 아닙니다.

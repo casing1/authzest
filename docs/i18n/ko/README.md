@@ -220,12 +220,15 @@ npm --prefix frontend run build
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 검사기는 문서 예제를 실행하지 않고 번역 쌍, 로컬 링크, 명령어의 일치 여부를 확인합니다.
 포맷 명령은 Git이 추적하는 Markdown을 검사하므로 새 안내 문서는 최종 확인 전에 staging에 포함하세요.
+[포맷 안내](development/FORMATTING.md)에서 수정 명령, 유지하는 루트 EditorConfig와 guard의 한계를
+확인하세요.
 
 ## 독립 실행 파일
 

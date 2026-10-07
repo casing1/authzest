@@ -112,6 +112,10 @@ frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리�
 
 ## 릴리스 준비
 
+[#89 포맷 guard](../development/FORMATTING.md)는 미출시 개발/CI 도구입니다. 이 제한된 완화는
+릴리스를 만들거나 패키지 버전·기존 태그·alpha.3 산출물을 바꾸지 않으며 내장 의존성 후속 작업은
+#89/#83에서 계속 추적합니다. 아래 릴리스 준비는 별도 결정입니다.
+
 프로젝트 개발 환경을 활성화한 뒤 저장소 루트에서 아래 명령을 실행합니다. 명령 예시는 Bash 기준입니다.
 Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe` 실행 파일을 사용하세요.
 
@@ -146,6 +150,11 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    npm run format:check
    npm run build
    cd ..
+
+   node --test scripts/check_docs.test.mjs
+   node --test scripts/format.test.mjs
+   node scripts/check_docs.mjs
+   node scripts/format.mjs markdown --check
 
    python scripts/verify_release.py "${AUTHZEST_NEXT_TAG:?Set the unused release tag first}"
    git grep -F "## [${AUTHZEST_NEXT_TAG#v}] - " -- CHANGELOG.md

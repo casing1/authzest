@@ -44,6 +44,7 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
@@ -55,6 +56,9 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - name: Test guarded formatting
+        run: node --test scripts/format.test.mjs
+        working-directory: .
       - name: Test documentation checker
         run: node --test scripts/check_docs.test.mjs
         working-directory: .
@@ -62,7 +66,7 @@ jobs:
         run: node scripts/check_docs.mjs
         working-directory: .
       - name: Check documentation formatting
-        run: git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+        run: node scripts/format.mjs markdown --check
         working-directory: .
       - run: npm run lint
       - run: npm run format:check
