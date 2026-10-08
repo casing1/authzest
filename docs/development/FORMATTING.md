@@ -38,6 +38,11 @@ The guard rejects nested, case-aliased, and symlink EditorConfig files in its ch
 discovery is bounded and checks selected files before launching Prettier. The explicit
 [`scripts/prettier-options.json`](../../scripts/prettier-options.json), an empty object, bypasses
 ambient and executable Prettier configuration discovery while keeping the reviewed EditorConfig active.
+The wrapper explicitly sets `--ignore-path`: frontend formatting uses the validated
+[`frontend/.prettierignore`](../../frontend/.prettierignore), and Markdown formatting uses
+[`scripts/prettier-markdown.ignore`](../../scripts/prettier-markdown.ignore), which must remain exactly
+zero bytes. Ambient `.gitignore` and `.prettierignore` discovery therefore does not determine wrapper
+coverage; Prettier's built-in vendor and version-control directory exclusions still apply.
 The frontend ignore file must contain the exact reviewed entries, without leading or trailing
 whitespace; LF and CRLF line endings, empty lines, and comments starting with `#` are supported.
 Changes to configuration patterns, options, exclusions, or ignore discovery require review of the

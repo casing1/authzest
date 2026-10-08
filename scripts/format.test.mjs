@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { preflight, runFormatter, validateEditorConfig } from "./format.mjs";
@@ -39,6 +39,7 @@ function fixture(
   };
   write(".editorconfig", editorConfig);
   write("scripts/prettier-options.json", "{}\n");
+  write("scripts/prettier-markdown.ignore", "");
   write("frontend/.prettierignore", prettierIgnore);
   write("frontend/src/example.ts", "const value = 1;\n");
   // Calls to the formatter are mocked; no fixture module is executed.
@@ -65,6 +66,58 @@ function mockFormatter(input, result = { status: 0, signal: null }) {
   return { status, calls };
 }
 
+function ordinaryFormattingFixture(context) {
+  const installed = fileURLToPath(
+    new URL("../frontend/node_modules/prettier/", import.meta.url),
+  );
+  if (!fs.existsSync(path.join(installed, "bin/prettier.cjs"))) {
+    context.skip(
+      "The installed Prettier module is needed for this integration",
+    );
+    return;
+  }
+  const input = fixture(context, { git: true });
+  fs.cpSync(
+    installed,
+    path.join(input.root, "frontend/node_modules/prettier"),
+    {
+      recursive: true,
+    },
+  );
+  const markdown = "# Coverage\n\n-    ordinary item\n";
+  const typescript = "function coverage(){\nreturn {value:1}\n}\n";
+  input.write("docs/ignored.md", markdown);
+  input.write("frontend/src/ignored.ts", typescript);
+  // Stage first: these remain tracked files after ambient ignores are added.
+  input.stage("docs/ignored.md", "frontend/src/ignored.ts");
+  input.write(".gitignore", "docs/ignored.md\nfrontend/src/ignored.ts\n");
+  input.write(".prettierignore", "docs/ignored.md\nfrontend/src/ignored.ts\n");
+  input.write("frontend/.gitignore", "src/ignored.ts\n");
+  input.write("frontend/dist/excluded.ts", typescript);
+  input.write("frontend/node_modules/excluded.ts", typescript);
+  const lockfile = '{"name":"fixture","lockfileVersion":3}';
+  input.write("frontend/package-lock.json", lockfile);
+  const run = (mode, operation) => {
+    let output = "";
+    const status = runFormatter({
+      root: input.root,
+      mode,
+      operation,
+      spawn: (command, args, options) => {
+        const result = spawnSync(command, args, {
+          ...options,
+          stdio: "pipe",
+          encoding: "utf8",
+        });
+        output += `${result.stdout ?? ""}${result.stderr ?? ""}`;
+        return result;
+      },
+    });
+    return { status, output };
+  };
+  return { ...input, markdown, typescript, lockfile, run };
+}
+
 function assertLaunch(call, root, mode, operation, targets) {
   assert.equal(call.command, process.execPath);
   assert.equal(
@@ -77,6 +130,16 @@ function assertLaunch(call, root, mode, operation, targets) {
     call.args[configIndex + 1],
     path.join(root, "scripts/prettier-options.json"),
   );
+  const ignoreFile = path.join(
+    root,
+    mode === "frontend"
+      ? "frontend/.prettierignore"
+      : "scripts/prettier-markdown.ignore",
+  );
+  const ignoreIndex = call.args.indexOf("--ignore-path");
+  assert.notEqual(ignoreIndex, -1);
+  assert.equal(call.args[ignoreIndex + 1], ignoreFile);
+  assert.equal(call.args.filter((arg) => arg === "--ignore-path").length, 1);
   assert.equal(call.args.filter((arg) => arg === "--editorconfig").length, 1);
   assert.equal(call.args.filter((arg) => arg === operation).length, 1);
   assert.equal(
@@ -92,6 +155,8 @@ function assertLaunch(call, root, mode, operation, targets) {
     "--editorconfig",
     "--config",
     path.join(root, "scripts/prettier-options.json"),
+    "--ignore-path",
+    ignoreFile,
   ]);
   assert.ok(options.every((arg) => allowed.has(arg)));
   assert.equal(
@@ -293,6 +358,50 @@ test("the frontend ignore file allows only the three approved entries", (context
   assert.throws(() => preflight(missing.root, "frontend"));
 });
 
+test("Markdown requires its empty, non-linked ignore file before launch", (context) => {
+  for (const kind of [
+    "missing",
+    "directory",
+    "symlink",
+    "hardlink",
+    "pattern",
+    "newline",
+    "space",
+  ]) {
+    const { root, write } = fixture(context, { git: true });
+    const absolute = path.join(root, "scripts/prettier-markdown.ignore");
+    if (kind === "hardlink")
+      fs.linkSync(absolute, path.join(root, "second-ignore-link"));
+    else if (["pattern", "newline", "space"].includes(kind))
+      write(
+        "scripts/prettier-markdown.ignore",
+        { pattern: "README.md\n", newline: "\n", space: " " }[kind],
+      );
+    else {
+      fs.unlinkSync(absolute);
+      if (kind === "directory") fs.mkdirSync(absolute);
+      if (kind === "symlink") {
+        write("empty-ignore", "");
+        fs.symlinkSync(path.join(root, "empty-ignore"), absolute);
+      }
+    }
+    assert.throws(() => preflight(root, "markdown"), kind);
+    let called = false;
+    assert.throws(() =>
+      runFormatter({
+        root,
+        mode: "markdown",
+        operation: "--check",
+        spawn: () => {
+          called = true;
+          return { status: 0, signal: null };
+        },
+      }),
+    );
+    assert.equal(called, false, kind);
+  }
+});
+
 test("ignore validation does not normalize excluded-directory patterns before launch", (context) => {
   for (const contents of [
     " dist\nnode_modules\npackage-lock.json\n",
@@ -488,6 +597,52 @@ test("Markdown child arguments are explicit tracked paths after the option separ
   assert.equal(result.status, 0);
   assert.equal(result.calls.length, 1);
   assertLaunch(result.calls[0], root, "markdown", "--check", expected);
+});
+
+test("ordinary ignored tracked Markdown still fails check and is formatted", (context) => {
+  const input = ordinaryFormattingFixture(context);
+  if (!input) return;
+  const check = input.run("markdown", "--check");
+  assert.equal(check.status, 1, check.output);
+  assert.equal(input.run("markdown", "--write").status, 0);
+  assert.equal(
+    fs.readFileSync(path.join(input.root, "docs/ignored.md"), "utf8"),
+    "# Coverage\n\n- ordinary item\n",
+  );
+  assert.equal(input.run("markdown", "--check").status, 0);
+});
+
+test("ordinary ignored tracked frontend TypeScript still fails check and keeps approved exclusions", (context) => {
+  const input = ordinaryFormattingFixture(context);
+  if (!input) return;
+  const check = input.run("frontend", "--check");
+  assert.equal(check.status, 1, check.output);
+  assert.equal(input.run("frontend", "--write").status, 0);
+  assert.equal(
+    fs.readFileSync(path.join(input.root, "frontend/src/ignored.ts"), "utf8"),
+    "function coverage() {\n  return { value: 1 };\n}\n",
+  );
+  for (const relative of [
+    "frontend/dist/excluded.ts",
+    "frontend/node_modules/excluded.ts",
+  ]) {
+    assert.equal(
+      fs.readFileSync(path.join(input.root, relative), "utf8"),
+      input.typescript,
+    );
+  }
+  assert.equal(
+    fs.readFileSync(
+      path.join(input.root, "frontend/package-lock.json"),
+      "utf8",
+    ),
+    input.lockfile,
+  );
+  assert.equal(
+    fs.readFileSync(path.join(input.root, ".editorconfig"), "utf8"),
+    editorConfig,
+  );
+  assert.equal(input.run("frontend", "--check").status, 0);
 });
 
 test("invalid caller arguments and configuration fail before formatter launch", (context) => {

@@ -204,6 +204,8 @@ export function preflight(inputRoot, mode) {
     walkFrontend(frontend, root, budget);
     return { root, cwd: frontend, files: ["."] };
   }
+  // Tracked Markdown coverage must not inherit ambient ignore rules.
+  boundedText(path.join(root, "scripts/prettier-markdown.ignore"), 0);
   const files = execFileSync("git", ["ls-files", "-z", "--", "*.md"], {
     cwd: root,
     encoding: "utf8",
@@ -267,6 +269,13 @@ export function runFormatter({
       "--editorconfig",
       "--config",
       path.join(plan.root, "scripts/prettier-options.json"),
+      "--ignore-path",
+      path.join(
+        plan.root,
+        mode === "frontend"
+          ? "frontend/.prettierignore"
+          : "scripts/prettier-markdown.ignore",
+      ),
       operation,
       "--",
       ...plan.files.map((file) => (mode === "markdown" ? `./${file}` : file)),

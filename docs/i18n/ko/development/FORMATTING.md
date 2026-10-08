@@ -36,8 +36,13 @@ npm 명령 이름은 유지하며 `scripts/format.mjs frontend --check`와
 guard는 검사 범위 내 중첩·대소문자 별칭·심볼릭 링크 EditorConfig 파일을 거절합니다. 대상 탐색은
 제한되며 Prettier를 실행하기 전에 선택한 파일을 검사합니다. 빈 객체인 명시적
 [`scripts/prettier-options.json`](../../../../scripts/prettier-options.json)을 사용해 주변의 Prettier
-설정과 실행 가능한 설정 탐색을 건너뛰면서 검토한 EditorConfig를 적용합니다. frontend ignore
-파일에는 앞뒤 공백 없는 정확한 검토 항목만 허용하며 LF·CRLF 줄바꿈, 빈 줄, `#`로 시작하는
+설정과 실행 가능한 설정 탐색을 건너뛰면서 검토한 EditorConfig를 적용합니다.
+wrapper는 `--ignore-path`를 명시하며 frontend 포맷에는 검증한
+[`frontend/.prettierignore`](../../../../frontend/.prettierignore), Markdown 포맷에는 정확히
+0바이트를 유지해야 하는 [`scripts/prettier-markdown.ignore`](../../../../scripts/prettier-markdown.ignore)를
+사용합니다. 따라서 주변 `.gitignore`·`.prettierignore` 탐색이 wrapper 적용 범위를 결정하지 않으며
+Prettier의 기본 vendor·버전 관리 디렉터리 제외 규칙은 계속 적용합니다.
+frontend ignore 파일에는 앞뒤 공백 없는 정확한 검토 항목만 허용하며 LF·CRLF 줄바꿈, 빈 줄, `#`로 시작하는
 주석을 지원합니다. 설정 패턴·옵션·
 제외 규칙·ignore 탐색을 변경하려면 guard와 회귀 테스트를 함께 검토해야 합니다.
 
