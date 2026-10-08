@@ -112,6 +112,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q)에 대해 frontend 개발용
+  lock의 `source-map-js`를 `1.2.1`에서 패치 버전 `1.2.2`로 갱신합니다(#94). PostCSS `8.5.26`의
+  기존 `^1.2.1` 범위와 직접 의존성 버전을 유지하고 override나 새 의존성을 추가하지 않습니다.
+  lock/설치 복사본, Vite에서 PostCSS로 이어지는 의존성 선택과 정상 map/CSS 동작에 제한된 검사를
+  추가합니다. AuthZest 제품의 악용 경로는 아직 입증되지 않았습니다(`needs_review`). Vite의 기본
+  `devSourcemap: false`는 그 이전의 map 파싱까지 배제하지 않습니다.
 - 저장소 Markdown과 frontend 포맷을 제한된 EditorConfig/대상 guard로 연결합니다
   ([#89](https://github.com/casing1/authzest/issues/89)). 검토한 루트 설정은 유지하고 명시적인 빈
   Prettier 옵션 파일을 사용합니다. 개발/CI 경로에 한정한 완화이며 Prettier 내장
