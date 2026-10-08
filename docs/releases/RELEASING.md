@@ -120,6 +120,11 @@ The [#89 formatting guard](../development/FORMATTING.md) is unreleased developer
 mitigation does not create a release or change the package version, existing tags, or alpha.3 assets;
 its bundled dependency follow-up remains under #89/#83. Release preparation below is a separate decision.
 
+#94/#83 tracks the scoped `source-map-js` development-lock update separately from #89's residual
+Prettier-embedded `brace-expansion` copy. The product exploit path remains `needs_review`; this update
+does not establish full tooling security clearance or create a release, tag, package-version change,
+or change to alpha.3 assets.
+
 Run the following commands from the repository root, with the project's development environment active.
 The command examples use Bash. On Windows, use Git Bash for these commands and the `.exe` binary when
 checking a local build.
@@ -158,6 +163,7 @@ checking a local build.
 
    node --test scripts/check_docs.test.mjs
    node --test scripts/format.test.mjs
+   node --test scripts/frontend_dependencies.test.mjs
    node scripts/check_docs.mjs
    node scripts/format.mjs markdown --check
 
@@ -167,6 +173,12 @@ checking a local build.
    python scripts/smoke_release.py --binary dist/authzest
    python scripts/smoke_fixture_runtime.py --binary dist/authzest
    ```
+
+   The frontend dependency check covers every locked and installed `source-map-js` copy and actual
+   Vite-to-PostCSS resolution. It uses bounded normal flat/indexed maps with `SourceMapConsumer`,
+   `SourceMapGenerator` and `SourceNode`, plus PostCSS CSS transformations; it does not use hostile
+   or resource-exhaustion payloads. Compatibility checks do not prove a product exploit path or full
+   tooling security clearance.
 
    [`verify_release.py`](../../scripts/verify_release.py) validates the exact tag/package-version match,
    one matching dated heading per English/Korean changelog, valid equal dates, and nonempty content.

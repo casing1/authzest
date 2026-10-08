@@ -56,6 +56,9 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - name: Test frontend dependency resolution and source-map compatibility
+        run: node --test scripts/frontend_dependencies.test.mjs
+        working-directory: .
       - name: Test guarded formatting
         run: node --test scripts/format.test.mjs
         working-directory: .

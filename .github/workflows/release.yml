@@ -47,6 +47,8 @@ jobs:
       - run: pytest
       - run: npm ci
         working-directory: frontend
+      - name: Test frontend dependency resolution and source-map compatibility
+        run: node --test scripts/frontend_dependencies.test.mjs
       - name: Test guarded formatting
         run: node --test scripts/format.test.mjs
       - run: npm run lint

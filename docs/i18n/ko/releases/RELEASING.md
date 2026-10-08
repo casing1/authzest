@@ -116,6 +116,10 @@ frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리�
 릴리스를 만들거나 패키지 버전·기존 태그·alpha.3 산출물을 바꾸지 않으며 내장 의존성 후속 작업은
 #89/#83에서 계속 추적합니다. 아래 릴리스 준비는 별도 결정입니다.
 
+#94/#83의 제한된 `source-map-js` 개발용 lock 갱신은 #89에 남은 Prettier 내장
+`brace-expansion` 복사본과 별도로 추적합니다. 제품 악용 경로는 계속 `needs_review`이며 이 갱신은
+개발 도구 전체의 보안 검토 완료를 입증하거나 릴리스·태그·패키지 버전·alpha.3 산출물을 변경하지 않습니다.
+
 프로젝트 개발 환경을 활성화한 뒤 저장소 루트에서 아래 명령을 실행합니다. 명령 예시는 Bash 기준입니다.
 Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe` 실행 파일을 사용하세요.
 
@@ -153,6 +157,7 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
 
    node --test scripts/check_docs.test.mjs
    node --test scripts/format.test.mjs
+   node --test scripts/frontend_dependencies.test.mjs
    node scripts/check_docs.mjs
    node scripts/format.mjs markdown --check
 
@@ -162,6 +167,12 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
    python scripts/smoke_release.py --binary dist/authzest
    python scripts/smoke_fixture_runtime.py --binary dist/authzest
    ```
+
+   frontend 의존성 검사는 lock과 설치된 모든 `source-map-js` 복사본 및 실제 Vite에서 PostCSS로
+   이어지는 의존성 선택을 확인합니다. 정상 flat/indexed map에 제한된 `SourceMapConsumer`,
+   `SourceMapGenerator`, `SourceNode` 동작과 PostCSS CSS 변환을 사용하며 악성 또는 자원 고갈
+   payload는 사용하지 않습니다. 이 호환성 검사는 제품 악용 경로나 개발 도구 전체의 보안 검토
+   완료를 입증하지 않습니다.
 
    [`verify_release.py`](../../../../scripts/verify_release.py)는 정확한 태그/패키지 버전 대응, 영한 변경 이력마다
    하나의 대응 날짜 제목, 유효하고 같은 날짜와 비어 있지 않은 내용을 확인합니다. 배포 여부나 번역/기능

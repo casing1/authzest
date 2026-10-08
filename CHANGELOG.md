@@ -114,6 +114,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Update the frontend development lock's `source-map-js` from `1.2.1` to patched `1.2.2` for
+  [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q) (#94), within PostCSS
+  `8.5.26`'s existing `^1.2.1` range. Keep direct versions unchanged, with no override or new dependency,
+  and add bounded checks for locked/installed copies, Vite-to-PostCSS resolution and normal map/CSS
+  operations. The AuthZest product exploit path remains unproven (`needs_review`); Vite's default
+  `devSourcemap: false` does not exclude earlier map parsing.
 - Route repository Markdown and frontend formatting through a bounded EditorConfig/target guard
   ([#89](https://github.com/casing1/authzest/issues/89)); retain the reviewed root configuration and use
   an explicit empty Prettier options file. This is a scoped developer/CI mitigation. Prettier's bundled
