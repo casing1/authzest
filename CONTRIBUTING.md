@@ -123,12 +123,17 @@ For documentation changes, run these checks from the repository root after insta
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 The checker validates translation pairs, local links, and command parity without executing documentation
 examples. The formatting command covers tracked Markdown; stage new guides before the final check.
+Use `node scripts/format.mjs markdown --write` to format Markdown. The existing
+`npm --prefix frontend run format` and `npm --prefix frontend run format:check` commands use the same
+guard for frontend files. Read the [formatting boundary](docs/development/FORMATTING.md) before changing
+EditorConfig patterns, options, or ignore discovery.
 The [included example](docs/guides/EXAMPLES.md) provides a deterministic local CLI demonstration.
 
 After building the frontend above, verify the standalone executable from the repository root with the

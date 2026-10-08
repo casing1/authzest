@@ -114,6 +114,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Route repository Markdown and frontend formatting through a bounded EditorConfig/target guard
+  ([#89](https://github.com/casing1/authzest/issues/89)); retain the reviewed root configuration and use
+  an explicit empty Prettier options file. This is a scoped developer/CI mitigation. Prettier's bundled
+  brace-expansion 5.0.6 remains separate from the 5.0.12 lock entry; residual follow-up remains under
+  #89/#83, without a reproduced DoS or demonstrated AuthZest runtime flaw. See the
+  [formatting boundary](docs/development/FORMATTING.md); package version, tags, and alpha.3 stay unchanged.
 - Update the frontend development lock from brace-expansion 5.0.9 to 5.0.12 for three public DoS
   advisories (#87), retaining direct dependencies and minimatch 10.2.6. This changes developer/CI
   dependency selection, not a confirmed endpoint vulnerability or the immutable alpha.3 binaries.

@@ -6,8 +6,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "node ../scripts/format.mjs frontend --write",
+    "format:check": "node ../scripts/format.mjs frontend --check",
     "preview": "vite preview"
   },
   "dependencies": {

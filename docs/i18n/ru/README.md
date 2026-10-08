@@ -226,12 +226,15 @@ npm --prefix frontend run build
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 Проверка сравнивает языковые пары, локальные ссылки и команды, не выполняя примеры из документации.
 Форматирование проверяет Markdown, отслеживаемый Git; перед итоговой проверкой добавьте новые руководства в staging.
+[Руководство по форматированию (на английском)](../../development/FORMATTING.md) объясняет команды записи,
+сохранение корневого EditorConfig и ограничения проверки.
 
 ## Отдельные исполняемые файлы
 

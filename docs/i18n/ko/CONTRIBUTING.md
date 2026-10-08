@@ -124,12 +124,17 @@ npm --prefix frontend run build
 
 ```bash
 node --test scripts/check_docs.test.mjs
+node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
-git ls-files -z '*.md' | xargs -0 frontend/node_modules/.bin/prettier --check
+node scripts/format.mjs markdown --check
 ```
 
 검사기는 문서 예제를 실행하지 않고 번역 쌍, 로컬 링크, 명령어의 일치 여부를 검증합니다.
 포맷 명령은 Git이 추적하는 Markdown을 검사하므로 새 안내 문서는 최종 확인 전에 staging에 포함합니다.
+Markdown 수정에는 `node scripts/format.mjs markdown --write`를 사용합니다. 기존
+`npm --prefix frontend run format`과 `npm --prefix frontend run format:check` 명령도 frontend 파일에
+같은 guard를 적용합니다. EditorConfig 패턴·옵션·ignore 탐색을 변경하기 전에
+[포맷 검사 범위](development/FORMATTING.md)를 읽으세요.
 [포함된 예제](guides/EXAMPLES.md)는 결정론적인 로컬 CLI 시연을 제공합니다.
 
 위에서 frontend를 빌드한 뒤, 같은 가상 환경을 활성화한 상태로 저장소 루트에서 독립 실행 파일을

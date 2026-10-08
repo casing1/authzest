@@ -64,6 +64,7 @@ docs/
 | 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)  |
 | 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                         |
 | 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)           |
+| guard를 적용한 저장소 포맷             | [Formatting](../../development/FORMATTING.md)                   | [포맷 검사](development/FORMATTING.md)               |
 | 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)               |
 | 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                            |
 | 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                             |

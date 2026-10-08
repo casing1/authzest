@@ -64,6 +64,7 @@ docs/
 | Offline evidence-linked expected outcomes       | [Expectation contract](reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)  |
 | Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                        | [기여 안내](i18n/ko/CONTRIBUTING.md)                         |
 | Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)               | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)           |
+| Guarded repository formatting                   | [Formatting](development/FORMATTING.md)                   | [포맷 검사](i18n/ko/development/FORMATTING.md)               |
 | Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                        | [릴리스 가이드](i18n/ko/releases/RELEASING.md)               |
 | Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                              | [변경 이력](i18n/ko/CHANGELOG.md)                            |
 | Private reporting and safe-use policy           | [Security](../SECURITY.md)                                | [보안 정책](i18n/ko/SECURITY.md)                             |

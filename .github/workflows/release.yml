@@ -16,6 +16,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
         with:
@@ -46,12 +47,16 @@ jobs:
       - run: pytest
       - run: npm ci
         working-directory: frontend
+      - name: Test guarded formatting
+        run: node --test scripts/format.test.mjs
       - run: npm run lint
         working-directory: frontend
       - run: npm run format:check
         working-directory: frontend
       - run: node --test scripts/check_docs.test.mjs
       - run: node scripts/check_docs.mjs
+      - name: Check documentation formatting
+        run: node scripts/format.mjs markdown --check
 
   build:
     needs: validate
