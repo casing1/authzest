@@ -11,8 +11,9 @@
 ## Scope and current state
 
 [#80](https://github.com/casing1/authzest/issues/80) adds a source-only API under
-`authzest.runner.owner_policy_check` for one maintained, owned pure policy. It is unreleased work
-in progress, not a generic repository executor, new CLI command or published alpha.3 feature.
+`authzest.runner.owner_policy_check` for one maintained, owned pure policy. Source delivery and
+acceptance are tracked in [PR #97](https://github.com/casing1/authzest/pull/97), separately from
+published alpha.3. This is not a generic repository executor or new CLI command.
 Windows and frozen executables explicitly return unsupported/not-run; the worker path is limited
 to supported POSIX Python source installations.
 
@@ -26,8 +27,11 @@ This labels-only decision grants no policy execution. A later, separately approv
 check ran once on the same date; its limited observations are recorded below, separately from the
 original draft and offline plans.
 Current coordinator recipe `1.1` corrects decision finality and startup-failure reporting.
-The historical recipe `1.0` observation below is not actual acceptance of this newer coordinator;
-no current-recipe check has been rerun, and it requires fresh bounded approval.
+The historical recipe `1.0` observation below is not acceptance of this newer coordinator.
+One later recipe `1.1` source check received its own fresh bounded approval and matched all ten
+expectations at `e037986`; both one-run approvals are consumed. At that source-check checkpoint,
+final-head reviews/CI and delivery remained separate gates; [PR #97](https://github.com/casing1/authzest/pull/97)
+tracks their subsequent outcome. This observation published no release.
 
 ## Separate check plan and session
 
@@ -119,10 +123,33 @@ source sharing was part of this check, and original model authorship was not cha
 This consumes the separately approved single run. It does not grant future executions or extend
 coverage to Windows, frozen binaries, HTTP/authentication/database behavior, arbitrary policy
 inputs or the separate 28-label developer matrix. The offline #77 plans and labels-only review
-record remain non-executable/not-run. #80 is still in progress until final-head CI and review
-gates pass; nothing was published and the broader #35 workflow is not complete.
+record remain non-executable/not-run. At this historical observation checkpoint #80 still needed
+final-head CI/reviews and delivery, tracked in [PR #97](https://github.com/casing1/authzest/pull/97).
+The observation published nothing and did not complete the broader #35 workflow.
 The policy and registered worker are unchanged, but coordinator recipe `1.1` changes the check
-plan identity. Its corrected control flow has not received new actual runtime acceptance.
+plan identity. Its later separately approved source check is recorded separately below; this old
+record remains unchanged.
+
+## Current coordinator source acceptance — 2026-10-09 KST
+
+After fresh separate approval, one fixed-policy recipe `1.1` check ran at tested commit
+`e03798645c2678477ac141724396beaa013286d9`. Its exact plan ID was
+`owner-policy-check-a327b9dba5799d957e165e9c83ba1e66eb983a7da18c0130506c2f9b709db0c7`.
+The separate [recipe 1.1 observation record](../../tests/fixtures/owner_case_review/observed_check_recipe_1_1.json)
+retains this run's evidence without overwriting the recipe `1.0` record. The policy, registered
+worker and case input were unchanged; this used scripted control-plane data, not a new AI response.
+
+All ten expected/observed values matched: `owner-read` and `exact-padded-owner` allowed, the
+other eight denied. Aggregate status was `passed`, child exit `0` and cleanup confirmed.
+Provider calls were zero, authorization remained `unknown` and patch application remained
+`not-run`. This is bounded source-only observation, not authenticated execution attestation,
+endpoint authorization, Windows/frozen-binary acceptance or general policy correctness.
+
+The separate recipe `1.0` and `1.1` one-run approvals are both consumed. Another actual run needs
+a fresh exact-plan decision; the records grant no source-sharing, model, patch or release authority.
+At the `e037986` source-check checkpoint, final-head CI/reviews and delivery remained separate
+gates; [PR #97](https://github.com/casing1/authzest/pull/97) tracks subsequent acceptance and merge
+status. This observation published nothing and added no #81 implementation or new test-only variant.
 
 ## Acceptance still required
 

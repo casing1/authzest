@@ -20,8 +20,11 @@ executor나 새 CLI 명령이 없습니다. 현재 작업은 [#80 고정 정책 
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
 [제한된 관찰 기록](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을 참고하세요.
-새 AI 호출 없이 인가는 unknown이며 승인한 1회만 소비합니다. 최종 head #80 CI·리뷰는
-대기이고 alpha.3는 그대로입니다. 현재 coordinator recipe `1.1`은 새 승인 아래 다시 실행하지 않았습니다.
+새 AI 호출 없이 인가는 unknown입니다. 이후 새 별도 승인한 recipe `1.1` 소스 검사도 `e037986`에서
+예상값 10개가 모두 일치했습니다. [현재 coordinator 별도 기록](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-현재-coordinator-소스-인수-검증)을
+참고하세요. 두 1회 승인은 소비됐습니다. `e037986` 소스 검사 시점의 최종 head #80 CI·리뷰·
+전달은 별도 gate였으며 이후 결과는 [PR #97](https://github.com/casing1/authzest/pull/97)에서
+추적합니다. 이 시점에 릴리스를 발행하지 않았고 alpha.3는 그대로입니다.
 
 [현재 개발 계획](development/DEVELOPMENT_PLAN.md)에서 우선순위·실제 마일스톤 상태·릴리즈/평가 gate와
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로

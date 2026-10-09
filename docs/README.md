@@ -22,8 +22,11 @@ displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
 see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
 It made no new AI call, leaves authorization unknown and consumes only that one approved run.
-Current coordinator recipe `1.1` has not been rerun under fresh approval. Final-head #80 CI/reviews
-remain pending; alpha.3 is unchanged.
+A later freshly and separately approved recipe `1.1` source check at `e037986` also matched ten
+expectations; see the [separate current-coordinator record](reference/OWNER_POLICY_CHECK.md#current-coordinator-source-acceptance--2026-10-09-kst).
+Both one-run approvals are consumed. At the `e037986` source-check checkpoint, final-head #80
+CI/reviews and delivery were separate gates; [PR #97](https://github.com/casing1/authzest/pull/97)
+tracks their subsequent outcome. This checkpoint published no release; alpha.3 is unchanged.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records

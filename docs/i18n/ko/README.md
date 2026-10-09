@@ -36,12 +36,14 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   정확한 모델 사례를 미검토/승인/변경/거절 호출자 기록과 검토 가능한 내장 정책 계획에 연결합니다.
   기록된 정확한 예상값 10개는 2026-10-09 KST에 별도로 승인됐고 원래 모델 작성 이력을 유지합니다.
   새 CLI는 없으며 오프라인 계획은 실행 불가·not-run/인가 unknown입니다. 별도
-  [고정 정책 검사 API](reference/OWNER_POLICY_CHECK.md)는 #80 진행 작업이며 정답 검토가
-  실행·공유·패치 권한을 부여하지 않습니다.
+  [고정 정책 검사 API](reference/OWNER_POLICY_CHECK.md)는 #80 범위이며 전달 상태는
+  [PR #97](https://github.com/casing1/authzest/pull/97)에서 추적합니다. 정답 검토가 실행·공유·패치
+  권한을 부여하지 않습니다.
   이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 일치했으며 새 AI 호출 없이
-  인가는 unknown입니다. 해당 1회는 소비됐고 최종 head CI·리뷰는 대기입니다. Windows/frozen
-  바이너리나 endpoint 인가 수용 근거가 아닙니다. 현재 coordinator recipe `1.1`은 새 승인 아래
-  다시 실행하지 않았습니다.
+  인가는 unknown입니다. Windows/frozen
+  바이너리나 endpoint 인가 수용 근거가 아닙니다. 이후 새 별도 승인한 recipe `1.1` 소스 검사도
+  `e037986`에서 예상값 10개가 모두 일치했습니다. 두 1회 승인은 소비됐습니다. 해당 시점의 최종
+  head CI·리뷰·전달은 별도 gate였으며 이후 결과는 PR #97에서 추적합니다.
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력

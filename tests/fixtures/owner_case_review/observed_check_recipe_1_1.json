@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "kind": "recorded-owned-policy-source-observation",
+  "review_date": "2026-10-09",
+  "timezone": "Asia/Seoul",
+  "base_commit": "4218b807ad892bb92e27a6bb23c4d64000e2a3bf",
+  "tested_commit": "e03798645c2678477ac141724396beaa013286d9",
+  "source_files_sha256": {
+    "src/authzest/runner/owner_policy_check.py": "eb25f29df157b17057cab51d63855507237b896a17d84709d4282c02df2d059f",
+    "src/authzest/runner/_owner_policy_worker.py": "c8f6c53ddb68f3c7900ecae9914c39e9fb5b9c298a827b074551cf9afe8f408f"
+  },
+  "execution_approval": "Separate explicit chat approval to proceed with this exact recipe 1.1 plan once, latest-head code/security re-reviews once each and conditional normal merge; recorded by assistant, not an authenticated receipt. Re-review permission is not a provider call made by this policy check.",
+  "approved_attempts": 1,
+  "observed_attempts": 1,
+  "platform_evidence": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "python": "3.12.7",
+    "mode": "POSIX Python source; not frozen"
+  },
+  "limitations": [
+    "Scripted answer envelope is control-plane data, not a new live AI result.",
+    "Only the preserved public ten model-authored cases were observed under the corrected recipe 1.1 coordinator.",
+    "Historical recipe 1.0 observation remains unchanged in observed_check.json; this is a separate newly approved actual run.",
+    "This consumed one fixed-check approval; it does not authorize another run, another plan, source sharing, new AI proposals, patches or release.",
+    "Bounded trusted subprocess, not OS/network sandbox or executable attestation.",
+    "Windows and frozen executables remain explicitly unsupported; HTTP/authentication/authorization enforcement remains unknown."
+  ],
+  "prepared": {
+    "check_plan_id": "owner-policy-check-a327b9dba5799d957e165e9c83ba1e66eb983a7da18c0130506c2f9b709db0c7",
+    "review_set_sha256": "7d6296c07ec57b57b217a6fc03bd6fa48304cfe475c1adaf9dbd1d9b285ea598",
+    "policy_source_sha256": "faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04",
+    "worker_sha256": "7a3ac77d65c7a0fd16ac0dbb2cf64bcff0843737027c6ce4e805acf3bf236496",
+    "input_sha256": "ef136ac166bffdf775ca23eb6b648febbe57b2034d373d9d5e774c8964a50f6e",
+    "case_ids": [
+      "owner-read",
+      "nonowner-admin",
+      "unauthenticated-owner",
+      "missing-principal",
+      "missing-report",
+      "wildcard-only",
+      "blank-identities",
+      "empty-report-id",
+      "no-owner-normalization",
+      "exact-padded-owner"
+    ],
+    "recipe": {
+      "attempt_limit": 1,
+      "cleanup_timeout_seconds": 1,
+      "comparison_version": "observed-bool-to-reviewed-bool-v1",
+      "confinement": "bounded trusted child, not an OS/network sandbox",
+      "environment": "fixed minimal environment and fresh private temporary cwd",
+      "exclusions": [
+        "caller paths/source/code",
+        "main.py/FastAPI/HTTP/auth/database",
+        "model/reviewer text in worker input",
+        "install hooks",
+        "network/provider",
+        "patch application",
+        "automatic retries"
+      ],
+      "id": "owned-owner-policy-check-v1",
+      "mapping_version": "nullable-fixed-dataclasses-exact-v1",
+      "max_cases": 16,
+      "max_decision_seconds": 300,
+      "max_identifier_characters": 128,
+      "max_input_bytes": 262144,
+      "max_output_bytes": 16384,
+      "max_scopes": 16,
+      "platform": "POSIX non-frozen Python source only",
+      "policy_source_sha256": "faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04",
+      "target": "registered embedded policy.py only",
+      "timeout_seconds": 5,
+      "version": "1.1",
+      "worker_sha256": "7a3ac77d65c7a0fd16ac0dbb2cf64bcff0843737027c6ce4e805acf3bf236496"
+    },
+    "answer_envelope": "scripted control-plane data; no new AI response",
+    "execution_status": "not-run",
+    "provider_calls": 0
+  },
+  "result": {
+    "authorization_status": "unknown",
+    "cases": [
+      {
+        "case_sha256": "d9aaa4c92446a42a50721162e5554edba0ff7ae76c09d6efbb8114a47681eab7",
+        "expected": true,
+        "id": "owner-read",
+        "observed": true,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "84b04896aa07ca05cdb7d2d2ffd247646e34b972521ad5b53ac297c18c60dcb2",
+        "expected": false,
+        "id": "nonowner-admin",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "b2efda2a12da12bef3e56f0b91260ca8f04fc647e5045f0c001773ad51bab6f1",
+        "expected": false,
+        "id": "unauthenticated-owner",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "65e213296d9a9559cdf4a864d4968a6a06ff40fa138e4d3e747bb8864ea7b04c",
+        "expected": false,
+        "id": "missing-principal",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "bad4794925304d1830fd89029875a154a46d586bfbd610cf555ff2e525726747",
+        "expected": false,
+        "id": "missing-report",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "facc7f4fdbf5d61c52d39620c72a437c5427d21e0a696894aac398728b25254b",
+        "expected": false,
+        "id": "wildcard-only",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "2c6b69131289ee04ecb158843a1ad6351c7764383c56a8ac07a1251aca59f1e5",
+        "expected": false,
+        "id": "blank-identities",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "4fd99798f1b2113c4658f64e69e673ddfb0251dc9c484d0d94f20fdf41ad2be0",
+        "expected": false,
+        "id": "empty-report-id",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "101560e81c7204fd01bb55ac713ce03c25e170cc24dc81fc3e7176cc84fe72e9",
+        "expected": false,
+        "id": "no-owner-normalization",
+        "observed": false,
+        "result": "passed"
+      },
+      {
+        "case_sha256": "61954f620b63233e91dc29e1ac4575c11d6d178ae38af52281eed93e036fc130",
+        "expected": true,
+        "id": "exact-padded-owner",
+        "observed": true,
+        "result": "passed"
+      }
+    ],
+    "check_plan_id": "owner-policy-check-a327b9dba5799d957e165e9c83ba1e66eb983a7da18c0130506c2f9b709db0c7",
+    "cleanup_status": "confirmed",
+    "execution_status": "completed",
+    "exit_code": 0,
+    "input_sha256": "ef136ac166bffdf775ca23eb6b648febbe57b2034d373d9d5e774c8964a50f6e",
+    "kind": "owner-policy-check-result",
+    "patch_application": "not-run",
+    "provider_calls": 0,
+    "reason": "cases-match",
+    "schema_version": "1.0",
+    "source_identity": "c31d103bb03a8eb5f521a666541891fa67eee3024b923d88905b0a3f8e79a1b8",
+    "source_sha256": {
+      "main.py": "73f73c8ca2ee5de206c158b98c422b74d355da74fda167be8babb153d03a951b",
+      "policy.py": "faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04"
+    },
+    "status": "passed",
+    "worker_sha256": "7a3ac77d65c7a0fd16ac0dbb2cf64bcff0843737027c6ce4e805acf3bf236496"
+  }
+}
