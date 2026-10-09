@@ -9,14 +9,20 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-02
+## Current work — 2026-10-09 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
-source additions, not published alpha.3 features. The recorded ten model-authored labels remain
-unreviewed/not-run; #77 stays open for that review. The contract has no executor or new CLI command.
-Next is #80's reviewed fixed policy harness, then bounded remediation/acceptance. The current dashboard
+source additions, not published alpha.3 features. The maintainer separately approved the exact ten
+model-authored labels on 2026-10-09 KST; original authorship and the not-run draft/offline plans are preserved.
+The offline contract has no executor or new CLI command. Current work is
+[#80's fixed policy-check API](reference/OWNER_POLICY_CHECK.md), then bounded remediation/acceptance.
+Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
+One later separately approved macOS arm64 source check matched all ten expected values;
+see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+It made no new AI call, leaves authorization unknown and consumes only that one approved run.
+Final-head #80 CI/reviews remain pending; alpha.3 is unchanged.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records
@@ -43,33 +49,34 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| Document                                        | English                                                   | 한국어                                                       |
-| ----------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| Project overview and installation               | [README](../README.md)                                    | [프로젝트 소개](i18n/ko/README.md)                           |
-| Documentation index                             | [Index](README.md)                                        | [문서 목차](i18n/ko/INDEX.md)                                |
-| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)       | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)         |
-| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)               |
-| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                           |
-| Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)          |
-| Source-only proposal declaration comparison     | [Proposal check](guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](i18n/ko/guides/PROPOSAL_CHECK.md)           |
-| Integrated review and prose test draft          | [Review demo](guides/REVIEW_DEMO.md)                      | [통합 검토 시연](i18n/ko/guides/REVIEW_DEMO.md)              |
-| Owned report policy and unit-test example       | [Owner policy](guides/OWNER_POLICY.md)                    | [소유 보고서 정책](i18n/ko/guides/OWNER_POLICY.md)           |
-| Read-only owner-policy Codex review             | [Codex owner review](guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](i18n/ko/guides/CODEX_OWNER_REVIEW.md) |
-| Offline owner-case review and fixed plans       | [Owner case plan](reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](i18n/ko/reference/OWNER_CASE_PLAN.md)  |
-| Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)      |
-| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)             |
-| Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)        |
-| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)           | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)           |
-| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)           | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)          |
-| Offline evidence-linked expected outcomes       | [Expectation contract](reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)  |
-| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                        | [기여 안내](i18n/ko/CONTRIBUTING.md)                         |
-| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)               | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)           |
-| Guarded repository formatting                   | [Formatting](development/FORMATTING.md)                   | [포맷 검사](i18n/ko/development/FORMATTING.md)               |
-| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                        | [릴리스 가이드](i18n/ko/releases/RELEASING.md)               |
-| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                              | [변경 이력](i18n/ko/CHANGELOG.md)                            |
-| Private reporting and safe-use policy           | [Security](../SECURITY.md)                                | [보안 정책](i18n/ko/SECURITY.md)                             |
-| Repository threat model and review boundaries   | [Threat model](reference/threat-model.md)                 | [위협 모델](i18n/ko/reference/threat-model.md)               |
-| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)        | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)             |
+| Document                                        | English                                                   | 한국어                                                         |
+| ----------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| Project overview and installation               | [README](../README.md)                                    | [프로젝트 소개](i18n/ko/README.md)                             |
+| Documentation index                             | [Index](README.md)                                        | [문서 목차](i18n/ko/INDEX.md)                                  |
+| Development direction and TODO order            | [Development plan](development/DEVELOPMENT_PLAN.md)       | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)           |
+| Supported source syntax and limitations         | [Parser scope](reference/PARSER_SCOPE.md)                 | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)                 |
+| Maintained source-only CLI demo                 | [Examples](guides/EXAMPLES.md)                            | [예제](i18n/ko/guides/EXAMPLES.md)                             |
+| Offline proposal and expectation CLI preview    | [Proposal preview](guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](i18n/ko/guides/PROPOSAL_PREVIEW.md)            |
+| Source-only proposal declaration comparison     | [Proposal check](guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](i18n/ko/guides/PROPOSAL_CHECK.md)             |
+| Integrated review and prose test draft          | [Review demo](guides/REVIEW_DEMO.md)                      | [통합 검토 시연](i18n/ko/guides/REVIEW_DEMO.md)                |
+| Owned report policy and unit-test example       | [Owner policy](guides/OWNER_POLICY.md)                    | [소유 보고서 정책](i18n/ko/guides/OWNER_POLICY.md)             |
+| Read-only owner-policy Codex review             | [Codex owner review](guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](i18n/ko/guides/CODEX_OWNER_REVIEW.md)   |
+| Offline owner-case review and fixed plans       | [Owner case plan](reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](i18n/ko/reference/OWNER_CASE_PLAN.md)    |
+| Source-only fixed owned-policy check API        | [Owner policy check](reference/OWNER_POLICY_CHECK.md)     | [고정 소유 정책 검사](i18n/ko/reference/OWNER_POLICY_CHECK.md) |
+| Packaged offline fixture walkthrough            | [Fixture demo](guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)        |
+| Opt-in owned-fixture Codex draft                | [Codex fixture](guides/CODEX_FIXTURE.md)                  | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)               |
+| Separately approved fixed-fixture runtime check | [Runtime verification](guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)          |
+| Replaceable models and measurable value         | [Model strategy](development/MODEL_STRATEGY.md)           | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)             |
+| Versioned diagnostics and registration evidence | [Report contract](reference/REPORT_CONTRACT.md)           | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)            |
+| Offline evidence-linked expected outcomes       | [Expectation contract](reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)    |
+| Contributions and commit conventions            | [Contributing](../CONTRIBUTING.md)                        | [기여 안내](i18n/ko/CONTRIBUTING.md)                           |
+| Required checks and branch protection           | [Branch rules](development/BRANCH_RULES.md)               | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)             |
+| Guarded repository formatting                   | [Formatting](development/FORMATTING.md)                   | [포맷 검사](i18n/ko/development/FORMATTING.md)                 |
+| Versions, binaries, and release checks          | [Releasing](releases/RELEASING.md)                        | [릴리스 가이드](i18n/ko/releases/RELEASING.md)                 |
+| Released and unreleased changes                 | [Changelog](../CHANGELOG.md)                              | [변경 이력](i18n/ko/CHANGELOG.md)                              |
+| Private reporting and safe-use policy           | [Security](../SECURITY.md)                                | [보안 정책](i18n/ko/SECURITY.md)                               |
+| Repository threat model and review boundaries   | [Threat model](reference/threat-model.md)                 | [위협 모델](i18n/ko/reference/threat-model.md)                 |
+| Pull request fields and checklist               | [PR template](../.github/pull_request_template.md)        | [PR 작성 안내](i18n/ko/PULL_REQUEST_TEMPLATE.md)               |
 
 ## Read the right version
 
@@ -100,6 +107,9 @@ on all supported OSes, then requires exact sharing consent for its POSIX provide
 and structured defensive cases remain unreviewed drafts, with execution not-run and authorization
 unknown. One separately approved live run on 2026-10-01 returned a host-valid answer and ten cases;
 no patch or target execution occurred, and alpha.3 is unchanged.
+That provider result remains a draft/not-run record. The later exact-label review and separate
+[#80 source observation](reference/OWNER_POLICY_CHECK.md) do not retroactively change it or
+approve new model cases.
 [#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
 adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
 separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source

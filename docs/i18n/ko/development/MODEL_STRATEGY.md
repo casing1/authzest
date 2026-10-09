@@ -28,20 +28,26 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 [소스 전용 예제](../guides/EXAMPLES.md)는 파서 회귀 검사와 데모이며
 보안 벤치마크가 아닙니다.
 
-## 현재 제출 우선순위 — 2026-10-02
+## 현재 제출 우선순위 — 2026-10-09 KST
 
 PR #76은 main `142a0dc`에 병합됐으며 읽기 전용 소유 정책 검토는 앞으로 붙일 adapter가 아니라
-구현된 기능입니다. 모델 작성 10개 사례는 미검토/미실행이고 호스트 형식 검증이 정확성을 증명하지 않습니다.
-바로 할 오프라인 작업은 [#79 CLI 가독성](https://github.com/casing1/authzest/issues/79)과
-[#77 정확한 사례 검토/고정 계획 계약](https://github.com/casing1/authzest/issues/77)입니다.
-정답 승인 대기는 검증 성공을 막되 오프라인 계약 구현 자체를 막지 않습니다.
+구현된 기능입니다. 관리자는 2026-10-09 KST에 정확한 모델 작성 예상값 10개를 별도로 승인했고
+변경하지 않은 내용을 [#77 계약](../reference/OWNER_CASE_PLAN.md)에 연결해 기록합니다. 원래 모델
+작성 이력은 유지하며 별도 개발 정답 28개·고정 평가셋의 승인이 아닙니다. 원래 초안·오프라인 계획은
+not-run입니다. 이후 별도 승인한 [#80 소스 검사](../reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)
+1회에서 새 모델 호출 없이 예상값 10개가 모두 일치했고 인가는 unknown입니다. 호스트 형식 검증은
+정확성 증명이 아닙니다. [#79 CLI 가독성](https://github.com/casing1/authzest/issues/79)과
+오프라인 #77 API는 구현됐습니다.
 
-이후 [#80](https://github.com/casing1/authzest/issues/80)의 유지하는 고정 순수 정책 harness,
+현재 작업은 [#80](https://github.com/casing1/authzest/issues/80)의
+[유지하는 고정 순수 정책 검사 API](../reference/OWNER_POLICY_CHECK.md)이며,
 구현 전 [#81](https://github.com/casing1/authzest/issues/81)의 제한된 방어적 재현/수정 설계 검토,
 [#82](https://github.com/casing1/authzest/issues/82)의 통합 결정/관찰/복구 수용으로 진행합니다.
 방어적 PoC는 직접 소유한 합성 회귀 사례 **데이터**이며 AI 생성 Python/shell이나 외부 공격이 아닙니다.
 올바른 정책에 변경 없음도 정상 결과입니다. 필요하면 의도적 오류를 명시한 test-only 변형을 구현 전에
 검토하고 생산 코드 취약점을 꾸며내지 않습니다. 순수 정책 관찰은 HTTP 인증/인가 증명이 아닙니다.
+예상값 승인은 실행 동의가 아닙니다. 별도로 승인한 소스 검사 1회는 소비됐고 추가 실행에는 새
+정확한 계획 결정이 필요합니다. 최종 head #80 CI·리뷰는 대기입니다.
 
 모델을 명시하고 adapter 교체 경계를 유지하되 새 GPT 버전·다른 transport·전체 Python 해석기·AI GUI를
 이 gate보다 우선하지 않습니다. 프롬프트 수정 전에 독립 정답 검토를 고정하고

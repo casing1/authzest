@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "kind": "recorded-maintainer-owner-label-review",
+  "review_date": "2026-10-09",
+  "timezone": "Asia/Seoul",
+  "proposed_review_canonical_sha256": "7d6296c07ec57b57b217a6fc03bd6fa48304cfe475c1adaf9dbd1d9b285ea598",
+  "origin_request_id": "request-c7767829b1d516f91f7ceaaa0cfae276f9485d96930296703e658a910251c90c",
+  "source_identity": "c31d103bb03a8eb5f521a666541891fa67eee3024b923d88905b0a3f8e79a1b8",
+  "source_sha256": {
+    "main.py": "73f73c8ca2ee5de206c158b98c422b74d355da74fda167be8babb153d03a951b",
+    "policy.py": "faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04"
+  },
+  "case_authorship": "model-authored",
+  "label_review_status": "approved",
+  "decision_origin": "Explicit user chat approval of these ten exact expectations; recorded by the assistant.",
+  "reviewer_authenticated": false,
+  "scope": "Label review only; not an authenticated receipt, execution/sharing/provider/patch/release approval, or approval of other development/evaluation labels.",
+  "decisions": [
+    {
+      "case_id": "owner-read",
+      "decision": "approved",
+      "expected": true
+    },
+    {
+      "case_id": "nonowner-admin",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "unauthenticated-owner",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "missing-principal",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "missing-report",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "wildcard-only",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "blank-identities",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "empty-report-id",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "no-owner-normalization",
+      "decision": "approved",
+      "expected": false
+    },
+    {
+      "case_id": "exact-padded-owner",
+      "decision": "approved",
+      "expected": true
+    }
+  ],
+  "execution_status": "not-run",
+  "authorization_status": "unknown",
+  "provider_calls": 0,
+  "patch_application": "not-run"
+}

@@ -9,14 +9,19 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-10-02
+## 현재 작업 — 2026-10-09 KST
 
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
-소스 기능이며 공개 alpha.3에는 없습니다. 기록된 모델 작성 예상값 10개는 미검토/미실행으로,
-#77은 해당 검토를 위해 열어 둡니다. 계약에는 executor나 새 CLI 명령이 없습니다. 다음은 #80의
-검토한 고정 정책 harness이며 이후 제한된 수정/통합 수용으로 이어집니다. 현재 대시보드는
-정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
+소스 기능이며 공개 alpha.3에는 없습니다. 관리자는 2026-10-09 KST에 기록된 정확한 모델 작성
+예상값 10개를 별도로 승인했고 원래 작성 이력·초안/오프라인 계획의 not-run은 유지합니다. 오프라인 계약에는
+executor나 새 CLI 명령이 없습니다. 현재 작업은 [#80 고정 정책 검사 API](reference/OWNER_POLICY_CHECK.md)이며
+이후 제한된 수정/통합 수용으로 이어집니다. 정답 검토는 실제 실행 동의나 인증된 승인 증표가
+아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
+이후 별도 승인한 macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
+[제한된 관찰 기록](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을 참고하세요.
+새 AI 호출 없이 인가는 unknown이며 승인한 1회만 소비합니다. 최종 head #80 CI·리뷰는
+대기이고 alpha.3는 그대로입니다.
 
 [현재 개발 계획](development/DEVELOPMENT_PLAN.md)에서 우선순위·실제 마일스톤 상태·릴리즈/평가 gate와
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로
@@ -43,33 +48,34 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| 문서                                   | English                                                         | 한국어                                               |
-| -------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- |
-| 프로젝트 소개와 설치                   | [README](../../../README.md)                                    | [프로젝트 소개](README.md)                           |
-| 문서 목차                              | [Index](../../README.md)                                        | [문서 목차](INDEX.md)                                |
-| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)         |
-| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)               |
-| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                           |
-| 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)          |
-| 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)           |
-| 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)              |
-| 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)           |
-| 소유 정책의 읽기 전용 Codex 검토       | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md) |
-| 오프라인 소유 사례 검토와 고정 계획    | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)  |
-| 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)      |
-| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)             |
-| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)        |
-| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)           |
-| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)           | [리포트 계약](reference/REPORT_CONTRACT.md)          |
-| 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)  |
-| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                         |
-| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)           |
-| guard를 적용한 저장소 포맷             | [Formatting](../../development/FORMATTING.md)                   | [포맷 검사](development/FORMATTING.md)               |
-| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)               |
-| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                            |
-| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                             |
-| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)                 | [위협 모델](reference/threat-model.md)               |
-| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)        | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)             |
+| 문서                                   | English                                                         | 한국어                                                 |
+| -------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------ |
+| 프로젝트 소개와 설치                   | [README](../../../README.md)                                    | [프로젝트 소개](README.md)                             |
+| 문서 목차                              | [Index](../../README.md)                                        | [문서 목차](INDEX.md)                                  |
+| 개발 방향과 TODO 순서                  | [Development plan](../../development/DEVELOPMENT_PLAN.md)       | [개발 계획](development/DEVELOPMENT_PLAN.md)           |
+| 지원 소스 구문과 한계                  | [Parser scope](../../reference/PARSER_SCOPE.md)                 | [파서 범위](reference/PARSER_SCOPE.md)                 |
+| 유지하는 소스 전용 CLI 데모            | [Examples](../../guides/EXAMPLES.md)                            | [예제](guides/EXAMPLES.md)                             |
+| 오프라인 제안·예상 결과 CLI 미리보기   | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)            | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)            |
+| 소스 전용 제안 선언 비교               | [Proposal check](../../guides/PROPOSAL_CHECK.md)                | [제안 선언 검사](guides/PROPOSAL_CHECK.md)             |
+| 통합 검토와 설명문 테스트 초안         | [Review demo](../../guides/REVIEW_DEMO.md)                      | [통합 검토 시연](guides/REVIEW_DEMO.md)                |
+| 소유 보고서 정책과 단위 테스트 예제    | [Owner policy](../../guides/OWNER_POLICY.md)                    | [소유 보고서 정책](guides/OWNER_POLICY.md)             |
+| 소유 정책의 읽기 전용 Codex 검토       | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)        | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md)   |
+| 오프라인 소유 사례 검토와 고정 계획    | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)           | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)    |
+| 소스 전용 고정 소유 정책 검사 API      | [Owner policy check](../../reference/OWNER_POLICY_CHECK.md)     | [고정 소유 정책 검사](reference/OWNER_POLICY_CHECK.md) |
+| 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                    | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)        |
+| opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                  | [Codex fixture](guides/CODEX_FIXTURE.md)               |
+| 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)    | [런타임 검증](guides/RUNTIME_VERIFICATION.md)          |
+| 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)           | [모델 전략](development/MODEL_STRATEGY.md)             |
+| 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)           | [리포트 계약](reference/REPORT_CONTRACT.md)            |
+| 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md) | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)    |
+| 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                        | [기여 안내](CONTRIBUTING.md)                           |
+| 필수 검사와 브랜치 보호                | [Branch rules](../../development/BRANCH_RULES.md)               | [브랜치 규칙](development/BRANCH_RULES.md)             |
+| guard를 적용한 저장소 포맷             | [Formatting](../../development/FORMATTING.md)                   | [포맷 검사](development/FORMATTING.md)                 |
+| 버전·바이너리·릴리스 검사              | [Releasing](../../releases/RELEASING.md)                        | [릴리스 가이드](releases/RELEASING.md)                 |
+| 출시·미출시 변경                       | [Changelog](../../../CHANGELOG.md)                              | [변경 이력](CHANGELOG.md)                              |
+| 비공개 신고와 안전한 사용 정책         | [Security](../../../SECURITY.md)                                | [보안 정책](SECURITY.md)                               |
+| 저장소 위협 모델과 검토 경계           | [Threat model](../../reference/threat-model.md)                 | [위협 모델](reference/threat-model.md)                 |
+| PR 항목과 체크리스트                   | [PR template](../../../.github/pull_request_template.md)        | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)               |
 
 ## 올바른 버전의 문서 읽기
 
@@ -100,6 +106,9 @@ import 없이 읽습니다. 인증 서비스나 제품 런타임 모드를 추�
 검토와 구조화된 방어적 사례는 미검토 초안, 실행은 not-run, 인가는 unknown을 유지합니다.
 별도로 승인받은 2026-10-01 실제 시도에서 답변 1개·사례 10개가 host 검증을 통과했습니다.
 패치·대상 실행은 없었으며 alpha.3는 그대로입니다.
+해당 제공자 결과는 초안/not-run 기록을 유지합니다. 이후 정확한 예상값 검토와 별도
+[#80 소스 관찰](reference/OWNER_POLICY_CHECK.md)은 과거 기록을 소급 변경하거나 새 모델 사례를
+승인하지 않습니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
 지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.
