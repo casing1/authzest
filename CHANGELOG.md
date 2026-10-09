@@ -16,12 +16,30 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record one freshly and separately approved exact #80 source check on 2026-10-09 KST:
+  macOS arm64/Python `3.12.7`, ten matching observations (two allow/eight deny), aggregate `passed`,
+  child exit `0` and confirmed cleanup. Preserve the separate
+  [observed record](tests/fixtures/owner_case_review/observed_check.json) and
+  [exact plan/worker identities](docs/reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+  Scripted control-plane answer, no new AI call, provider zero, authorization unknown, patch not-run.
+  The one-run permission is consumed; original draft/offline plans remain not-run and no Windows/
+  frozen-binary/HTTP acceptance is claimed. Final-head #80 CI/reviews remain pending; no release.
+- Add #80's unreleased [fixed owner-policy check API](docs/reference/OWNER_POLICY_CHECK.md):
+  separate exact-plan, caller-recorded, expiring one-use decisions; one pinned pure-policy worker;
+  expected/observed/null outcomes with unknown failures. POSIX Python source only; no new CLI,
+  model/HTTP/database calls, patches or release. This is bounded process control, not a sandbox.
+  No actual policy execution is approved by the ten-label review.
+- Record the maintainer's explicit 2026-10-09 KST approval of #77's exact ten-case envelope in a
+  separate [review record](tests/fixtures/owner_case_review/maintainer_review.json): two allow,
+  eight deny, labels only. Preserve original model authorship and SHA-256; this is not an
+  authenticated receipt, execution consent, approval of other label sets or a runtime result.
 - Add #77's pure [owner-case review/fixed-plan contract](docs/reference/OWNER_CASE_PLAN.md), schema
   `1.0`: retain exact model-authored inputs, original labels/evidence and source/task identities;
   record pending/approved/changed/declined caller choices without authenticated approval claims.
   Preview exact maintained policy bytes, selected labels and a pinned design recipe, revalidating
   all relationships after changes. No CLI/executor, provider call, case execution or release;
-  the ten real labels remain pending and all plans remain not-run/authorization unknown.
+  the ten real labels are separately reviewed as recorded above; all offline plans remain
+  not-run/authorization unknown and non-executable.
 
 - Record one successful, freshly approved owner-review source-CLI run on 2026-10-01 at `9257bd7`:
   `draft-ready`, exit `0`, about 74 seconds, one answer and ten host-valid defensive case drafts.

@@ -1,0 +1,161 @@
+<p align="center">
+  <strong>English</strong> ·
+  <a href="../i18n/ko/reference/OWNER_POLICY_CHECK.md">한국어</a>
+</p>
+
+# Fixed owned-policy check API
+
+[Documentation index](../README.md) · [Offline case-plan contract](OWNER_CASE_PLAN.md) ·
+[Owner review](../guides/CODEX_OWNER_REVIEW.md) · [Development plan](../development/DEVELOPMENT_PLAN.md)
+
+## Scope and current state
+
+[#80](https://github.com/casing1/authzest/issues/80) adds a source-only API under
+`authzest.runner.owner_policy_check` for one maintained, owned pure policy. Source delivery and
+acceptance are tracked in [PR #97](https://github.com/casing1/authzest/pull/97), separately from
+published alpha.3. This is not a generic repository executor or new CLI command.
+Windows and frozen executables explicitly return unsupported/not-run; the worker path is limited
+to supported POSIX Python source installations.
+
+On 2026-10-09 KST the maintainer approved only the exact ten expected labels in #77's canonical
+envelope SHA-256 `7d6296c07ec57b57b217a6fc03bd6fa48304cfe475c1adaf9dbd1d9b285ea598`:
+`owner-read` and `exact-padded-owner` allow, the other eight deny. The separate
+[review record](../../tests/fixtures/owner_case_review/maintainer_review.json) records that explicit
+chat decision through the assistant, with authentication false. It preserves the original model
+authorship and does not approve the separate 28 developer labels or frozen evaluation set.
+This labels-only decision grants no policy execution. A later, separately approved exact source
+check ran once on the same date; its limited observations are recorded below, separately from the
+original draft and offline plans.
+Current coordinator recipe `1.1` corrects decision finality and startup-failure reporting.
+The historical recipe `1.0` observation below is not acceptance of this newer coordinator.
+One later recipe `1.1` source check received its own fresh bounded approval and matched all ten
+expectations at `e037986`; both one-run approvals are consumed. At that source-check checkpoint,
+final-head reviews/CI and delivery remained separate gates; [PR #97](https://github.com/casing1/authzest/pull/97)
+tracks their subsequent outcome. This observation published no release.
+
+## Separate check plan and session
+
+`prepare_owner_policy_check(offline_plan, labels, case_set, draft, request)` creates an
+`OwnerPolicyCheckPlan` after revalidating all supplied artifacts and their exact relationships.
+It binds the maintained policy bytes, registered worker and recipe identities, selected labels,
+case inputs and fixed limits. The #77 offline plan itself remains non-executable.
+
+`OwnerPolicyCheckSession` owns an immutable plan with the same complete context. Its
+`decide(choice, plan_id=..., lifetime_seconds=...)` records a separate in-memory choice:
+`pending`, `approved`, `declined` or `cancelled`. Approval must name the exact plan ID and has
+a lifetime of at most 300 seconds. The choice is caller-recorded, not an authenticated receipt,
+proof of human action or consent for another plan. It does not grant source sharing or patch authority.
+Only a currently unexpired `pending` decision may be replaced. An `approved`, `declined` or
+`cancelled` decision is terminal; an expired decision cannot be renewed. Attempting to replace
+any terminal/expired decision, or recording an invalid initial choice, irreversibly invalidates
+the session. A fresh session and exact-plan decision are required afterward.
+
+`await session.run(...)` requires the same current artifact context and revalidates the
+request/draft/case set/labels/offline plan, source, worker and recipe before execution.
+The session becomes single-use before any await, including failed preconditions. Pending,
+declined, cancelled, expired, changed or reused sessions cannot execute. An invalidated decision
+cannot be repaired by reusing its old session; prepare a fresh exact plan and obtain a new decision.
+
+Hashes and immutable wrappers detect relevant changes but are not identity attestation, an
+approval service or protection against a caller who deliberately controls the Python process.
+Concurrent hostile same-user changes and a compromised interpreter/toolchain are not isolated.
+
+## Fixed worker and bounds
+
+Only the registered embedded maintained `policy.py` source is eligible. There is no path, command,
+generated Python or shell input. The worker decodes validated case data into the fixed policy's
+dataclasses; scope arrays map to frozensets and identifiers are not trimmed or normalized.
+Model reasons and reviewer comments remain display-only data and are not sent on worker stdin.
+The FastAPI example is not imported or served. HTTP/authentication/database operations, arbitrary
+target code, install hooks, provider calls and patch application are outside this API.
+
+| Bound                          | Fixed limit         |
+| ------------------------------ | ------------------- |
+| Cases / scopes per principal   | 16 / 16             |
+| Identifier length              | 128 characters      |
+| UTF-8 worker input / output    | 256 KiB / 16 KiB    |
+| Child startup and I/O deadline | 5 seconds           |
+| Kill/reap cleanup budget       | 1 additional second |
+| Decision lifetime              | At most 300 seconds |
+
+The worker uses a fixed minimal environment and temporary working directory, without a shell
+or model-selected arguments. These are bounded process controls, not an OS/network sandbox,
+container or proof that arbitrary code is safe. The API has no intentional networking path;
+it does not claim to isolate the trusted interpreter from the network or other host resources.
+
+## Honest observations and failures
+
+Each case retains its reviewed `expected` value and an `observed` boolean or null. Comparisons
+are `passed`, `failed` or `unknown`; aggregate outcomes are `passed`, `failed` or `not-run`.
+Missing, malformed, unsupported, cancelled or failed observations remain null/unknown, never
+fabricated denials or security passes. A comparison failure is distinct from inability to observe.
+Timeout/output/worker/precondition failures do not trigger a retry, fallback worker or model call.
+A launch failure with no child preserves reason `worker-process-error` and cleanup `not-needed`;
+it is not reported as unconfirmed cleanup. If child existence or reaping is ambiguous, cleanup
+remains unconfirmed and the `cleanup-unconfirmed` diagnostic takes priority. Neither case
+produces observed booleans or a successful comparison.
+
+Every result keeps authorization unknown, provider calls zero and patch application not-run.
+A pure-policy comparison does not attest actual authentication, FastAPI dependency behavior,
+database access or endpoint authorization. A correct policy can legitimately need no change.
+
+## Actual source acceptance — 2026-10-09 KST
+
+After a fresh separate approval for one exact fixed-policy check, the assistant ran that check on
+macOS arm64 with Python `3.12.7` from the POSIX source installation, using historical coordinator
+recipe `1.0`. Its unchanged record is preserved at commit
+`52979346c9a799162d0ef99faef8f731928a83d5`, not relabelled as a run of recipe `1.1`.
+The historical check plan ID was
+`owner-policy-check-387aeb1740773dc8b05a8570685e73e4ab52df489ce41bd1664f29cf6fb71119`;
+registered worker SHA-256 was
+`7a3ac77d65c7a0fd16ac0dbb2cf64bcff0843737027c6ce4e805acf3bf236496`.
+The separate [observed check record](../../tests/fixtures/owner_case_review/observed_check.json)
+retains public worker output, limits and the host identities from that run. It is an assistant-recorded
+observation, not an authenticated approval receipt or independent execution attestation.
+
+All ten expected/observed comparisons matched: `owner-read` and `exact-padded-owner` allowed,
+the other eight denied. Aggregate status was `passed`, child exit `0` and cleanup confirmed.
+Provider calls were zero, authorization remained `unknown` and patch application remained
+`not-run`. A scripted answer reconstructed the validated control-plane draft around the retained
+exact public model-authored cases; it was not a new AI response. No model/provider call or new
+source sharing was part of this check, and original model authorship was not changed.
+
+This consumes the separately approved single run. It does not grant future executions or extend
+coverage to Windows, frozen binaries, HTTP/authentication/database behavior, arbitrary policy
+inputs or the separate 28-label developer matrix. The offline #77 plans and labels-only review
+record remain non-executable/not-run. At this historical observation checkpoint #80 still needed
+final-head CI/reviews and delivery, tracked in [PR #97](https://github.com/casing1/authzest/pull/97).
+The observation published nothing and did not complete the broader #35 workflow.
+The policy and registered worker are unchanged, but coordinator recipe `1.1` changes the check
+plan identity. Its later separately approved source check is recorded separately below; this old
+record remains unchanged.
+
+## Current coordinator source acceptance — 2026-10-09 KST
+
+After fresh separate approval, one fixed-policy recipe `1.1` check ran at tested commit
+`e03798645c2678477ac141724396beaa013286d9`. Its exact plan ID was
+`owner-policy-check-a327b9dba5799d957e165e9c83ba1e66eb983a7da18c0130506c2f9b709db0c7`.
+The separate [recipe 1.1 observation record](../../tests/fixtures/owner_case_review/observed_check_recipe_1_1.json)
+retains this run's evidence without overwriting the recipe `1.0` record. The policy, registered
+worker and case input were unchanged; this used scripted control-plane data, not a new AI response.
+
+All ten expected/observed values matched: `owner-read` and `exact-padded-owner` allowed, the
+other eight denied. Aggregate status was `passed`, child exit `0` and cleanup confirmed.
+Provider calls were zero, authorization remained `unknown` and patch application remained
+`not-run`. This is bounded source-only observation, not authenticated execution attestation,
+endpoint authorization, Windows/frozen-binary acceptance or general policy correctness.
+
+The separate recipe `1.0` and `1.1` one-run approvals are both consumed. Another actual run needs
+a fresh exact-plan decision; the records grant no source-sharing, model, patch or release authority.
+At the `e037986` source-check checkpoint, final-head CI/reviews and delivery remained separate
+gates; [PR #97](https://github.com/casing1/authzest/pull/97) tracks subsequent acceptance and merge
+status. This observation published nothing and added no #81 implementation or new test-only variant.
+
+## Acceptance still required
+
+Offline contracts and mocked-process tests can validate preparation, exact bindings, refusal,
+expiry, one-use behavior, budgets and failure records without running the actual policy.
+They do not consume the maintainer's labels-only approval as execution consent.
+Any further actual observation requires a separately reviewed current check plan and a fresh bounded
+execution decision. Final-head CI/reviews, additional supported-platform evidence and later #81/#82
+remediation/integrated acceptance remain separate gates. This work publishes no release.
