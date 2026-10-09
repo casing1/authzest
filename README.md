@@ -37,9 +37,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   original model authorship is preserved. No new CLI; offline plans remain non-executable, not-run
   with authorization unknown. The separate [fixed policy-check API](docs/reference/OWNER_POLICY_CHECK.md)
   is #80 work in progress; label review grants no execution/sharing/patch authority.
-  One later, separately approved macOS arm64 source check matched all ten expected values, with
+  One later, separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values, with
   no new AI call and authorization unknown. That single run is consumed; final-head CI/reviews
-  are pending, and this is not Windows/frozen-binary or endpoint authorization acceptance.
+  are pending. Current coordinator recipe `1.1` has not been rerun under fresh approval; this is
+  not Windows/frozen-binary or endpoint authorization acceptance.
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.

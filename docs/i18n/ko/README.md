@@ -38,9 +38,10 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   새 CLI는 없으며 오프라인 계획은 실행 불가·not-run/인가 unknown입니다. 별도
   [고정 정책 검사 API](reference/OWNER_POLICY_CHECK.md)는 #80 진행 작업이며 정답 검토가
   실행·공유·패치 권한을 부여하지 않습니다.
-  이후 별도 승인한 macOS arm64 소스 검사 1회에서 예상값 10개가 일치했으며 새 AI 호출 없이
+  이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 일치했으며 새 AI 호출 없이
   인가는 unknown입니다. 해당 1회는 소비됐고 최종 head CI·리뷰는 대기입니다. Windows/frozen
-  바이너리나 endpoint 인가 수용 근거가 아닙니다.
+  바이너리나 endpoint 인가 수용 근거가 아닙니다. 현재 coordinator recipe `1.1`은 새 승인 아래
+  다시 실행하지 않았습니다.
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력

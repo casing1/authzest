@@ -44,9 +44,10 @@ explicitly approved that exact envelope's ten labels: two allow and eight deny; 
 [#77 contract](../reference/OWNER_CASE_PLAN.md). Model authorship and the original envelope remain
 unchanged. This labels-only decision is not authenticated execution consent and does not approve
 the separate 28 assistant-authored developer-test labels or frozen evaluation set. The original
-draft and offline plans remain not-run. A later separate exact #80 source check produced
+draft and offline plans remain not-run. A later separate historical recipe `1.0` #80 source check produced
 [ten matching observations](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst);
-authorization remains unknown. A host-valid response proves shape/reference checks, not correctness.
+authorization remains unknown. Current coordinator recipe `1.1` has not been rerun under fresh
+approval. A host-valid response proves shape/reference checks, not correctness.
 
 Published [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) remains
 package `0.1.0a3`, schema `1.2`. Main has newer unreleased commands; unchanged version output is not proof
@@ -78,7 +79,7 @@ historical items in their original phases.
 | ------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | Completed    | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                        |
 | Reviewed     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Offline contracts implemented; exact ten-label approval recorded on 2026-10-09 KST; offline plans remain non-executable          |
-| In progress  | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | One separately approved macOS source check: ten matches; final-head CI/reviews pending; future executions need fresh decisions   |
+| In progress  | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | Historical recipe 1.0 macOS check: ten matches; recipe 1.1 not rerun; final-head CI/reviews pending; fresh decisions required    |
 | Then         | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | Review design first; implementation depends on #80; exact owned single-file diff or valid no-change                              |
 | Core gate    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                            |
 | Preview gate | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                         |
@@ -92,6 +93,7 @@ or actual policy execution. Label approval does not authorize execution; obtain 
 bounded decision for an exact current check plan before any further actual policy observation.
 The single separately approved 2026-10-09 source check is consumed; it is not new AI evidence,
 HTTP authorization acceptance or completion of #80's review/CI gates.
+It remains historical recipe `1.0` evidence, not actual runtime acceptance of the corrected `1.1` coordinator.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only

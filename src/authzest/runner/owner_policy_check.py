@@ -80,7 +80,7 @@ def _snapshot(data: dict, kind):
 def _recipe() -> dict:
     return {
         "id": CHECK_ID,
-        "version": "1.0",
+        "version": "1.1",
         "target": "registered embedded policy.py only",
         "mapping_version": "nullable-fixed-dataclasses-exact-v1",
         "comparison_version": "observed-bool-to-reviewed-bool-v1",
@@ -215,6 +215,7 @@ class OwnerPolicyCheckSession:
         self._plan = prepare_owner_policy_check(offline_plan, labels, case_set, draft, request)
         self._decision: _Snapshot | None = None
         self._used = False
+        self._invalidated = False
         self.last_result: OwnerPolicyCheckResult | None = None
 
     @property
@@ -224,9 +225,19 @@ class OwnerPolicyCheckSession:
     def decide(self, choice, *, plan_id, lifetime_seconds=MAX_DECISION_SECONDS) -> _Snapshot:
         if self._used:
             raise ContractError("Owner-policy check attempt already consumed")
-        previous = self._decision.to_dict()["created_at"] if self._decision else self._created
-        # Invalid replacement choices must not leave an earlier approval active.
+        if self._invalidated:
+            raise ContractError("Owner-policy check session invalidated; prepare a fresh session")
+        previous = self._decision.to_dict() if self._decision else None
+        # Fail closed on every unsuccessful choice, including invalid replacements.
+        # Clearing a choice must not allow the same session to acquire a new approval.
+        self._invalidated = True
         self._decision = None
+        now = _finite(self._clock())
+        if previous is not None and (
+            previous["choice"] != "pending"
+            or not previous["created_at"] <= now < previous["expires_at"]
+        ):
+            raise ContractError("Only a current pending choice can be replaced")
         if type(choice) is not str or choice not in {
             "pending",
             "approved",
@@ -237,10 +248,9 @@ class OwnerPolicyCheckSession:
         if type(plan_id) is not str or plan_id != self._plan.check_plan_id:
             raise ContractError("Execution choice is for another plan", code="validation-identity")
         duration = _finite(lifetime_seconds)
-        now = _finite(self._clock())
         if (
             not 0 < duration <= MAX_DECISION_SECONDS
-            or now < previous
+            or now < self._created
             or not now < now + duration <= 1e12
         ):
             raise ContractError("Invalid execution decision time", code="validation-shape")
@@ -256,6 +266,7 @@ class OwnerPolicyCheckSession:
             },
             _Snapshot,
         )
+        self._invalidated = False
         return self._decision
 
     def _result(self, reason, *, observed=None, transport=None, attempted=False, retain=True):
@@ -312,6 +323,8 @@ class OwnerPolicyCheckSession:
         if self._used:
             return self._result("attempt-already-consumed", retain=False)
         self._used = True
+        if self._invalidated:
+            return self._result("execution-decision-invalidated")
         try:
             current = prepare_owner_policy_check(offline_plan, labels, case_set, draft, request)
             if current.payload_json != self._plan.payload_json:
@@ -349,6 +362,15 @@ class OwnerPolicyCheckSession:
             or (transport.reason is not None and type(transport.reason) is not str)
         ):
             return self._result("invalid-worker-transport", attempted=True)
+        if transport.cleanup_status == "not-needed":
+            if (
+                transport.reason == "worker-process-error"
+                and transport.exit_code is None
+                and not transport.output
+            ):
+                # No child exists: preserve startup failure, not a cleanup failure.
+                return self._result("worker-process-error", transport=transport)
+            return self._result("invalid-worker-transport", transport=transport, attempted=True)
         if transport.cleanup_status != "confirmed":
             return self._result("cleanup-unconfirmed", transport=transport, attempted=True)
         if transport.reason is not None:

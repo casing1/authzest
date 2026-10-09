@@ -19,10 +19,11 @@ The offline contract has no executor or new CLI command. Current work is
 [#80's fixed policy-check API](reference/OWNER_POLICY_CHECK.md), then bounded remediation/acceptance.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
-One later separately approved macOS arm64 source check matched all ten expected values;
+One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
 see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
 It made no new AI call, leaves authorization unknown and consumes only that one approved run.
-Final-head #80 CI/reviews remain pending; alpha.3 is unchanged.
+Current coordinator recipe `1.1` has not been rerun under fresh approval. Final-head #80 CI/reviews
+remain pending; alpha.3 is unchanged.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records

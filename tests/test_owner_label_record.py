@@ -75,8 +75,12 @@ def test_observation_record_preserves_exact_cases_without_granting_reexecution()
     assert result["patch_application"] == "not-run"
     assert record["approved_attempts"] == record["observed_attempts"] == 1
     assert prepared["execution_status"] == "not-run"  # Preparation never grants authority.
-    root = Path(__file__).resolve().parents[1]
+    # Historical coordinator bytes at 5297934, not the current implementation.
+    # Later orchestration changes must not rewrite a consumed observation as new evidence.
+    old_coordinator = "756862d69fef3fc6def6e0c7ef0bfc68059e0a858dd07aa344aa0d0ea91d922e"
+    old_worker = "c8f6c53ddb68f3c7900ecae9914c39e9fb5b9c298a827b074551cf9afe8f408f"
     assert record["source_files_sha256"] == {
-        name: sha256((root / name).read_bytes()).hexdigest()
-        for name in record["source_files_sha256"]
+        "src/authzest/runner/owner_policy_check.py": old_coordinator,
+        "src/authzest/runner/_owner_policy_worker.py": old_worker,
     }
+    assert prepared["recipe"]["version"] == "1.0"

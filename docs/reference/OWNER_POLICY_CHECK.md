@@ -25,6 +25,9 @@ authorship and does not approve the separate 28 developer labels or frozen evalu
 This labels-only decision grants no policy execution. A later, separately approved exact source
 check ran once on the same date; its limited observations are recorded below, separately from the
 original draft and offline plans.
+Current coordinator recipe `1.1` corrects decision finality and startup-failure reporting.
+The historical recipe `1.0` observation below is not actual acceptance of this newer coordinator;
+no current-recipe check has been rerun, and it requires fresh bounded approval.
 
 ## Separate check plan and session
 
@@ -38,6 +41,10 @@ case inputs and fixed limits. The #77 offline plan itself remains non-executable
 `pending`, `approved`, `declined` or `cancelled`. Approval must name the exact plan ID and has
 a lifetime of at most 300 seconds. The choice is caller-recorded, not an authenticated receipt,
 proof of human action or consent for another plan. It does not grant source sharing or patch authority.
+Only a currently unexpired `pending` decision may be replaced. An `approved`, `declined` or
+`cancelled` decision is terminal; an expired decision cannot be renewed. Attempting to replace
+any terminal/expired decision, or recording an invalid initial choice, irreversibly invalidates
+the session. A fresh session and exact-plan decision are required afterward.
 
 `await session.run(...)` requires the same current artifact context and revalidates the
 request/draft/case set/labels/offline plan, source, worker and recipe before execution.
@@ -79,6 +86,10 @@ are `passed`, `failed` or `unknown`; aggregate outcomes are `passed`, `failed` o
 Missing, malformed, unsupported, cancelled or failed observations remain null/unknown, never
 fabricated denials or security passes. A comparison failure is distinct from inability to observe.
 Timeout/output/worker/precondition failures do not trigger a retry, fallback worker or model call.
+A launch failure with no child preserves reason `worker-process-error` and cleanup `not-needed`;
+it is not reported as unconfirmed cleanup. If child existence or reaping is ambiguous, cleanup
+remains unconfirmed and the `cleanup-unconfirmed` diagnostic takes priority. Neither case
+produces observed booleans or a successful comparison.
 
 Every result keeps authorization unknown, provider calls zero and patch application not-run.
 A pure-policy comparison does not attest actual authentication, FastAPI dependency behavior,
@@ -87,12 +98,15 @@ database access or endpoint authorization. A correct policy can legitimately nee
 ## Actual source acceptance — 2026-10-09 KST
 
 After a fresh separate approval for one exact fixed-policy check, the assistant ran that check on
-macOS arm64 with Python `3.12.7` from the POSIX source installation. The check plan ID was
+macOS arm64 with Python `3.12.7` from the POSIX source installation, using historical coordinator
+recipe `1.0`. Its unchanged record is preserved at commit
+`52979346c9a799162d0ef99faef8f731928a83d5`, not relabelled as a run of recipe `1.1`.
+The historical check plan ID was
 `owner-policy-check-387aeb1740773dc8b05a8570685e73e4ab52df489ce41bd1664f29cf6fb71119`;
 registered worker SHA-256 was
 `7a3ac77d65c7a0fd16ac0dbb2cf64bcff0843737027c6ce4e805acf3bf236496`.
 The separate [observed check record](../../tests/fixtures/owner_case_review/observed_check.json)
-retains public worker output, limits and current host identities. It is an assistant-recorded
+retains public worker output, limits and the host identities from that run. It is an assistant-recorded
 observation, not an authenticated approval receipt or independent execution attestation.
 
 All ten expected/observed comparisons matched: `owner-read` and `exact-padded-owner` allowed,
@@ -107,6 +121,8 @@ coverage to Windows, frozen binaries, HTTP/authentication/database behavior, arb
 inputs or the separate 28-label developer matrix. The offline #77 plans and labels-only review
 record remain non-executable/not-run. #80 is still in progress until final-head CI and review
 gates pass; nothing was published and the broader #35 workflow is not complete.
+The policy and registered worker are unchanged, but coordinator recipe `1.1` changes the check
+plan identity. Its corrected control flow has not received new actual runtime acceptance.
 
 ## Acceptance still required
 

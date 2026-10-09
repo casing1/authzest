@@ -304,6 +304,57 @@ def test_approved_decision_expires_and_failed_attempt_cannot_be_reused(context, 
     assert calls == []
 
 
+@pytest.mark.parametrize("choice", ["approved", "declined", "cancelled"])
+def test_terminal_choice_cannot_be_replaced_and_invalidates_the_entire_session(
+    context, monkeypatch, choice
+):
+    args = _context(context)
+    calls = _mock_worker(monkeypatch, context)
+    session = check.OwnerPolicyCheckSession(*args, clock=lambda: 100.0)
+    session.decide(choice, plan_id=session.plan.check_plan_id)
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
+    # Rejection cannot clear the choice and silently permit a second renewal.
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
+    _assert_unknown(asyncio.run(session.run(*args)).to_dict())
+    assert calls == []
+
+
+@pytest.mark.parametrize("choice", ["pending", "approved"])
+@pytest.mark.parametrize("now", [400.0, 401.0])
+def test_expired_choice_cannot_be_renewed_and_requires_a_new_session(
+    context, monkeypatch, choice, now
+):
+    args = _context(context)
+    calls = _mock_worker(monkeypatch, context)
+    ticks = [100.0]
+    session = check.OwnerPolicyCheckSession(*args, clock=lambda: ticks[0])
+    session.decide(choice, plan_id=session.plan.check_plan_id, lifetime_seconds=300)
+    ticks[0] = now
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
+    # Moving a supplied clock back into the old window cannot revive the session.
+    ticks[0] = 101.0
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
+    _assert_unknown(asyncio.run(session.run(*args)).to_dict())
+    assert calls == []
+
+
+def test_still_valid_pending_choice_can_be_replaced_by_one_approved_choice(context, monkeypatch):
+    args = _context(context)
+    calls = _mock_worker(monkeypatch, context)
+    ticks = [100.0]
+    session = check.OwnerPolicyCheckSession(*args, clock=lambda: ticks[0])
+    session.decide("pending", plan_id=session.plan.check_plan_id)
+    ticks[0] = 101.0
+    decision = session.decide("approved", plan_id=session.plan.check_plan_id)
+    assert decision.to_dict()["choice"] == "approved"
+    assert asyncio.run(session.run(*args)).to_dict()["status"] == "passed"
+    assert len(calls) == 1
+
+
 def test_successful_decision_is_single_use(context, monkeypatch):
     args = _context(context)
     calls = _mock_worker(monkeypatch, context)
@@ -394,6 +445,19 @@ def test_invalid_decision_choice_is_rejected_without_coercion(context, choice):
         session.decide(choice, plan_id=session.plan.check_plan_id)
 
 
+def test_invalid_first_choice_cannot_be_retried_in_the_same_session(context, monkeypatch):
+    args = _context(context)
+    calls = _mock_worker(monkeypatch, context)
+    session = check.OwnerPolicyCheckSession(*args, clock=lambda: 100.0)
+    with pytest.raises(ContractError):
+        session.decide("not-a-choice", plan_id=session.plan.check_plan_id)
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
+    data = asyncio.run(session.run(*args)).to_dict()
+    _assert_unknown(data)
+    assert data["reason"] == "execution-decision-invalidated" and calls == []
+
+
 @pytest.mark.parametrize("plan_id", ["wrong-plan", "", None, True, []])
 def test_decision_requires_exact_bound_plan_id(context, plan_id):
     session = check.OwnerPolicyCheckSession(*_context(context), clock=lambda: 100.0)
@@ -446,6 +510,33 @@ def test_invalid_replacement_cannot_leave_an_earlier_approval_active(context, mo
     with pytest.raises(ContractError):
         session.decide(choice, plan_id=plan_id, lifetime_seconds=lifetime)
     ticks[0] = 101.0
+    _assert_unknown(asyncio.run(session.run(*args)).to_dict())
+    assert calls == []
+
+
+@pytest.mark.parametrize("change", ["choice", "plan", "lifetime", "clock", "nonfinite-clock"])
+def test_invalid_pending_replacement_irreversibly_locks_the_session(context, monkeypatch, change):
+    args = _context(context)
+    calls = _mock_worker(monkeypatch, context)
+    ticks = [100.0]
+    session = check.OwnerPolicyCheckSession(*args, clock=lambda: ticks[0])
+    session.decide("pending", plan_id=session.plan.check_plan_id)
+    choice, plan_id, lifetime = "approved", session.plan.check_plan_id, 300
+    if change == "choice":
+        choice = "not-a-choice"
+    elif change == "plan":
+        plan_id = "wrong-plan"
+    elif change == "lifetime":
+        lifetime = 0
+    elif change == "clock":
+        ticks[0] = 99.0
+    else:
+        ticks[0] = float("nan")
+    with pytest.raises(ContractError):
+        session.decide(choice, plan_id=plan_id, lifetime_seconds=lifetime)
+    ticks[0] = 101.0
+    with pytest.raises(ContractError):
+        session.decide("approved", plan_id=session.plan.check_plan_id)
     _assert_unknown(asyncio.run(session.run(*args)).to_dict())
     assert calls == []
 
@@ -559,6 +650,41 @@ def test_transport_failures_are_unknown_even_when_payload_has_scripted_booleans(
     calls = _mock_worker(monkeypatch, context, reason=reason, exit_code=exit_code, cleanup=cleanup)
     _assert_unknown(asyncio.run(_approved_session(args).run(*args)).to_dict())
     assert len(calls) == 1
+
+
+def test_no_child_launch_failure_preserves_process_error_and_not_needed_cleanup(
+    context, monkeypatch
+):
+    args = _context(context)
+
+    async def launch_failure(plan):
+        return check.WorkerTransport(
+            output=b"", exit_code=None, reason="worker-process-error", cleanup_status="not-needed"
+        )
+
+    monkeypatch.setattr(check, "_run_worker", launch_failure)
+    data = asyncio.run(_approved_session(args).run(*args)).to_dict()
+    _assert_unknown(data)
+    assert data["reason"] == "worker-process-error"
+    assert data["exit_code"] is None and data["cleanup_status"] == "not-needed"
+    assert data["execution_status"] == "not-run"
+
+
+@pytest.mark.parametrize("reason", [None, "worker-process-error", "timeout"])
+def test_unconfirmed_cleanup_keeps_priority_over_other_transport_reason(
+    context, monkeypatch, reason
+):
+    args = _context(context)
+
+    async def uncertain(plan):
+        return check.WorkerTransport(
+            output=b"", exit_code=None, reason=reason, cleanup_status="unconfirmed"
+        )
+
+    monkeypatch.setattr(check, "_run_worker", uncertain)
+    data = asyncio.run(_approved_session(args).run(*args)).to_dict()
+    _assert_unknown(data)
+    assert data["reason"] == "cleanup-unconfirmed" and data["cleanup_status"] == "unconfirmed"
 
 
 @pytest.mark.parametrize(
