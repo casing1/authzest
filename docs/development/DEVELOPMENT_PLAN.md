@@ -21,13 +21,21 @@ Improve CLI usability before adding an AI GUI, deployment or a second adapter. M
 not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
 value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
 
-## Current baseline — 2026-10-15 KST
+## Current baseline — 2026-10-16 KST
 
-Main baseline: `38587c30e644aa459cdd5242faf279f44ffa2240`, which merged #80 through
-[PR #97](https://github.com/casing1/authzest/pull/97). Its final head passed ten CI checks and both
-code/security re-reviews; the merge commit passed all six reported post-merge checks.
-#77 and #80 are closed. #81's [first-slice design](OWNER_POLICY_IMPROVEMENT_DESIGN.md) is proposed,
-not implemented or approved; no new provider call, policy execution or patch is part of that design.
+Implementation base: `f1cbd2fdcfc91453488ac38bbd53ac2a14940b7e`, which delivered the original
+design through [PR #98](https://github.com/casing1/authzest/pull/98) on 2026-10-16 KST. This records
+the implementation base, not latest main. Design head `a170d82` passed ten CI checks and completed
+[code/security automated reviews without reported findings](https://github.com/casing1/authzest/pull/98#issuecomment-6206327402).
+The earlier #80 delivery through [PR #97](https://github.com/casing1/authzest/pull/97) at `38587c3`
+passed ten final-head CI checks and both code/security re-reviews, then six reported post-merge checks.
+#77 and #80 are closed. The source implementation introduced in [PR #99](https://github.com/casing1/authzest/pull/99) provides #81 S1's
+[offline recommendation data API](../reference/OWNER_POLICY_RECOMMENDATION.md), not the full #81
+workflow or a published feature. The unchanged [original design](OWNER_POLICY_IMPROVEMENT_DESIGN.md)
+remains the historical proposal delivered through PR #98. Implementation CI/review/delivery
+outcomes are tracked separately in PR #99. The separate
+[2026-10-16 S1 continuation](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
+does not approve all #81 extensions or authorize provider calls, policy execution or patches.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
@@ -42,6 +50,7 @@ Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PR
 | Readable CLI output (#79 / PR #90)            | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                      |
 | Offline case-review / fixed-plan API (#77)    | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable    |
 | Fixed owned-policy check API (#80 / PR #97)   | Source-only fixed policy observations under a fresh one-use decision; Windows/frozen execution refuses; no HTTP/authentication proof   |
+| S1 recommendation contract (PR #99)           | Pure data request/result validation and output-only preview; caller-supplied provenance, empty changes, no provider/policy execution   |
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate
@@ -84,16 +93,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority            | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Completed           | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                        |
-| Completed           | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                |
-| Completed           | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                    |
-| Next: design review | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | Review the [offline recommendation design](OWNER_POLICY_IMPROVEMENT_DESIGN.md) first; source+criteria only, no-change/unknown and an empty change-pair registry; not implemented |
-| Core gate           | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                                                                            |
-| Preview gate        | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                                                                         |
-| Evaluation          | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                 |
-| Delivery            | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                        |
+| Priority             | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Completed            | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                            |
+| Completed            | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                                    |
+| Completed            | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                        |
+| S1 delivery tracking | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | [Offline recommendation API](../reference/OWNER_POLICY_RECOMMENDATION.md) introduced in [PR #99](https://github.com/casing1/authzest/pull/99), which tracks implementation CI/review/delivery outcomes; wider #81 remains incomplete |
+| Core gate            | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                                                                                                                                |
+| Preview gate         | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                                                                                                                             |
+| Evaluation           | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                                                     |
+| Delivery             | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                            |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -102,11 +111,15 @@ execution. Label approval does not authorize execution; any further observation 
 separately bounded exact-plan decision. The recipe `1.0` and corrected `1.1` source-run approvals
 are both consumed. Their retained observations are not new AI evidence or HTTP authorization proof.
 
-#81 starts with a separate pure recommendation contract and read-only preview, subject to maintainer
-design review. The first proposed request contains only the registered policy source, policy-only
-criteria and trusted-input assumptions. Case/label/observation inputs, provider wiring and registered
-repair pairs are deferred, not silently accepted. `no-change` and `unknown` are valid results; a
-well-formed result is not a verified fix. The design adds no new CLI, runtime or patch capability.
+#81 S1's source implementation introduced in PR #99 provides a separate pure recommendation
+contract and read-only preview under the bounded continuation above. The registered request contains only the fixed policy source,
+policy-only criteria and trusted-input assumptions. Cases, labels, observations, provider/model
+claims and approval/execution fields are rejected, not silently accepted. The registry is empty;
+`no-change` and `unknown` are valid data statuses, not verified fixes or security verdicts.
+No filesystem/network/provider/process access, policy evaluation, CLI or patch capability is added.
+The [reference](../reference/OWNER_POLICY_RECOMMENDATION.md) documents the implemented API and an
+explicitly SCRIPTED `unknown` example. Implementation CI/review/delivery outcomes are tracked in
+PR #99, separately from the unchanged design delivered through PR #98; #81 as a whole remains incomplete.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only
