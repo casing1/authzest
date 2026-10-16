@@ -16,12 +16,40 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #81's first offline [owner-policy recommendation contract](docs/reference/OWNER_POLICY_RECOMMENDATION.md),
+  schema `1.0`: one registered policy snapshot, policy-only criteria and fixed trusted-input assumptions.
+  Validate caller/scripted `no-change` or `unknown` data with exact evidence bindings, strict closed
+  fields and whole-artifact budgets; rebuild detached, read-only previews with an empty change-pair
+  registry and no changes/diffs. Cases, labels, observations, provider/model claims and patch/approval
+  fields are excluded. No provider, source evaluation, filesystem access, new CLI, patch or release;
+  valid shape is neither model provenance nor a security verdict. Broader #81/#35 remains incomplete.
+- Record one freshly and separately approved exact #80 source check on 2026-10-09 KST:
+  macOS arm64/Python `3.12.7`, ten matching observations (two allow/eight deny), aggregate `passed`,
+  child exit `0` and confirmed cleanup. Preserve the separate
+  [observed record](tests/fixtures/owner_case_review/observed_check.json) and
+  [exact plan/worker identities](docs/reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+  Scripted control-plane answer, no new AI call, provider zero, authorization unknown, patch not-run.
+  The one-run permission is consumed; original draft/offline plans remain not-run and no Windows/
+  frozen-binary/HTTP acceptance is claimed. Final-head #80 CI/reviews were pending at that checkpoint;
+  delivery subsequently completed through [PR #97](https://github.com/casing1/authzest/pull/97)
+  on 2026-10-15 KST without another policy run or release. The later corrected recipe `1.1`
+  observation remains in its [separate record](tests/fixtures/owner_case_review/observed_check_recipe_1_1.json).
+- Add #80's unreleased [fixed owner-policy check API](docs/reference/OWNER_POLICY_CHECK.md):
+  separate exact-plan, caller-recorded, expiring one-use decisions; one pinned pure-policy worker;
+  expected/observed/null outcomes with unknown failures. POSIX Python source only; no new CLI,
+  model/HTTP/database calls, patches or release. This is bounded process control, not a sandbox.
+  No actual policy execution is approved by the ten-label review.
+- Record the maintainer's explicit 2026-10-09 KST approval of #77's exact ten-case envelope in a
+  separate [review record](tests/fixtures/owner_case_review/maintainer_review.json): two allow,
+  eight deny, labels only. Preserve original model authorship and SHA-256; this is not an
+  authenticated receipt, execution consent, approval of other label sets or a runtime result.
 - Add #77's pure [owner-case review/fixed-plan contract](docs/reference/OWNER_CASE_PLAN.md), schema
   `1.0`: retain exact model-authored inputs, original labels/evidence and source/task identities;
   record pending/approved/changed/declined caller choices without authenticated approval claims.
   Preview exact maintained policy bytes, selected labels and a pinned design recipe, revalidating
   all relationships after changes. No CLI/executor, provider call, case execution or release;
-  the ten real labels remain pending and all plans remain not-run/authorization unknown.
+  the ten real labels are separately reviewed as recorded above; all offline plans remain
+  not-run/authorization unknown and non-executable.
 
 - Record one successful, freshly approved owner-review source-CLI run on 2026-10-01 at `9257bd7`:
   `draft-ready`, exit `0`, about 74 seconds, one answer and ten host-valid defensive case drafts.

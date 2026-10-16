@@ -33,8 +33,16 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Recognizes statically constructed `FastAPI` and `APIRouter` owners, including supported import aliases.
 - Adds an unreleased Python [owner-case review/fixed-plan API](docs/reference/OWNER_CASE_PLAN.md):
   bind exact model case data to pending/approved/changed/declined caller records and an inspectable
-  maintained-policy plan. No new CLI or executor; recorded live labels remain pending, every plan
-  is not-run with authorization unknown, and label review grants no execution/sharing/patch authority.
+  maintained-policy plan. The exact ten recorded labels were separately approved on 2026-10-09 KST;
+  original model authorship is preserved. No new CLI; offline plans remain non-executable, not-run
+  with authorization unknown. The separate [fixed policy-check API](docs/reference/OWNER_POLICY_CHECK.md)
+  belongs to #80, with delivery tracked in [PR #97](https://github.com/casing1/authzest/pull/97);
+  label review grants no execution/sharing/patch authority.
+  One later, separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values, with
+  no new AI call and authorization unknown. A fresh separately approved recipe `1.1` source check
+  at `e037986` also matched all ten expectations; both one-run approvals are consumed.
+  Final-head review/CI and delivery were separate gates at that checkpoint; PR #97 tracks their later outcome, and
+  this is not Windows/frozen-binary or endpoint authorization acceptance.
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.

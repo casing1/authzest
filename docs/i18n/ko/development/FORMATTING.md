@@ -49,35 +49,39 @@ frontend ignore 파일에는 앞뒤 공백 없는 정확한 검토 항목만 허
 ## 의존성 근거와 한계
 
 소스 커밋 `4218b807ad892bb92e27a6bb23c4d64000e2a3bf` 기준으로 2026-10-08 정적 재검사를 했습니다.
-설치된 Prettier 3.9.6과 현재 공식 npm 최신 Prettier 3.9.9 모두에 `brace-expansion` 5.0.6이
+당시 설치된 Prettier 3.9.6과 그날 검사한 당시 공식 npm 최신 Prettier 3.9.9 모두에 `brace-expansion` 5.0.6이
 내장된 것을 확인했습니다. 내려받은 3.9.9 tarball의 SHA-512 integrity와
 SHA-1 `09b826918c91cd4cbc80e0cbd1d2a922ff04f233`은 registry 메타데이터와 일치했습니다.
-별도 `brace-expansion` 5.0.12 lock 항목은
-이 내장 바이트를 교체하지 않습니다. 검사는 선택한 bundle·parser·EditorConfig 경로 부분에
+당시의 별도 `brace-expansion` 5.0.12 lock 항목은
+이 내장 바이트를 교체하지 않았습니다. 검사는 선택한 bundle·parser·EditorConfig 경로 부분에
 한정되며 전체 내장 코드 감사는 아닙니다. #89에서 추적하는 공개 권고는
 [GHSA-q2hr-2g5m-vwhr](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
 [GHSA-qhr7-859c-m2p7](https://github.com/advisories/GHSA-qhr7-859c-m2p7),
 [GHSA-6j4f-fj2g-mc7p](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p)입니다.
-legacy CLI는 `index.mjs`의 설정 해석을 불러오고 CJS API도 같은 ESM 구현에 위임합니다.
-선택한 EditorConfig → Minimatch 경로와 재귀·재작성 parser 부분은 여전히 남아 있습니다.
-lock override나 이번에 검사한 최신 버전으로의 갱신만으로는 권고에서 수정한 내장 구현으로
-교체되지 않습니다.
+당시 검사한 시점의 legacy CLI는 `index.mjs`의 설정 해석을 불러왔고 CJS API도 같은 ESM
+구현에 위임했습니다. 선택한 EditorConfig → Minimatch 경로와 재귀·재작성 parser 부분이
+존재했습니다. 해당 시점에서 별도 lock override나 검사한 Prettier 3.9.9로의 갱신만으로
+수정한 내장 구현을 제공하지는 않았습니다.
 
-#89 전체 판정은 **`needs_review`**, 신뢰도는 **medium**입니다. 영향받는 내장 구현은 확인했지만,
-보호 명령 경로의 실제 DoS나 AuthZest 런타임 취약점은 입증하지 못했습니다. 임의 section 패턴의
-입력 경로는 Prettier 시작 전에 거부합니다. 실제 직접 editor/API 설정, 낮은 신뢰도의 설정 노출,
-가용성 영향은 미검증입니다. 모든 Prettier 호출이 안전하거나 악용 가능하다는 판정은 아닙니다.
-이번 정적 판단에는 공격·자원 고갈 입력이나 동적 재현을 실행하지 않았습니다.
+기록된 2026-10-08의 #89 전체 판정은 **`needs_review`**, 신뢰도는 **medium**이었습니다.
+영향받는 내장 구현은 확인했지만 보호 명령 경로의 실제 DoS나 AuthZest 런타임 취약점은
+입증하지 못했습니다. 당시 임의 section 패턴의 입력 경로는 Prettier 시작 전에 거부했습니다.
+실제 직접 editor/API 설정, 낮은 신뢰도의 설정 노출, 가용성 영향은 미검증이었습니다.
+모든 Prettier 호출이 안전하거나 악용 가능하다는 판정은 아니었습니다.
+해당 2026-10-08 정적 판단에는 공격·자원 고갈 입력이나 동적 재현을 실행하지 않았습니다.
 내장 의존성 후속 작업은 #89와 [#83](https://github.com/casing1/authzest/issues/83)에서 계속 추적합니다.
+2026-10-16 문서 동기화로 업스트림 릴리스 확인·새 보안 판단·위험 수용 결정을 추가하지
+않습니다. 위의 근거는 2026-10-08의 과거 기록으로 유지합니다.
 
 guard는 이 저장소 명령에만 적용합니다. 직접 Prettier 호출·editor 연동·직접 CJS/ESM 모듈 호출은
 guard로 보장하지 않습니다. 제한 시간은 OS sandbox가 아닙니다. 이 경계는 설치된 toolchain과
 workflow script를 신뢰하고, 사전 검사부터 Prettier가 다시 읽을 때까지 파일이 유지되며,
 같은 사용자로 실행하는 악의적인 동시 작성자가 없다는 가정을 둡니다.
 
-검사한 런타임 소스와 packaging spec은 Prettier를 호출하거나 Node toolchain을 포함 대상으로
-선택하지 않으며 선택적 대시보드는 빌드된 frontend 산출물을 사용합니다. 확인한 개발 도구 경로를
-런타임 주장과 구분하는 근거이지 전체 의존성 감사나 새 바이너리 내용 증명은 아닙니다.
+2026-10-08에 검사한 런타임 소스와 packaging spec은 Prettier를 호출하거나 Node toolchain을
+포함 대상으로 선택하지 않았고 선택적 대시보드는 빌드된 frontend 산출물을 사용했습니다.
+이 기록은 확인한 개발 도구 경로를 런타임 주장과 구분했으며 전체 의존성 감사나 새 바이너리
+내용 증명은 아니었습니다.
 
 ## 프리릴리스 판단
 

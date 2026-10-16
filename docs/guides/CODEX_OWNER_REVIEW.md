@@ -367,5 +367,25 @@ flow needs a separately reviewed design and distinct user decisions.
 
 The unreleased [owner case-plan Python API](../reference/OWNER_CASE_PLAN.md) binds caller-recorded
 label decisions to an exact validated draft, request, source and case set. It adds no CLI command,
-provider call, executor or target execution. The recorded ten real case labels still await separate
-maintainer review; implementation tests record only test-owned choices, not that approval.
+provider call, executor or target execution. Implementation tests record only test-owned choices,
+not maintainer approval.
+
+## Exact-label approval on 2026-10-09 KST
+
+The maintainer separately approved all ten expected values in the unchanged public envelope with
+SHA-256 `7d6296c07ec57b57b217a6fc03bd6fa48304cfe475c1adaf9dbd1d9b285ea598`:
+`owner-read` and `exact-padded-owner` allow; the other eight deny. The assistant records the explicit
+chat decision in a separate [review record](../../tests/fixtures/owner_case_review/maintainer_review.json).
+It is not an authenticated receipt or a change to the original model-authored draft. The historical
+2026-10-01 result above was unreviewed at that time; new provider drafts remain unreviewed until
+their own exact review. The 28 assistant-authored developer labels and frozen evaluation set are unchanged.
+
+This approval covers labels only, not execution, sharing, patches or release. The source-only
+[#80 fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is the next work in progress.
+No actual execution approval or policy observation follows from this label decision itself.
+A later fresh separate exact-plan approval permitted
+[one macOS arm64 source check](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst):
+ten matching expected/observed values, provider calls zero and authorization unknown. A scripted
+control-plane answer, not a new AI response, bound the retained exact cases for that check. Its
+single-run approval is consumed; future execution needs a new decision. Final-head #80 CI/reviews
+are pending, and the broader #35 workflow is not complete.

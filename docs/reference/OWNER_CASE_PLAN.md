@@ -13,8 +13,11 @@
 [#77](https://github.com/casing1/authzest/issues/77) adds a pure Python data API in unreleased source,
 schema `1.0`, under `authzest.codex.owner_case_plan`. There is no new CLI command or executor. The
 published alpha.3 assets, package version `0.1.0a3`, scan schema `1.2`, provider and fixture allowlists
-are unchanged. The ten recorded model-authored expectations in #77 still await explicit maintainer
-review. Implementation/testing does not approve those labels, run cases or call a model.
+are unchanged. On 2026-10-09 KST the maintainer explicitly approved the exact ten recorded
+expectations: `owner-read` and `exact-padded-owner` allow; the other eight deny. The separate
+[review record](../../tests/fixtures/owner_case_review/maintainer_review.json) preserves that
+labels-only chat decision without changing model authorship or claiming authenticated approval.
+Implementation/testing does not itself approve labels, run cases or call a model.
 
 Only the existing packaged owner-policy request/draft is accepted. The APIs operate on supplied
 in-memory artifacts; they do not read paths, accounts or credentials, import/evaluate the policy,
@@ -53,7 +56,9 @@ A changed label does not rewrite the model's input, original expected value, rea
 The overall status prioritizes declined, pending, changed, then approved. All cases must be approved
 or changed for `all_labels_reviewed: true`. The optional reviewer name is caller text and
 `reviewer_authenticated` is always false. This is not an authenticated approval receipt or proof
-of independent semantic review. The real ten-case maintainer decision remains pending.
+of independent semantic review. The separate 2026-10-09 maintainer record applies only to the
+unchanged envelope digest above; it grants no execution, source-sharing or patch permission and
+does not approve the separate 28 assistant-authored developer labels or frozen evaluation set.
 
 ## Fixed plan, not execution
 
@@ -66,14 +71,19 @@ Every plan still has `execution_available: false`, `requires_separate_execution_
 `execution_status: not-run`, `authorization_status: unknown`, no patch application and zero provider
 calls. A content ID is not permission to share, apply or run anything. Proposed limits (16 cases,
 16 scopes, 128-character identifiers, 256 KiB input, 16 KiB output and five seconds) are **design data**,
-not enforced process/sandbox guarantees. There is no harness source, worker or observed result here.
+not enforced process/sandbox guarantees. This offline contract itself starts no harness or worker
+and produces no observations; the separate #80 check API has its own bounds and result record.
 
-[#80](https://github.com/casing1/authzest/issues/80) must separately implement/review a pinned harness
-and enforcement, preserve exact input-to-dataclass mapping (scope array to frozenset; no identifier
-normalization), and require a fresh independent exact-plan execution decision. Only the owned pure
-policy would be in scope; HTTP/auth/database, arbitrary source/commands, generated test execution,
-install hooks, networking and model calls are excluded. Even future pure-policy results would not
-prove authentication or endpoint authorization. A correct policy may need no change.
+[#80](https://github.com/casing1/authzest/issues/80) adds a separate source-only
+[fixed policy-check API](OWNER_POLICY_CHECK.md), currently in progress. It preserves exact
+input-to-dataclass mapping (scope array to frozenset; no identifier normalization) and requires a
+fresh independent exact-plan execution decision. The offline plan here remains non-executable.
+Only the owned pure policy is in scope; HTTP/auth/database, arbitrary source/commands, generated
+test execution, install hooks, networking and model calls are excluded. The labels-only decision
+grants no execution; a later separately approved exact #80 source check produced
+[ten matching observations](OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+Pure-policy results do not prove authentication
+or endpoint authorization. A correct policy may need no change.
 
 ## Validation and immutable snapshots
 
