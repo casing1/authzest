@@ -16,13 +16,23 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- #81 첫 단계의 오프라인 [소유 정책 추천 계약](reference/OWNER_POLICY_RECOMMENDATION.md),
+  스키마 `1.0`을 추가합니다. 등록된 정책 소스 하나·정책 전용 기준·고정된 신뢰 입력 가정만
+  사용합니다. 호출자/고정 예시 작성의 `no-change` 또는 `unknown` 데이터를 정확한 근거 연결·
+  닫힌 필드·전체 산출물 예산으로 검증하고 빈 수정 쌍 등록부와 변경/diff 없는 분리된 읽기 전용
+  미리보기를 재구성합니다. 사례·정답·관찰·제공자/모델 주장·패치/승인 필드는 제외합니다.
+  제공자·소스 평가·파일 접근·새 CLI·패치·릴리스는 없으며 형식 검증은 모델 출처나 보안 판정이
+  아닙니다. 더 넓은 #81/#35는 미완료입니다.
 - 2026-10-09 KST의 새 별도 승인 아래 정확한 #80 소스 검사 1회를 기록합니다. macOS arm64/
   Python `3.12.7`, 관찰 10개 일치(허용 2개·거절 8개), 전체 `passed`, 자식 종료 `0`, 정리
   완료입니다. 별도 [관찰 기록](../../../tests/fixtures/owner_case_review/observed_check.json)과
   [정확한 계획/worker 식별값](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을
   보존합니다. 고정 control-plane 답변이며 새 AI 호출 없이 제공자 0·인가 unknown·패치 not-run입니다.
   1회 실행 허가는 소비됐고 원래 초안/오프라인 계획은 not-run입니다. Windows/frozen 바이너리/
-  HTTP 수용은 주장하지 않습니다. 최종 head #80 CI·리뷰는 대기이며 릴리스는 없습니다.
+  HTTP 수용은 주장하지 않습니다. 당시에는 최종 head #80 CI·리뷰가 대기였으며, 이후
+  2026-10-15 KST [PR #97](https://github.com/casing1/authzest/pull/97)로 추가 정책 실행이나
+  릴리스 없이 전달을 완료했습니다. 후속 수정 recipe `1.1` 관찰은
+  [별도 기록](../../../tests/fixtures/owner_case_review/observed_check_recipe_1_1.json)으로 보존합니다.
 - #80의 미출시 [고정 소유 정책 검사 API](reference/OWNER_POLICY_CHECK.md)를 추가합니다.
   정확한 계획에 연결한 별도 호출자 기록·만료·1회용 결정, 고정 순수 정책 worker 하나,
   예상/관찰/null 결과와 실패 시 unknown을 유지합니다. POSIX Python 소스 전용이며 새 CLI·
