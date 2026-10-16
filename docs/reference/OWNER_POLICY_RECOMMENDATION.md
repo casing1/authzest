@@ -11,16 +11,19 @@
 
 ## Availability and boundary — 2026-10-16 KST
 
-This branch implements S1's source-only pure Python data API in
+The S1 source implementation introduced in [PR #99](https://github.com/casing1/authzest/pull/99) provides a pure Python data API in
 `authzest.codex.owner_policy_recommendation`: a fixed request, strict recommendation validation
 and an inspectable preview. It is not published in alpha.3, a new CLI command, provider adapter,
-AI-generated patch or complete #81 workflow. Final implementation CI/reviews and wider #81/#82
-acceptance remain separate gates.
+AI-generated patch or complete #81 workflow. Implementation CI/review/delivery outcomes are tracked
+in PR #99, separately from wider #81/#82 acceptance.
 
 The unchanged [design](../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) is the historical
-2026-10-15 proposal. At this implementation checkpoint, [PR #98](https://github.com/casing1/authzest/pull/98)
-at `a170d82` remains draft and unmerged. The bounded S1 continuation does not imply approval of
-all #81 extensions, merge that design PR, or authorize a model call, policy execution or patch.
+2026-10-15 proposal delivered through [PR #98](https://github.com/casing1/authzest/pull/98) on
+2026-10-16 KST at merge `f1cbd2fdcfc91453488ac38bbd53ac2a14940b7e`, the implementation base
+recorded here rather than a claim about latest main. Its design head `a170d82` passed ten CI checks
+and completed [code/security automated reviews without reported findings](https://github.com/casing1/authzest/pull/98#issuecomment-6206327402).
+The bounded S1 continuation does not imply approval of all #81 extensions or authorize a model
+call, policy execution or patch. S1's implementation delivery is separate in PR #99.
 The separate [S1 scope decision](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
 records the 2026-10-16 continuation; it is not approval authority carried by these data objects.
 
@@ -118,7 +121,7 @@ the helper does not remove every bidi/zero-width character, so safe presentation
 
 This example constructs an `unknown` **SCRIPTED** response; it does not infer `no-change`, obtain
 an AI answer, evaluate the policy or approve anything. JSON output is ASCII-escaped display data.
-Use an environment containing this branch's source implementation, not the alpha.3 executable.
+Use an environment containing the S1 source implementation introduced in PR #99, not the alpha.3 executable.
 
 ```python
 import json

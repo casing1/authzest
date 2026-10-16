@@ -18,15 +18,18 @@ model-authored labels on 2026-10-09 KST; original authorship and the not-run dra
 The offline contract has no executor or new CLI command. The separate
 [#80 fixed policy-check API](reference/OWNER_POLICY_CHECK.md) merged through
 [PR #97](https://github.com/casing1/authzest/pull/97) into main `38587c3`.
-This branch implements [#81 S1's offline recommendation Python API](reference/OWNER_POLICY_RECOMMENDATION.md),
+The source implementation introduced in [PR #99](https://github.com/casing1/authzest/pull/99) provides
+[#81 S1's offline recommendation Python API](reference/OWNER_POLICY_RECOMMENDATION.md),
 not a published feature or complete #81 workflow. The fixed request contains only registered policy
 data, criteria and trusted-input assumptions; raw results are `no-change`/`unknown` and the change-pair
 registry stays empty. Cases, labels, observations, provider calls, policy evaluation, filesystem/network
 effects and patches are excluded; no CLI command is added.
 The unchanged [original design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) remains the historical
-proposal. At this checkpoint [PR #98](https://github.com/casing1/authzest/pull/98) at `a170d82` is draft
-and unmerged. The separate [S1 continuation decision](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
-does not approve all #81 extensions or replace implementation CI/reviews.
+proposal delivered through [PR #98](https://github.com/casing1/authzest/pull/98) at `f1cbd2f` on
+2026-10-16 KST, after its exact design-head CI and code/security reviews. Implementation
+CI/review/delivery outcomes are tracked separately in PR #99. The separate
+[S1 continuation decision](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
+does not approve all #81 extensions or replace those implementation gates.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;

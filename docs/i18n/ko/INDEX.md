@@ -17,14 +17,17 @@ Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](refere
 예상값 10개를 별도로 승인했고 원래 작성 이력·초안/오프라인 계획의 not-run은 유지합니다. 오프라인 계약에는
 executor나 새 CLI 명령이 없습니다. 별도 [#80 고정 정책 검사 API](reference/OWNER_POLICY_CHECK.md)는
 [PR #97](https://github.com/casing1/authzest/pull/97)로 main `38587c3`에 병합됐습니다.
-이 브랜치는 [#81 S1의 오프라인 추천 Python API](reference/OWNER_POLICY_RECOMMENDATION.md)를
-구현하며 발행한 기능이나 전체 #81 흐름은 아닙니다. 고정 요청은 등록 정책 데이터·기준·신뢰 입력
+[PR #99](https://github.com/casing1/authzest/pull/99)에서 도입한 소스 구현은
+[#81 S1의 오프라인 추천 Python API](reference/OWNER_POLICY_RECOMMENDATION.md)를 제공하며
+발행한 기능이나 전체 #81 흐름은 아닙니다. 고정 요청은 등록 정책 데이터·기준·신뢰 입력
 가정만 포함하고 원시 결과는 `no-change`/`unknown`, 변경 쌍 registry는 빈 상태를 유지합니다.
 사례·정답·관찰·제공자 호출·정책 평가·파일시스템/네트워크 효과·패치는 제외하며 CLI 명령도
 추가하지 않습니다. 변경하지 않은 [원래 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)는
-과거 제안으로 유지합니다. 이 시점의 [PR #98](https://github.com/casing1/authzest/pull/98)
-`a170d82`는 draft·미병합이며 별도 [S1 진행 결정](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
-전체 #81 확장 승인이나 구현 CI·리뷰의 대체가 아닙니다. 정답 검토는 실제 실행 동의나 인증된 승인 증표가
+과거 제안으로 유지하며 정확한 설계 head의 CI·코드/보안 리뷰 후 2026-10-16 KST에
+[PR #98](https://github.com/casing1/authzest/pull/98)로 `f1cbd2f`에 전달됐습니다. 구현 CI·리뷰·
+전달 결과는 PR #99에서 별도로 추적합니다. 별도
+[S1 진행 결정](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
+전체 #81 확장 승인이나 해당 구현 gate의 대체가 아닙니다. 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
 [제한된 관찰 기록](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을 참고하세요.

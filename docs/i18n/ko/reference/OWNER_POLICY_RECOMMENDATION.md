@@ -11,15 +11,18 @@
 
 ## 제공 상태와 경계 — 2026-10-16 KST
 
-이 브랜치는 `authzest.codex.owner_policy_recommendation`에 S1의 소스 전용 순수 Python
+[PR #99](https://github.com/casing1/authzest/pull/99)에서 도입한 S1 소스 구현은 `authzest.codex.owner_policy_recommendation`에 순수 Python
 데이터 API를 구현합니다. 고정 요청·엄격한 추천 검증·검토 가능한 미리보기만 제공합니다.
 alpha.3에 발행한 기능·새 CLI 명령·제공자 adapter·AI 생성 패치나 전체 #81 흐름은 아닙니다.
-최종 구현 CI·리뷰와 더 넓은 #81/#82 수용은 별도의 gate입니다.
+구현 CI·리뷰·전달 결과는 더 넓은 #81/#82 수용과 구분해 PR #99에서 추적합니다.
 
 변경하지 않은 [설계](../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)는 2026-10-15의
-과거 제안입니다. 이 구현 시점의 [PR #98](https://github.com/casing1/authzest/pull/98)
-`a170d82`는 draft·미병합 상태입니다. 제한된 S1 진행은 전체 #81 확장 승인·해당 설계 PR
-병합·모델 호출·정책 실행·패치 권한을 뜻하지 않습니다.
+과거 제안이며 [PR #98](https://github.com/casing1/authzest/pull/98)로 2026-10-16 KST에
+`f1cbd2fdcfc91453488ac38bbd53ac2a14940b7e`로 병합됐습니다. 여기서는 이 커밋을 구현 기준으로
+기록하며 최신 main이라고 주장하지 않습니다. 설계 head `a170d82`는 CI 검사 10개와
+[코드/보안 자동 리뷰를 보고된 지적 없이 완료했습니다](https://github.com/casing1/authzest/pull/98#issuecomment-6206327402).
+제한된 S1 진행은 전체 #81 확장 승인·모델 호출·정책 실행·패치 권한을 뜻하지 않습니다.
+S1 구현 전달은 PR #99에서 별도로 추적합니다.
 별도 [S1 범위 결정](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
 2026-10-16의 진행을 기록하며 이 데이터 객체가 지니는 승인 권한이 아닙니다.
 
@@ -115,7 +118,7 @@ Markdown·터미널 제어 문자가 권한을 부여할 수 없습니다.
 
 이 예제는 `unknown`인 **SCRIPTED** 응답을 만듭니다. `no-change`를 추론하거나 AI 답변을
 받거나 정책을 평가하거나 무언가를 승인하지 않습니다. JSON 출력은 ASCII 이스케이프한 표시
-데이터입니다. alpha.3 실행 파일이 아닌 이 브랜치의 소스 구현이 있는 환경을 사용하세요.
+데이터입니다. alpha.3 실행 파일이 아닌 PR #99에서 도입한 S1 소스 구현이 있는 환경을 사용하세요.
 
 ```python
 import json
