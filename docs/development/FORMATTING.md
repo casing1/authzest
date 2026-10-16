@@ -50,20 +50,52 @@ guard and its regression tests together.
 
 ## Dependency evidence and limits
 
-Static inspection on 2026-10-07 found bundled `brace-expansion` 5.0.6 in the installed Prettier 3.9.6
-and the then-latest official Prettier 3.9.9 tarball. The separate `brace-expansion` 5.0.12 lock entry
-does not replace those embedded bytes. Inspection covered selected bundle, parser, and EditorConfig
+Static reinspection on 2026-10-08, against source commit
+`4218b807ad892bb92e27a6bb23c4d64000e2a3bf`, found bundled `brace-expansion` 5.0.6 in the then-installed
+Prettier 3.9.6 and the then-latest official npm release inspected on that date, Prettier 3.9.9. The downloaded 3.9.9 tarball matched
+the registry's SHA-512 integrity and SHA-1 `09b826918c91cd4cbc80e0cbd1d2a922ff04f233`.
+The separate `brace-expansion` 5.0.12 lock entry at that checkpoint
+did not replace those embedded bytes. Inspection covered selected bundle, parser, and EditorConfig
 routing sections, not all bundled code. The public advisories tracked by #89 are
 [GHSA-q2hr-2g5m-vwhr](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
 [GHSA-qhr7-859c-m2p7](https://github.com/advisories/GHSA-qhr7-859c-m2p7), and
 [GHSA-6j4f-fj2g-mc7p](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p).
-An actual DoS on this path and an AuthZest runtime vulnerability remain unproven; bundled dependency
-follow-up remains under #89 and [#83](https://github.com/casing1/authzest/issues/83).
+At that inspected checkpoint, the legacy CLI imported configuration resolution from `index.mjs`,
+and the CJS API delegated to that ESM implementation. The selected EditorConfig-to-Minimatch and
+recursive/rewrite parser sections were present. Neither a separate lock override nor an update to
+the inspected Prettier 3.9.9 release supplied the fixed embedded implementation at that checkpoint.
+
+The recorded 2026-10-08 overall #89 assessment was **`needs_review`**, with **medium confidence**:
+the affected embedded implementation was verified, but an actual DoS through the guarded commands
+or an AuthZest runtime vulnerability was not established. At that checkpoint, the arbitrary-section-pattern
+input route was rejected before Prettier started. Actual direct editor/API settings, lower-trust
+configuration exposure and availability consequences were unverified. This was not a finding that
+every Prettier call was safe or exploitable.
+No hostile/resource-exhaustion input or dynamic reproduction was run for that 2026-10-08 static assessment.
+Bundled dependency follow-up remains under #89 and [#83](https://github.com/casing1/authzest/issues/83).
+The 2026-10-16 documentation sync does not add an upstream release check, new security assessment
+or risk-acceptance decision; the evidence above remains the dated 2026-10-08 record.
 
 The guard covers these repository commands only. Direct Prettier calls, editor integrations, and
 direct CJS/ESM module calls have no guarantee from it. The timeout is not an OS sandbox. The boundary
 assumes a trusted installed toolchain and workflow scripts, files stable between preflight and
 Prettier's re-read, and no concurrent hostile writers running as the same user.
+
+The runtime source and packaging spec inspected on 2026-10-08 did not invoke Prettier or select its
+Node toolchain; the optional dashboard used built frontend assets. That record separated the identified
+developer-tooling route from runtime claims; it was not an audit of every dependency or a new
+binary-content attestation.
+
+## Prerelease disposition
+
+Keep #89 and #83 open. Normal development and separately scoped candidate compatibility/artifact
+checks can continue, but green CI or an empty npm audit does not settle the residual embedded risk.
+Before tagging or publishing, record either a reviewed compatible upstream replacement with shipped-byte
+and ordinary compatibility evidence, or an explicit maintainer decision for the exact candidate's residual
+developer-tooling risk. Such a decision must name the wrapper-only scope, unguarded integrations,
+assumptions, remaining gaps and follow-up; this assessment does not grant risk acceptance.
+The other release gates, including case-label acceptance and advertised-platform/installation checks,
+remain independent. See the [release guide](../releases/RELEASING.md).
 
 This unreleased tooling change does not create a release or change the package version, existing tags,
 or alpha.3 assets. See the [release guide](../releases/RELEASING.md) for the separate release gates.

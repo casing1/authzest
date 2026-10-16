@@ -120,10 +120,26 @@ The [#89 formatting guard](../development/FORMATTING.md) is unreleased developer
 mitigation does not create a release or change the package version, existing tags, or alpha.3 assets;
 its bundled dependency follow-up remains under #89/#83. Release preparation below is a separate decision.
 
-#94/#83 tracks the scoped `source-map-js` development-lock update separately from #89's residual
-Prettier-embedded `brace-expansion` copy. The product exploit path remains `needs_review`; this update
-does not establish full tooling security clearance or create a release, tag, package-version change,
-or change to alpha.3 assets.
+The scoped `source-map-js` development-lock update (#94 / PR #95) was merged, and its Dependabot
+alert was read back as fixed on 2026-10-08. That is a historical readback, not a new alert query in
+this 2026-10-16 documentation sync. It is separate from #89's residual Prettier-embedded `brace-expansion` copy.
+The [2026-10-08 static assessment](../development/FORMATTING.md#dependency-evidence-and-limits), against
+`4218b807ad892bb92e27a6bb23c4d64000e2a3bf`, recorded #89 as `needs_review` with medium confidence.
+It verified affected embedded code, not exploitation of the guarded commands or the AuthZest runtime.
+This sync adds no newer upstream check, security assessment or risk acceptance.
+Neither dependency maintenance nor that recorded assessment establishes full tooling security clearance or
+changes an existing release, tag, package version or alpha.3 asset.
+
+Before tagging or publishing a candidate, record #89's disposition in #83: either a reviewed compatible
+upstream replacement verified from shipped bytes and ordinary compatibility checks, or an explicit
+maintainer decision on the exact candidate's residual developer-tooling risk. Name wrapper-only coverage,
+direct editor/API gaps and the trusted-toolchain/stable-file assumptions; do not silently accept or dismiss
+the risk. This documentation is not such a decision. Normal development and separately scoped candidate
+checks may continue while publication remains gated. #77's exact ten expectations were approved on
+2026-10-09 KST in the separate [label record](../../tests/fixtures/owner_case_review/maintainer_review.json);
+see the [case-plan contract](../reference/OWNER_CASE_PLAN.md). That exact labels-only decision is not
+runtime evidence, approval of other cases or approval of a new candidate. Current-head reviews,
+native artifacts and consumer installation/update evidence remain separate requirements.
 
 Run the following commands from the repository root, with the project's development environment active.
 The command examples use Bash. On Windows, use Git Bash for these commands and the `.exe` binary when
