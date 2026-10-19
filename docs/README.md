@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-16 KST
+## Current work — 2026-10-19 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -30,9 +30,16 @@ proposal delivered through [PR #98](https://github.com/casing1/authzest/pull/98)
 CI/review/delivery outcomes are tracked separately in PR #99. The separate
 [S1 continuation decision](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
 does not approve all #81 extensions or replace those implementation gates.
-S1 implementation subsequently merged through PR #99 at `4290d2d`. The next
-[synthetic repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) proposes exact
-test-only before/after bytes and eight new unreviewed labels, not a registered variant or execution.
+S1 implementation subsequently merged through PR #99 at `4290d2d`. The historical
+[synthetic repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) was delivered through
+[PR #100](https://github.com/casing1/authzest/pull/100) at `c12f4b1` on 2026-10-19 KST.
+The maintainer separately approved its exact scenario/source pair and eight assistant-authored
+expected labels, then the bounded offline registry/preview slice; see the
+[recorded decision](https://github.com/casing1/authzest/pull/100#issuecomment-6258235318).
+This branch implements the [pure registered repair-pair API](reference/OWNER_POLICY_REPAIR_PAIR.md)
+and host-derived diff preview, not yet merged or released. It adds no CLI, provider call, policy
+evaluation, file application or observation. S1's empty registry and the #80 worker remain unchanged;
+#81 is still incomplete.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
@@ -84,6 +91,7 @@ docs/
 | Offline owner-case review and fixed plans           | [Owner case plan](reference/OWNER_CASE_PLAN.md)                      | [소유 사례 검토 계획](i18n/ko/reference/OWNER_CASE_PLAN.md)                        |
 | Source-only fixed owned-policy check API            | [Owner policy check](reference/OWNER_POLICY_CHECK.md)                | [고정 소유 정책 검사](i18n/ko/reference/OWNER_POLICY_CHECK.md)                     |
 | Offline owner-policy recommendation API (S1 source) | [Recommendation API](reference/OWNER_POLICY_RECOMMENDATION.md)       | [소유 정책 추천 API](i18n/ko/reference/OWNER_POLICY_RECOMMENDATION.md)             |
+| Offline registered repair-pair API (source branch)  | [Repair-pair API](reference/OWNER_POLICY_REPAIR_PAIR.md)             | [등록 수정 쌍 API](i18n/ko/reference/OWNER_POLICY_REPAIR_PAIR.md)                  |
 | Test-only owner-policy repair pair (proposed)       | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) |
 | Owned policy improvement design (proposed)          | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)      |
 | Packaged offline fixture walkthrough                | [Fixture demo](guides/FIXTURE_DEMO.md)                               | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                            |
