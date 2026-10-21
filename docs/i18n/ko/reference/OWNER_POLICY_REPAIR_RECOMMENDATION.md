@@ -159,10 +159,16 @@ result = validate_owner_policy_repair_recommendation(
     json.dumps(SCRIPTED_RESULT, ensure_ascii=True), request
 )
 preview = prepare_owner_policy_repair_recommendation_preview(result, request)
-print(json.dumps({
-    "prepared_prompt": owner_policy_repair_recommendation_prompt(request),
-    "preview": preview.to_dict(),
-}, ensure_ascii=True, indent=2))
+print(
+    json.dumps(
+        {
+            "prepared_prompt": owner_policy_repair_recommendation_prompt(request),
+            "preview": preview.to_dict(),
+        },
+        ensure_ascii=True,
+        indent=2,
+    )
+)
 ```
 
 ## 검증과 남은 gate
