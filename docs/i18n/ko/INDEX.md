@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-10-16 KST
+## 현재 작업 — 2026-10-21 KST
 
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
@@ -28,9 +28,16 @@ executor나 새 CLI 명령이 없습니다. 별도 [#80 고정 정책 검사 API
 전달 결과는 PR #99에서 별도로 추적합니다. 별도
 [S1 진행 결정](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
 전체 #81 확장 승인이나 해당 구현 gate의 대체가 아닙니다.
-이후 S1 구현은 PR #99로 `4290d2d`에 병합됐습니다. 다음
-[합성 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)는 정확한 테스트 전용
-변경 전후 바이트와 새 미검토 예상값 8개를 제안하며 등록된 변형이나 실행이 아닙니다.
+이후 S1 구현은 PR #99로 `4290d2d`에 병합됐습니다. 과거
+[합성 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)는 2026-10-19 KST에
+[PR #100](https://github.com/casing1/authzest/pull/100)으로 `c12f4b1`에 전달됐습니다.
+관리자는 정확한 시나리오/소스 쌍과 어시스턴트가 작성한 예상값 8개, 이어서 제한된 오프라인
+레지스트리/미리보기 단계를 별도로 승인했습니다.
+[기록한 결정](https://github.com/casing1/authzest/pull/100#issuecomment-6258235318)을 참고하세요.
+[PR #101](https://github.com/casing1/authzest/pull/101)에서 도입한 소스 구현은
+[순수 등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)와 host가 도출한 diff 미리보기를
+제공합니다. 미출시 상태이며 CI·리뷰·전달·병합 결과는 PR #101에서 추적합니다. CLI·제공자 호출·정책 평가·파일
+적용·관찰을 추가하지 않습니다. S1의 빈 레지스트리와 #80 worker는 그대로이며 #81은 계속 미완료입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
@@ -81,6 +88,7 @@ docs/
 | 오프라인 소유 사례 검토와 고정 계획    | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)                      | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)                        |
 | 소스 전용 고정 소유 정책 검사 API      | [Owner policy check](../../reference/OWNER_POLICY_CHECK.md)                | [고정 소유 정책 검사](reference/OWNER_POLICY_CHECK.md)                     |
 | 오프라인 소유 정책 추천 API (S1 소스)  | [Recommendation API](../../reference/OWNER_POLICY_RECOMMENDATION.md)       | [소유 정책 추천 API](reference/OWNER_POLICY_RECOMMENDATION.md)             |
+| 오프라인 등록 수정 쌍 API (소스 참조)  | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)             | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                  |
 | 테스트 전용 소유 정책 수정 쌍 (제안)   | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) |
 | 소유 정책 개선 설계 (제안)             | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)      |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                               | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                            |
