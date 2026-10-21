@@ -10,11 +10,13 @@
 [S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-19 KST
+## Availability and boundary — 2026-10-21 KST
 
-This branch implements a pure Python data API in `authzest.codex.owner_policy_repair_pair`:
+The source implementation introduced in [PR #101](https://github.com/casing1/authzest/pull/101)
+provides a pure Python data API in `authzest.codex.owner_policy_repair_pair`:
 one registered synthetic source pair, its exact case/label and recorded-review bindings, and a
-host-derived one-file diff preview. This source implementation is not yet merged or released.
+host-derived one-file diff preview. It remains unreleased; CI/review/delivery and merge outcomes
+are tracked in PR #101.
 It does not complete #81/#35 or add a CLI, provider request, policy execution or file application.
 Published alpha.3 is unchanged.
 
@@ -159,7 +161,7 @@ the registered manifest; direct wrapper construction bypasses none of these chec
 
 ## Pure Python preview example
 
-Use this branch's source environment, not the alpha.3 executable. This example only builds inert
+Use a source environment containing PR #101's implementation, not the alpha.3 executable. This example only builds inert
 registered data and prints ASCII-escaped JSON; it obtains no AI response, evaluates neither policy
 candidate and makes no approval, filesystem/network or patch request.
 

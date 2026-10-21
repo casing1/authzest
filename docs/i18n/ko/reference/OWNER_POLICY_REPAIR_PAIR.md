@@ -10,11 +10,12 @@
 [S1 추천 API](OWNER_POLICY_RECOMMENDATION.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81)
 
-## 사용 가능 범위와 경계 — 2026-10-19 KST
+## 사용 가능 범위와 경계 — 2026-10-21 KST
 
-이 브랜치는 `authzest.codex.owner_policy_repair_pair`에 순수 Python 데이터 API를 구현합니다.
+[PR #101](https://github.com/casing1/authzest/pull/101)에서 도입한 소스 구현은
+`authzest.codex.owner_policy_repair_pair`에 순수 Python 데이터 API를 제공합니다.
 등록된 합성 소스 쌍 하나, 정확한 케이스/라벨 및 기록된 검토 binding, host가 도출한 단일 파일
-diff 미리보기를 제공합니다. 이 소스 구현은 아직 병합하거나 출시하지 않았습니다.
+diff 미리보기를 제공합니다. 미출시 상태이며 CI·리뷰·전달·병합 결과는 PR #101에서 추적합니다.
 #81/#35를 완료하거나 CLI·제공자 요청·정책 실행·파일 적용을 추가하지 않습니다.
 공개 alpha.3는 그대로입니다.
 
@@ -158,7 +159,7 @@ principal당 최대 16개의 서로 다른 scope가 있습니다. 이 제한이 
 
 ## 순수 Python 미리보기 예제
 
-alpha.3 실행 파일이 아닌 이 브랜치의 소스 환경을 사용합니다. 이 예제는 비실행 등록 데이터를
+alpha.3 실행 파일이 아닌 PR #101 구현을 포함하는 소스 환경을 사용합니다. 이 예제는 비실행 등록 데이터를
 구성하고 ASCII escape한 JSON만 출력합니다. AI 응답을 받거나 어느 정책 후보도 평가하거나
 승인·파일시스템/네트워크·패치 요청을 하지 않습니다.
 
