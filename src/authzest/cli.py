@@ -292,6 +292,75 @@ def codex_owner_review(
     raise typer.Exit(code=result.get("exit_code", 0))
 
 
+@app.command("codex-owner-repair")
+def codex_owner_repair(
+    model: Annotated[
+        str, typer.Option(help="Exact Codex model identifier; no automatic fallback.")
+    ],
+    candidate: Annotated[
+        str, typer.Option(help="Registered candidate: before (test-only incorrect) or after.")
+    ] = "before",
+    timeout_seconds: Annotated[
+        float,
+        typer.Option(help="One adapter attempt timeout in seconds, greater than 0 up to 120."),
+    ] = 120,
+    preview_only: Annotated[
+        bool,
+        typer.Option("--preview-only", help="Show complete sharing input offline; no account use."),
+    ] = False,
+    as_json: Annotated[
+        bool,
+        typer.Option("--json", help="One final/preview JSON on stdout; interaction on stderr."),
+    ] = False,
+) -> None:
+    """Request a registered policy repair recommendation; never execute or apply it."""
+    from authzest.codex.diagnostics import sanitize_failure
+    from authzest.runner.codex_owner_repair import (
+        OwnerRepairInputError,
+        build_owner_repair_preview,
+        run_codex_owner_repair,
+    )
+
+    output = WorkflowOutput(as_json)
+    try:
+        result = (
+            build_owner_repair_preview(model, candidate=candidate, timeout_seconds=timeout_seconds)
+            if preview_only
+            else asyncio.run(
+                run_codex_owner_repair(
+                    model,
+                    candidate=candidate,
+                    timeout_seconds=timeout_seconds,
+                    emit=output.emit,
+                    read=output.read,
+                )
+            )
+        )
+    except OwnerRepairInputError as exc:
+        output.finish({"status": "invalid-input", "detail": str(exc)}, error=True)
+        raise typer.Exit(code=2) from exc
+    except (asyncio.CancelledError, KeyboardInterrupt):
+        output.finish(
+            {
+                "status": "cancelled",
+                "execution_status": "not-run",
+                "failure": sanitize_failure(None, code="cancelled"),
+            }
+        )
+        raise typer.Exit(code=130) from None
+    except Exception:
+        output.finish(
+            {
+                "status": "recommendation-failed",
+                "execution_status": "not-run",
+                "failure": sanitize_failure(None),
+            }
+        )
+        raise typer.Exit(code=1) from None
+    output.finish(result, preview=preview_only)
+    raise typer.Exit(code=result.get("exit_code", 0))
+
+
 @app.command("fixture-demo")
 def fixture_demo(
     as_json: Annotated[

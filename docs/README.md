@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-21 KST
+## Current work — 2026-10-25 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -42,10 +42,12 @@ and host-derived diff preview, merged at `cbe6b37` on 2026-10-21 KST. It remains
 delivery records are tracked in PR #101. It adds no CLI, provider call, policy
 evaluation, file application or observation. S1's empty registry and the #80 worker remain unchanged;
 #81 is still incomplete.
-The separate [repair-recommendation contract](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)
-is new unreleased work in progress under #81: a pinned offline request and strict scripted/caller
-result can select the registered pair, no change or unknown. Only the host derives a selected diff;
-there is no provider transport, live-model result, policy execution or application capability.
+The separate [repair recommendation and sharing reference](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)
+covers the offline contract delivered through [PR #102](https://github.com/casing1/authzest/pull/102)
+at `8409bc7` and the next unreleased `codex-owner-repair` sharing/adapter stage. The command shows
+the complete request and settings before one explicitly approved App Server attempt; preview-only
+is offline. Strict results select the registered pair, no change or unknown; only the host derives
+a selected diff. This stage does not claim live-model acceptance, policy execution or application.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
@@ -98,7 +100,7 @@ docs/
 | Source-only fixed owned-policy check API              | [Owner policy check](reference/OWNER_POLICY_CHECK.md)                    | [고정 소유 정책 검사](i18n/ko/reference/OWNER_POLICY_CHECK.md)                     |
 | Offline owner-policy recommendation API (S1 source)   | [Recommendation API](reference/OWNER_POLICY_RECOMMENDATION.md)           | [소유 정책 추천 API](i18n/ko/reference/OWNER_POLICY_RECOMMENDATION.md)             |
 | Offline registered repair-pair API (source reference) | [Repair-pair API](reference/OWNER_POLICY_REPAIR_PAIR.md)                 | [등록 수정 쌍 API](i18n/ko/reference/OWNER_POLICY_REPAIR_PAIR.md)                  |
-| Offline repair recommendation (work in progress)      | [Repair recommendation](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천 계약](i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)          |
+| Registered repair recommendation and sharing (source) | [Repair recommendation](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천과 공유](i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)        |
 | Test-only owner-policy repair pair (proposed)         | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)     | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) |
 | Owned policy improvement design (proposed)            | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)     | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)      |
 | Packaged offline fixture walkthrough                  | [Fixture demo](guides/FIXTURE_DEMO.md)                                   | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                            |

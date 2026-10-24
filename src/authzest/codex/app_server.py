@@ -36,6 +36,12 @@ from authzest.codex.fixture_draft import (
     fixture_prompt,
     validate_fixture_draft,
 )
+from authzest.codex.owner_policy_repair_transport import (
+    OwnerPolicyRepairTransportRequest,
+    OwnerPolicyRepairTransportResult,
+    prepare_owner_policy_repair_transport_result,
+    validate_owner_policy_repair_transport_request,
+)
 from authzest.codex.owner_policy_review import (
     OwnerPolicyReview,
     owner_policy_output_schema,
@@ -743,7 +749,34 @@ class CodexAppServerAdapter:
             lambda raw, usage: validate_owner_policy_draft(raw, request, usage=usage),
         )
 
-    def _check_sharing(self, request: CodexAnalysisRequest) -> None:
+    async def recommend_owner_policy_repair(
+        self, request: OwnerPolicyRepairTransportRequest
+    ) -> OwnerPolicyRepairTransportResult:
+        """Select a registered repair as data; no policy execution or patch application."""
+        self._begin_request(detailed_validation=True)
+        try:
+            if type(request) is not OwnerPolicyRepairTransportRequest:
+                raise ContractError("Unexpected repair transport type", code="validation-shape")
+            checked = validate_owner_policy_repair_transport_request(
+                getattr(request, "payload_json", None)
+            )
+            self._check_sharing(checked)
+            payload = checked.to_dict()
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
+        return await self._turn(
+            checked,
+            payload["prompt"],
+            payload["output_schema"],
+            lambda raw, usage: prepare_owner_policy_repair_transport_result(
+                raw, checked, usage=usage
+            ),
+        )
+
+    def _check_sharing(
+        self, request: CodexAnalysisRequest | OwnerPolicyRepairTransportRequest
+    ) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
             raise AppServerError(
                 "A fresh exact-request sharing decision is required", code="request-invalid"
@@ -751,12 +784,12 @@ class CodexAppServerAdapter:
 
     async def _turn(
         self,
-        request: CodexAnalysisRequest,
+        request: CodexAnalysisRequest | OwnerPolicyRepairTransportRequest,
         prompt: str,
         schema: dict[str, Any],
         validate: Callable[[str, dict | None], _ReviewT],
     ) -> _ReviewT:
-        # Only the two explicitly guarded public entry points supply prompts/schema.
+        # Only the explicitly guarded public entry points supply prompts/schema.
         # Recheck the sharing gate here before consuming this single-use transport.
         self._check_sharing(request)
         self.consumed = True

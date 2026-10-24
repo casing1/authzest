@@ -3,20 +3,22 @@
   <a href="../i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md">한국어</a>
 </p>
 
-# Offline registered repair-recommendation contract
+# Registered repair recommendation and sharing
 
 [Documentation index](../README.md) · [Development plan](../development/DEVELOPMENT_PLAN.md) ·
 [Registered pair API](OWNER_POLICY_REPAIR_PAIR.md) ·
 [Unchanged S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-21 KST
+## Availability and boundary — 2026-10-25 KST
 
-This is **new unreleased source work in progress** in
-`authzest.codex.owner_policy_repair_recommendation`, tracked under #81. It is a separate pure
-offline contract for selecting the registered test-only repair pair, not a new CLI command,
-provider adapter, live Codex answer, AI-generated source/diff or complete #81/#35 workflow.
-This document does not claim new CI/review/delivery results or runtime observations.
+This **unreleased source feature** is tracked under #81. The pure offline selection contract in
+`authzest.codex.owner_policy_repair_recommendation` was delivered through
+[PR #102](https://github.com/casing1/authzest/pull/102) at merge `8409bc7` on 2026-10-24 KST.
+The next source stage adds the separate `codex-owner-repair` command: a complete sharing preview,
+an explicit one-attempt sharing decision and an existing Codex App Server transport connection.
+It does not complete #81/#35 or claim a successful live-model run, policy observations, application
+or recovery. Published alpha.3 does not include this command.
 
 The fixed pair API was delivered through [PR #101](https://github.com/casing1/authzest/pull/101)
 at merge `cbe6b37` on 2026-10-21 KST. This extension uses those exact registered sources, criteria,
@@ -27,10 +29,67 @@ or observed behavior. Published alpha.3, report schema `1.2`, S1 schema `1.0` / 
 and the #80 correct-policy worker remain unchanged. The negative candidate is not added to that
 worker's allowlist.
 
-There is no filesystem/network/provider/process access, target import/evaluation, file application
-or restoration. `policy.py` remains a logical display label, not an input path. The API accepts no
-arbitrary source, repository, callback, model choice, replacement pair, cases, labels or approval.
-The prompt is inert text; generating it does not send anything to Codex.
+The pure contract still has no filesystem/network/provider/process access, target import/evaluation,
+file application or restoration. `policy.py` remains a logical display label, not an input path.
+It accepts no arbitrary source, repository, callback, replacement pair, cases or labels. Rendering
+the prompt or CLI sharing preview sends nothing to Codex. Only the separately approved interactive
+transport path starts Codex; it does not execute either policy candidate or apply the selected diff.
+
+## CLI: preview first, then opt in
+
+Use a source installation containing this work. Supply the exact model identifier available to your
+existing Codex ChatGPT account; no model is selected or substituted automatically. Replace
+`YOUR_EXACT_MODEL_ID` below before requesting a live response. Both preview commands are offline:
+
+```bash
+authzest codex-owner-repair --model YOUR_EXACT_MODEL_ID --preview-only
+authzest codex-owner-repair --model YOUR_EXACT_MODEL_ID --candidate after --timeout-seconds 120 --preview-only --json
+```
+
+The preview contains the complete fixed request, both source snapshots, policy criteria, trusted
+assumptions, eight reviewed case expectations, exact rendered prompt and requested output schema.
+It also shows the selected model, host settings/limits and a fresh sharing challenge. These are the
+contents to review, not just a summary or hashes. No repository path is accepted or read as source.
+`--preview-only` does not inspect authentication or start a provider process.
+This is the complete AuthZest-controlled payload; Codex also adds harness context, and the account's
+data-handling rules apply. It is not a byte-for-byte preview of all provider-side context.
+
+To request one response, run without `--preview-only`:
+
+```bash
+authzest codex-owner-repair --model YOUR_EXACT_MODEL_ID --candidate before --timeout-seconds 120
+```
+
+Review the new complete preview and enter exactly `share <sharing_id>` using the ID printed by that
+invocation. A preview-only ID or copied prior decision is not authority for a later invocation.
+Declining or cancelling before sharing sends no request. There is no noninteractive approval flag.
+`before` is the default candidate; `after` retains the correct-policy no-change/unknown path.
+
+The live path requires POSIX and uses the existing version-pinned Codex `0.153.0` App Server transport
+and existing ChatGPT login. Preview-only does not require POSIX or that Codex installation.
+It does not create an API key. AuthZest makes one application-level attempt, with no
+retry or model fallback. Codex/provider internal communication retries and actual usage/billing are
+not separately capped by that limit or the timeout. The sharing decision authorizes this request
+only, not policy execution, patch application, verification or restoration.
+
+Default output is human-readable. `--json` keeps the final result on stdout and interactive preview,
+prompts and progress on stderr; `--preview-only --json` emits the complete offline preview on stdout.
+Treat explanatory strings as untrusted display data, not instructions. The adapter validates the
+response against the exact request before composing the host-derived diff. `registered-change`
+is valid only for `before`; `no-change` and `unknown` remain valid results. Validation failure or
+transport failure is not evidence that either policy is safe or that a repair succeeded.
+
+The pure result preview keeps its caller-supplied-data provenance and zero provider-call count:
+it describes that pure composition step. Separate adapter metadata reports the host's transport
+attempt; it is not a signed provider attestation and does not turn model explanations or reviewed
+expectations into observed policy behavior. The existing `codex-owner-review`, S1 contract and
+#80 worker remain unchanged.
+
+In the CLI preview/result, `request_id` identifies the transport request, including its selected
+model and output schema; `recommendation_request_id` identifies the unchanged model-independent
+selection request. A successful workflow keeps the transport envelope in `recommendation` and the
+pure composed result in `recommendation_preview`. `application_turn_attempts` counts host adapter
+attempts, not successful provider turns or billable calls.
 
 ## Python entry points
 
@@ -116,9 +175,11 @@ untrusted text. Printing a prompt, diff or copied JSON grants no authority.
 
 ## Bounds and explicitly scripted example
 
-Complete canonical/raw UTF-8 artifacts and the rendered prompt are bounded to 262,144 bytes;
-JSON depth is at most 32 and visited nodes at most 8,192. These limits include complete composed
-preview metadata and any nested registered-pair preview. General explanation text is bounded to
+Canonical/raw UTF-8 contract requests/results, the complete pure composed preview and the rendered
+prompt are bounded to 262,144 bytes; JSON depth is at most 32 and visited nodes at most 8,192.
+These limits include pure composed-preview metadata and any nested registered-pair preview.
+The outer CLI sharing/workflow output repeats payloads and is not capped at 262,144 bytes as a whole.
+General explanation text is bounded to
 4,096 characters and IDs to 128. Shared decoding rejects duplicate keys, non-finite numbers,
 invalid Unicode and forbidden text controls without silently normalizing source. Shape-valid
 alternative prompt, sources, labels, review hashes or evidence still fail exact registered equality.
@@ -183,10 +244,10 @@ Offline verification must cover both candidates and all statuses; exact request/
 bindings; stale/forged/detached data; closed field and complete-artifact budget boundaries; and guards
 against side effects or policy import/evaluation. These are requirements, not results claimed here.
 
-The next live integration requires its own exact sharing preview, minimized transport review and
-fresh bounded sharing/provider-use approval. A pinned prompt alone is not a transport or consent
-boundary. Before/after observations then need a separately reviewed fixed worker recipe and fresh
-exact-plan decisions; #80 must continue rejecting the negative source. Exact-diff approval,
-new-copy application, verification and recovery require later independent current-state decisions.
-No live call, execution, patch, merge, tag or release follows from these data objects. Wider #81/#82
-and prerelease gates remain open.
+The sharing/adapter checks additionally cover scripted transport responses, refusal/cancellation,
+exact sharing bindings and failure cases; offline tests are not live-model acceptance. A real provider
+check requires its own bounded sharing decision. Before/after observations still need a separately
+reviewed fixed worker recipe and fresh exact-plan decisions; #80 continues rejecting the negative
+source. Exact-diff approval, new-copy application, verification and recovery remain later stages.
+No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
+Wider #81/#82 and prerelease gates remain open.
