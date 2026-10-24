@@ -15,6 +15,68 @@ const postcssRequire = createRequire(viteRequire.resolve("postcss"));
 const sourceMap = postcssRequire("source-map-js");
 const postcss = viteRequire("postcss");
 
+// These upstream advisories affect Vite's bundled launch-editor, not a separately
+// overridable package: GHSA-698v-4r3x-3vcv, GHSA-587h-7wmj-h5pm, GHSA-r825-w8mm-5pxw.
+// This checks dependency provenance, not native Windows/WSL exploit behavior.
+test("the manifest and every locked and installed Vite copy use the reviewed patched release", () => {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(frontend, "package.json"), "utf8"),
+  );
+  assert.equal(manifest.devDependencies.vite, "8.2.4");
+  assert.equal(lock.packages[""].devDependencies.vite, "8.2.4");
+  const copies = Object.entries(lock.packages).filter(([location]) =>
+    location.endsWith("node_modules/vite"),
+  );
+  assert.ok(copies.length > 0, "Vite must be present in the toolchain");
+  for (const [location, metadata] of copies) {
+    assert.equal(metadata.version, "8.2.4", location);
+    const installed = JSON.parse(
+      fs.readFileSync(path.join(frontend, location, "package.json"), "utf8"),
+    );
+    assert.equal(installed.name, "vite", location);
+    assert.equal(installed.version, metadata.version, location);
+  }
+});
+
+test("the frontend resolves a checked Vite copy", () => {
+  const manifest = fs.realpathSync(frontendRequire.resolve("vite/package.json"));
+  const checked = Object.keys(lock.packages)
+    .filter((location) => location.endsWith("node_modules/vite"))
+    .map((location) =>
+      fs.realpathSync(path.join(frontend, location, "package.json")),
+    );
+  assert.ok(checked.includes(manifest), "Frontend must not use an unchecked Vite");
+  assert.equal(JSON.parse(fs.readFileSync(manifest, "utf8")).version, "8.2.4");
+});
+
+test("each checked Vite bundle identifies the patched editor and middleware", () => {
+  for (const location of Object.keys(lock.packages).filter((entry) =>
+    entry.endsWith("node_modules/vite"),
+  )) {
+    // This release bundles these packages instead of resolving a lock override.
+    // Keep this provenance check tied to the exact Vite release above.
+    const bundle = fs.readFileSync(
+      path.join(frontend, location, "dist/node/chunks/node.js"),
+      "utf8",
+    );
+    const versions = [
+      ...bundle.matchAll(/\/launch-editor(?:-middleware)?@(\d+\.\d+\.\d+)\//g),
+    ].map((match) => match[1]);
+    assert.ok(versions.length > 0, location);
+    assert.deepEqual([...new Set(versions)], ["2.14.2"], location);
+    assert.ok(
+      bundle.includes("/launch-editor@2.14.2/node_modules/launch-editor/index.js"),
+      location,
+    );
+    assert.ok(
+      bundle.includes(
+        "/launch-editor-middleware@2.14.2/node_modules/launch-editor-middleware/index.js",
+      ),
+      location,
+    );
+  }
+});
+
 // GHSA-68fv-2mgg-jv7q: pin the reviewed release, including any nested copies.
 // npm ci checks archive integrity; these tests do not reproduce resource exhaustion.
 test("every locked and installed source-map-js copy uses the reviewed patched release", () => {
