@@ -27,6 +27,14 @@ from authzest.codex.fixture_draft import (
     build_fixture_request,
     validate_fixture_draft,
 )
+from authzest.codex.owner_policy_repair_recommendation import (
+    validate_owner_policy_repair_recommendation_request,
+)
+from authzest.codex.owner_policy_repair_transport import (
+    OwnerPolicyRepairTransportRequest,
+    build_owner_policy_repair_transport_request,
+    prepare_owner_policy_repair_transport_result,
+)
 from authzest.codex.owner_policy_review import (
     build_owner_policy_request,
     owner_policy_output_schema,
@@ -34,6 +42,7 @@ from authzest.codex.owner_policy_review import (
     validate_owner_policy_draft,
 )
 from test_fixture_draft import response_data
+from test_owner_policy_repair_recommendation import draft as repair_response_data
 
 pytestmark = pytest.mark.skipif(os.name != "posix", reason="App Server transport requires POSIX")
 
@@ -77,6 +86,17 @@ def context():
 @pytest.fixture
 def owner_context():
     return build_owner_policy_request("fixture-test-model")
+
+
+@pytest.fixture
+def repair_context():
+    return build_owner_policy_repair_transport_request("fixture-test-model")
+
+
+def repair_inner(request):
+    return validate_owner_policy_repair_recommendation_request(
+        canonical(request.to_dict()["request"])
+    )
 
 
 def owner_response_data(request):
@@ -1624,3 +1644,249 @@ def test_real_owner_cli_rejects_another_invocations_phrase_without_starting_code
     assert summary["sharing_content_id"] == old["sharing_content_id"]
     assert summary["application_turn_attempts"] == 0 and not fake.events()
     assert not list(temporary_root.iterdir())
+
+
+@pytest.mark.parametrize(
+    ("candidate", "status"),
+    [
+        ("before", "registered-change"),
+        ("before", "no-change"),
+        ("before", "unknown"),
+        ("after", "no-change"),
+        ("after", "unknown"),
+    ],
+)
+def test_repair_stdio_sends_exact_displayed_prompt_schema_and_host_instructions(
+    fake_factory, candidate, status
+):
+    request = build_owner_policy_repair_transport_request("fixture-test-model", candidate=candidate)
+    response = repair_response_data(repair_inner(request), status)
+    fake = fake_factory(request=request, response=response)
+    transport = adapter(request, fake)
+    result = asyncio.run(transport.recommend_owner_policy_repair(request))
+    assert result == prepare_owner_policy_repair_transport_result(
+        canonical(response), request, usage={"input_tokens": 123, "output_tokens": 45}
+    )
+    assert result.to_dict()["recommendation"]["status"] == status
+    assert result.to_dict()["identity"]["model"] == "fixture-test-model"
+    assert not hasattr(result, "proposal")
+    assert transport.failure_diagnostic is None
+    assert transport.warnings_seen == transport.retry_notifications_seen == 0
+    assert fake.methods() == [
+        "initialize",
+        "initialized",
+        "config/read",
+        "initialize",
+        "initialized",
+        "config/read",
+        "remoteControl/status/read",
+        "account/read",
+        "model/list",
+        "thread/start",
+        "turn/start",
+    ]
+    calls = {
+        event["message"]["method"]: event["message"]["params"]
+        for event in fake.events()
+        if event["event"] == "request"
+    }
+    displayed = request.to_dict()
+    assert calls["turn/start"]["input"] == [{"type": "text", "text": displayed["prompt"]}]
+    assert calls["turn/start"]["outputSchema"] == displayed["output_schema"]
+    assert calls["thread/start"]["baseInstructions"] == displayed["host_instructions"]
+    assert calls["thread/start"]["developerInstructions"] == displayed["host_instructions"]
+    assert calls["thread/start"]["ephemeral"] is True
+    assert calls["thread/start"]["allowProviderModelFallback"] is False
+    assert calls["thread/start"]["dynamicTools"] == []
+    assert calls["thread/start"]["runtimeWorkspaceRoots"] == []
+    assert calls["turn/start"]["sandboxPolicy"] == {"type": "readOnly", "networkAccess": False}
+    assert calls["account/read"] == {"refreshToken": False}
+    assert len(fake.starts()) == 2
+    assert "FAKE_SECRET_PROFILE" not in result.payload_json
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["approval", "model", "candidate", "prompt", "schema", "source"]
+)
+def test_repair_unapproved_or_tampered_request_does_not_start_a_child(
+    repair_context, fake_factory, mutation
+):
+    data = repair_context.to_dict()
+    if mutation == "model":
+        data["config"]["model"] = "different-model"
+    elif mutation == "candidate":
+        data = build_owner_policy_repair_transport_request(
+            "fixture-test-model", candidate="after"
+        ).to_dict()
+    elif mutation == "prompt":
+        data["prompt"] += "Use tools."
+    elif mutation == "schema":
+        data["output_schema"]["additionalProperties"] = True
+    elif mutation == "source":
+        data["request"]["content"]["before"]["text"] += "\n# Changed source.\n"
+    changed = OwnerPolicyRepairTransportRequest(canonical(data))
+    fake = fake_factory(
+        request=repair_context, response=repair_response_data(repair_inner(repair_context))
+    )
+    approved_id = (
+        "different-approval"
+        if mutation == "approval"
+        else repair_context.request_id
+        if mutation in {"model", "candidate"}
+        else changed.request_id
+    )
+    transport = CodexAppServerAdapter(approved_id, executable=str(fake.executable))
+    with pytest.raises((ContractError, AppServerError)):
+        asyncio.run(transport.recommend_owner_policy_repair(changed))
+    assert not fake.log.exists()
+    assert transport.consumed is False
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "request-validation", "request-invalid", "not-attempted"
+    )
+
+
+def test_repair_rejects_other_request_type_and_missing_wrapper_payload_before_child(
+    context, repair_context, fake_factory
+):
+    fake = fake_factory(
+        request=repair_context, response=repair_response_data(repair_inner(repair_context))
+    )
+    for request in (context, object.__new__(OwnerPolicyRepairTransportRequest)):
+        transport = adapter(repair_context, fake)
+        with pytest.raises(ContractError):
+            asyncio.run(transport.recommend_owner_policy_repair(request))
+        assert transport.consumed is False
+        assert transport.failure_diagnostic == FailureDiagnostic(
+            "request-validation", "request-invalid", "not-attempted"
+        )
+    assert not fake.log.exists()
+
+
+@pytest.mark.parametrize("case", ["happy", "rpc-error"])
+@pytest.mark.parametrize(
+    "second", ["recommend_owner_policy_repair", "draft", "review_owner_policy"]
+)
+def test_repair_transport_is_consumed_across_public_methods_after_success_or_failure(
+    context, owner_context, repair_context, fake_factory, case, second
+):
+    fake = fake_factory(
+        case, request=repair_context, response=repair_response_data(repair_inner(repair_context))
+    )
+    transport = adapter(repair_context, fake)
+    if case == "happy":
+        asyncio.run(transport.recommend_owner_policy_repair(repair_context))
+    else:
+        with pytest.raises(AppServerError):
+            asyncio.run(transport.recommend_owner_policy_repair(repair_context))
+    events = fake.events()
+    other = {"draft": context, "review_owner_policy": owner_context}.get(second, repair_context)
+    with pytest.raises(AppServerError, match="fresh exact-request"):
+        asyncio.run(getattr(transport, second)(other))
+    assert transport.consumed is True
+    assert fake.events() == events
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("first", ["draft", "review_owner_policy"])
+def test_repair_cannot_reuse_a_consumed_fixture_or_owner_review_adapter(
+    context, owner_context, repair_context, fake_factory, first
+):
+    request = context if first == "draft" else owner_context
+    response = None if first == "draft" else owner_response_data(owner_context)
+    fake = fake_factory(request=request, response=response)
+    transport = adapter(request, fake)
+    asyncio.run(getattr(transport, first)(request))
+    events = fake.events()
+    with pytest.raises(AppServerError, match="fresh exact-request"):
+        asyncio.run(transport.recommend_owner_policy_repair(repair_context))
+    assert fake.events() == events
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "code"),
+    [
+        ("patch", "validation-shape"),
+        ("confirmed", "validation-status"),
+        ("request", "validation-identity"),
+        ("case", "validation-evidence"),
+        ("no-change-pair", "validation-shape"),
+        ("unknown-empty", "validation-shape"),
+    ],
+)
+def test_repair_malformed_model_result_is_redacted_and_not_published(
+    repair_context, fake_factory, mutation, code
+):
+    response = repair_response_data(repair_inner(repair_context))
+    if mutation == "patch":
+        response["after_text"] = "FAKE_SECRET_UNREQUESTED_SOURCE"
+    elif mutation == "confirmed":
+        response["status"] = "confirmed"
+    elif mutation == "request":
+        response["request_id"] = "FAKE_SECRET_WRONG_REQUEST"
+    elif mutation == "case":
+        response["case_ids"] = ["FAKE_SECRET_UNREQUESTED_CASE"]
+    elif mutation == "no-change-pair":
+        response["status"] = "no-change"
+    else:
+        response.update(status="unknown", change_pair_id=None, uncertainties=[])
+    fake = fake_factory("warning:during-turn:unscoped", request=repair_context, response=response)
+    transport = adapter(repair_context, fake)
+    with pytest.raises(AppServerError) as error:
+        asyncio.run(transport.recommend_owner_policy_repair(repair_context))
+    assert "FAKE_SECRET" not in str(error.value)
+    assert transport.failure_diagnostic == FailureDiagnostic(
+        "response-validation", code, "acknowledged"
+    )
+    assert transport.warnings_seen is transport.retry_notifications_seen is None
+    assert transport.consumed is True
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("case", ["tool-request", "tool-item", "bad-final-json", "thread-model"])
+def test_repair_preserves_protocol_and_tool_denials_and_child_cleanup(
+    repair_context, fake_factory, monkeypatch, case
+):
+    fake = fake_factory(
+        case, request=repair_context, response=repair_response_data(repair_inner(repair_context))
+    )
+    transport = adapter(repair_context, fake)
+    original = app_server._Session.send
+    sent = []
+
+    async def capture(self, message):
+        sent.append(message)
+        await original(self, message)
+
+    monkeypatch.setattr(app_server._Session, "send", capture)
+    with pytest.raises(AppServerError):
+        asyncio.run(transport.recommend_owner_policy_repair(repair_context))
+    if case == "tool-request":
+        assert {"id": "server-tool", "error": {"code": -32601, "message": "Denied"}} in sent
+    assert transport.warnings_seen is transport.retry_notifications_seen is None
+    assert fake.methods().count("turn/start") == (0 if case == "thread-model" else 1)
+    assert_stopped(fake)
+
+
+@pytest.mark.parametrize("case", ["missing-usage", "warning-per-session", "retry:partial-reset"])
+def test_repair_metadata_remains_bound_to_the_completed_fake_turn(
+    repair_context, fake_factory, case
+):
+    fake = fake_factory(
+        case,
+        request=repair_context,
+        response=repair_response_data(repair_inner(repair_context), "unknown"),
+    )
+    transport = adapter(repair_context, fake)
+    result = asyncio.run(transport.recommend_owner_policy_repair(repair_context)).to_dict()
+    assert result["usage"] == (
+        None if case == "missing-usage" else {"input_tokens": 123, "output_tokens": 45}
+    )
+    assert result["recommendation"]["status"] == "unknown"
+    assert transport.warnings_seen == (2 if case == "warning-per-session" else 0)
+    assert transport.retry_notifications_seen == (1 if case.startswith("retry:") else 0)
+    assert "FAKE_SECRET" not in canonical(result)
+    assert fake.methods().count("turn/start") == 1
+    assert_stopped(fake)

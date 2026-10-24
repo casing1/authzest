@@ -32,6 +32,8 @@ _SECTIONS = {
     "evidence": "Evidence",
     "review": "Review / rationale",
     "draft": "Untrusted draft",
+    "recommendation": "Untrusted recommendation / transport metadata",
+    "recommendation_preview": "Locally composed recommendation preview (not applied)",
     "cases": "Cases / observations (see explicit status)",
     "case_drafts": "Case drafts (unreviewed; not executed)",
     "application": "Application result",
@@ -124,6 +126,7 @@ class WorkflowOutput:
             typer.echo(json_output(value), err=True)
         elif isinstance(value, dict) and value.get("kind") in (
             "codex-owner-review-sharing-preview",
+            "codex-owner-repair-sharing-preview",
             "codex-fixture-sharing-preview",
         ):
             typer.echo(format_sharing_preview(value))
