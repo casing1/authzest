@@ -142,6 +142,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Update the exact frontend development Vite pin from `8.2.2` to `8.2.4` (#104) to pick up bundled
+  `launch-editor` `2.14.2` fixes for upstream
+  [GHSA-698v-4r3x-3vcv](https://github.com/advisories/GHSA-698v-4r3x-3vcv),
+  [GHSA-587h-7wmj-h5pm](https://github.com/advisories/GHSA-587h-7wmj-h5pm) and
+  [GHSA-r825-w8mm-5pxw](https://github.com/advisories/GHSA-r825-w8mm-5pxw).
+  This developer-tooling update does not establish an AuthZest runtime exploit; the normal Python
+  UI serves built assets. Windows/WSL exploit reproduction was not performed. Residual Zod findings
+  remain separate.
 - Update the frontend development lock's `source-map-js` from `1.2.1` to patched `1.2.2` for
   [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q) (#94), within PostCSS
   `8.5.26`'s existing `^1.2.1` range. Keep direct versions unchanged, with no override or new dependency,

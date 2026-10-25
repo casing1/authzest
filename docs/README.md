@@ -44,7 +44,8 @@ evaluation, file application or observation. S1's empty registry and the #80 wor
 #81 is still incomplete.
 The separate [repair recommendation and sharing reference](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)
 covers the offline contract delivered through [PR #102](https://github.com/casing1/authzest/pull/102)
-at `8409bc7` and the next unreleased `codex-owner-repair` sharing/adapter stage. The command shows
+at `8409bc7` and the unreleased `codex-owner-repair` sharing/adapter source implementation introduced
+in [PR #103](https://github.com/casing1/authzest/pull/103). The command shows
 the complete request and settings before one explicitly approved App Server attempt; preview-only
 is offline. Strict results select the registered pair, no change or unknown; only the host derives
 a selected diff. This stage does not claim live-model acceptance, policy execution or application.
@@ -58,6 +59,11 @@ expectations; see the [separate current-coordinator record](reference/OWNER_POLI
 Both one-run approvals are consumed. #80's final-head CI/reviews and delivery subsequently completed
 through [PR #97](https://github.com/casing1/authzest/pull/97) on 2026-10-15 KST without another policy
 execution. This delivery published no release; alpha.3 is unchanged.
+
+The [historical evaluation inventory](development/EVALUATION_INVENTORY.md) completed
+[#108](https://github.com/casing1/authzest/issues/108) through
+[PR #109](https://github.com/casing1/authzest/pull/109). It checks existing artifact bytes, not a new
+benchmark or model quality. #84's independent reference review, dataset freeze and comparison remain open.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records
@@ -107,6 +113,7 @@ docs/
 | Opt-in owned-fixture Codex draft                      | [Codex fixture](guides/CODEX_FIXTURE.md)                                 | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                   |
 | Separately approved fixed-fixture runtime check       | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                   | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                              |
 | Replaceable models and measurable value               | [Model strategy](development/MODEL_STRATEGY.md)                          | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)                                 |
+| Historical evaluation artifact integrity              | [Evaluation inventory](development/EVALUATION_INVENTORY.md)              | [평가 자료 목록](i18n/ko/development/EVALUATION_INVENTORY.md)                      |
 | Versioned diagnostics and registration evidence       | [Report contract](reference/REPORT_CONTRACT.md)                          | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)                                |
 | Offline evidence-linked expected outcomes             | [Expectation contract](reference/EXPECTATION_CONTRACT.md)                | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)                        |
 | Contributions and commit conventions                  | [Contributing](../CONTRIBUTING.md)                                       | [기여 안내](i18n/ko/CONTRIBUTING.md)                                               |

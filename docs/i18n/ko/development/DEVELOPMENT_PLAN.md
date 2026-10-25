@@ -23,8 +23,10 @@ adapter보다 CLI 사용성을 먼저 개선합니다. 모델 발전 때문에 �
 
 ## 현재 기준 — 2026-10-25 KST
 
-현재 공유/adapter 작업은 2026-10-24 KST에 [PR #102](https://github.com/casing1/authzest/pull/102)로
-병합한 오프라인 수정 추천 전달 `8409bc7`에서 시작합니다. 등록 수정 쌍은 2026-10-21 KST에
+[PR #103](https://github.com/casing1/authzest/pull/103)에서 도입하는 공유/adapter 소스 구현은
+2026-10-24 KST에 [PR #102](https://github.com/casing1/authzest/pull/102)로 병합한 오프라인 수정 추천
+전달 `8409bc7`을 기반으로 하며 [PR #109](https://github.com/casing1/authzest/pull/109) 이후
+main `536b412`와 동기화했습니다. 등록 수정 쌍은 2026-10-21 KST에
 [PR #101](https://github.com/casing1/authzest/pull/101)로 `cbe6b37`에 전달했습니다. 앞선 수정 쌍 구현 기준
 `c12f4b137b30f96202b3a2555b3b5a151edf6e56`은 2026-10-19 KST에
 [PR #100](https://github.com/casing1/authzest/pull/100)으로 변경하지 않은
@@ -49,6 +51,10 @@ PR #98로 전달한 과거 제안으로 유지합니다. 구현 CI·리뷰·전�
 추적합니다. 별도
 [2026-10-16 S1 진행](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
 전체 #81 확장 승인이나 제공자 호출·정책 실행·패치 권한이 아닙니다.
+[과거 평가 자료 목록](EVALUATION_INVENTORY.md)은 PR #109로
+[#108](https://github.com/casing1/authzest/issues/108)을 완료했습니다. 기존 자료의 바이트를 검사하고
+서로 다른 출처를 보존할 뿐 새 벤치마크를 선정하거나 고정하지 않습니다.
+#84의 독립 정답 검토와 비교 측정은 계속 미완료입니다.
 과거 기록은 [변경 이력](../CHANGELOG.md), 연결된 이슈/PR과 [릴리즈 기록](../releases/RELEASING.md)에
 보존합니다. 이 문서는 과거 테스트 수의 반복이 아닌 현재 우선순위를 기록합니다.
 
@@ -149,11 +155,12 @@ PR #100으로 전달됐습니다. 관리자는 다음 오프라인 레지스트�
 회귀를 생산 코드 취약점이나 평가셋으로 취급하지 않으며 전체 #81은 계속 미완료입니다.
 
 PR #102는 고정 `before`/`after` 요청, 엄격한 등록 변경/변경 없음/불명 결과, host 도출 diff
-선택을 갖춘 별도 오프라인 수정 추천 계약을 전달했습니다. 다음 소스 단계는 별도
+선택을 갖춘 별도 오프라인 수정 추천 계약을 전달했습니다. PR #103에서 도입하는 소스 구현은 별도
 `codex-owner-repair` 명령으로 이를 연결합니다. 전체 소스/프롬프트/스키마/설정 미리보기와 새 정확한
 공유 결정 후에 고정 App Server를 한 번 시도하며 미리보기 전용 경로는 오프라인입니다.
 Host 전송 metadata는 서명된 제공자 출처가 아니며 검증한 설명/예상 효과는 관찰된 정책 동작이
-아닙니다. 거절·과거 공유·scripted 응답 오프라인 검사가 별도 승인한 실제 수용에 선행합니다.
+아닙니다. 거절·과거 공유·scripted 응답 오프라인 검사는 별도 승인한 실제 수용을 입증하지
+않습니다. 전송 구현은 미출시이며 실제 수용은 미완료입니다.
 고정 전후 worker 관찰과 새 복사본 적용/복구는 이후 단계이며 기존 `codex-owner-review`, S1,
 #80 worker는 그대로 유지합니다.
 

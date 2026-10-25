@@ -23,8 +23,10 @@ value is a hypothesis to measure, not an established advantage; see [model strat
 
 ## Current baseline — 2026-10-25 KST
 
-The current sharing/adapter work starts from offline repair-recommendation delivery `8409bc7`, merged
-through [PR #102](https://github.com/casing1/authzest/pull/102) on 2026-10-24 KST. The registered pair
+The sharing/adapter source implementation introduced in [PR #103](https://github.com/casing1/authzest/pull/103)
+builds on offline repair-recommendation delivery `8409bc7`, merged through
+[PR #102](https://github.com/casing1/authzest/pull/102) on 2026-10-24 KST, and is synchronized with
+main `536b412` after [PR #109](https://github.com/casing1/authzest/pull/109). The registered pair
 was delivered at `cbe6b37` through [PR #101](https://github.com/casing1/authzest/pull/101) on 2026-10-21 KST. The earlier pair implementation
 base `c12f4b137b30f96202b3a2555b3b5a151edf6e56` delivered the unchanged [pair design](OWNER_POLICY_REPAIR_PAIR_DESIGN.md) through
 [PR #100](https://github.com/casing1/authzest/pull/100) on 2026-10-19 KST. The maintainer separately
@@ -48,6 +50,10 @@ remains the historical proposal delivered through PR #98. Implementation CI/revi
 outcomes are tracked separately in PR #99. The separate
 [2026-10-16 S1 continuation](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)
 does not approve all #81 extensions or authorize provider calls, policy execution or patches.
+The [historical evaluation inventory](EVALUATION_INVENTORY.md) completed
+[#108](https://github.com/casing1/authzest/issues/108) through PR #109. It checks existing artifact
+bytes and preserves their distinct provenance; it does not select or freeze a new benchmark.
+#84's independent reference review and measured comparison remain open.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
@@ -154,12 +160,13 @@ regression as a production vulnerability or evaluation set; #81 as a whole remai
 
 PR #102 delivered the separate offline repair-recommendation contract: a fixed `before`/`after`
 request, strict registered-change/no-change/unknown results and host-derived diff selection.
-The next source slice connects it through the separate `codex-owner-repair` command. Complete
+PR #103 introduces the next source implementation through the separate `codex-owner-repair` command. Complete
 source/prompt/schema/settings previews and a fresh exact sharing decision precede one pinned
 App Server attempt; preview-only remains offline. Host transport metadata is not signed provider
 provenance, and validated explanations/expected effects are not observed policy behavior.
-Offline refusal, stale-sharing and scripted-response checks precede separately approved live
-acceptance. Fixed before/after worker observations and new-copy apply/restore remain later stages;
+Offline refusal, stale-sharing and scripted-response checks do not establish separately approved live
+acceptance; the transport remains unreleased and live acceptance is pending. Fixed before/after
+worker observations and new-copy apply/restore remain later stages;
 existing `codex-owner-review`, S1 and the #80 worker stay unchanged.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout

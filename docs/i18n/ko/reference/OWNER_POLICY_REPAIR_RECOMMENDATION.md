@@ -15,9 +15,11 @@
 이 **미출시 소스 기능**은 #81에서 추적합니다.
 `authzest.codex.owner_policy_repair_recommendation`의 순수 오프라인 선택 계약은
 2026-10-24 KST에 [PR #102](https://github.com/casing1/authzest/pull/102)의 병합 `8409bc7`로
-전달됐습니다. 다음 소스 단계는 별도 `codex-owner-repair` 명령에 전체 공유 미리보기,
+전달됐습니다. [PR #103](https://github.com/casing1/authzest/pull/103)에서 도입하는 소스 구현은
+별도 `codex-owner-repair` 명령에 전체 공유 미리보기,
 명시적인 1회 공유 결정, 기존 Codex App Server 전송 연결을 추가합니다. 전체 #81/#35의 완료나
-성공한 실제 모델 실행·정책 관찰·적용·복구를 주장하지 않습니다. 공개 alpha.3에는 이 명령이 없습니다.
+성공한 실제 모델 실행·정책 관찰·적용·복구를 주장하지 않습니다. 오프라인 검사는 실제 수용이
+아닙니다. 공개 alpha.3에는 이 명령이 없습니다.
 
 고정 수정 쌍 API는 2026-10-21 KST에 [PR #101](https://github.com/casing1/authzest/pull/101)의
 병합 `cbe6b37`로 전달됐습니다. 이 확장은 정확히 그 등록 소스·기준·가정·검토한 예상값 8개·검토

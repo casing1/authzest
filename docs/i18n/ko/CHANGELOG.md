@@ -139,6 +139,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- frontend 개발용 Vite의 정확한 고정 버전을 `8.2.2`에서 `8.2.4`로 갱신해(#104) 내장
+  `launch-editor` `2.14.2`의 upstream
+  [GHSA-698v-4r3x-3vcv](https://github.com/advisories/GHSA-698v-4r3x-3vcv),
+  [GHSA-587h-7wmj-h5pm](https://github.com/advisories/GHSA-587h-7wmj-h5pm),
+  [GHSA-r825-w8mm-5pxw](https://github.com/advisories/GHSA-r825-w8mm-5pxw) 수정을 반영합니다.
+  개발 도구 정비이며 AuthZest 런타임의 악용 가능성을 입증한 것은 아닙니다. 일반 Python UI는
+  빌드한 자산을 제공합니다. Windows/WSL 악용 재현은 수행하지 않았으며 남은 Zod 발견 사항은
+  별도로 유지합니다.
 - [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q)에 대해 frontend 개발용
   lock의 `source-map-js`를 `1.2.1`에서 패치 버전 `1.2.2`로 갱신합니다(#94). PostCSS `8.5.26`의
   기존 `^1.2.1` 범위와 직접 의존성 버전을 유지하고 override나 새 의존성을 추가하지 않습니다.

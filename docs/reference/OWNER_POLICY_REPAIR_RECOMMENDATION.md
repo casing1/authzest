@@ -15,10 +15,11 @@
 This **unreleased source feature** is tracked under #81. The pure offline selection contract in
 `authzest.codex.owner_policy_repair_recommendation` was delivered through
 [PR #102](https://github.com/casing1/authzest/pull/102) at merge `8409bc7` on 2026-10-24 KST.
-The next source stage adds the separate `codex-owner-repair` command: a complete sharing preview,
+The source implementation introduced in [PR #103](https://github.com/casing1/authzest/pull/103)
+adds the separate `codex-owner-repair` command: a complete sharing preview,
 an explicit one-attempt sharing decision and an existing Codex App Server transport connection.
 It does not complete #81/#35 or claim a successful live-model run, policy observations, application
-or recovery. Published alpha.3 does not include this command.
+or recovery. Its offline checks are not live acceptance. Published alpha.3 does not include this command.
 
 The fixed pair API was delivered through [PR #101](https://github.com/casing1/authzest/pull/101)
 at merge `cbe6b37` on 2026-10-21 KST. This extension uses those exact registered sources, criteria,
