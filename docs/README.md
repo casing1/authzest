@@ -105,6 +105,7 @@ docs/
 | Opt-in owned-fixture Codex draft                      | [Codex fixture](guides/CODEX_FIXTURE.md)                                 | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                   |
 | Separately approved fixed-fixture runtime check       | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                   | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                              |
 | Replaceable models and measurable value               | [Model strategy](development/MODEL_STRATEGY.md)                          | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)                                 |
+| Historical evaluation artifact integrity              | [Evaluation inventory](development/EVALUATION_INVENTORY.md)              | [평가 자료 목록](i18n/ko/development/EVALUATION_INVENTORY.md)                      |
 | Versioned diagnostics and registration evidence       | [Report contract](reference/REPORT_CONTRACT.md)                          | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)                                |
 | Offline evidence-linked expected outcomes             | [Expectation contract](reference/EXPECTATION_CONTRACT.md)                | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)                        |
 | Contributions and commit conventions                  | [Contributing](../CONTRIBUTING.md)                                       | [기여 안내](i18n/ko/CONTRIBUTING.md)                                               |
