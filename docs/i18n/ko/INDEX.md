@@ -99,6 +99,7 @@ docs/
 | opt-in 소유 fixture Codex 초안         | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                 | [Codex fixture](guides/CODEX_FIXTURE.md)                                   |
 | 별도 승인하는 고정 fixture 런타임 검사 | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                   | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                              |
 | 교체 가능한 모델과 측정할 가치         | [Model strategy](../../development/MODEL_STRATEGY.md)                          | [모델 전략](development/MODEL_STRATEGY.md)                                 |
+| 과거 평가 자료의 무결성                | [Evaluation inventory](../../development/EVALUATION_INVENTORY.md)              | [평가 자료 목록](development/EVALUATION_INVENTORY.md)                      |
 | 버전이 있는 진단과 등록 근거           | [Report contract](../../reference/REPORT_CONTRACT.md)                          | [리포트 계약](reference/REPORT_CONTRACT.md)                                |
 | 오프라인 근거 연결 예상 결과           | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md)                | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)                        |
 | 기여와 커밋 규칙                       | [Contributing](../../../CONTRIBUTING.md)                                       | [기여 안내](CONTRIBUTING.md)                                               |
