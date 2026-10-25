@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-10-21 KST
+## 현재 작업 — 2026-10-25 KST
 
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
@@ -38,9 +38,13 @@ executor나 새 CLI 명령이 없습니다. 별도 [#80 고정 정책 검사 API
 [순수 등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)와 host가 도출한 diff 미리보기를
 제공하며 2026-10-21 KST에 `cbe6b37`로 병합됐습니다. 미출시 상태이며 전달 기록은 PR #101에서 추적합니다. CLI·제공자 호출·정책 평가·파일
 적용·관찰을 추가하지 않습니다. S1의 빈 레지스트리와 #80 worker는 그대로이며 #81은 계속 미완료입니다.
-별도 [수정 추천 계약](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)은 #81의 새 미출시
-진행 작업입니다. 고정 오프라인 요청과 엄격한 scripted/호출자 결과가 등록된 수정 쌍·변경 없음·불명을
-선택하며, 선택된 diff는 host만 도출합니다. 제공자 전송·실제 모델 결과·정책 실행·적용 기능은 없습니다.
+별도 [수정 추천과 공유 참조](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)는
+[PR #102](https://github.com/casing1/authzest/pull/102)의 `8409bc7`로 전달한 오프라인 계약과
+[PR #103](https://github.com/casing1/authzest/pull/103)에서 도입하는 미출시 `codex-owner-repair`
+공유/adapter 소스 구현을 다룹니다. 이 명령은 명시적으로 승인한
+App Server 시도 1회 전에 전체 요청과 설정을 표시하며 미리보기 전용 경로는 오프라인입니다.
+엄격한 결과는 등록된 수정 쌍·변경 없음·불명을 선택하며 선택된 diff는 host만 도출합니다.
+이번 단계는 실제 모델 수용·정책 실행·적용을 주장하지 않습니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
@@ -50,6 +54,11 @@ executor나 새 CLI 명령이 없습니다. 별도 [#80 고정 정책 검사 API
 참고하세요. 두 1회 승인은 소비됐습니다. 이후 #80 최종 head CI·리뷰·전달은 추가 정책 실행 없이
 2026-10-15 KST에 [PR #97](https://github.com/casing1/authzest/pull/97)로 완료됐습니다.
 이번 전달로 릴리스를 발행하지 않았고 alpha.3는 그대로입니다.
+
+[과거 평가 자료 목록](development/EVALUATION_INVENTORY.md)은
+[PR #109](https://github.com/casing1/authzest/pull/109)로
+[#108](https://github.com/casing1/authzest/issues/108)을 완료했습니다. 기존 자료의 바이트를 검사하며
+새 벤치마크나 모델 품질을 검증하지 않습니다. #84의 독립 정답 검토·평가셋 고정·비교는 계속 미완료입니다.
 
 [현재 개발 계획](development/DEVELOPMENT_PLAN.md)에서 우선순위·실제 마일스톤 상태·릴리즈/평가 gate와
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로
@@ -92,7 +101,7 @@ docs/
 | 소스 전용 고정 소유 정책 검사 API      | [Owner policy check](../../reference/OWNER_POLICY_CHECK.md)                    | [고정 소유 정책 검사](reference/OWNER_POLICY_CHECK.md)                     |
 | 오프라인 소유 정책 추천 API (S1 소스)  | [Recommendation API](../../reference/OWNER_POLICY_RECOMMENDATION.md)           | [소유 정책 추천 API](reference/OWNER_POLICY_RECOMMENDATION.md)             |
 | 오프라인 등록 수정 쌍 API (소스 참조)  | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)                 | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                  |
-| 오프라인 수정 추천 (진행 중)           | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천 계약](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)          |
+| 등록 수정 추천과 공유 (소스)           | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)        |
 | 테스트 전용 소유 정책 수정 쌍 (제안)   | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)     | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md) |
 | 소유 정책 개선 설계 (제안)             | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)     | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)      |
 | 패키지에 포함한 오프라인 fixture 시연  | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                   | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                            |
