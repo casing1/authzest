@@ -16,8 +16,9 @@ adds `authzest.runner.owner_policy_repair_check`, a dedicated fixed worker and i
 The maintainer [approved the design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000),
 not an actual worker run. Initial implementation verification at `510377c` used offline contracts,
 static worker inspection and memory-only scripted process responses. Scripted booleans in those
-tests are not observed policy behavior. A subsequent, separately approved **before-only** run at
-that commit completed as recorded below. **After has never been executed or approved.**
+tests are not observed policy behavior. Subsequent, separately approved **before-only** and
+**after-only** runs completed as recorded below. Both one-run approvals are consumed. The after run
+used the later documentation-only commit `7f9c5ce`; runtime source remained unchanged from `510377c`.
 
 There is no new CLI command, API endpoint or dashboard view. Published alpha.3 does not include this
 feature. The existing #80 coordinator, worker, policy registration and historical observations remain
@@ -51,10 +52,46 @@ captured bytes without proving their origin. The capture hash covers the `captur
 (decision, result and metadata), not only `result.payload_json`. No new committed fixture or schema
 is introduced here.
 
-This one-run before approval is consumed. **After is still unapproved and unexecuted**; its eight
-predicted matches are not observations. An after control requires a fresh separate decision against
-the complete current after plan. Another before run also requires fresh approval. PR #110 remains
-draft; review activation, merge, application/recovery and release remain separate decisions.
+This one-run before approval is consumed. At that before-only checkpoint, after remained unapproved
+and unexecuted; the separate later after approval and observation are recorded below. The before run
+did not authorize or automatically start after, and another before run requires fresh approval.
+
+## Separately approved after-control acceptance — 2026-10-28 KST
+
+The [separate after-only acceptance record](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)
+records one approved run on **2026-10-28 13:11:38 KST**, at
+`7f9c5ce5ef31ea8e49cd125e6c8459721b0cf6d7`. That commit changed documentation only; runtime source
+was unchanged from `510377c`. The host recorded `36.152000` ms, execution `completed`, exit `0`,
+and child/workspace/overall cleanup all `confirmed`. Output validation and separate offline
+revalidation of the saved record passed; the latter did not rerun either candidate.
+
+| Recorded binding     | Value                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| After plan ID        | `owner-repair-check-a034e599a2dd51b862f06084f23e1924e79c6a517d691bf1b9ef9d0187d214f5` |
+| Plan bytes SHA-256   | `63e3a48561468a2b0d648c899f2fdf765f2e71d19df40a8428681cd2d88d256c`                    |
+| Worker SHA-256       | `9d81411933c8a42b33e3162acc16d4bea828a70b6c5a97c87c1fe0a9e41ee3f2`                    |
+| After source SHA-256 | `faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04`                    |
+| Capture file SHA-256 | `16d235b8f3c9479821541f45e7284a917edd1386cadee8e74b65642ee7769714`                    |
+
+The observed booleans, in registered case order, were
+`[true, false, false, false, false, false, false, false]`: eight matches and zero mismatches.
+Aggregate `status` and `comparison_status` were `passed`, reason `cases-match`. A separate pure-data
+comparison of the captured before/after records confirmed equal pair/review/case/worker/recipe/input
+bindings; only `non-owner` and `exact-owner-no-normalization` changed from `true` to `false`.
+Candidate/source/plan identities remain intentionally different. This was offline inspection of
+captured records, not a new product comparison API or authenticated execution attestation.
+
+The capture-file hash covers the full decision/result/metadata envelope, not just result JSON.
+Provider calls were `0`, authorization stayed `unknown`, and application/restoration stayed `not-run`.
+No before rerun, retry, AI/network call, arbitrary repository execution or patch occurred. The 17
+historical artifact hashes, original main checkout and #80 remained unchanged. These are bounded,
+unauthenticated host observations of the registered synthetic controls, not an independent benchmark,
+general authorization assurance or verification of an applied file.
+
+Both candidate approvals are consumed; another run requires fresh approval. PR #110 remains draft.
+The next gate is final-head review/delivery under new approval, followed by a separately reviewed
+file-bound apply/check/restore design. Neither observation authorizes review activation, merge,
+patching or release, and #81/#35/#82 remain incomplete.
 
 ## Fixed source and data boundary
 
@@ -169,14 +206,14 @@ and unconfirmed cleanup retain null observations and unknown per-case results. P
 A `passed` comparison is not endpoint authorization or general policy correctness. A `failed`
 comparison is not itself a production vulnerability finding.
 
-Static reasoning predicted two before mismatches (`non-owner`, `exact-owner-no-normalization`);
-the separate before-only run above observed those two mismatches. Eight after matches remain
-**predictions only, not execution results**. Preserve the input identity including its leading space,
-and do not change labels to force agreement. The caller still supplies
+Static reasoning predicted two before mismatches (`non-owner`, `exact-owner-no-normalization`)
+and eight after matches; the two separately approved runs above observed those outcomes. Those
+bounded observations do not establish correctness outside the fixed cases. Preserve the input
+identity including its leading space, and do not change labels to force agreement. The caller still supplies
 trusted identity/authentication/scope/ownership facts; this predicate does not authenticate them.
 
-**Executing embedded after would be a control observation, not verification of an applied file.**
+**The executed embedded after is a control observation, not verification of an applied file.**
 No application workspace is read, edited, compared or restored. The initial API has no automatic
-before-to-after orchestration or combined comparison helper. Fresh separately bounded after-control
-acceptance, final-head CI/reviews/delivery, and a separately designed file-bound apply/check/restore
-workflow remain later gates. Existing observations and approvals cannot stand in for those gates.
+before-to-after orchestration or combined comparison helper. Final-head CI/reviews/delivery under
+new approval and a separately reviewed file-bound apply/check/restore design remain later gates.
+Existing observations and consumed approvals cannot stand in for those gates.

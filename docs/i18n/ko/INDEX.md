@@ -55,8 +55,12 @@ PR #110은 before/after 별도 결정·전용 worker·프로세스 mock 테스�
 최초 검증은 오프라인/mock이었고 이후 별도 승인한 before 전용 실행을 `510377c`에서
 2026-10-28 11:49:55 KST에 완료했습니다. 예상한 두 불일치, 종료 `0`, 정리 확인을
 [before 수용 기록](reference/OWNER_POLICY_REPAIR_CHECK.md)에 남겼으며 해당 승인은 소비됐습니다.
-After는 미승인·미실행이며 별도의 새 정확한 계획 결정이 필요합니다. 최종 head 전달 gate는
-남아 있습니다. 새 CLI/UI나 적용 파일 검증은 없으며 #81/#35/#82는 열려 있고 #80은 그대로입니다.
+이후 별도 승인한 after 전용 실행은 문서 전용 커밋 `7f9c5ce`에서 같은 런타임 코드로
+2026-10-28 13:11:38 KST에 사례 8개 일치·종료 `0`·정리 확인을 기록했습니다.
+[After 수용 기록](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)을 참고하세요.
+두 승인은 모두 소비됐습니다. 최종 head 리뷰/전달에는 새 승인이 필요하며 이어서 파일 식별값 연결
+적용/검사/복구 설계를 별도 검토해야 합니다. 새 CLI/UI나 적용 파일 검증은 없으며
+#81/#35/#82는 열려 있고 #80은 그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
@@ -97,42 +101,42 @@ docs/
     └── ru/README.md          # Russian project overview
 ```
 
-| 문서                                       | English                                                                        | 한국어                                                                      |
-| ------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| 프로젝트 소개와 설치                       | [README](../../../README.md)                                                   | [프로젝트 소개](README.md)                                                  |
-| 문서 목차                                  | [Index](../../README.md)                                                       | [문서 목차](INDEX.md)                                                       |
-| 개발 방향과 TODO 순서                      | [Development plan](../../development/DEVELOPMENT_PLAN.md)                      | [개발 계획](development/DEVELOPMENT_PLAN.md)                                |
-| 지원 소스 구문과 한계                      | [Parser scope](../../reference/PARSER_SCOPE.md)                                | [파서 범위](reference/PARSER_SCOPE.md)                                      |
-| 유지하는 소스 전용 CLI 데모                | [Examples](../../guides/EXAMPLES.md)                                           | [예제](guides/EXAMPLES.md)                                                  |
-| 오프라인 제안·예상 결과 CLI 미리보기       | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)                           | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)                                 |
-| 소스 전용 제안 선언 비교                   | [Proposal check](../../guides/PROPOSAL_CHECK.md)                               | [제안 선언 검사](guides/PROPOSAL_CHECK.md)                                  |
-| 통합 검토와 설명문 테스트 초안             | [Review demo](../../guides/REVIEW_DEMO.md)                                     | [통합 검토 시연](guides/REVIEW_DEMO.md)                                     |
-| 소유 보고서 정책과 단위 테스트 예제        | [Owner policy](../../guides/OWNER_POLICY.md)                                   | [소유 보고서 정책](guides/OWNER_POLICY.md)                                  |
-| 소유 정책의 읽기 전용 Codex 검토           | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)                       | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md)                        |
-| 오프라인 소유 사례 검토와 고정 계획        | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)                          | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)                         |
-| 소스 전용 고정 소유 정책 검사 API          | [Owner policy check](../../reference/OWNER_POLICY_CHECK.md)                    | [고정 소유 정책 검사](reference/OWNER_POLICY_CHECK.md)                      |
-| 오프라인 소유 정책 추천 API (S1 소스)      | [Recommendation API](../../reference/OWNER_POLICY_RECOMMENDATION.md)           | [소유 정책 추천 API](reference/OWNER_POLICY_RECOMMENDATION.md)              |
-| 오프라인 등록 수정 쌍 API (소스 참조)      | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)                 | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
-| 등록 수정 추천과 공유 (소스)               | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
-| 등록 수정 정책 검사 API (소스; after 대기) | [Repair check](../../reference/OWNER_POLICY_REPAIR_CHECK.md)                   | [등록 수정 정책 검사](reference/OWNER_POLICY_REPAIR_CHECK.md)               |
-| 전용 수정 정책 고정 검사 (과거 설계)       | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)   | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
-| 테스트 전용 소유 정책 수정 쌍 (제안)       | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)     | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
-| 소유 정책 개선 설계 (제안)                 | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)     | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       |
-| 패키지에 포함한 오프라인 fixture 시연      | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                   | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                             |
-| opt-in 소유 fixture Codex 초안             | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                 | [Codex fixture](guides/CODEX_FIXTURE.md)                                    |
-| 별도 승인하는 고정 fixture 런타임 검사     | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                   | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                               |
-| 교체 가능한 모델과 측정할 가치             | [Model strategy](../../development/MODEL_STRATEGY.md)                          | [모델 전략](development/MODEL_STRATEGY.md)                                  |
-| 과거 평가 자료의 무결성                    | [Evaluation inventory](../../development/EVALUATION_INVENTORY.md)              | [평가 자료 목록](development/EVALUATION_INVENTORY.md)                       |
-| 버전이 있는 진단과 등록 근거               | [Report contract](../../reference/REPORT_CONTRACT.md)                          | [리포트 계약](reference/REPORT_CONTRACT.md)                                 |
-| 오프라인 근거 연결 예상 결과               | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md)                | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)                         |
-| 기여와 커밋 규칙                           | [Contributing](../../../CONTRIBUTING.md)                                       | [기여 안내](CONTRIBUTING.md)                                                |
-| 필수 검사와 브랜치 보호                    | [Branch rules](../../development/BRANCH_RULES.md)                              | [브랜치 규칙](development/BRANCH_RULES.md)                                  |
-| guard를 적용한 저장소 포맷                 | [Formatting](../../development/FORMATTING.md)                                  | [포맷 검사](development/FORMATTING.md)                                      |
-| 버전·바이너리·릴리스 검사                  | [Releasing](../../releases/RELEASING.md)                                       | [릴리스 가이드](releases/RELEASING.md)                                      |
-| 출시·미출시 변경                           | [Changelog](../../../CHANGELOG.md)                                             | [변경 이력](CHANGELOG.md)                                                   |
-| 비공개 신고와 안전한 사용 정책             | [Security](../../../SECURITY.md)                                               | [보안 정책](SECURITY.md)                                                    |
-| 저장소 위협 모델과 검토 경계               | [Threat model](../../reference/threat-model.md)                                | [위협 모델](reference/threat-model.md)                                      |
-| PR 항목과 체크리스트                       | [PR template](../../../.github/pull_request_template.md)                       | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)                                    |
+| 문서                                             | English                                                                        | 한국어                                                                      |
+| ------------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| 프로젝트 소개와 설치                             | [README](../../../README.md)                                                   | [프로젝트 소개](README.md)                                                  |
+| 문서 목차                                        | [Index](../../README.md)                                                       | [문서 목차](INDEX.md)                                                       |
+| 개발 방향과 TODO 순서                            | [Development plan](../../development/DEVELOPMENT_PLAN.md)                      | [개발 계획](development/DEVELOPMENT_PLAN.md)                                |
+| 지원 소스 구문과 한계                            | [Parser scope](../../reference/PARSER_SCOPE.md)                                | [파서 범위](reference/PARSER_SCOPE.md)                                      |
+| 유지하는 소스 전용 CLI 데모                      | [Examples](../../guides/EXAMPLES.md)                                           | [예제](guides/EXAMPLES.md)                                                  |
+| 오프라인 제안·예상 결과 CLI 미리보기             | [Proposal preview](../../guides/PROPOSAL_PREVIEW.md)                           | [제안 미리보기](guides/PROPOSAL_PREVIEW.md)                                 |
+| 소스 전용 제안 선언 비교                         | [Proposal check](../../guides/PROPOSAL_CHECK.md)                               | [제안 선언 검사](guides/PROPOSAL_CHECK.md)                                  |
+| 통합 검토와 설명문 테스트 초안                   | [Review demo](../../guides/REVIEW_DEMO.md)                                     | [통합 검토 시연](guides/REVIEW_DEMO.md)                                     |
+| 소유 보고서 정책과 단위 테스트 예제              | [Owner policy](../../guides/OWNER_POLICY.md)                                   | [소유 보고서 정책](guides/OWNER_POLICY.md)                                  |
+| 소유 정책의 읽기 전용 Codex 검토                 | [Codex owner review](../../guides/CODEX_OWNER_REVIEW.md)                       | [소유 정책 Codex 검토](guides/CODEX_OWNER_REVIEW.md)                        |
+| 오프라인 소유 사례 검토와 고정 계획              | [Owner case plan](../../reference/OWNER_CASE_PLAN.md)                          | [소유 사례 검토 계획](reference/OWNER_CASE_PLAN.md)                         |
+| 소스 전용 고정 소유 정책 검사 API                | [Owner policy check](../../reference/OWNER_POLICY_CHECK.md)                    | [고정 소유 정책 검사](reference/OWNER_POLICY_CHECK.md)                      |
+| 오프라인 소유 정책 추천 API (S1 소스)            | [Recommendation API](../../reference/OWNER_POLICY_RECOMMENDATION.md)           | [소유 정책 추천 API](reference/OWNER_POLICY_RECOMMENDATION.md)              |
+| 오프라인 등록 수정 쌍 API (소스 참조)            | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)                 | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
+| 등록 수정 추천과 공유 (소스)                     | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
+| 등록 수정 정책 검사 API (소스; 별도 대조군 관찰) | [Repair check](../../reference/OWNER_POLICY_REPAIR_CHECK.md)                   | [등록 수정 정책 검사](reference/OWNER_POLICY_REPAIR_CHECK.md)               |
+| 전용 수정 정책 고정 검사 (과거 설계)             | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)   | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
+| 테스트 전용 소유 정책 수정 쌍 (제안)             | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)     | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
+| 소유 정책 개선 설계 (제안)                       | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)     | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       |
+| 패키지에 포함한 오프라인 fixture 시연            | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                   | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                             |
+| opt-in 소유 fixture Codex 초안                   | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                 | [Codex fixture](guides/CODEX_FIXTURE.md)                                    |
+| 별도 승인하는 고정 fixture 런타임 검사           | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                   | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                               |
+| 교체 가능한 모델과 측정할 가치                   | [Model strategy](../../development/MODEL_STRATEGY.md)                          | [모델 전략](development/MODEL_STRATEGY.md)                                  |
+| 과거 평가 자료의 무결성                          | [Evaluation inventory](../../development/EVALUATION_INVENTORY.md)              | [평가 자료 목록](development/EVALUATION_INVENTORY.md)                       |
+| 버전이 있는 진단과 등록 근거                     | [Report contract](../../reference/REPORT_CONTRACT.md)                          | [리포트 계약](reference/REPORT_CONTRACT.md)                                 |
+| 오프라인 근거 연결 예상 결과                     | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md)                | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)                         |
+| 기여와 커밋 규칙                                 | [Contributing](../../../CONTRIBUTING.md)                                       | [기여 안내](CONTRIBUTING.md)                                                |
+| 필수 검사와 브랜치 보호                          | [Branch rules](../../development/BRANCH_RULES.md)                              | [브랜치 규칙](development/BRANCH_RULES.md)                                  |
+| guard를 적용한 저장소 포맷                       | [Formatting](../../development/FORMATTING.md)                                  | [포맷 검사](development/FORMATTING.md)                                      |
+| 버전·바이너리·릴리스 검사                        | [Releasing](../../releases/RELEASING.md)                                       | [릴리스 가이드](releases/RELEASING.md)                                      |
+| 출시·미출시 변경                                 | [Changelog](../../../CHANGELOG.md)                                             | [변경 이력](CHANGELOG.md)                                                   |
+| 비공개 신고와 안전한 사용 정책                   | [Security](../../../SECURITY.md)                                               | [보안 정책](SECURITY.md)                                                    |
+| 저장소 위협 모델과 검토 경계                     | [Threat model](../../reference/threat-model.md)                                | [위협 모델](reference/threat-model.md)                                      |
+| PR 항목과 체크리스트                             | [PR template](../../../.github/pull_request_template.md)                       | [PR 작성 안내](PULL_REQUEST_TEMPLATE.md)                                    |
 
 ## 올바른 버전의 문서 읽기
 

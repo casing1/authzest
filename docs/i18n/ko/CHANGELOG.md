@@ -16,20 +16,28 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 문서 전용 `7f9c5ce`에서 `510377c`와 같은 런타임 소스로 2026-10-28 13:11:38 KST에 별도
+  승인한 after 대조군 실행 1회를 기록합니다. 일치 8개·불일치 0개, 비교 `passed` / `cases-match`,
+  실행 `completed`, 종료 `0`, 모든 정리 확인과 저장 기록 재검증 통과입니다.
+  [제한된 기록](reference/OWNER_POLICY_REPAIR_CHECK.md)을 참고하세요. 보존 기록의 순수 데이터
+  비교에서 공통 binding과 예상한 두 true→false 변경만 확인했으며 새 제품 비교 API나 인증된
+  증명을 추가하지 않습니다. 두 후보 승인은 모두 소비됐습니다. Before 재실행·AI/네트워크 호출·
+  패치·리뷰 활성화·병합·릴리스는 없으며 #80/과거 산출물은 그대로입니다. 최종 head 리뷰/전달의
+  새 승인 후 파일 식별값 연결 적용/검사/복구 설계를 별도 검토해야 하며 #81/#35/#82는 미완료입니다.
 - `510377c`에서 2026-10-28 11:49:55 KST에 별도 승인한 before 전용 수정 정책 소스 실행 1회를
   기록합니다. 일치 6개와 예상한 불일치 2개(`non-owner`, `exact-owner-no-normalization`),
   비교 `failed` / `case-mismatch`, 실행 `completed`, 종료 `0`, 모든 정리 확인과 출력 재검증
   통과입니다. 의도적으로 잘못된 before의 시연이지 worker 실패가 아닙니다.
   [제한된 기록](reference/OWNER_POLICY_REPAIR_CHECK.md)을 참고하세요. Before 1회 승인은 소비됐고
-  after는 미승인·미실행이며 예상한 일치는 관찰이 아닙니다. Provider 0·인가 unknown·적용/복구
+  당시 after는 미승인·미실행이었습니다. 이후 별도 after 관찰은 위에 기록합니다. Provider 0·인가 unknown·적용/복구
   not-run이고 과거 해시와 #80은 그대로입니다. Host 기록은 인증되지 않았으며 적용 파일 보증·병합·릴리스는 없습니다.
 - 검토한 PR #110 설계에 따라 #81의 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md)를
   추가합니다. 명시적 before/after 후보, 전체 소스/사례/worker/recipe 계획, 별도의 만료 가능한 최종
   1회용 결정, 전용 제한 worker/transport를 제공합니다. 관찰과 예상값을 엄격히 구분하고 자식/작업공간
   정리를 별도로 기록하며 실패는 unknown을 유지합니다. `510377c`의 최초 구현 검증은 오프라인/정적/
-  메모리 전용 프로세스 mock이며 worker/정책 실제 실행이 아니었습니다. 나중의 별도 before 수용은
-  위에 기록합니다. POSIX 소스 전용이며 새 CLI/UI·제공자 호출·적용 파일 검증·패치·병합·릴리스는
-  없습니다. #80은 그대로이며 #81/#35/#82와 별도 승인할 after 수용은 미완료입니다.
+  메모리 전용 프로세스 mock이며 worker/정책 실제 실행이 아니었습니다. 나중의 별도 before/after
+  수용은 위에 기록합니다. POSIX 소스 전용이며 새 CLI/UI·제공자 호출·적용 파일 검증·패치·병합·
+  릴리스는 없습니다. #80은 그대로이며 #81/#35/#82와 최종 head 전달은 미완료입니다.
 - #81 첫 단계의 오프라인 [소유 정책 추천 계약](reference/OWNER_POLICY_RECOMMENDATION.md),
   스키마 `1.0`을 추가합니다. 등록된 정책 소스 하나·정책 전용 기준·고정된 신뢰 입력 가정만
   사용합니다. 호출자/고정 예시 작성의 `no-change` 또는 `unknown` 데이터를 정확한 근거 연결·
