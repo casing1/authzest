@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "kind": "historical-evaluation-inventory",
+  "candidate_status": "not-selected",
+  "independent_benchmark_review": "not-established",
+  "groups": [
+    {
+      "id": "legacy-declaration-mock",
+      "evidence_kind": "declaration-mock",
+      "declared_counts": {
+        "cases": 6,
+        "questions": 10,
+        "development-cases": 3,
+        "historical-held-out-cases": 3
+      },
+      "authorship": "Assistant-authored reference labels; not human-authored.",
+      "review": "Policy criteria approved on 2026-09-10; exact values code-checked, not independently benchmark-reviewed.",
+      "split": "Preserve the historical #33 split: three development and three declared held-out cases. Not newly selected #84 holdouts.",
+      "observations": "Offline scripted/mock results do not establish live model quality. Existing canonical corpus identity remains separate from byte hashes.",
+      "files": [
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/dataset.json",
+          "sha256": "1d2dde4111235dd3f11076e1a4e8d4d796567af37fb1aeea7c31db72df0554a4"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/labels.json",
+          "sha256": "8834743581554c47de006dc791f2a71612b338f393e5b7ad40d40e4d220aafbe"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/mock_answers.json",
+          "sha256": "44b7c03cdb38576891816d91e7f36e102c3b0cee4aa0fa8808c3f7b591988e6e"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/dynamic-prefix/main.py",
+          "sha256": "92c325d660b99603ad8f08011f078d86eac2bcb8ee266191bfdf639e737b8077"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/ordinary-di/main.py",
+          "sha256": "f738842bc19d0732765247bb97b50a35acc1108363e177545fbc42bfde541426"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/public/main.py",
+          "sha256": "8e1c9c4ef9b3d65e3b32253576b3012a053759a8fe1e8c001e9c8b718f02541b"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/repeated-mount/main.py",
+          "sha256": "8503caf36f08a6c5afab56a42789318f5de31329ca9190fa8278e3fa21eb8f0e"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/security-scope/main.py",
+          "sha256": "f7ef6094dab931ca94b4229f9dc53f4e8abf03e3602548c0e2dcae6ff763f312"
+        },
+        {
+          "path": "tests/fixtures/ai_evaluation/v1/unresolved-dependency/main.py",
+          "sha256": "2795db607f1896e22c02a988cd71fb31dd21f307d8e5ff9ad5ad2a53a952abe1"
+        }
+      ]
+    },
+    {
+      "id": "owner-developer-matrix",
+      "evidence_kind": "developer-cases",
+      "declared_counts": {
+        "cases": 28
+      },
+      "authorship": "Assistant-authored developer expectations.",
+      "review": "criteria-approved-label-review-pending; individual values not independently reviewed. The #77 approval does not cover these cases.",
+      "split": "Development matrix, frozen_evaluation_corpus=false; not new #84 candidates.",
+      "observations": "No execution observations are inventoried for this matrix.",
+      "files": [
+        {
+          "path": "tests/fixtures/owner_policy/cases.json",
+          "sha256": "36a2d6c8e011af88c16e5801f9a661379f464f8fe7e253b2dd782172d48d79d8"
+        }
+      ]
+    },
+    {
+      "id": "reviewed-owner-model-cases",
+      "evidence_kind": "label-review-record",
+      "declared_counts": {
+        "cases": 10,
+        "review-records": 1
+      },
+      "authorship": "Model-authored cases in preserved proposed_review.json; the separate chat decision was recorded by the assistant.",
+      "review": "Exact ten labels approved on 2026-10-09 in maintainer_review.json; reviewer_authenticated=false. Original proposal remains pending-maintainer-review. Not independent benchmark certification or execution consent.",
+      "split": "Historical reviewed development material; not new #84 holdouts.",
+      "observations": "The original proposal and label review are not-run records. Separate historical observations are listed in owner-policy-observations.",
+      "files": [
+        {
+          "path": "tests/fixtures/owner_case_review/proposed_review.json",
+          "sha256": "cf778bb92a855a6185c085de503e3e49427aa30cba8740d646046c5be797a390"
+        },
+        {
+          "path": "tests/fixtures/owner_case_review/maintainer_review.json",
+          "sha256": "cda1218eeead0aecf68db1c63ea8d85a008fdff00daec7b43851f0a056820f2a"
+        }
+      ]
+    },
+    {
+      "id": "owner-policy-observations",
+      "evidence_kind": "historical-observations",
+      "declared_counts": {
+        "unique-cases": 10,
+        "observation-records": 2
+      },
+      "authorship": "Assistant-recorded observations under separately approved, now-consumed one-run scopes.",
+      "review": "Both records concern the same exact ten cases from reviewed-owner-model-cases. Historical source hashes identify past coordinators, not current-code attestation.",
+      "split": "Two historical runs of the same ten cases, not twenty unique cases or a held-out benchmark.",
+      "observations": "Recipe 1.0 and recipe 1.1 each recorded ten matching expectations. No new execution, AI result, current-code verification or endpoint authorization guarantee.",
+      "files": [
+        {
+          "path": "tests/fixtures/owner_case_review/observed_check.json",
+          "sha256": "b4c1ad8df6e5e53df782dd159112ec77405311065fdb29606ca8c5d5626c45a1"
+        },
+        {
+          "path": "tests/fixtures/owner_case_review/observed_check_recipe_1_1.json",
+          "sha256": "37040cd42e292c0c27c064829dd875d7f9a8c3e4abd2c87b64f6b66fe1ad5167"
+        }
+      ]
+    },
+    {
+      "id": "registered-repair-reference",
+      "evidence_kind": "repair-pair-reference",
+      "declared_counts": {
+        "cases": 8,
+        "source-context-modules": 3
+      },
+      "authorship": "Assistant-authored synthetic repair scenario and eight expected labels embedded in owner_policy_repair_pair.py.",
+      "review": "Exact scenario/source pair and expectations approved on 2026-10-19. This reference is not an independent evaluation-set approval or execution consent.",
+      "split": "Reviewed synthetic development data; not a new #84 evaluation set.",
+      "observations": "Actual observations remain null and comparison not-evaluated. Context modules are hashed as inert bytes, never imported by this checker.",
+      "files": [
+        {
+          "path": "src/authzest/codex/owner_policy_repair_pair.py",
+          "sha256": "2087cfc6a4c9743dcaa0ec78af4f4418f129aac1bd892138af29b40c34515354"
+        },
+        {
+          "path": "src/authzest/codex/owner_policy_review.py",
+          "sha256": "b92e90ac03f7e4a127e287b6a8f391c3d6b96961ea4a9cebe69909ab7119c41a"
+        },
+        {
+          "path": "src/authzest/codex/owner_policy_recommendation.py",
+          "sha256": "f789f078c03da4ff9e9de3eeaab951e4b0be2ac4f48eb2a8261d6bd6354bd1b5"
+        }
+      ]
+    }
+  ]
+}

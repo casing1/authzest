@@ -1,0 +1,19 @@
+# Keep inventoried text bytes stable across Git checkout newline settings.
+# The checker hashes bytes without normalization; do not refresh hashes blindly.
+src/authzest/codex/owner_policy_recommendation.py text eol=lf
+src/authzest/codex/owner_policy_repair_pair.py text eol=lf
+src/authzest/codex/owner_policy_review.py text eol=lf
+tests/fixtures/ai_evaluation/v1/dataset.json text eol=lf
+tests/fixtures/ai_evaluation/v1/dynamic-prefix/main.py text eol=lf
+tests/fixtures/ai_evaluation/v1/labels.json text eol=lf
+tests/fixtures/ai_evaluation/v1/mock_answers.json text eol=lf
+tests/fixtures/ai_evaluation/v1/ordinary-di/main.py text eol=lf
+tests/fixtures/ai_evaluation/v1/public/main.py text eol=lf
+tests/fixtures/ai_evaluation/v1/repeated-mount/main.py text eol=lf
+tests/fixtures/ai_evaluation/v1/security-scope/main.py text eol=lf
+tests/fixtures/ai_evaluation/v1/unresolved-dependency/main.py text eol=lf
+tests/fixtures/owner_case_review/maintainer_review.json text eol=lf
+tests/fixtures/owner_case_review/observed_check.json text eol=lf
+tests/fixtures/owner_case_review/observed_check_recipe_1_1.json text eol=lf
+tests/fixtures/owner_case_review/proposed_review.json text eol=lf
+tests/fixtures/owner_policy/cases.json text eol=lf
