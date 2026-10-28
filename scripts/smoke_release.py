@@ -172,6 +172,22 @@ def source_owner_preview() -> dict[str, Any]:
         sys.path.pop(0)
 
 
+def source_owner_repair_preview(candidate: str) -> dict[str, Any]:
+    """Build registered repair data from this checkout, without policy execution or sharing."""
+    source = CHECKOUT / "src"
+    sys.path.insert(0, str(source))
+    try:
+        from authzest.runner import codex_owner_repair
+
+        if not Path(codex_owner_repair.__file__).resolve().is_relative_to(source):
+            raise SmokeError("Expected owner-repair builder is not loaded from this checkout.")
+        return codex_owner_repair.build_owner_repair_preview(
+            OWNER_PREVIEW_MODEL, candidate=candidate, invocation_nonce="0" * 32
+        )
+    finally:
+        sys.path.pop(0)
+
+
 def check_owner_preview(
     output: str, expected: dict[str, Any], *, as_json: bool, seen_nonces: set[str]
 ) -> None:
@@ -296,7 +312,18 @@ def smoke_binary(
             copied.chmod(copied.stat().st_mode | stat.S_IXUSR)
         environment = child_environment(bin_directory)
         preview_env = preview_environment(bin_directory)
-        expected_preview = source_owner_preview()
+        previews = [
+            ("owner preview", ["codex-owner-review"], source_owner_preview()),
+            *(
+                (
+                    f"owner repair {candidate} preview",
+                    ["codex-owner-repair", "--candidate", candidate],
+                    source_owner_repair_preview(candidate),
+                )
+                for candidate in ("before", "after")
+            ),
+        ]
+        # All commands, candidates and executable locations share one replay check.
         seen_nonces: set[str] = set()
         fixtures = []
         for name, (status, files, routes) in FIXTURES.items():
@@ -368,21 +395,22 @@ def smoke_binary(
                 allow_stderr=True,
             )
             checks.append(f"{label}: text scan and invalid-root exit=2")
-            for as_json in (False, True):
-                arguments = [
-                    "codex-owner-review",
-                    "--model",
-                    OWNER_PREVIEW_MODEL,
-                    "--preview-only",
-                ] + (["--json"] if as_json else [])
-                output = run_command(executable, arguments, 0, cwd, preview_env, timeout)
-                check_owner_preview(
-                    output, expected_preview, as_json=as_json, seen_nonces=seen_nonces
-                )
-                checks.append(f"{label}: owner preview {'JSON' if as_json else 'human'}")
+            for preview_label, prefix, expected_preview in previews:
+                for as_json in (False, True):
+                    arguments = [
+                        *prefix,
+                        "--model",
+                        OWNER_PREVIEW_MODEL,
+                        "--preview-only",
+                    ] + (["--json"] if as_json else [])
+                    output = run_command(executable, arguments, 0, cwd, preview_env, timeout)
+                    check_owner_preview(
+                        output, expected_preview, as_json=as_json, seen_nonces=seen_nonces
+                    )
+                    checks.append(f"{label}: {preview_label} {'JSON' if as_json else 'human'}")
             print(
                 f"PASS {label}: version/help, four owned fixtures, strict/JSON/text, invalid root, "
-                "complete owner previews (human/JSON)",
+                "complete owner review and repair before/after previews (human/JSON)",
                 flush=True,
             )
     return checks
