@@ -208,13 +208,17 @@ checking a local build.
    On Windows use `--binary dist/authzest.exe`. The per-command timeout defaults to 45 seconds;
    `--expected-version` can explicitly select the expected PEP 440 version instead of `pyproject.toml`.
 
-   It also checks human/JSON `codex-owner-review --preview-only` with the fixed offline model label
-   `offline-release-smoke-model`: the complete source/task envelope must match the trusted checkout,
-   including identity hashes, limits, human summary and a fresh invocation nonce for every CLI call.
-   These two extra checks per executable bring binary mode to 18 checks and checksum-aware artifact
-   mode to 9. Preview children receive a minimal environment, no ambient credentials and only the
+   It also checks human/JSON `codex-owner-review --preview-only` and
+   `codex-owner-repair --preview-only` for both `--candidate before` and `--candidate after`, using the
+   fixed offline model label `offline-release-smoke-model`. The complete envelopes must match the
+   trusted checkout, including packaged source, criteria, assumptions, eight reviewed repair-case labels,
+   prompt/schema/limits, identity hashes and exact human summaries. Every CLI call must have a fresh
+   invocation nonce, including calls across preview kinds, candidates and relocated copies.
+   These six preview checks per executable bring binary mode to 26 checks and checksum-aware artifact
+   mode to 13. Preview children receive a minimal environment, no ambient credentials and only the
    temporary executable directory on PATH. This is not an OS sandbox; preview mode grants no sharing,
-   case-label approval, policy execution or authorization verdict. The controller's baseline uses
+   case-label approval, policy execution, patch approval or authorization verdict. The repair before/after
+   texts are packaged data, not observed policy outcomes or checks of an applied file. The controller's baseline uses
    standard-library-only core modules, so the existing dependency-free `python -I` artifact gate
    remains supported. The same versioned smoke script runs in all three platform build/download jobs;
    passing unit tests or one local platform does not establish that all native artifacts pass.

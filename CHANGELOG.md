@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Extend the versioned offline release smoke with human/JSON registered owner-repair previews for
+  both before/after candidates, alongside owner-review previews. Compare complete packaged data,
+  prompt/schema/limits and exact human summaries with the checkout baseline, and require fresh
+  identities across preview kinds, candidates and relocated copies. Binary mode has 26 checks;
+  checksum-aware artifact mode has 13. No Codex call, policy execution, patch approval or release
+  is implied; native-platform, clean-install and upgrade evidence remain separate gates.
 - Record one separately approved after-only control run at documentation-only `7f9c5ce` on
   2026-10-28 13:11:38 KST, with unchanged runtime source from `510377c`: eight matches, zero
   mismatches, comparison `passed` / `cases-match`, execution `completed`, exit `0`, all cleanup
