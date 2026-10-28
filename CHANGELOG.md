@@ -167,6 +167,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Update lint tooling's transitive Zod lock entry from `4.5.4` to `4.6.7` (#106) for
+  [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5), without changing direct
+  dependency pins or ESLint configuration. Pick up upstream's leading collection upper-bound check
+  ([#6652](https://github.com/colinhacks/zod/pull/6652)). Tiny-input regressions, separate from normal
+  frontend lint, record bounded union errors changing from `too_big` to `invalid_union`; the diagnostic
+  follow-up ([#6662](https://github.com/colinhacks/zod/pull/6662)) is not included in `4.6.7`.
+  This addresses the locked dependency warning, not a proven AuthZest runtime exploit; no
+  resource-exhaustion stress test was performed. Schemas without an upper bound,
+  including downstream React Hooks options potentially supplied through inline ESLint settings,
+  remain unbounded and receive no automatic protection. The earlier #104 Zod note records that
+  update's scope; this change does not give broader security clearance or resolve the independent
+  Prettier #89 follow-up.
 - Update the exact frontend development Vite pin from `8.2.2` to `8.2.4` (#104) to pick up bundled
   `launch-editor` `2.14.2` fixes for upstream
   [GHSA-698v-4r3x-3vcv](https://github.com/advisories/GHSA-698v-4r3x-3vcv),

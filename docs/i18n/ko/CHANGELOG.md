@@ -161,6 +161,18 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- lint 도구의 전이 의존성 Zod lock 항목을 `4.5.4`에서 `4.6.7`로 갱신해(#106)
+  [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)에 대응합니다. 직접
+  의존성 고정 버전이나 ESLint 설정은 변경하지 않습니다. upstream의 선행 컬렉션 상한 검사
+  ([#6652](https://github.com/colinhacks/zod/pull/6652))를 반영합니다. 일반 frontend lint와 별도인
+  작은 입력의 회귀 검사는 상한이 있는 union 오류가 `too_big`에서 `invalid_union`으로 바뀌는
+  동작을 기록합니다. 진단 후속 수정 ([#6662](https://github.com/colinhacks/zod/pull/6662))은
+  `4.6.7`에 포함되지 않았습니다. lock 의존성 경고에 대한 조치이며 AuthZest 런타임 악용을
+  입증한 것은 아닙니다. 자원 고갈 스트레스 검사는 수행하지 않았습니다. 상한이 없는 스키마는
+  계속 제한되지 않고 자동으로 보호되지 않으며, 인라인 ESLint 설정으로 전달될 수도 있는
+  downstream React Hooks 옵션도 여기에 포함됩니다. 앞선 #104의 Zod 기록은 당시 갱신 범위를
+  보존합니다. 이 변경으로 더 넓은 보안 안전성을 판정하거나 독립적인 Prettier #89 후속 작업을
+  해결하지는 않습니다.
 - frontend 개발용 Vite의 정확한 고정 버전을 `8.2.2`에서 `8.2.4`로 갱신해(#104) 내장
   `launch-editor` `2.14.2`의 upstream
   [GHSA-698v-4r3x-3vcv](https://github.com/advisories/GHSA-698v-4r3x-3vcv),
