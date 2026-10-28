@@ -14,9 +14,12 @@
 
 아래 과거 설계 본문은 보존합니다. 이후 관리자는
 [이 설계와 오프라인 구현을 승인했습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
-PR #110의 소스 API와 오프라인/mock 근거는 [구현 참조](../reference/OWNER_POLICY_REPAIR_CHECK.md)를
-확인하세요. 이 결정은 실제 worker 실행을 승인하지 않으며 어느 후보도 새 관찰 결과가 없습니다.
-원래 제안/체크리스트는 현재 실행 증표가 아닙니다.
+PR #110의 소스 API와 `510377c`의 최초 오프라인/mock 근거는
+[구현 참조](../reference/OWNER_POLICY_REPAIR_CHECK.md)를 확인하세요. 설계 결정은 실제 worker
+실행 승인이 아니었습니다. 이후 [별도 before 전용 승인](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210)은
+참조 문서에 기록한 2026-10-28 11:49:55 KST before 실행으로 소비됐습니다. 예상한 두 불일치,
+실행 완료, 종료 `0`, 정리 확인이며 after는 미승인·미실행입니다. 아래 원래 제안/체크리스트는
+과거 내용으로 보존하며 현재 실행 증표가 아닙니다.
 
 **제안만 작성 — 2026-10-28 KST.** 기준 main은
 `cc644a16fb67d1a89538c5b4b27549ee1f136604`입니다. 이 문서는 worker·실행 API·CLI·정책 관찰·적용·복구

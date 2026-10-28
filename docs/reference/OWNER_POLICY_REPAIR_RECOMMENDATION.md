@@ -62,9 +62,13 @@ That one-run sharing approval is consumed. This is one bounded integration accep
 independent benchmark, general model-quality result or proof that the repair changes observed
 behavior. The maintainer subsequently [approved the dedicated check design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
 PR #110 adds a separate [registered-candidate check Python API](OWNER_POLICY_REPAIR_CHECK.md)
-with offline/mocked-process verification only. Neither new candidate has been executed; before and
-after still require separate fresh exact-plan decisions for actual observation. Embedded after is
-a control, not applied-file verification. The #80 worker remains unchanged and continues rejecting
+with initial offline/mocked-process verification at `510377c`. A later separately approved before-only
+run at that commit completed with the expected two mismatches, exit `0` and confirmed cleanup;
+see the [separate acceptance record](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210).
+That before approval is consumed; after has not been approved or executed and needs its own fresh
+exact-plan decision. This later check does not rewrite the recommendation attempt's original null
+observations above. Embedded after is a control, not applied-file verification. The #80 worker remains
+unchanged and continues rejecting
 the negative candidate. #81/#35/#82 remain open.
 
 ## CLI: preview first, then opt in
@@ -280,9 +284,10 @@ The sharing/adapter checks additionally cover scripted transport responses, refu
 exact sharing bindings and failure cases; offline tests are not live-model acceptance. The separate
 2026-10-28 acceptance above consumed its one-run sharing approval; any further provider check needs
 a fresh bounded decision. The [dedicated fixed-check API](OWNER_POLICY_REPAIR_CHECK.md) implements
-the reviewed recipe in PR #110 with offline/static/mock verification only. Actual before/after
-observations still need fresh, separate finalized-plan decisions and bounded acceptance; no actual
-new worker run is approved or reported. #80 continues rejecting the negative source. Exact-head
+the reviewed recipe in PR #110, initially verified offline/static/with mocks at `510377c`. The subsequent
+separately approved before run recorded the expected two mismatches and consumed that one-run
+approval. After is unapproved/unexecuted; its first observation still needs a fresh separate current-plan
+decision and bounded acceptance. #80 continues rejecting the negative source. Exact-head
 delivery, exact-diff approval, new-copy application, file-bound verification and recovery remain
 separate gates; an embedded after control cannot verify an applied file.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.

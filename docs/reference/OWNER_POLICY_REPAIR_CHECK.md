@@ -14,13 +14,47 @@
 The unreleased source implementation in [PR #110](https://github.com/casing1/authzest/pull/110)
 adds `authzest.runner.owner_policy_repair_check`, a dedicated fixed worker and its bounded transport.
 The maintainer [approved the design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000),
-not an actual worker run. Verification in this slice uses offline contracts, static worker inspection
-and memory-only scripted process responses. **Neither new worker candidate has been executed or
-accepted as a real observation.** Scripted booleans in tests are not observed policy behavior.
+not an actual worker run. Initial implementation verification at `510377c` used offline contracts,
+static worker inspection and memory-only scripted process responses. Scripted booleans in those
+tests are not observed policy behavior. A subsequent, separately approved **before-only** run at
+that commit completed as recorded below. **After has never been executed or approved.**
 
 There is no new CLI command, API endpoint or dashboard view. Published alpha.3 does not include this
 feature. The existing #80 coordinator, worker, policy registration and historical observations remain
 unchanged. This implementation does not complete #81/#35/#82, activate paid reviews, merge or release.
+
+## Separately approved before acceptance — 2026-10-28 KST
+
+The [separate before-only approval](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210)
+was consumed by one fixed source run at `510377c`, on **2026-10-28 11:49:55 KST**. This was separate
+from the earlier offline implementation checks and the earlier Codex recommendation attempt.
+The host recorded `31.640417` ms, execution `completed`, exit `0`, and child/workspace/overall
+cleanup all `confirmed`. Output revalidation passed.
+
+| Recorded binding     | Value                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| Before plan ID       | `owner-repair-check-141cb7a9bd522d851529d795241d7c4a9018ee1758f4a4285b83de12015e0829` |
+| Worker SHA-256       | `9d81411933c8a42b33e3162acc16d4bea828a70b6c5a97c87c1fe0a9e41ee3f2`                    |
+| Capture file SHA-256 | `acf78772b41331b1c26b8127787b94fe50c076c989e65d81d8b12663dfea0cbc`                    |
+
+The eight observed booleans, in registered case order, were
+`[true, true, false, false, false, false, false, true]`: six expectation matches and two mismatches,
+`non-owner` and `exact-owner-no-normalization`. Aggregate `status` and `comparison_status` were
+`failed`, reason `case-mismatch`. This is the **expected successful demonstration of the intentionally
+incorrect before policy**, not a worker/transport failure. The labels were not changed to force a pass.
+
+Provider calls were `0`, authorization remained `unknown`, and application/restoration remained
+`not-run`. The 17 historical artifact hashes remained unchanged, the original main checkout stayed
+clean and #80 remained unchanged. This is an unauthenticated host record, not independent execution
+attestation, a benchmark, endpoint authorization or applied-file verification; its hash identifies the
+captured bytes without proving their origin. The capture hash covers the `capture.json` envelope
+(decision, result and metadata), not only `result.payload_json`. No new committed fixture or schema
+is introduced here.
+
+This one-run before approval is consumed. **After is still unapproved and unexecuted**; its eight
+predicted matches are not observations. An after control requires a fresh separate decision against
+the complete current after plan. Another before run also requires fresh approval. PR #110 remains
+draft; review activation, merge, application/recovery and release remain separate decisions.
 
 ## Fixed source and data boundary
 
@@ -135,13 +169,14 @@ and unconfirmed cleanup retain null observations and unknown per-case results. P
 A `passed` comparison is not endpoint authorization or general policy correctness. A `failed`
 comparison is not itself a production vulnerability finding.
 
-Static reasoning predicts two before mismatches (`non-owner`, `exact-owner-no-normalization`) and
-eight after matches; these are **predictions only, not execution results**. Preserve the input identity
-including its leading space, and do not change labels to force agreement. The caller still supplies
+Static reasoning predicted two before mismatches (`non-owner`, `exact-owner-no-normalization`);
+the separate before-only run above observed those two mismatches. Eight after matches remain
+**predictions only, not execution results**. Preserve the input identity including its leading space,
+and do not change labels to force agreement. The caller still supplies
 trusted identity/authentication/scope/ownership facts; this predicate does not authenticate them.
 
 **Executing embedded after would be a control observation, not verification of an applied file.**
 No application workspace is read, edited, compared or restored. The initial API has no automatic
-before-to-after orchestration or combined comparison helper. Fresh separately bounded candidate
+before-to-after orchestration or combined comparison helper. Fresh separately bounded after-control
 acceptance, final-head CI/reviews/delivery, and a separately designed file-bound apply/check/restore
 workflow remain later gates. Existing observations and approvals cannot stand in for those gates.

@@ -43,9 +43,13 @@ The one-run approval is consumed. No policy execution, application or restoratio
 is not an independent benchmark or the completed remediation workflow. The maintainer subsequently
 [approved the dedicated check design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
 PR #110 adds the [single-candidate fixed-check Python API](../reference/OWNER_POLICY_REPAIR_CHECK.md)
-and dedicated worker/transport with offline/static/mocked-process verification only. Neither candidate
-has actually run. Fresh candidate-specific exact-plan acceptance and final-head CI/reviews/delivery
-remain gates; embedded after is not applied-file verification. #81/#35/#82 remain open; #80 is unchanged.
+and dedicated worker/transport, initially verified offline/static/with mocked processes at `510377c`.
+A subsequent separately approved before-only run at that commit completed on 2026-10-28 11:49:55 KST:
+six matches, the expected two mismatches, exit `0` and confirmed cleanup; see the
+[acceptance record](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210).
+The before approval is consumed. After remains unapproved and unexecuted; a fresh after-specific
+exact-plan decision and final-head CI/reviews/delivery remain gates. Embedded after is not applied-file
+verification. #81/#35/#82 remain open; #80 is unchanged.
 The earlier original design was delivered at `f1cbd2fdcfc91453488ac38bbd53ac2a14940b7e` through
 [PR #98](https://github.com/casing1/authzest/pull/98) on 2026-10-16 KST. These are recorded bases,
 not claims about latest main. Design head `a170d82` passed ten CI checks and completed
@@ -66,21 +70,21 @@ bytes and preserves their distinct provenance; it does not select or freeze a ne
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
-| Implemented                                     | Actual boundary                                                                                                                                                                 |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Installed CLI, local API/UI and static parser   | Bounded FastAPI route/registration/local-inherited dependency declarations; no complete Python interpretation or authorization verdict                                          |
-| Evidence, proposal and expectation contracts    | Exact identities/references, draft expectations and read-only comparison; schema `1.2`                                                                                          |
-| Mock review/walkthrough and copy application    | Separate source/apply/check/restore decisions; new owned single-file POSIX copy, not arbitrary checkout editing                                                                 |
-| Opt-in App Server fixture workflow              | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                                                                |
-| Owned report policy example                     | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance                                                 |
-| Read-only owner Codex review (#75 / PR #76)     | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof                                            |
-| Readable CLI output (#79 / PR #90)              | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                                                               |
-| Offline case-review / fixed-plan API (#77)      | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable                                             |
-| Fixed owned-policy check API (#80 / PR #97)     | Source-only fixed policy observations under a fresh one-use decision; Windows/frozen execution refuses; no HTTP/authentication proof                                            |
-| S1 recommendation contract (PR #99)             | Pure data request/result validation and output-only preview; caller-supplied provenance, empty changes, no provider/policy execution                                            |
-| Registered repair-pair API (PR #101)            | Exact registered data and host-derived one-file diff preview only; unreleased, no observations or apply/execute capability                                                      |
-| Repair recommendation / sharing (source)        | PR #102/#103 delivered; one separately approved live response selected the registered template and passed host validation; approval consumed, no apply or policy execution      |
-| Registered repair-policy check (PR #110 source) | Dedicated Python plan/session/worker with separate candidate decisions; offline/mocked verification only, actual new worker acceptance pending, no CLI/UI or applied-file check |
+| Implemented                                     | Actual boundary                                                                                                                                                                              |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Installed CLI, local API/UI and static parser   | Bounded FastAPI route/registration/local-inherited dependency declarations; no complete Python interpretation or authorization verdict                                                       |
+| Evidence, proposal and expectation contracts    | Exact identities/references, draft expectations and read-only comparison; schema `1.2`                                                                                                       |
+| Mock review/walkthrough and copy application    | Separate source/apply/check/restore decisions; new owned single-file POSIX copy, not arbitrary checkout editing                                                                              |
+| Opt-in App Server fixture workflow              | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                                                                             |
+| Owned report policy example                     | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance                                                              |
+| Read-only owner Codex review (#75 / PR #76)     | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof                                                         |
+| Readable CLI output (#79 / PR #90)              | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                                                                            |
+| Offline case-review / fixed-plan API (#77)      | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable                                                          |
+| Fixed owned-policy check API (#80 / PR #97)     | Source-only fixed policy observations under a fresh one-use decision; Windows/frozen execution refuses; no HTTP/authentication proof                                                         |
+| S1 recommendation contract (PR #99)             | Pure data request/result validation and output-only preview; caller-supplied provenance, empty changes, no provider/policy execution                                                         |
+| Registered repair-pair API (PR #101)            | Exact registered data and host-derived one-file diff preview only; unreleased, no observations or apply/execute capability                                                                   |
+| Repair recommendation / sharing (source)        | PR #102/#103 delivered; one separately approved live response selected the registered template and passed host validation; approval consumed, no apply or policy execution                   |
+| Registered repair-policy check (PR #110 source) | Initial offline/mock checks, then one separately approved before run completed with expected two mismatches; approval consumed, after unapproved/unexecuted, no CLI/UI or applied-file check |
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate
@@ -123,16 +127,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority                     | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                                                                                           |
-| ---------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Completed                    | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                                                                                      |
-| Completed                    | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                                                                                              |
-| Completed                    | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                                                                                  |
-| Next: fixed-check acceptance | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #103 live recommendation accepted; reviewed PR #110 [dedicated check implementation](../reference/OWNER_POLICY_REPAIR_CHECK.md) is offline/mock verified only. Review final plans and obtain separate candidate runtime decisions; final-head delivery and new-copy remediation remain open |
-| Core gate                    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                                                                                                                                                                                          |
-| Preview gate                 | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                                                                                                                                                                                       |
-| Evaluation                   | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                                                                                                               |
-| Delivery                     | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                                                                                      |
+| Priority                     | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Completed                    | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                                   |
+| Completed                    | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                                           |
+| Completed                    | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                               |
+| Next: after-control decision | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #103 recommendation and PR #110 before-only check accepted; before approval consumed. Review the complete current after plan and obtain separate approval before its first run; final-head delivery and new-copy remediation remain open |
+| Core gate                    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | #77/#79/#80/#81; installation, refusal/failure/recovery and separately approved live/runtime evidence                                                                                                                                       |
+| Preview gate                 | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #77/#79 + exact candidate/platform/install/artifact/publication checks; describe unfinished #35 honestly                                                                                                                                    |
+| Evaluation                   | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                                                            |
+| Delivery                     | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                                   |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -180,11 +184,14 @@ remains unreleased. The maintainer approved the exact
 [dedicated fixed-check recipe design](OWNER_POLICY_REPAIR_CHECK_DESIGN.md) and offline implementation.
 PR #110 implements the [separate Python API](../reference/OWNER_POLICY_REPAIR_CHECK.md), complete fixed
 plans, terminal expiring decisions and a dedicated worker/transport. Offline/static/mock tests do not
-execute either candidate or provide runtime observations. Before and after each need a fresh separate
-decision against their finalized current plan; no automatic paired execution or new CLI/UI is added.
+execute either candidate or provide runtime observations. The later separate before-only source run
+at `510377c` produced the expected two mismatches and completed with confirmed cleanup; its approval
+is consumed. After is unapproved/unexecuted and needs its own fresh decision against the complete
+current plan; no automatic paired execution or new CLI/UI is added. Another before run likewise
+requires fresh approval.
 The five-second startup/I/O/completion budget and one-second child cleanup budget are not a hard
 whole-filesystem deadline or OS sandbox. Embedded after is a control, not applied-file verification.
-Fixed worker acceptance, final-head delivery and separately designed new-copy apply/check/restore
+After-control acceptance, final-head delivery and separately designed new-copy apply/check/restore
 remain later gates; existing `codex-owner-review`, S1 and the #80 worker stay unchanged.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout

@@ -16,13 +16,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record one separately approved before-only repair-policy source run at `510377c` on
+  2026-10-28 11:49:55 KST: six matches and the expected two mismatches (`non-owner`,
+  `exact-owner-no-normalization`), comparison `failed` / `case-mismatch`, execution `completed`,
+  exit `0`, all cleanup confirmed and output revalidation passed. This is the intended incorrect-before
+  demonstration, not worker failure; see the [bounded record](docs/reference/OWNER_POLICY_REPAIR_CHECK.md).
+  The one-run before approval is consumed. After remains unapproved/unexecuted; its predicted matches
+  are not observations. Provider zero, authorization unknown, patch/restoration not-run; historical
+  hashes and #80 unchanged. Host records are unauthenticated; no applied-file assurance, merge or release.
 - Add #81's [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md)
   under the reviewed PR #110 design: explicit before/after candidates, complete source/case/worker/recipe
   plans, separate terminal expiring one-attempt decisions and a dedicated bounded worker/transport.
   Preserve strict observations versus expectations, separate child/workspace cleanup and unknown
-  failures. Verification is offline/static/memory-only mocked process behavior, not actual new worker
-  or policy execution. POSIX source only; no new CLI/UI, provider call, applied-file verification,
-  patch, merge or release. #80 stays unchanged; #81/#35/#82 and fresh runtime acceptance remain open.
+  failures. Initial implementation verification at `510377c` was offline/static/memory-only mocked
+  process behavior, not actual worker/policy execution; the later separate before acceptance is
+  recorded above. POSIX source only; no new CLI/UI, provider call, applied-file verification, patch,
+  merge or release. #80 stays unchanged; #81/#35/#82 and separately approved after acceptance remain open.
 - Add #81's first offline [owner-policy recommendation contract](docs/reference/OWNER_POLICY_RECOMMENDATION.md),
   schema `1.0`: one registered policy snapshot, policy-only criteria and fixed trusted-input assumptions.
   Validate caller/scripted `no-change` or `unknown` data with exact evidence bindings, strict closed

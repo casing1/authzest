@@ -14,13 +14,45 @@
 [PR #110](https://github.com/casing1/authzest/pull/110)의 미출시 소스 구현은
 `authzest.runner.owner_policy_repair_check`, 전용 고정 worker와 제한된 transport를 추가합니다.
 관리자는 [설계와 오프라인 구현을 승인했습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
-실제 worker 실행을 승인한 것은 아닙니다. 이번 검증은 오프라인 계약, worker 정적 점검과 메모리 전용
-scripted 프로세스 응답을 사용합니다. **새 worker의 어느 후보도 실행하거나 실제 관찰로 수용하지
-않았습니다.** 테스트에서 작성한 boolean 값은 관찰된 정책 동작이 아닙니다.
+실제 worker 실행을 승인한 것은 아닙니다. `510377c`의 최초 구현 검증은 오프라인 계약, worker
+정적 점검과 메모리 전용 scripted 프로세스 응답을 사용했습니다. 해당 테스트에서 작성한 boolean은
+관찰된 정책 동작이 아닙니다. 이후 같은 커밋에서 별도로 승인한 **before 전용** 실행 1회를 아래와
+같이 완료했습니다. **After는 한 번도 실행하거나 승인하지 않았습니다.**
 
 새 CLI 명령·API endpoint·대시보드 화면은 없습니다. 공개 alpha.3에는 이 기능이 없습니다.
 기존 #80 coordinator·worker·정책 등록·과거 관찰은 그대로 유지합니다. 이번 구현은 #81/#35/#82를
 완료하거나 유료 리뷰를 활성화하거나 병합·릴리스를 수행하지 않습니다.
+
+## 별도 승인한 before 수용 — 2026-10-28 KST
+
+[별도 before 전용 승인](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210)은
+`510377c`에서 **2026-10-28 11:49:55 KST**에 고정 소스 실행 1회로 소비됐습니다. 앞선 오프라인
+구현 검사와 Codex 추천 시도와는 별도입니다. Host 기록은 `31.640417` ms, 실행 `completed`,
+종료 `0`, 자식/작업공간/전체 정리 모두 `confirmed`이며 출력 재검증도 통과했습니다.
+
+| 기록한 식별 항목  | 값                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| Before 계획 ID    | `owner-repair-check-141cb7a9bd522d851529d795241d7c4a9018ee1758f4a4285b83de12015e0829` |
+| Worker SHA-256    | `9d81411933c8a42b33e3162acc16d4bea828a70b6c5a97c87c1fe0a9e41ee3f2`                    |
+| 캡처 파일 SHA-256 | `acf78772b41331b1c26b8127787b94fe50c076c989e65d81d8b12663dfea0cbc`                    |
+
+등록 사례 순서의 실제 boolean 8개는 `[true, true, false, false, false, false, false, true]`이며
+예상값 일치 6개, 불일치 2개(`non-owner`, `exact-owner-no-normalization`)였습니다.
+전체 `status`와 `comparison_status`는 `failed`, 이유는 `case-mismatch`입니다. 이는 **의도적으로
+잘못된 before 정책의 예상한 시연 성공**이지 worker/transport 실패가 아닙니다. 통과를 만들려고
+예상값을 변경하지 않았습니다.
+
+Provider 호출은 `0`, 인가는 `unknown`, 적용/복구는 `not-run`을 유지했습니다. 과거 산출물
+17개의 해시는 그대로였고 원본 main checkout은 깨끗했으며 #80도 변경하지 않았습니다.
+이는 인증되지 않은 host 기록이지 독립 실행 증명·벤치마크·endpoint 인가·적용 파일 검증이 아닙니다.
+해시는 보존한 바이트를 식별하지만 출처를 입증하지 않습니다. 캡처 해시는 `result.payload_json`만이
+아니라 결정·결과·metadata를 포함한 전체 `capture.json` envelope를 대상으로 합니다. 여기서
+새 fixture나 스키마를 커밋 대상으로 추가하지 않습니다.
+
+이 before 1회 승인은 소비됐습니다. **After는 여전히 미승인·미실행**이며 예상한 8개 일치는
+관찰이 아닙니다. After 대조군에는 전체 현재 after 계획에 대한 새 별도 결정이 필요합니다.
+Before를 다시 실행할 때도 새 승인이 필요합니다. PR #110은 초안이며 리뷰 활성화·병합·적용/복구·
+릴리스는 별도 결정으로 남습니다.
 
 ## 고정 소스와 데이터 경계
 
@@ -131,12 +163,13 @@ Worker stdin에는 정확한 요청 식별값과 순서가 있는 입력 전용 
 `unknown`, 적용/복구는 `not-run`입니다. 비교 `passed`는 endpoint 인가나 정책 전체의 정확성을
 뜻하지 않습니다. 비교 `failed` 자체도 생산 코드 취약점 발견을 뜻하지 않습니다.
 
-정적 추론으로는 before의 `non-owner`, `exact-owner-no-normalization` 두 불일치와 after의
-8개 일치가 예상되지만 이는 **예측일 뿐 실행 결과가 아닙니다.** 앞 공백을 포함한 입력 식별자를
-유지하고 일치를 만들기 위해 예상값을 바꾸지 마세요. 신뢰할 identity/인증/scope/소유권 사실은
+정적 추론에서 예상한 before의 `non-owner`, `exact-owner-no-normalization` 두 불일치는
+위의 별도 before 전용 실행에서 관찰했습니다. After의 8개 일치는 여전히 **예측일 뿐 실행 결과가
+아닙니다.** 앞 공백을 포함한 입력 식별자를 유지하고 일치를 만들기 위해 예상값을 바꾸지 마세요.
+신뢰할 identity/인증/scope/소유권 사실은
 여전히 호출자가 제공하며 이 predicate가 인증하지 않습니다.
 
 **내장 after를 실행해도 대조군 관찰이지 적용 파일 검증이 아닙니다.** 애플리케이션 작업공간을
 읽거나 편집·비교·복구하지 않습니다. 초기 API에는 자동 before→after 실행이나 통합 비교 helper가
-없습니다. 후보별 새 별도 범위 제한의 실제 수용, 최종 head CI/리뷰/전달, 별도로 설계할 파일 식별값
+없습니다. After 대조군의 새 별도 범위 제한 실제 수용, 최종 head CI/리뷰/전달, 별도로 설계할 파일 식별값
 연결 적용/검사/복구 흐름이 이후 gate로 남습니다. 기존 관찰과 승인으로 이를 대신할 수 없습니다.
