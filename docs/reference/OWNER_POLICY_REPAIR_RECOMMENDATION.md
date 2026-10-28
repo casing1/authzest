@@ -60,9 +60,12 @@ sharing phrase was entered under the user's authorization after comparing the co
 
 That one-run sharing approval is consumed. This is one bounded integration acceptance, not an
 independent benchmark, general model-quality result or proof that the repair changes observed
-behavior. The next gate is the [dedicated fixed-check recipe design](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md),
-which is design-only: no implementation or execution approval is implied. The #80 worker remains
-unchanged and continues rejecting the negative candidate. #81/#35 remain open.
+behavior. The maintainer subsequently [approved the dedicated check design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
+PR #110 adds a separate [registered-candidate check Python API](OWNER_POLICY_REPAIR_CHECK.md)
+with offline/mocked-process verification only. Neither new candidate has been executed; before and
+after still require separate fresh exact-plan decisions for actual observation. Embedded after is
+a control, not applied-file verification. The #80 worker remains unchanged and continues rejecting
+the negative candidate. #81/#35/#82 remain open.
 
 ## CLI: preview first, then opt in
 
@@ -276,10 +279,11 @@ against side effects or policy import/evaluation. These are requirements, not re
 The sharing/adapter checks additionally cover scripted transport responses, refusal/cancellation,
 exact sharing bindings and failure cases; offline tests are not live-model acceptance. The separate
 2026-10-28 acceptance above consumed its one-run sharing approval; any further provider check needs
-a fresh bounded decision. Before/after observations still need the
-[dedicated fixed-check recipe](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md), its implementation
-and review, and fresh exact-plan decisions. That recipe is currently design-only, not implemented or
-approved for execution; #80 continues rejecting the negative source. Exact-diff approval, new-copy
-application, verification and recovery remain later stages.
+a fresh bounded decision. The [dedicated fixed-check API](OWNER_POLICY_REPAIR_CHECK.md) implements
+the reviewed recipe in PR #110 with offline/static/mock verification only. Actual before/after
+observations still need fresh, separate finalized-plan decisions and bounded acceptance; no actual
+new worker run is approved or reported. #80 continues rejecting the negative source. Exact-head
+delivery, exact-diff approval, new-copy application, file-bound verification and recovery remain
+separate gates; an embedded after control cannot verify an applied file.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.

@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add #81's [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md)
+  under the reviewed PR #110 design: explicit before/after candidates, complete source/case/worker/recipe
+  plans, separate terminal expiring one-attempt decisions and a dedicated bounded worker/transport.
+  Preserve strict observations versus expectations, separate child/workspace cleanup and unknown
+  failures. Verification is offline/static/memory-only mocked process behavior, not actual new worker
+  or policy execution. POSIX source only; no new CLI/UI, provider call, applied-file verification,
+  patch, merge or release. #80 stays unchanged; #81/#35/#82 and fresh runtime acceptance remain open.
 - Add #81's first offline [owner-policy recommendation contract](docs/reference/OWNER_POLICY_RECOMMENDATION.md),
   schema `1.0`: one registered policy snapshot, policy-only criteria and fixed trusted-input assumptions.
   Validate caller/scripted `no-change` or `unknown` data with exact evidence bindings, strict closed

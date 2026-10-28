@@ -12,6 +12,12 @@
 
 ## Status and requested decision
 
+Historical design text below is preserved. The maintainer subsequently
+[approved this design and offline implementation](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
+See the [implementation reference](../reference/OWNER_POLICY_REPAIR_CHECK.md) for PR #110's source API
+and offline/mock evidence. This decision does not approve actual worker execution; neither candidate
+has a new observed result. The original proposal/checklist is not a current execution receipt.
+
 **Proposed only — 2026-10-28 KST.** Baseline main is
 `cc644a16fb67d1a89538c5b4b27549ee1f136604`. This document adds no worker, execution API, CLI,
 policy observation, application or restoration capability. It does not change #80 or register new

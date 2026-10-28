@@ -16,6 +16,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 검토한 PR #110 설계에 따라 #81의 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md)를
+  추가합니다. 명시적 before/after 후보, 전체 소스/사례/worker/recipe 계획, 별도의 만료 가능한 최종
+  1회용 결정, 전용 제한 worker/transport를 제공합니다. 관찰과 예상값을 엄격히 구분하고 자식/작업공간
+  정리를 별도로 기록하며 실패는 unknown을 유지합니다. 검증은 오프라인/정적/메모리 전용 프로세스
+  mock이며 새 worker나 정책의 실제 실행이 아닙니다. POSIX 소스 전용이며 새 CLI/UI·제공자 호출·
+  적용 파일 검증·패치·병합·릴리스는 없습니다. #80은 그대로이며 #81/#35/#82와 새 실제 수용은 미완료입니다.
 - #81 첫 단계의 오프라인 [소유 정책 추천 계약](reference/OWNER_POLICY_RECOMMENDATION.md),
   스키마 `1.0`을 추가합니다. 등록된 정책 소스 하나·정책 전용 기준·고정된 신뢰 입력 가정만
   사용합니다. 호출자/고정 예시 작성의 `no-change` 또는 `unknown` 데이터를 정확한 근거 연결·
