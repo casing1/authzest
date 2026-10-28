@@ -114,6 +114,56 @@ the mapping; they do not reserve the next release version:
 frontend package marked `private: true` is not versioned independently. Choose a new, unused version for
 each new release; the published `v0.1.0-alpha.1`, `v0.1.0-alpha.2` and `v0.1.0-alpha.3` may not be issued again.
 
+## Nonpublishing native preview preflight
+
+The separate [native preview workflow](../../.github/workflows/native-preview.yml) prepares packaging
+evidence without running the fixture-runtime smoke or publishing a release. It is manual-only and must
+already be merged into `main`. Review the exact main commit and obtain approval for that run before
+dispatching it; creating the workflow or passing PR CI is not an execution approval.
+
+```bash
+AUTHZEST_PREVIEW_SHA='COPY_THE_REVIEWED_FULL_MAIN_SHA_HERE'
+gh workflow run native-preview.yml --ref main -f expected_sha="$AUTHZEST_PREVIEW_SHA"
+```
+
+The first job rejects any event other than `workflow_dispatch`, any ref other than `refs/heads/main`,
+or an expected SHA that is not exactly 40 lowercase hexadecimal characters and equal to both the run
+SHA and checked-out HEAD. If main advances between selecting the reviewed SHA and dispatching the run,
+the mismatch fails before native builds. Later main changes do not retarget this run. Every job checks
+out the run's fixed SHA without persisting Git credentials; repository permissions are read-only.
+This is an operator guard under trusted workflow/toolchain assumptions, not signed approval or an OS sandbox.
+GitHub's [manual-event semantics](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
+determine the run ref/SHA; the explicit check narrows this workflow to the reviewed main snapshot.
+
+For each Ubuntu/macOS/Windows runner, the workflow builds the frontend and native executable, then runs
+only the existing source/preview smoke: selected and relocated binary **26 checks**, checksum-packaged
+artifact **13 checks**, and a fresh matching-OS download job **13 checks** under `python -I -S` without
+installing AuthZest or its dependencies in that verifier. Dependency installation, build tools and
+artifact transfers use the network; only the product smoke is offline. No `doctor`, Codex call,
+fixture/policy worker, runtime smoke or patch application is included. The separate full release
+workflow and its runtime/publication gates remain unchanged.
+
+Artifact containers use `preview-` plus the full run SHA, run ID, attempt, OS and architecture, with a
+requested seven-day retention period. They are Actions test artifacts, not GitHub Release assets.
+The executable still reports the current package version; a preflight labelled `0.1.0a3` is not an
+immutable published alpha.3 download. Retain the run URL, full SHA, actual runner architecture,
+dependency/build logs, artifact IDs and checksums with the test evidence. Match the download to that
+same run and attempt; partial job reruns are not a supported way to reuse another attempt's artifacts.
+Any rerun requires a fresh decision on its scope rather than automatic retry.
+
+Inspect the run before claiming success:
+
+```bash
+gh run view RUN_ID --json headSha,event,status,conclusion
+```
+
+All three build and fresh-download jobs must succeed for the selected SHA before recording that
+preflight's platform evidence. Workflow syntax/unit tests alone do not establish native success.
+This does not select the final alpha.4 candidate, accept #89 residual risk, replace required CI or the
+full release workflow, or establish consumer installation/upgrades, signing/notarization, policy
+correctness or applied-file verification. Version/changelog/README alignment, final-candidate checks
+and publication remain separate decisions under #83. No tag or release is created by this workflow.
+
 ## Prepare a release
 
 The [#89 formatting guard](../development/FORMATTING.md) is unreleased developer/CI tooling. That scoped
