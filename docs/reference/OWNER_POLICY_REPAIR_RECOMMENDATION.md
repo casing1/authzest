@@ -10,16 +10,17 @@
 [Unchanged S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-25 KST
+## Availability and boundary — 2026-10-28 KST
 
 This **unreleased source feature** is tracked under #81. The pure offline selection contract in
 `authzest.codex.owner_policy_repair_recommendation` was delivered through
 [PR #102](https://github.com/casing1/authzest/pull/102) at merge `8409bc7` on 2026-10-24 KST.
-The source implementation introduced in [PR #103](https://github.com/casing1/authzest/pull/103)
-adds the separate `codex-owner-repair` command: a complete sharing preview,
-an explicit one-attempt sharing decision and an existing Codex App Server transport connection.
-It does not complete #81/#35 or claim a successful live-model run, policy observations, application
-or recovery. Its offline checks are not live acceptance. Published alpha.3 does not include this command.
+The source implementation delivered through [PR #103](https://github.com/casing1/authzest/pull/103)
+at merge `cc644a1` on 2026-10-25 KST adds the separate `codex-owner-repair` command: a complete
+sharing preview, an explicit one-attempt sharing decision and an existing Codex App Server
+transport connection. One fresh, separately approved live attempt at that commit succeeded on
+2026-10-28 KST; see the bounded acceptance record below. It does not complete #81/#35 or establish
+policy observations, application or recovery. Published alpha.3 does not include this command.
 
 The fixed pair API was delivered through [PR #101](https://github.com/casing1/authzest/pull/101)
 at merge `cbe6b37` on 2026-10-21 KST. This extension uses those exact registered sources, criteria,
@@ -35,6 +36,33 @@ file application or restoration. `policy.py` remains a logical display label, no
 It accepts no arbitrary source, repository, callback, replacement pair, cases or labels. Rendering
 the prompt or CLI sharing preview sends nothing to Codex. Only the separately approved interactive
 transport path starts Codex; it does not execute either policy candidate or apply the selected diff.
+
+## Bounded live acceptance — 2026-10-28 KST
+
+The [acceptance record](https://github.com/casing1/authzest/issues/81#issuecomment-6458726176)
+documents one freshly approved `before` attempt at `cc644a1`, using the existing ChatGPT login,
+Codex `0.153.0` and explicit model `gpt-6-astra`. The approved input was the public fixed synthetic
+before/after policy pair, criteria, assumptions, eight reviewed expected labels, prompt and output
+schema. The limit was one application turn with a 120-second timeout, no AuthZest retry or model
+fallback; Codex-internal retries and actual usage were not separately capped. The exact fresh
+sharing phrase was entered under the user's authorization after comparing the complete preview.
+
+- The workflow returned `recommendation-ready` with `registered-change` in `30690.214375` ms.
+- Reported usage was 7,750 input and 697 output tokens, with one warning and zero retry notifications.
+  These are reported transport observations, not a signed provider receipt or a guarantee that no
+  unreported internal retry occurred.
+- The model selected the existing registered repair template; it did not generate arbitrary
+  replacement code. The host derived the diff, and offline revalidation of the result, evidence
+  references and composed diff passed.
+- Neither policy was executed; application/restoration remained `not-run`, before/after observations
+  stayed null, comparison stayed `not-evaluated` and authorization stayed `unknown`. The original
+  checkout was unchanged.
+
+That one-run sharing approval is consumed. This is one bounded integration acceptance, not an
+independent benchmark, general model-quality result or proof that the repair changes observed
+behavior. The next gate is the [dedicated fixed-check recipe design](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md),
+which is design-only: no implementation or execution approval is implied. The #80 worker remains
+unchanged and continues rejecting the negative candidate. #81/#35 remain open.
 
 ## CLI: preview first, then opt in
 
@@ -246,9 +274,12 @@ bindings; stale/forged/detached data; closed field and complete-artifact budget 
 against side effects or policy import/evaluation. These are requirements, not results claimed here.
 
 The sharing/adapter checks additionally cover scripted transport responses, refusal/cancellation,
-exact sharing bindings and failure cases; offline tests are not live-model acceptance. A real provider
-check requires its own bounded sharing decision. Before/after observations still need a separately
-reviewed fixed worker recipe and fresh exact-plan decisions; #80 continues rejecting the negative
-source. Exact-diff approval, new-copy application, verification and recovery remain later stages.
+exact sharing bindings and failure cases; offline tests are not live-model acceptance. The separate
+2026-10-28 acceptance above consumed its one-run sharing approval; any further provider check needs
+a fresh bounded decision. Before/after observations still need the
+[dedicated fixed-check recipe](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md), its implementation
+and review, and fresh exact-plan decisions. That recipe is currently design-only, not implemented or
+approved for execution; #80 continues rejecting the negative source. Exact-diff approval, new-copy
+application, verification and recovery remain later stages.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.
