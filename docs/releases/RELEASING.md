@@ -358,6 +358,84 @@ Asset names include the release version, operating system, and detected build ar
 suffix create a GitHub prerelease; final-version tags create a regular release. This workflow does not
 publish Python or npm packages or perform binary signing.
 
+## Source-installed CLI preflight
+
+Use `--installed-cli` for an explicitly selected, trusted pipx/venv console launcher. It runs the same
+13 scan/preview checks once, in a temporary working directory with a minimal child environment. It does
+not copy or chmod the launcher: a Python entrypoint remains bound to its installation and is not a
+standalone relocation test. Native `--binary` (26 checks) and `--artifact-dir` (13 checks) are unchanged.
+The controller can run under `python -I -S`; it uses checkout source only for expected results, not as
+the selected CLI's import path. No provider, policy worker, target application or patch is invoked.
+
+The smoke driver does **not** install packages or verify installer provenance. On macOS/Linux, with
+Python 3.12 and pipx already available, a disposable source-install/reinstall exercise is:
+
+```bash
+AUTHZEST_SOURCE_CHECKOUT="$PWD"
+AUTHZEST_SOURCE_SMOKE="$(mktemp -d)"
+(
+  set -e
+  export PIPX_HOME="$AUTHZEST_SOURCE_SMOKE/pipx"
+  export PIPX_BIN_DIR="$AUTHZEST_SOURCE_SMOKE/bin"
+  export PIPX_MAN_DIR="$AUTHZEST_SOURCE_SMOKE/man"
+  export PIPX_COMPLETION_DIR="$AUTHZEST_SOURCE_SMOKE/completions"
+  export PIP_CACHE_DIR="$AUTHZEST_SOURCE_SMOKE/pip-cache"
+  pipx install --python 3.12 "$AUTHZEST_SOURCE_CHECKOUT"
+  python3.12 -I -S "$AUTHZEST_SOURCE_CHECKOUT/scripts/smoke_release.py" \
+    --installed-cli "$PIPX_BIN_DIR/authzest"
+  pipx install --force "$AUTHZEST_SOURCE_CHECKOUT"
+  python3.12 -I -S "$AUTHZEST_SOURCE_CHECKOUT/scripts/smoke_release.py" \
+    --installed-cli "$PIPX_BIN_DIR/authzest"
+)
+```
+
+Run this from the reviewed checkout root, with no ambient pipx backend/shared-library overrides. Package
+installation/build tooling uses the network and executes trusted build tools; this is not an OS sandbox.
+Do not use `pipx ensurepath`, global uninstall, or a bare ambient `authzest` for this exercise. Preserve
+the temporary directory until evidence is recorded. It does not modify the user's normal pipx home or
+shell PATH. This example reinstalls the **same source**; testing an update requires a separate old-source
+installation and a recorded replacement source. It does not fetch either revision or advance a branch.
+
+Record the full source SHA and dirty status, OS/architecture, Python/pipx/backend/dependency versions,
+exact launcher/venv, installer results, and smoke results. In a separate installed-interpreter process
+using `-I` outside the checkout, verify that package and distribution paths are inside that venv,
+`direct_url.json` names the selected source and is noneditable, and installed non-bytecode package files
+match that source. The displayed version alone cannot prove replacement when both snapshots still use
+`0.1.0a3`. The commands above do not automate these provenance checks.
+
+### Local source-install observation — 2026-10-29
+
+On macOS 27.0.1 (26A434) arm64, Python 3.12.7 and pipx 1.18.7 with the pip backend, separate disposable
+pipx homes tested clean current-source installation and replacement of an alpha.3-source installation.
+The source snapshots were clean Git archive exports: alpha.3
+`99be6f5614d283befa2a421b64f84958b680f92f` and current main
+`1d0ebb81aa9f7dd3fb226e08445439182ad6cfbb`. The new smoke driver was checked on the preparation branch;
+product source and package version were unchanged.
+
+| State                                        | Installed package files | CLI result                                                            |
+| -------------------------------------------- | ----------------------: | --------------------------------------------------------------------- |
+| Fresh current source                         |                      58 | All 13 scan/preview checks passed                                     |
+| Alpha.3 source before replacement            |                      34 | Version/help and inventory strict JSON scan passed: 4 files, 3 routes |
+| Same venv after current-source force install |                      58 | All 13 scan/preview checks passed                                     |
+
+Each state passed an independent installed-Python `-I` provenance check: selected venv prefix and
+package/distribution paths, noneditable source URL, and equality of every non-bytecode package file with
+its source snapshot. SHA-256 over the compact sorted JSON mapping of relative file paths to file SHA-256
+values was `a673f840b6f3ddecaf831bf1bb5559222051e28a07706a145006a188ce1c76cc` before replacement and
+`4a1171bcb55c953c8dc66bf5fe21ed52e3379f4de26cf45cae09ac6f8d775855` for both current installations.
+Observed dependencies were Typer 0.27.3, Rich 15.0.0, Pygments 2.21.0, markdown-it-py 4.2.0, mdurl 0.1.2,
+shellingham 1.5.4 and annotated-doc 0.0.5; pip was 26.2.2. This is an observation, not a lockfile or a
+reproducible-build guarantee. An initial evidence-reporting probe assumed a separately installed Click
+distribution and failed while reporting versions; enumerating the actual installed distributions fixed
+that probe, without changing or retrying package installation.
+
+All launchers were selected by absolute path despite pipx noting an existing ambient AuthZest. No
+`ensurepath`, user installation replacement, provider call, policy/runtime execution or patch occurred.
+Both source versions report `0.1.0a3`: this establishes **same-version source replacement on this host**,
+not a versioned alpha.4 upgrade, clean-device/native installation, Windows/Linux source-install evidence,
+UI packaging, signing/notarization, #89 risk acceptance or release approval. Recheck the final versioned
+candidate and each advertised route separately; the planned alpha.4 release gate remains open.
+
 ## Verify and recover
 
 - Download every release asset and its matching `.sha256` file.

@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add an explicit installed-CLI smoke mode with 13 offline scan/preview checks and no launcher
+  relocation or installer side effects. Record disposable macOS pipx source installation and
+  alpha.3-source-to-main same-version replacement in the English/Korean release guide, with separate
+  installed-byte provenance checks. Keep versioned upgrade, other platforms, native installation,
+  final-candidate acceptance and #89 disposition open; no package version or publication change.
 - Add an opt-in VS Code review workspace with automatic-formatting/Prettier defaults disabled and
   English/Korean contributor guidance for guarded formatting. Preserve personal editor settings and
   document overrides and unreviewed-PR limits; data-contract tests do not validate a running editor,
