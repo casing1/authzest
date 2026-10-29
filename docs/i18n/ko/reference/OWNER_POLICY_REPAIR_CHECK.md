@@ -219,6 +219,7 @@ after의 8개 일치는 위의 각각 별도 승인한 실행에서 관찰했습
 없습니다. 소스 전달은 위 기록처럼 별도 완료됐지만 파일 식별값 연결 적용/검사/복구에는 자체
 설계 검토와 범위를 정한 승인이 계속 필요합니다. 기존 관찰과 소비한 승인으로 이를 대신할 수 없습니다.
 
-[소유 파일 수정 설계](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)는 파일에서 읽은 snapshot을
-실행하는 별도 세션과 worker를 제안합니다. 검토·구현 대기 상태이며 이 내장 대조군 API와 과거
+[검토한 설계](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)에 따른 별도
+[소유 파일 수정 API](OWNER_POLICY_FILE_REPAIR.md)를 초안 PR #118에서 구현하고 임시 파일·scripted
+프로세스로 오프라인 검증했습니다. 새 worker를 실제 실행하지 않았으며 이 내장 대조군 API와 과거
 관찰은 그대로 유지합니다.

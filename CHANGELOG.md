@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Implement the unreleased source-only owned-file repair Python API from the approved design:
+  explicit private-copy creation, separate expiring one-attempt decisions, captured-source worker
+  protocol, file-state-bound checks and restoration, retained records and fail-closed recovery.
+  Pure-data, AST, temporary-file and fake-process tests cover the new flow; no actual new-worker
+  observation, operator patch acceptance, CLI integration, AI call or release is added in this slice.
 - Propose the English/Korean design for #81's owned-file repair session: separate before/diff/apply/
   after/restore decisions, a fresh one-file copy, checks executing captured registered bytes and
   user-edit-safe restoration. Link it from the indexes, plan and existing control-check reference.

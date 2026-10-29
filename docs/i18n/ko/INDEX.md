@@ -61,9 +61,11 @@ PR #110은 before/after 별도 결정·전용 worker·프로세스 mock 테스�
 두 승인은 모두 소비됐습니다. 이후 별도 승인받은 최종 head 리뷰와 전달은 2026-10-28 13:52:15 KST에
 PR #110의 `ea081e0`로 완료됐으며 `c265bf1`의
 [자동 리뷰 두 건은 지적 없이 완료됐습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699).
-다음 핵심 단계인 [소유 파일 적용/검사/복구 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)를
-제안했습니다. 새 실행 결정을 실제 복사본의 바이트와 연결하고 이후 사용자 편집을 보존합니다.
-검토·구현은 미완료이며 파일 실행기나 새 관찰을 추가하지 않습니다.
+관리자가 [소유 파일 적용/검사/복구 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)와 오프라인
+구현을 승인했습니다. 별도 [소유 파일 수정 Python API](reference/OWNER_POLICY_FILE_REPAIR.md)를
+초안 PR #118에서 구현하고 임시 파일·모의 프로세스로 검증했습니다. 새 결정·worker를 실제 복사본에서
+읽은 바이트와 연결하고 이후 사용자 편집을 보존합니다. 새 worker의 실제 수용 검증과 통합 CLI 전달은
+미완료이며 scripted 결과는 정책 관찰이 아닙니다.
 새 CLI/UI나 적용 파일 검증은 없으며
 #81/#35/#82는 열려 있고 #80은 그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
@@ -131,7 +133,8 @@ docs/
 | 오프라인 등록 수정 쌍 API (소스 참조)            | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)                   | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
 | 등록 수정 추천과 공유 (소스)                     | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | 등록 수정 정책 검사 API (소스; 별도 대조군 관찰) | [Repair check](../../reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](reference/OWNER_POLICY_REPAIR_CHECK.md)               |
-| 소유 파일 적용/검사/복구 (제안 설계)             | [Owned-file repair design](../../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
+| 소유 파일 수정 API (소스; 오프라인 검증)         | [Owned-file repair](../../reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| 소유 파일 적용/검사/복구 (검토한 설계)           | [Owned-file repair design](../../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | 전용 수정 정책 고정 검사 (과거 설계)             | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | 테스트 전용 소유 정책 수정 쌍 (제안)             | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
 | 소유 정책 개선 설계 (제안)                       | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       |

@@ -10,7 +10,21 @@
 [Repair recommendation](../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [Embedded control checks](../reference/OWNER_POLICY_REPAIR_CHECK.md)
 
-## Status and decision
+## Current status — 2026-10-29 KST
+
+The maintainer [approved this design at `29d8c82` and offline implementation](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422).
+Implementation and offline verification are in progress in draft
+[PR #118](https://github.com/casing1/authzest/pull/118); see the
+[file-repair API reference](../reference/OWNER_POLICY_FILE_REPAIR.md) for current source boundaries.
+This approval covers temporary-file and mocked-process implementation tests, not an actual new worker
+run, operator patch acceptance, review activation, merge or publication. Exact verification evidence
+is recorded separately in the PR. #81/#82/#35 and the separate #83 release conditions remain open.
+
+The proposal below is preserved as the reviewed historical design, including its original
+future-tense API descriptions and decision request. It is not a new execution approval or a claim
+that the unreleased implementation has completed operational acceptance.
+
+## Historical proposal and decision request
 
 **Proposed — 2026-10-29 KST**, against main `80110e02ec8b3392e1841a42f8761179219285cd`.
 This document specifies the next #81 implementation: apply the registered repair to one new owned

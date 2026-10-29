@@ -229,6 +229,7 @@ before-to-after orchestration or combined comparison helper. Source delivery com
 as recorded above; file-bound apply/check/restore still requires its own reviewed design and bounded
 approvals. Existing observations and consumed approvals cannot stand in for those gates.
 
-The [owned-file repair design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) proposes a separate
-session and worker that execute a captured file snapshot. It is awaiting review/implementation;
-this embedded-control API and its historical observations are unchanged.
+The separate [owned-file repair API](OWNER_POLICY_FILE_REPAIR.md), based on the
+[reviewed design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md), is implemented in draft PR #118
+and verified offline with temporary files and scripted processes. Its new worker has not been run;
+this embedded-control API and its historical observations remain unchanged.

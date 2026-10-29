@@ -66,10 +66,12 @@ cleanup; see the [after acceptance record](https://github.com/casing1/authzest/p
 Both approvals are consumed. Separately authorized final-head review and delivery subsequently
 completed through PR #110 at `ea081e0` on 2026-10-28 13:52:15 KST; both
 [automatic reviews completed without findings](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699)
-on `c265bf1`. The next core step is the proposed
-[owned-file apply/check/restore design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md): it binds
-new live decisions to the actual copied bytes and preserves later user edits. Review and implementation
-are pending; it does not add a file executor or new observation.
+on `c265bf1`. The maintainer approved the
+[owned-file apply/check/restore design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) and offline
+implementation. The separate [owned-file repair Python API](reference/OWNER_POLICY_FILE_REPAIR.md)
+is implemented in draft PR #118 with temporary-file and scripted-process verification. It binds new
+decisions and a new worker to captured copied-file bytes and preserves later edits. Actual new-worker
+acceptance and integrated CLI delivery remain pending; scripted results are not policy observations.
 There is no new CLI/UI or applied-file verification;
 #81/#35/#82 remain open and #80 is unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
@@ -138,7 +140,8 @@ docs/
 | Offline registered repair-pair API (source reference)                   | [Repair-pair API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   | [등록 수정 쌍 API](i18n/ko/reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
 | Registered repair recommendation and sharing (source)                   | [Repair recommendation](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | Registered repair-policy check API (source; separate controls observed) | [Repair check](reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](i18n/ko/reference/OWNER_POLICY_REPAIR_CHECK.md)               |
-| Owned-file apply/check/restore (proposed design)                        | [Owned-file repair design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](i18n/ko/development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
+| Owned-file repair API (source; offline verification)                    | [Owned-file repair](reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](i18n/ko/reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| Owned-file apply/check/restore (reviewed design)                        | [Owned-file repair design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](i18n/ko/development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | Dedicated repair-policy fixed check (historical design)                 | [Repair-check design](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](i18n/ko/development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | Test-only owner-policy repair pair (proposed)                           | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
 | Owned policy improvement design (proposed)                              | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       |
