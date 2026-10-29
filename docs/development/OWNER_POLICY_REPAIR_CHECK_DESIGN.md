@@ -21,9 +21,11 @@ was consumed by the 2026-10-28 11:49:55 KST before run documented in the referen
 mismatches, execution completed, exit `0`, cleanup confirmed. A later
 [separately approved after-only run](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)
 at documentation-only commit `7f9c5ce` on 2026-10-28 13:11:38 KST matched eight cases with unchanged
-runtime code, exit `0` and confirmed cleanup. Both run approvals are consumed. Final-head
-review/delivery needs new approval; file-bound application/verification/restoration remains a separate
-design. The original proposal/checklist below is preserved, not a current execution receipt.
+runtime code, exit `0` and confirmed cleanup. Both run approvals are consumed. PR #110 subsequently
+completed separately authorized final-head review and delivery at `ea081e0` on 2026-10-28; see the
+[source-delivery record](../reference/OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery--2026-10-28-kst).
+File-bound application/verification/restoration remains a separate design. The original proposal/checklist
+below is preserved, not a current execution receipt.
 
 **Proposed only — 2026-10-28 KST.** Baseline main is
 `cc644a16fb67d1a89538c5b4b27549ee1f136604`. This document adds no worker, execution API, CLI,

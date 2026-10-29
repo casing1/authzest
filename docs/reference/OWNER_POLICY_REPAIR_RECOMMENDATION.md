@@ -291,8 +291,9 @@ separately approved before run recorded the expected two mismatches and consumed
 approval. A separate later after run at documentation-only `7f9c5ce` matched eight cases and consumed
 its own approval, without a before rerun or runtime change. Offline comparison of the saved records
 is not a new product comparison API or authenticated execution attestation. #80 continues rejecting
-the negative source. Next is final-head review/delivery under new approval, followed by a separately
-reviewed file-bound apply/check/restore design and later exact operational decisions. An embedded
-after control cannot verify an applied file.
+the negative source. PR #110 subsequently completed separately authorized final-head review and
+delivery at `ea081e0` on 2026-10-28; see the [source-delivery record](OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery--2026-10-28-kst).
+Next is a separately reviewed file-bound apply/check/restore design and later exact operational
+decisions. An embedded after control cannot verify an applied file.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.

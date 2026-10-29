@@ -47,9 +47,9 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
-- 현재 미출시 소스의 `codex-owner-review`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
+- 현재 미출시 소스의 `codex-owner-review`·`codex-owner-repair`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
   기본으로 사용합니다. `--json`은 stdout에 최종 결과 하나만 출력하고 완전한 동의 미리보기·질문은
-  stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 미리보기 하나를
+  stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 또는 수정 추천 미리보기 하나를
   반환합니다. 스크립트는 JSON을 명시해야 하며 필드·기록한 결정·별도 승인은 유지하고 미확인은
   통과가 아닙니다. [출력·전환 계약](guides/CODEX_OWNER_REVIEW.md#결과-해석)을 참고하세요.
   공개 alpha.3는 기존 표시를 유지하며 GUI·새 제공자 호출/실행 권한은 추가하지 않습니다.
@@ -71,6 +71,16 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   약 74초 만에 `draft-ready`를 받았고 답변 1개·사례 10개가 host 검증을 통과함. 제한된 제공자
   인수 검증이며 사례 정답 승인이나 endpoint 검증은 아님. 다음 시도에는 새 승인이 필요하고
   공개 alpha.3는 그대로임
+- 미출시 [`authzest codex-owner-repair`](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) 추가:
+  지원 OS에서 전체 공유 입력을 오프라인으로 미리 보고, 지원 POSIX 시스템에서 명시적으로 승인한
+  버전 고정 App Server 시도 1회를 수행합니다. `before` 또는 `after`에 대해 `registered-change`,
+  `no-change`, `unknown`을 반환하며 host가 등록된 단일 파일 diff를 구성합니다. 임의 교체 코드를
+  생성하는 흐름은 아닙니다. 2026-10-28 별도 승인한 실제 시도에서 등록 템플릿을 선택했고 그 승인은
+  소비됐습니다. 이 명령은 변경 적용·파일 복구·정책 실행을 하지 않습니다.
+- 별도 미출시 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md) 추가:
+  POSIX Python 소스 전용 before/after 대조군마다 별도의 새 결정이 필요합니다. 과거 검사에서
+  예상한 before 불일치 2개와 after 일치 8개를 관찰했습니다. 적용한 파일의 검사가 아니며 새 CLI/UI는
+  없습니다. 실제 파일에 연결된 적용·검사·복구와 #81/#82/#35는 미완료입니다.
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
@@ -133,6 +143,10 @@ authzest scan /path/to/fastapi-project --json --strict
 git pull --ff-only
 pipx install --force .
 ```
+
+[소스 설치 사전 검사 기록](releases/RELEASING.md#소스-설치-cli-사전-검사)은 macOS 임시 pipx 설치와
+같은 버전의 소스 교체를 설명합니다. 버전이 바뀐 alpha.4 업그레이드나 다른 운영체제의 소스 설치
+지원까지 입증하는 것은 아닙니다.
 
 미리 빌드된 파일은 [독립 실행 파일](#독립-실행-파일)을 참고하세요. `ui` extra는 Python backend 의존성을
 설치하지만 일반 wheel·pipx 설치에 빌드된 대시보드 자산을 포함하지 않습니다. 선택적인 대시보드는

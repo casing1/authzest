@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-10-28 KST
+## 현재 작업 — 2026-10-29 KST
 
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
@@ -58,8 +58,11 @@ PR #110은 before/after 별도 결정·전용 worker·프로세스 mock 테스�
 이후 별도 승인한 after 전용 실행은 문서 전용 커밋 `7f9c5ce`에서 같은 런타임 코드로
 2026-10-28 13:11:38 KST에 사례 8개 일치·종료 `0`·정리 확인을 기록했습니다.
 [After 수용 기록](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)을 참고하세요.
-두 승인은 모두 소비됐습니다. 최종 head 리뷰/전달에는 새 승인이 필요하며 이어서 파일 식별값 연결
-적용/검사/복구 설계를 별도 검토해야 합니다. 새 CLI/UI나 적용 파일 검증은 없으며
+두 승인은 모두 소비됐습니다. 이후 별도 승인받은 최종 head 리뷰와 전달은 2026-10-28 13:52:15 KST에
+PR #110의 `ea081e0`로 완료됐으며 `c265bf1`의
+[자동 리뷰 두 건은 지적 없이 완료됐습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699).
+다음 핵심 단계는 파일 식별값 연결 적용/검사/복구 설계를 별도 검토하는 것입니다.
+새 CLI/UI나 적용 파일 검증은 없으며
 #81/#35/#82는 열려 있고 #80은 그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
@@ -75,6 +78,13 @@ PR #110은 before/after 별도 결정·전용 worker·프로세스 mock 테스�
 [PR #109](https://github.com/casing1/authzest/pull/109)로
 [#108](https://github.com/casing1/authzest/issues/108)을 완료했습니다. 기존 자료의 바이트를 검사하며
 새 벤치마크나 모델 품질을 검증하지 않습니다. #84의 독립 정답 검토·평가셋 고정·비교는 계속 미완료입니다.
+
+별도로 [#83 프리릴리즈 준비](https://github.com/casing1/authzest/issues/83)를 계속합니다.
+[PR #114](https://github.com/casing1/authzest/pull/114)는 비배포 native 미리보기 검사를,
+[PR #115](https://github.com/casing1/authzest/pull/115)는 선택형 에디터 포맷 안내를,
+[PR #116](https://github.com/casing1/authzest/pull/116)은 설치 CLI smoke와 로컬 소스 설치 근거를
+전달했습니다. 이는 제한된 준비 기록이지 최종 alpha.4 수용·#89 위험 수용·발행이 아닙니다.
+[릴리스 가이드](releases/RELEASING.md)를 참고하세요.
 
 [현재 개발 계획](development/DEVELOPMENT_PLAN.md)에서 우선순위·실제 마일스톤 상태·릴리즈/평가 gate와
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로

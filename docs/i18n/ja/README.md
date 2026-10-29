@@ -47,9 +47,9 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
-- 現在の未リリースソースでは `codex-owner-review`・`codex-fixture`・`fixture-demo` を読みやすく
+- 現在の未リリースソースでは `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
   表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
-  出します。オフラインの `--preview-only --json` は完全な owner-review プレビュー一つを返します。
+  出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。
   スクリプトは JSON を明示的に選び、フィールド・記録された判断・個別承認は変わりません。
   unknown は合格ではありません。[出力と移行の契約](../../guides/CODEX_OWNER_REVIEW.md#interpret-the-result)を
   参照してください。公開済み alpha.3 の表示は変更せず、GUI や新しい提供者/実行権限は追加しません
@@ -71,6 +71,17 @@ React ダッシュボードは任意のローカルインターフェースで�
   承認された2026-10-01の試行は約74秒で `draft-ready` を返し、回答1件とケース10件が
   host検証を通過した。限定的なプロバイダー受け入れ検証であり、期待値の承認やendpoint検証
   ではない。次の試行には新たな承認が必要で、公開済みalpha.3は変更しない
+- 未リリースの [`authzest codex-owner-repair`](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) を追加：
+  対応 OS で共有内容全体をオフラインで確認でき、明示的な共有同意後、対応 POSIX システムで
+  バージョン固定 App Server による試行を 1 回行う。候補は `before` または `after`、結果は
+  `registered-change`・`no-change`・`unknown`。登録済みテンプレートの選択からホストが
+  1 ファイルの diff を導出し、任意の置換コードは生成しない。2026-10-28 の個別承認された
+  実連携 1 回で登録済みテンプレートが選択され、その承認は消費済み。適用・復元・ポリシー実行は行わない
+- 別の未リリース[登録済み修正ポリシー検査 Python API](../../reference/OWNER_POLICY_REPAIR_CHECK.md) を追加：
+  POSIX の Python ソースモードのみで、before/after の対照条件にはそれぞれ新たな個別承認が必要。
+  過去の承認済み実行では、想定どおり before の 2 件の不一致と after の 8 件の一致を観測した。
+  適用ファイルの検証ではなく、CLI/UI も追加しない。実際のファイルと結び付けた適用・検査・復元と
+  #81/#82/#35 は未完成のまま
 - 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
   同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
   Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない
@@ -134,6 +145,10 @@ CLI を使うために、プロジェクトの venv を有効にする必要は�
 git pull --ff-only
 pipx install --force .
 ```
+
+[ソースインストール CLI の事前検証記録](../../releases/RELEASING.md#source-installed-cli-preflight)には、
+macOS の一時的なクリーン pipx 環境へのインストールと同一バージョンのソース置き換えを記録しています。
+alpha.4 へのバージョンアップや、他の OS での検証を示すものではありません。
 
 ビルド済みファイルについては[独立した実行ファイル](#独立した実行ファイル)を参照してください。
 `ui` extra は Python backend の依存関係をインストールしますが、通常の wheel・pipx インストールに
