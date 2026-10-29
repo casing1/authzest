@@ -8,6 +8,40 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { preflight, runFormatter, validateEditorConfig } from "./format.mjs";
 
+test("review workspace contains only opt-in formatting defaults and the checkout", () => {
+  const workspace = JSON.parse(
+    fs.readFileSync(
+      new URL("../authzest-review.code-workspace", import.meta.url),
+      "utf8",
+    ),
+  );
+  // Data contract only: this does not launch VS Code or prove effective user settings.
+  // Exact keys also prevent adding tasks, launch commands or extension installation here.
+  assert.deepEqual(workspace, {
+    folders: [{ path: "." }],
+    settings: {
+      "prettier.enable": false,
+      "editor.formatOnSave": false,
+      "editor.formatOnPaste": false,
+      "editor.formatOnType": false,
+      "editor.codeActionsOnSave": { "source.fixAll.prettier": "never" },
+    },
+  });
+});
+
+test("contributor formatting retains guarded npm scripts and the editor ignore rule", () => {
+  const { scripts } = JSON.parse(
+    fs.readFileSync(new URL("../frontend/package.json", import.meta.url), "utf8"),
+  );
+  assert.equal(scripts.format, "node ../scripts/format.mjs frontend --write");
+  assert.equal(
+    scripts["format:check"],
+    "node ../scripts/format.mjs frontend --check",
+  );
+  const ignored = fs.readFileSync(new URL("../.gitignore", import.meta.url), "utf8");
+  assert.ok(ignored.split(/\r?\n/).includes(".vscode/"));
+});
+
 const editorConfig = `root = true
 
 [*]

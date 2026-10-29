@@ -16,6 +16,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add an opt-in VS Code review workspace with automatic-formatting/Prettier defaults disabled and
+  English/Korean contributor guidance for guarded formatting. Preserve personal editor settings and
+  document overrides and unreviewed-PR limits; data-contract tests do not validate a running editor,
+  replace the bundled parser, resolve #89 or accept release risk.
 - Add a manual-only, exact-main-SHA native preview preflight for Ubuntu/macOS/Windows with read-only
   repository permissions, selected/relocated and checksum/download preview smoke, and short-lived
   run-bound test artifacts. Keep runtime execution and publication in the separate unchanged release

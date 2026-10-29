@@ -135,6 +135,9 @@ Markdown 수정에는 `node scripts/format.mjs markdown --write`를 사용합니
 `npm --prefix frontend run format`과 `npm --prefix frontend run format:check` 명령도 frontend 파일에
 같은 guard를 적용합니다. EditorConfig 패턴·옵션·ignore 탐색을 변경하기 전에
 [포맷 검사 범위](development/FORMATTING.md)를 읽으세요.
+편집기에서는 [선택형 검토 작업공간 안내](development/FORMATTING.md#편집기와-미검토-pull-request)를
+참고하세요. 개인 설정을 대체하지 않고 VS Code 포맷 기본값을 제공합니다. 편집기/CLI/API의 직접
+포맷은 guard를 우회하므로 익숙하지 않은 PR의 스크립트와 설정을 검토한 뒤 도구를 실행하세요.
 [포함된 예제](guides/EXAMPLES.md)는 결정론적인 로컬 CLI 시연을 제공합니다.
 
 위에서 frontend를 빌드한 뒤, 같은 가상 환경을 활성화한 상태로 저장소 루트에서 독립 실행 파일을
