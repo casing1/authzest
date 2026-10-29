@@ -216,6 +216,13 @@ PR #110's final-head review and delivery completed separately as recorded above.
 file-bound new-copy apply/check/restore design remains the next core gate; existing
 `codex-owner-review`, S1 and the #80 worker stay unchanged.
 
+The maintainer approved the [owned-file repair design](OWNER_POLICY_FILE_REPAIR_DESIGN.md) at `29d8c82`.
+PR #118 introduces the [source API](../reference/OWNER_POLICY_FILE_REPAIR.md): separate
+before/diff/apply/after/restore decisions, one fresh private `policy.py`, checks of captured file bytes,
+and preservation of user edits. Offline verification uses temporary files and scripted processes;
+the new worker has not been executed. Separately approved file-workflow acceptance and #82's installed
+CLI integration remain the next gates. Existing embedded observations do not satisfy those gates.
+
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only
 JSON. Preserve exact identity-bound sharing content before consent; summaries alone are insufficient.

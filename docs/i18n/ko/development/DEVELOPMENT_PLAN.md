@@ -211,6 +211,13 @@ before 전용 소스 실행은 예상한 두 불일치와 정리 확인으로 �
 다음 핵심 gate이며 기존
 `codex-owner-review`, S1, #80 worker는 그대로 유지합니다.
 
+관리자가 `29d8c82`의 [소유 파일 수정 설계](OWNER_POLICY_FILE_REPAIR_DESIGN.md)를 승인했습니다.
+PR #118에서 [소스 API](../reference/OWNER_POLICY_FILE_REPAIR.md)를 구현했습니다.
+before 검사/diff 동의/적용/after 검사/복구의 별도 결정, 새 비공개 `policy.py` 하나,
+읽은 파일 바이트의 검사와 사용자 편집 보존을 제공합니다. 오프라인 검증은 임시 파일과 scripted
+프로세스를 사용하며 새 worker를 실행하지 않았습니다. 별도 승인한 실제 파일 흐름 수용 검증과
+#82의 설치 CLI 통합이 다음 gate이며 기존 내장 대조군 관찰로 대신할 수 없습니다.
+
 구현된 #79는 사람이 읽는 기본 출력과 명시적 JSON 호환성을 정의합니다. JSON 모드의 stdout에는 최종 결과
 하나, 대화형 미리보기/프롬프트/진행은 stderr, 미리보기 전용 JSON은 전체 미리보기 하나를 출력합니다.
 공유 전에 식별값에 연결된 전체 내용을 유지하며 요약만으로 대신하지 않습니다.
