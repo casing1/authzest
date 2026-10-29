@@ -25,6 +25,46 @@ npm 명령 이름은 유지하며 `scripts/format.mjs frontend --check`와
 `scripts/format.mjs frontend --write`를 호출합니다. frontend의 `dist`, `node_modules`,
 `package-lock.json` 제외 규칙도 유지합니다. 포맷 자식 프로세스의 제한 시간은 120초입니다.
 
+## 편집기와 미검토 pull request
+
+Prettier는 개발용 포맷 도구이며 AuthZest의 접근통제 분석기가 아닙니다. 편집기의 포맷 기능이 저장소
+guard를 자동 호출하지는 않습니다. 익숙하지 않은 PR은 먼저 GitHub diff나 제한 모드 편집기에서
+살펴보세요. Checkout을 신뢰하거나 의존성을 설치하고 명령을 실행하기 전에 작업공간/설정, 포맷
+스크립트, 의존성, workflow 변경을 검토합니다. Guard 자체도 신뢰하는 코드이지 그 코드를 변경하는
+공격자로부터 격리하는 장치는 아닙니다.
+
+VS Code용 선택형 [authzest-review.code-workspace](../../../../authzest-review.code-workspace)는
+이 checkout 하나만 열고 다음 기본값을 제공합니다.
+
+- `prettier.enable`은 `false`로, VS Code를 재시작한 뒤 Prettier 포맷을 비활성화합니다.
+- `editor.formatOnSave`, `editor.formatOnPaste`, `editor.formatOnType`은 `false`입니다.
+- `editor.codeActionsOnSave`의 `source.fixAll.prettier`는 `never`로, 이 프리셋에서 별도의 Prettier
+  저장 시 동작을 요청하지 않습니다.
+
+**파일 → 파일에서 작업 영역 열기(File → Open Workspace from File)**로 검토한 파일을 연 뒤 VS Code를
+재시작하세요. 저장소 폴더만 여는 경우에는 이 프리셋을 적용하지 **않습니다**. 확장 설치나 실행 작업
+추가, 사용자 전역 설정 수정, 무시된 `.vscode/` 파일 덮어쓰기는 하지 않습니다. 기존 폴더별·언어별
+설정이 이 기본값을 덮어쓸 수 있으므로 설정 화면에서 해당 파일 언어에 적용되는 값을 확인하세요.
+확신하기 어렵다면 확장 목록의 **Prettier - Code formatter**에서 **사용 안 함(작업 영역)
+(Disable (Workspace))**을 선택하고 재시작 안내를 따르세요. 포맷을 작동시키려는 이유만으로
+작업공간 신뢰를 허용하지 마세요.
+
+익숙하지 않은 checkout은 검토하는 동안 [제한 모드(Restricted Mode)](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)를
+유지하세요. 이 프리셋은 선택해서 사용하는 작업 흐름 보조 설정이지 sandbox나 강제 장치가 아닙니다.
+다른 확장·코드 동작·편집기·수동 명령·직접 Prettier API 호출은 범위 밖입니다. 모든 확장 코드의 로딩을
+막거나 개발자 컴퓨터의 실제 적용 설정을 증명하지 않습니다. 공식 [설정 우선순위](https://code.visualstudio.com/docs/configure/settings#settings-precedence),
+[Prettier 활성화/재시작 설정](https://github.com/prettier/prettier-vscode#prettierenable-default-true),
+[저장 시 동작](https://github.com/prettier/prettier-vscode#using-code-actions-on-save),
+[작업공간 확장 비활성화](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#disable-an-extension)를
+참고하세요.
+
+Checkout과 toolchain을 검토한 뒤 터미널에서 [명령](#명령)의 보호 명령을 사용하세요. 직접 Prettier
+호출이나 **문서 서식 지정(Format Document)**으로 대체하지 않습니다. Guard가 설정을 거절하면
+우회하지 말고 설정을 검토하세요. 다른 편집기에서도 이 checkout의 자동 Prettier 연동을 끄고 같은
+명령을 사용하며, 편집기 간 설정 호환성을 보장하지 않습니다. 테스트는 프리셋 데이터와 npm 경로를
+검사할 뿐 실제 편집기를 실행하지 않습니다. 이 변경은 Prettier의 내장 파서를 교체하거나 #89를
+해결하거나 릴리스 위험을 수용하는 것이 아닙니다.
+
 ## 검토한 설정
 
 루트 [`.editorconfig`](../../../../.editorconfig)는 계속 적용합니다. 4 KiB 이하의 일반 파일이어야

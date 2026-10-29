@@ -25,6 +25,45 @@ their names and route through `scripts/format.mjs frontend --check` and
 `scripts/format.mjs frontend --write`. Frontend exclusions for `dist`, `node_modules`, and
 `package-lock.json` remain in effect. The formatter child has a 120-second timeout.
 
+## Editors and unreviewed pull requests
+
+Prettier is a development formatter, not AuthZest's authorization analyzer. Editor formatting does not
+automatically call the repository guard. For unfamiliar PRs, first review the diff in GitHub or a
+restricted editor: inspect workspace/configuration, formatter scripts, dependencies and workflow changes
+before trusting the checkout, installing dependencies or running commands. The guard itself is trusted
+code, not isolation from an attacker who changes that code.
+
+For VS Code, the optional [authzest-review.code-workspace](../../authzest-review.code-workspace) opens
+only this checkout and supplies these defaults:
+
+- `prettier.enable` is `false` to disable Prettier formatting after restarting VS Code.
+- `editor.formatOnSave`, `editor.formatOnPaste`, and `editor.formatOnType` are `false`.
+- `editor.codeActionsOnSave` sets `source.fixAll.prettier` to `never` so the separate Prettier save action
+  is not requested by this preset.
+
+Use **File → Open Workspace from File** to open the reviewed file, then restart VS Code. Opening just the
+repository folder does **not** load this preset. It does not install extensions, add executable tasks,
+modify user-wide settings, or overwrite ignored `.vscode/` files. Existing folder settings and
+language-specific settings can override these defaults: inspect the effective values in Settings for the
+file's language. If uncertain, find **Prettier - Code formatter** in Extensions, choose **Disable
+(Workspace)** and complete the restart prompt. Do not enable workspace trust merely to make formatting work.
+
+Keep unfamiliar checkouts in [Restricted Mode](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
+while reviewing them. This preset is an opt-in workflow aid, not a sandbox or an enforcement mechanism.
+Other extensions, code actions, editors, manual commands and direct Prettier API calls remain outside it.
+It neither prevents all extension code from loading nor proves the effective settings of a developer's
+machine. See the official [setting precedence](https://code.visualstudio.com/docs/configure/settings#settings-precedence),
+[Prettier enable/restart setting](https://github.com/prettier/prettier-vscode#prettierenable-default-true),
+[save action](https://github.com/prettier/prettier-vscode#using-code-actions-on-save), and
+[workspace extension disabling](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#disable-an-extension).
+
+Once the checkout and toolchain are reviewed, use the guarded commands in [Commands](#commands) from
+the terminal. Do not replace them with direct Prettier invocation or **Format Document**. If the guard
+refuses a configuration, review the configuration instead of bypassing the guard. Other editors should
+disable automatic Prettier integration for this checkout and use the same commands; no cross-editor
+settings compatibility is claimed. Tests validate the preset data and npm routing, not a running editor.
+This workflow change does not replace Prettier's bundled parser, resolve #89, or accept release risk.
+
 ## Reviewed configuration
 
 The root [`.editorconfig`](../../.editorconfig) stays active. It must be a regular file of at most

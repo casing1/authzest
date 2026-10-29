@@ -134,6 +134,9 @@ Use `node scripts/format.mjs markdown --write` to format Markdown. The existing
 `npm --prefix frontend run format` and `npm --prefix frontend run format:check` commands use the same
 guard for frontend files. Read the [formatting boundary](docs/development/FORMATTING.md) before changing
 EditorConfig patterns, options, or ignore discovery.
+For editor use, read the [opt-in review workspace guidance](docs/development/FORMATTING.md#editors-and-unreviewed-pull-requests).
+It provides VS Code formatting defaults without replacing personal settings. Direct editor/CLI/API
+formatting bypasses the guard; review unfamiliar PR scripts and configuration before running any tools.
 The [included example](docs/guides/EXAMPLES.md) provides a deterministic local CLI demonstration.
 
 After building the frontend above, verify the standalone executable from the repository root with the
