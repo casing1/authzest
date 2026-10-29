@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add a manual-only, exact-main-SHA native preview preflight for Ubuntu/macOS/Windows with read-only
+  repository permissions, selected/relocated and checksum/download preview smoke, and short-lived
+  run-bound test artifacts. Keep runtime execution and publication in the separate unchanged release
+  workflow. Implementation/offline tests are not platform-run evidence, #89 risk acceptance, a version
+  change or a release; English/Korean release guidance describes separate run approval and remaining gates.
 - Extend the versioned offline release smoke with human/JSON registered owner-repair previews for
   both before/after candidates, alongside owner-review previews. Compare complete packaged data,
   prompt/schema/limits and exact human summaries with the checkout baseline, and require fresh

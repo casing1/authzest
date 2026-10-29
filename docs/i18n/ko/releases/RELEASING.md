@@ -110,6 +110,51 @@ Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../../../pypro
 frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리스마다 사용하지 않은 새 버전을
 선택하세요. 이미 배포한 `v0.1.0-alpha.1`, `v0.1.0-alpha.2`, `v0.1.0-alpha.3`는 다시 발행하면 안 됩니다.
 
+## 발행 없는 native preview 사전 검사
+
+별도 [native preview 워크플로](../../../../.github/workflows/native-preview.yml)는 fixture-runtime
+smoke나 릴리스 발행 없이 패키징 근거를 준비합니다. 수동 전용이며 먼저 `main`에 병합되어야 합니다.
+정확한 main 커밋을 검토하고 해당 실행을 승인받은 뒤 호출하세요. 워크플로 생성이나 PR CI 통과가
+실제 실행 승인은 아닙니다.
+
+```bash
+AUTHZEST_PREVIEW_SHA='COPY_THE_REVIEWED_FULL_MAIN_SHA_HERE'
+gh workflow run native-preview.yml --ref main -f expected_sha="$AUTHZEST_PREVIEW_SHA"
+```
+
+첫 job은 `workflow_dispatch` 외의 event, `refs/heads/main` 외의 ref, 정확한 소문자 16진수 40자리가
+아니거나 실행 SHA 및 checkout HEAD와 다른 예상 SHA를 거부합니다. 검토한 SHA를 선택한 뒤 실행을
+요청하기 전에 main이 이동하면 SHA 불일치로 native 빌드 전에 실패합니다. 실행 요청 이후 main의 변경은
+이미 선택된 검사 커밋을 바꾸지 않습니다. 모든 job은 실행의 고정 SHA를 checkout하고 Git 자격정보를 보존하지 않으며
+저장소 권한은 읽기 전용입니다. 신뢰한 workflow/toolchain을 가정한 운영자 확인 장치이지 서명된 승인이나
+OS sandbox가 아닙니다. GitHub의 [수동 event 규칙](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)이
+실행 ref/SHA를 정하며 명시적인 검사는 검토한 main 스냅샷으로 범위를 좁힙니다.
+
+Ubuntu/macOS/Windows runner마다 frontend와 native 실행 파일을 빌드한 뒤 기존 소스/preview smoke만
+수행합니다. 선택/이동 바이너리 **26개**, checksum 패키지 **13개**, AuthZest나 그 의존성을 설치하지 않은
+별도 동일 OS 다운로드 job에서 `python -I -S`로 **13개**를 검사합니다. 의존성 설치·빌드 도구·산출물
+전송에는 네트워크가 필요하며 제품 smoke만 오프라인입니다. `doctor`·Codex 호출·fixture/policy worker·
+runtime smoke·패치 적용은 포함하지 않습니다. 기존 전체 릴리스 workflow와 런타임/발행 조건은 유지합니다.
+
+Artifact 컨테이너는 `preview-`와 전체 실행 SHA·run ID·attempt·OS·아키텍처를 포함하고 보존 기간을
+7일로 요청합니다. GitHub Release 산출물이 아니라 Actions 테스트 산출물입니다. 실행 파일에는 현재
+패키지 버전이 그대로 표시되므로 `0.1.0a3` preflight를 기존 공개 alpha.3 다운로드로 간주하지 않습니다.
+실행 URL·전체 SHA·실제 runner 아키텍처·의존성/빌드 로그·artifact ID·체크섬을 검증 근거에 남깁니다.
+같은 run과 attempt의 다운로드만 대조하며, 일부 job만 재실행해 다른 attempt의 산출물을 재사용하는
+방식은 지원하지 않습니다. 자동 재시도하지 말고 재실행 범위를 새로 판단해야 합니다.
+
+성공을 주장하기 전에 실행 결과를 확인합니다.
+
+```bash
+gh run view RUN_ID --json headSha,event,status,conclusion
+```
+
+선택한 SHA의 세 플랫폼 build와 새 다운로드 job이 모두 성공해야 해당 preflight의 플랫폼 근거를
+기록합니다. workflow 문법/단위 테스트만으로 native 실행 성공을 입증하지 않습니다. 최종 alpha.4 후보
+선정·#89 잔여 위험 수용·필수 CI/전체 릴리스 workflow 대체·사용자 설치/업그레이드·서명/공증·정책 정확성·
+적용 파일 검증을 의미하지 않습니다. 버전/변경 이력/README 정합성·최종 후보 검사·발행은 #83의 별도
+결정이며 이 워크플로는 태그나 릴리스를 생성하지 않습니다.
+
 ## 릴리스 준비
 
 [#89 포맷 guard](../development/FORMATTING.md)는 미출시 개발/CI 도구입니다. 이 제한된 완화는
