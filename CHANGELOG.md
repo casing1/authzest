@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Align all four project READMEs with the implemented unreleased owner-repair command and separate
+  source-only policy-check API. Correct stale PR #110 delivery status in English/Korean guides and
+  update the preparation plan with the approximate submission date and existing native/pipx evidence.
+  Preserve historical observations, published alpha.3, unfinished file-bound remediation and #89's
+  separate risk decision; this documentation alignment does not change a version or publish alpha.4.
 - Add an explicit installed-CLI smoke mode with 13 offline scan/preview checks and no launcher
   relocation or installer side effects. Record disposable macOS pipx source installation and
   alpha.3-source-to-main same-version replacement in the English/Korean release guide, with separate

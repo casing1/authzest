@@ -46,9 +46,9 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
-- Current unreleased source makes `codex-owner-review`, `codex-fixture` and `fixture-demo` readable by
+- Current unreleased source makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
-  Offline `--preview-only --json` returns one complete owner-review preview. Scripts must explicitly
+  Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly
   select JSON; fields, recorded decisions and separate approvals are unchanged. Unknown is not a pass.
   See the [output/migration contract](docs/guides/CODEX_OWNER_REVIEW.md#interpret-the-result).
   Published alpha.3 retains its older display; no GUI or new provider/execution permission is added.
@@ -70,6 +70,16 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   approved live run on 2026-10-01 returned `draft-ready` in about 74 seconds: one answer and ten cases
   passed host validation. This is narrow provider acceptance, not case-label approval or endpoint
   verification. Another attempt needs fresh approval; published alpha.3 is unchanged.
+- Adds the unreleased [`authzest codex-owner-repair`](docs/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md):
+  a complete offline sharing preview on supported OSes and one explicitly approved, pinned App Server
+  attempt on supported POSIX systems. For `before` or `after`, results are `registered-change`,
+  `no-change` or `unknown`; the host derives a registered one-file diff, not arbitrary replacement code.
+  One separately approved live attempt on 2026-10-28 selected the registered template; that approval
+  is consumed. This command does not apply changes, restore files or execute policies.
+- Adds a separate unreleased [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md):
+  POSIX Python source-only before/after controls require separate fresh decisions. Historical checks
+  observed the expected two before mismatches and eight after matches. These are not checks of an
+  applied file; there is no new CLI/UI. File-bound apply/check/restore and #81/#82/#35 remain unfinished.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -131,6 +141,10 @@ To update this source installation, run the following from your clean `authzest`
 git pull --ff-only
 pipx install --force .
 ```
+
+The [source-install preflight record](docs/releases/RELEASING.md#source-installed-cli-preflight)
+documents disposable macOS pipx installation and same-version source replacement. It does not establish
+a versioned alpha.4 upgrade or source-install support on other operating systems.
 
 For a prebuilt executable, see [standalone binaries](#standalone-binaries). The `ui` extra installs Python
 backend dependencies; it does not include built dashboard assets in a regular wheel/pipx installation.

@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-28 KST
+## Current work — 2026-10-29 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -63,8 +63,11 @@ the expected two mismatches, exit `0` and confirmed cleanup; see the
 A subsequent separately approved after-only run at documentation-only commit `7f9c5ce` on
 2026-10-28 13:11:38 KST matched all eight cases with the same runtime code, exit `0` and confirmed
 cleanup; see the [after acceptance record](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112).
-Both approvals are consumed. Final-head review/delivery needs new approval, followed by a separately
-reviewed file-bound apply/check/restore design. There is no new CLI/UI or applied-file verification;
+Both approvals are consumed. Separately authorized final-head review and delivery subsequently
+completed through PR #110 at `ea081e0` on 2026-10-28 13:52:15 KST; both
+[automatic reviews completed without findings](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699)
+on `c265bf1`. The next core step is a separately reviewed file-bound apply/check/restore design.
+There is no new CLI/UI or applied-file verification;
 #81/#35/#82 remain open and #80 is unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
@@ -81,6 +84,13 @@ The [historical evaluation inventory](development/EVALUATION_INVENTORY.md) compl
 [#108](https://github.com/casing1/authzest/issues/108) through
 [PR #109](https://github.com/casing1/authzest/pull/109). It checks existing artifact bytes, not a new
 benchmark or model quality. #84's independent reference review, dataset freeze and comparison remain open.
+
+[Prerelease preparation #83](https://github.com/casing1/authzest/issues/83) continues separately.
+[PR #114](https://github.com/casing1/authzest/pull/114) delivered nonpublishing native preview checks,
+[PR #115](https://github.com/casing1/authzest/pull/115) added opt-in editor formatting guidance, and
+[PR #116](https://github.com/casing1/authzest/pull/116) added installed-CLI smoke with local source-install
+evidence. These are bounded preparation records, not final alpha.4 acceptance, #89 risk acceptance or
+publication; see the [release guide](releases/RELEASING.md).
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records

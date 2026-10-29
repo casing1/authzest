@@ -9,7 +9,7 @@
 [Reviewed design](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) ·
 [Registered pair](OWNER_POLICY_REPAIR_PAIR.md) · [Recommendation](OWNER_POLICY_REPAIR_RECOMMENDATION.md)
 
-## Availability and evidence — 2026-10-28 KST
+## Availability and evidence — 2026-10-29 KST
 
 The unreleased source implementation in [PR #110](https://github.com/casing1/authzest/pull/110)
 adds `authzest.runner.owner_policy_repair_check`, a dedicated fixed worker and its bounded transport.
@@ -22,7 +22,8 @@ used the later documentation-only commit `7f9c5ce`; runtime source remained unch
 
 There is no new CLI command, API endpoint or dashboard view. Published alpha.3 does not include this
 feature. The existing #80 coordinator, worker, policy registration and historical observations remain
-unchanged. This implementation does not complete #81/#35/#82, activate paid reviews, merge or release.
+unchanged. This implementation does not complete #81/#35/#82 or grant new review, execution, patch
+or publication authority. Its separate delivery is recorded below.
 
 ## Separately approved before acceptance — 2026-10-28 KST
 
@@ -88,10 +89,20 @@ historical artifact hashes, original main checkout and #80 remained unchanged. T
 unauthenticated host observations of the registered synthetic controls, not an independent benchmark,
 general authorization assurance or verification of an applied file.
 
-Both candidate approvals are consumed; another run requires fresh approval. PR #110 remains draft.
-The next gate is final-head review/delivery under new approval, followed by a separately reviewed
-file-bound apply/check/restore design. Neither observation authorizes review activation, merge,
-patching or release, and #81/#35/#82 remain incomplete.
+Both candidate approvals are consumed; another run requires fresh approval. Neither observation
+authorized review activation, merge, patching or release. At that observation checkpoint, delivery
+was still pending; its separately authorized completion is recorded below. #81/#35/#82 remain incomplete.
+
+## Completed source delivery — 2026-10-28 KST
+
+After [separate final-head review authorization](https://github.com/casing1/authzest/pull/110#issuecomment-6460920750),
+both configured automatic reviews on `c265bf1` completed
+[without reported findings](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699).
+[PR #110](https://github.com/casing1/authzest/pull/110) merged at
+`ea081e0e089dc6b87560016c150732ee913b9f35` on **2026-10-28 13:52:15 KST**.
+This closes that source-delivery step, not the broader remediation workflow or a release gate.
+The earlier observation identities and consumed approvals remain unchanged; they are not evidence
+of an applied file. The next core step is a separately reviewed file-bound apply/check/restore design.
 
 ## Fixed source and data boundary
 
@@ -214,6 +225,6 @@ trusted identity/authentication/scope/ownership facts; this predicate does not a
 
 **The executed embedded after is a control observation, not verification of an applied file.**
 No application workspace is read, edited, compared or restored. The initial API has no automatic
-before-to-after orchestration or combined comparison helper. Final-head CI/reviews/delivery under
-new approval and a separately reviewed file-bound apply/check/restore design remain later gates.
-Existing observations and consumed approvals cannot stand in for those gates.
+before-to-after orchestration or combined comparison helper. Source delivery completed separately
+as recorded above; file-bound apply/check/restore still requires its own reviewed design and bounded
+approvals. Existing observations and consumed approvals cannot stand in for those gates.
