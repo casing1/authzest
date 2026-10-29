@@ -228,3 +228,7 @@ No application workspace is read, edited, compared or restored. The initial API 
 before-to-after orchestration or combined comparison helper. Source delivery completed separately
 as recorded above; file-bound apply/check/restore still requires its own reviewed design and bounded
 approvals. Existing observations and consumed approvals cannot stand in for those gates.
+
+The [owned-file repair design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) proposes a separate
+session and worker that execute a captured file snapshot. It is awaiting review/implementation;
+this embedded-control API and its historical observations are unchanged.

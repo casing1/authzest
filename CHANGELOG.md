@@ -16,6 +16,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Propose the English/Korean design for #81's owned-file repair session: separate before/diff/apply/
+  after/restore decisions, a fresh one-file copy, checks executing captured registered bytes and
+  user-edit-safe restoration. Link it from the indexes, plan and existing control-check reference.
+  This is a design for review; no implementation, worker run, patch acceptance or release is added.
 - Align all four project READMEs with the implemented unreleased owner-repair command and separate
   source-only policy-check API. Correct stale PR #110 delivery status in English/Korean guides and
   update the preparation plan with the approximate submission date and existing native/pipx evidence.
