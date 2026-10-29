@@ -221,6 +221,50 @@ def test_artifact_mode_checks_a_relocated_verified_copy_without_changing_the_dow
     assert binary.read_bytes() == b"unit-test bytes, never executed"
 
 
+def test_installed_cli_checks_only_the_selected_launcher_without_copy_or_mode_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binary = write_binary(tmp_path)
+    original_mode = binary.stat().st_mode
+    fake = FakeBinary()
+    monkeypatch.setattr(subprocess, "run", fake)
+    monkeypatch.setenv("OPENAI_API_KEY", "unit-test-not-a-secret")
+    monkeypatch.setenv("PYTHONPATH", "/unselected/checkout")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Installed console launchers must not be copied or chmodded")
+
+    monkeypatch.setattr(smoke_release.shutil, "copy2", forbidden)
+    monkeypatch.setattr(Path, "chmod", forbidden)
+    checks = smoke_release.smoke_binary(binary, "0.1.0a2", installed_cli=True)
+
+    assert len(checks) == 13 and len(fake.calls) == 15
+    assert all(check.startswith("installed CLI:") for check in checks)
+    assert {arguments[0] for arguments, _ in fake.calls} == {str(binary.resolve())}
+    assert binary.stat().st_mode == original_mode
+    assert binary.read_bytes() == b"unit-test bytes, never executed"
+    for _, options in fake.calls:
+        assert options["cwd"] != smoke_release.CHECKOUT
+        assert options["stdin"] == subprocess.DEVNULL
+        assert options["timeout"] == 45
+        assert options.get("shell", False) is False
+        assert options["env"] == smoke_release.preview_environment(options["cwd"].parent / "bin")
+        assert "OPENAI_API_KEY" not in options["env"]
+        assert "PYTHONPATH" not in options["env"]
+
+
+def test_installed_cli_cannot_be_combined_with_artifact_digest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeBinary()
+    monkeypatch.setattr(subprocess, "run", fake)
+    with pytest.raises(smoke_release.SmokeError, match="mutually exclusive"):
+        smoke_release.smoke_binary(
+            write_binary(tmp_path), "0.1.0a2", installed_cli=True, artifact_digest="0" * 64
+        )
+    assert fake.calls == []
+
+
 def test_modified_artifact_between_selection_and_copy_is_rejected_before_execution(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -284,8 +328,9 @@ def test_invalid_timeouts_fail_before_any_process_starts(
 @pytest.mark.parametrize(
     "failure", ["timeout", "os-error", "wrong-exit", "stderr", "bad-version", "bad-help"]
 )
+@pytest.mark.parametrize("installed_cli", [False, True])
 def test_process_and_command_contract_failures_stop_the_smoke_run(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str, installed_cli: bool
 ) -> None:
     fake = FakeBinary()
 
@@ -307,15 +352,16 @@ def test_process_and_command_contract_failures_stop_the_smoke_run(
 
     monkeypatch.setattr(subprocess, "run", broken)
     with pytest.raises(smoke_release.SmokeError):
-        smoke_release.smoke_binary(write_binary(tmp_path), "0.1.0a2")
+        smoke_release.smoke_binary(write_binary(tmp_path), "0.1.0a2", installed_cli=installed_cli)
 
 
 @pytest.mark.parametrize(
     "failure",
     ["json", "wrong-root", "wrong-schema", "lost-effective", "wrong-position", "boolean-count"],
 )
+@pytest.mark.parametrize("installed_cli", [False, True])
 def test_full_json_contract_comparison_rejects_incorrect_binary_payloads(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str, installed_cli: bool
 ) -> None:
     fake = FakeBinary()
 
@@ -342,7 +388,7 @@ def test_full_json_contract_comparison_rejects_incorrect_binary_payloads(
 
     monkeypatch.setattr(subprocess, "run", incorrect)
     with pytest.raises(smoke_release.SmokeError):
-        smoke_release.smoke_binary(write_binary(tmp_path), "0.1.0a2")
+        smoke_release.smoke_binary(write_binary(tmp_path), "0.1.0a2", installed_cli=installed_cli)
 
 
 def test_normalization_changes_only_root_and_portable_source_file_separators(
@@ -404,6 +450,31 @@ def test_cli_defaults_to_checkout_version_and_reports_relocation_limitations(
     assert "Release smoke passed: 26 checks" in output
     assert "not clean-machine installation, upgrade" in output
     assert "No Codex or target code was executed" in output
+
+
+def test_installed_cli_selection_reports_no_install_or_relocation_claim(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    binary = write_binary(tmp_path)
+    fake = FakeBinary(read_project_version(smoke_release.CHECKOUT / "pyproject.toml"))
+    monkeypatch.setattr(subprocess, "run", fake)
+    monkeypatch.setattr("sys.argv", ["smoke_release.py", "--installed-cli", str(binary)])
+    smoke_release.main()
+    output = capsys.readouterr().out
+    assert "Release smoke passed: 13 checks" in output
+    assert "does not install or upgrade packages, verify installation provenance" in output
+    assert "Record installer and source evidence separately" in output
+    assert "relocated" not in output
+
+
+@pytest.mark.parametrize("other", ["--binary", "--artifact-dir"])
+def test_installed_cli_selection_is_mutually_exclusive(
+    monkeypatch: pytest.MonkeyPatch, other: str
+) -> None:
+    monkeypatch.setattr("sys.argv", ["smoke_release.py", "--installed-cli", "cli", other, "other"])
+    with pytest.raises(SystemExit) as exit_info:
+        smoke_release.main()
+    assert exit_info.value.code == 2
 
 
 def test_environment_uses_only_the_selected_temp_bin_as_its_added_path(tmp_path: Path) -> None:

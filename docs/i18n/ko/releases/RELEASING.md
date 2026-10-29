@@ -345,6 +345,80 @@ macOS, Windows 실행 파일을 빌드하고 바이너리/이동 복사본의 fi
 빌드 시 확인한 아키텍처가 들어갑니다. prerelease 접미사가 있는 태그는 GitHub prerelease를 만들고,
 최종 버전 태그는 일반 릴리스를 만듭니다. Python·npm 패키지 배포와 바이너리 서명은 수행하지 않습니다.
 
+## 소스 설치 CLI 사전 검사
+
+명시적으로 선택한 신뢰하는 pipx/venv 콘솔 실행기에는 `--installed-cli`를 사용합니다. 최소 자식 환경과
+임시 작업 디렉터리에서 같은 scan/preview 검사 13개를 한 번 수행합니다. 실행기를 복사하거나 chmod하지
+않습니다. Python 진입점은 설치 환경에 연결되므로 독립 실행 파일 이동 검사가 아닙니다. 기존 native
+`--binary`(26개)와 `--artifact-dir`(13개)는 그대로입니다. 제어기는 `python -I -S`로 실행할 수 있으며
+checkout 소스는 예상 결과에만 사용하고 선택한 CLI의 import 경로로 전달하지 않습니다. 제공자·정책 worker·
+대상 애플리케이션·패치는 실행하지 않습니다.
+
+Smoke 도구는 패키지를 설치하거나 설치 출처를 검증하지 **않습니다**. Python 3.12와 pipx가 준비된
+macOS/Linux에서 임시 환경의 소스 설치/재설치는 다음과 같이 확인할 수 있습니다.
+
+```bash
+AUTHZEST_SOURCE_CHECKOUT="$PWD"
+AUTHZEST_SOURCE_SMOKE="$(mktemp -d)"
+(
+  set -e
+  export PIPX_HOME="$AUTHZEST_SOURCE_SMOKE/pipx"
+  export PIPX_BIN_DIR="$AUTHZEST_SOURCE_SMOKE/bin"
+  export PIPX_MAN_DIR="$AUTHZEST_SOURCE_SMOKE/man"
+  export PIPX_COMPLETION_DIR="$AUTHZEST_SOURCE_SMOKE/completions"
+  export PIP_CACHE_DIR="$AUTHZEST_SOURCE_SMOKE/pip-cache"
+  pipx install --python 3.12 "$AUTHZEST_SOURCE_CHECKOUT"
+  python3.12 -I -S "$AUTHZEST_SOURCE_CHECKOUT/scripts/smoke_release.py" \
+    --installed-cli "$PIPX_BIN_DIR/authzest"
+  pipx install --force "$AUTHZEST_SOURCE_CHECKOUT"
+  python3.12 -I -S "$AUTHZEST_SOURCE_CHECKOUT/scripts/smoke_release.py" \
+    --installed-cli "$PIPX_BIN_DIR/authzest"
+)
+```
+
+검토한 checkout 루트에서 실행하고 기존 pipx backend/shared-library 재정의가 없어야 합니다. 패키지
+설치/빌드는 네트워크와 신뢰한 빌드 도구를 사용하며 OS sandbox가 아닙니다. 이 검사에서는
+`pipx ensurepath`, 전역 제거, 경로를 지정하지 않은 기존 `authzest`를 사용하지 마세요. 근거를 기록할 때까지
+임시 디렉터리를 보존합니다. 사용자의 일반 pipx home이나 셸 PATH는 바꾸지 않습니다. 위 예제는 **같은
+소스**의 재설치이며 업데이트를 확인하려면 별도의 이전 소스 설치와 교체 소스 기록이 필요합니다.
+어느 리비전도 자동으로 가져오거나 브랜치를 진행시키지 않습니다.
+
+전체 소스 SHA·dirty 상태, OS/아키텍처, Python/pipx/backend/의존성 버전, 정확한 실행기/venv, 설치 결과와
+smoke 결과를 기록하세요. checkout 밖에서 설치된 인터프리터의 별도 `-I` 프로세스로 패키지와 배포 정보
+경로가 선택한 venv 내부인지, `direct_url.json`이 선택한 소스와 noneditable 설치를 가리키는지, 설치된
+바이트코드 외 패키지 파일이 그 소스와 일치하는지 확인합니다. 두 snapshot이 모두 `0.1.0a3`이면 표시
+버전만으로 교체를 증명할 수 없습니다. 위 명령은 이러한 출처 검사를 자동화하지 않습니다.
+
+### 로컬 소스 설치 관찰 — 2026-10-29
+
+macOS 27.0.1(26A434) arm64, Python 3.12.7, pip backend의 pipx 1.18.7에서 별도 임시 pipx home으로
+현재 소스 새 설치와 alpha.3 소스 설치의 교체를 확인했습니다. 소스는 깨끗한 Git archive export이며 alpha.3
+`99be6f5614d283befa2a421b64f84958b680f92f`와 현재 main
+`1d0ebb81aa9f7dd3fb226e08445439182ad6cfbb`입니다. 새 smoke 도구는 준비 브랜치에서 검사했고 제품 소스와
+패키지 버전은 바꾸지 않았습니다.
+
+| 상태                                  | 설치 패키지 파일 수 | CLI 결과                                                           |
+| ------------------------------------- | ------------------: | ------------------------------------------------------------------ |
+| 현재 소스 새 설치                     |                  58 | scan/preview 검사 13개 모두 통과                                   |
+| 교체 전 alpha.3 소스                  |                  34 | 버전/도움말과 inventory strict JSON scan 통과: 파일 4개, route 3개 |
+| 같은 venv에서 현재 소스 force 설치 후 |                  58 | scan/preview 검사 13개 모두 통과                                   |
+
+각 상태에서 독립적인 설치 Python `-I` 출처 검사를 통과했습니다. 선택한 venv prefix와 패키지/배포 경로,
+noneditable 소스 URL, 바이트코드 외 모든 설치 패키지 파일과 소스 snapshot의 일치를 확인했습니다.
+상대 파일 경로를 파일 SHA-256에 연결한 정렬된 compact JSON의 SHA-256은 교체 전
+`a673f840b6f3ddecaf831bf1bb5559222051e28a07706a145006a188ce1c76cc`, 현재 소스 두 설치는
+`4a1171bcb55c953c8dc66bf5fe21ed52e3379f4de26cf45cae09ac6f8d775855`입니다. 관찰한 의존성은
+Typer 0.27.3, Rich 15.0.0, Pygments 2.21.0, markdown-it-py 4.2.0, mdurl 0.1.2, shellingham 1.5.4,
+annotated-doc 0.0.5이며 pip는 26.2.2였습니다. 이는 관찰 기록이지 lockfile이나 재현 빌드 보장이 아닙니다.
+첫 근거 출력 probe는 별도 Click 배포가 설치되어 있다고 가정해 버전 출력 중 실패했습니다. 실제 설치된
+배포 목록을 열거하도록 probe를 고쳤으며 패키지 설치를 변경하거나 재시도하지 않았습니다.
+
+pipx가 기존 AuthZest의 존재를 알렸지만 모든 실행기를 절대 경로로 선택했습니다. `ensurepath`, 사용자 설치
+교체, 제공자 호출, 정책/runtime 실행, 패치는 없었습니다. 두 소스의 표시 버전은 모두 `0.1.0a3`이므로
+이번 근거는 **이 호스트의 같은 버전 소스 교체**입니다. 버전이 바뀐 alpha.4 업그레이드, 새 기기/native 설치,
+Windows/Linux 소스 설치 근거, UI 패키징, 서명/공증, #89 위험 수용, 릴리스 승인이 아닙니다. 최종 버전 후보와
+각 안내 배포 경로는 별도로 다시 확인해야 하며 예정된 alpha.4 릴리스 조건은 미충족 상태입니다.
+
 ## 검증과 복구
 
 - 모든 릴리스 자산과 그에 대응하는 `.sha256` 파일을 내려받습니다.

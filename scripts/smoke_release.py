@@ -1,4 +1,4 @@
-"""Smoke an explicitly selected AuthZest binary, without executing scanned source or Codex."""
+"""Smoke a selected AuthZest executable, without executing scanned source or Codex."""
 
 from __future__ import annotations
 
@@ -293,10 +293,13 @@ def smoke_binary(
     timeout: float = 45,
     *,
     artifact_digest: str | None = None,
+    installed_cli: bool = False,
 ) -> list[str]:
     binary = selected_binary(binary)
     if not math.isfinite(timeout) or timeout <= 0:
         raise SmokeError("Timeout must be finite and positive.")
+    if installed_cli and artifact_digest is not None:
+        raise SmokeError("Installed CLI and checksum artifact modes are mutually exclusive.")
     checks: list[str] = []
     with tempfile.TemporaryDirectory(prefix="authzest-release-smoke-") as temporary:
         workspace = Path(temporary).resolve()
@@ -304,14 +307,15 @@ def smoke_binary(
         bin_directory.mkdir()
         cwd.mkdir()
         copied = bin_directory / ("authzest.exe" if binary.suffix.lower() == ".exe" else "authzest")
-        shutil.copy2(binary, copied)
-        if artifact_digest is not None:
-            if hashlib.sha256(copied.read_bytes()).hexdigest() != artifact_digest:
-                raise SmokeError("Copied artifact no longer matches the verified checksum.")
-            # Downloads can lose +x. Only modify the selected, verified temporary copy.
-            copied.chmod(copied.stat().st_mode | stat.S_IXUSR)
-        environment = child_environment(bin_directory)
+        if not installed_cli:
+            shutil.copy2(binary, copied)
+            if artifact_digest is not None:
+                if hashlib.sha256(copied.read_bytes()).hexdigest() != artifact_digest:
+                    raise SmokeError("Copied artifact no longer matches the verified checksum.")
+                # Downloads can lose +x. Only modify the selected, verified temporary copy.
+                copied.chmod(copied.stat().st_mode | stat.S_IXUSR)
         preview_env = preview_environment(bin_directory)
+        environment = preview_env if installed_cli else child_environment(bin_directory)
         previews = [
             ("owner preview", ["codex-owner-review"], source_owner_preview()),
             *(
@@ -343,11 +347,14 @@ def smoke_binary(
             target = workspace / "fixtures" / name
             shutil.copytree(source, target, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
             fixtures.append((name, target, normalized_report(expected, source), status))
-        selected = (
-            [("relocated verified artifact", copied)]
-            if artifact_digest is not None
-            else [("selected binary", binary), ("relocated binary copy", copied)]
-        )
+        if installed_cli:
+            # A console launcher remains bound to its Python environment. Copying it does not
+            # establish relocation, and on Windows can break its interpreter lookup entirely.
+            selected = [("installed CLI", binary)]
+        elif artifact_digest is not None:
+            selected = [("relocated verified artifact", copied)]
+        else:
+            selected = [("selected binary", binary), ("relocated binary copy", copied)]
         for label, executable in selected:
 
             def command(
@@ -421,6 +428,11 @@ def main() -> None:
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--binary", type=Path, help="Exact trusted built executable to test.")
     selection.add_argument(
+        "--installed-cli",
+        type=Path,
+        help="Exact trusted installed console launcher; no relocation.",
+    )
+    selection.add_argument(
         "--artifact-dir", type=Path, help="One platform's downloaded asset/checksum directory."
     )
     parser.add_argument(
@@ -438,16 +450,29 @@ def main() -> None:
         binary, digest = (
             select_artifact(arguments.artifact_dir)
             if arguments.artifact_dir
-            else (arguments.binary, None)
+            else (arguments.installed_cli or arguments.binary, None)
         )
-        checks = smoke_binary(binary, version, arguments.timeout, artifact_digest=digest)
+        checks = smoke_binary(
+            binary,
+            version,
+            arguments.timeout,
+            artifact_digest=digest,
+            installed_cli=arguments.installed_cli is not None,
+        )
     except (SmokeError, OSError, KeyError, ValueError) as exc:
         raise SystemExit(f"Release smoke failed: {exc}") from exc
     print(f"Release smoke passed: {len(checks)} checks. No Codex or target code was executed.")
-    print(
-        "Relocation smoke is not clean-machine installation, upgrade, "
-        "signing, or notarization verification."
-    )
+    if arguments.installed_cli is not None:
+        print(
+            "Installed CLI smoke does not install or upgrade packages, verify installation "
+            "provenance, or establish clean-machine, native relocation, UI, signing or "
+            "notarization support. Record installer and source evidence separately."
+        )
+    else:
+        print(
+            "Relocation smoke is not clean-machine installation, upgrade, "
+            "signing, or notarization verification."
+        )
 
 
 if __name__ == "__main__":
