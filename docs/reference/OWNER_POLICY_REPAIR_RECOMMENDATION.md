@@ -293,7 +293,12 @@ its own approval, without a before rerun or runtime change. Offline comparison o
 is not a new product comparison API or authenticated execution attestation. #80 continues rejecting
 the negative source. PR #110 subsequently completed separately authorized final-head review and
 delivery at `ea081e0` on 2026-10-28; see the [source-delivery record](OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery--2026-10-28-kst).
-Next is a separately reviewed file-bound apply/check/restore design and later exact operational
-decisions. An embedded after control cannot verify an applied file.
+The separately reviewed file-bound API was then delivered in PR #118. Its
+[file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+on 2026-10-29 at `fb90c46` revalidated the historical real recommendation and consumed separate
+before-check, exact-diff, apply, after-check and restore approvals. It observed 6/8 before and 8/8
+applied-after matches and restored the owned copy, with no new provider call. This is source-API
+acceptance, not a new model acceptance or installed CLI integration; an embedded after control still
+cannot verify an applied file. Readable CLI integration remains the next separate #82 work.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.

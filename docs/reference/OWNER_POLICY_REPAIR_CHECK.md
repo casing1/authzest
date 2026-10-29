@@ -226,10 +226,14 @@ trusted identity/authentication/scope/ownership facts; this predicate does not a
 **The executed embedded after is a control observation, not verification of an applied file.**
 No application workspace is read, edited, compared or restored. The initial API has no automatic
 before-to-after orchestration or combined comparison helper. Source delivery completed separately
-as recorded above; file-bound apply/check/restore still requires its own reviewed design and bounded
-approvals. Existing observations and consumed approvals cannot stand in for those gates.
+as recorded above; file-bound apply/check/restore uses its own reviewed design and separate bounded
+approvals. These embedded-control observations and consumed approvals cannot stand in for those gates.
 
 The separate [owned-file repair API](OWNER_POLICY_FILE_REPAIR.md), based on the
-[reviewed design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md), is introduced in PR #118
-and verified offline with temporary files and scripted processes. Its new worker has not been run;
-this embedded-control API and its historical observations remain unchanged.
+[reviewed design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md), was delivered in PR #118
+with initial offline verification using temporary files and scripted processes. Its later, separately
+approved [file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+at source commit `fb90c46` on 2026-10-29 observed one actual copied-before check (6/8), exact diff
+acceptance, one apply, one captured applied-after check (8/8), and one restore. That source-only API
+record does not turn the embedded after into an applied-file check, add CLI integration or grant new
+execution authority. This embedded-control API and its historical observations remain unchanged.

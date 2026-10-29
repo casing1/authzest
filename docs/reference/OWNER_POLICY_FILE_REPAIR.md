@@ -12,13 +12,15 @@
 
 ## Availability and evidence — 2026-10-29 KST
 
-The unreleased source implementation is introduced in
+The unreleased source implementation was delivered in
 [PR #118](https://github.com/casing1/authzest/pull/118). The maintainer
 [approved design `29d8c82` and offline implementation](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422),
-not a real file-policy worker run or an operator acceptance applying a repair. Verification in this
-slice uses pure-data checks, temporary-file I/O, static worker inspection and fake process responses.
-Scripted responses are not observed policy behavior. Exact test results and their commit binding are
-recorded separately in the PR; no new worker acceptance is claimed here.
+not a real file-policy worker run or an operator acceptance applying a repair. That initial verification
+used pure-data checks, temporary-file I/O, static worker inspection and fake process responses.
+Scripted responses are not observed policy behavior; exact offline test results and their commit
+binding remain recorded in the PR. The later, separately approved
+[file-workflow acceptance](#file-workflow-acceptance--2026-10-29-kst) below records actual captured-file
+observations without changing the scope of that earlier approval.
 
 The live file workflow supports **POSIX, non-frozen Python source mode only**, with the required
 descriptor-relative filesystem primitives and a trusted local operator. There is no new CLI command,
@@ -26,6 +28,78 @@ API endpoint or GUI view. Published alpha.3 does not contain this implementation
 open; neither this document nor offline test success grants review activation, merge, execution,
 patch acceptance or release authority. Existing #80/#110 controls and their historical observations
 remain unchanged and do not establish execution of this new file worker.
+
+## File-workflow acceptance — 2026-10-29 KST
+
+One fresh owned-copy workflow completed using source commit
+`fb90c46db1c6afa858451d434ccff1ebf8184fcd` and Python **3.12.7** on POSIX macOS. A previously
+captured real `registered-change` recommendation was revalidated against the current contracts.
+This slice made **zero new provider calls**; it is not a new model acceptance or an installed CLI/GUI
+demonstration. The source repository was not changed. The
+[public tracking summary](https://github.com/casing1/authzest/issues/81#issuecomment-6491128132)
+records the bounded outcome, not an authenticated execution attestation.
+
+Before this session, an earlier preparation-only before plan expired without a worker attempt or
+check result. Its session was closed and its private copy retained. The expired plan was not extended
+or executed, and a later reply did not revive it. Fresh preparation approval created this new session
+and copy; the earlier preparation was not an automatic retry or a reusable execution permission.
+
+The user separately approved each effect below. The assistant reviewed each complete live plan and
+entered its exact decision within the plan's validity window. Each stage completed once and consumed
+its own one-attempt approval; none permits replay, a retry or a future run.
+
+| Stage          | Recorded effect                                                         |
+| -------------- | ----------------------------------------------------------------------- |
+| `before-check` | Captured actual before bytes; 6 matches and 2 expected mismatches.      |
+| `diff`         | Accepted the exact host-derived registered diff; no file replacement.   |
+| `apply`        | Replaced only the owned copy's `policy.py` with registered after bytes. |
+| `after-check`  | Captured the actual applied file; 8 matches and no mismatches.          |
+| `restore`      | Restored registered before bytes with a new inode; retained evidence.   |
+
+The exact source, diff and worker identities were:
+
+| Binding                | SHA-256                                                            |
+| ---------------------- | ------------------------------------------------------------------ |
+| Before source          | `54f36634f471d9f603218aafb379ac1d082c38e94b08284549d0311e910cf950` |
+| After source           | `faf39b33515a658e92e61a51c69e1a437eb3dc0dcf8511ef806558d30ee36f04` |
+| Registered host diff   | `0358127d2373c7a729c0b656c1c9cbcb698dc5f04073a917f848280d0c8be75d` |
+| Captured-source worker | `33413d680ac8e00f514d5897aca2289527cfccfd8a1fccdebb179c774377491d` |
+
+The eight registered cases kept their reviewed expectations and order:
+
+| Case                           | Expected | Before observation | Applied-after observation |
+| ------------------------------ | -------- | ------------------ | ------------------------- |
+| `owner-control`                | allow    | `true`             | `true`                    |
+| `non-owner`                    | deny     | `true`             | `false`                   |
+| `missing-read-scope`           | deny     | `false`            | `false`                   |
+| `unauthenticated-owner`        | deny     | `false`            | `false`                   |
+| `missing-principal`            | deny     | `false`            | `false`                   |
+| `missing-report`               | deny     | `false`            | `false`                   |
+| `wildcard-is-not-read`         | deny     | `false`            | `false`                   |
+| `exact-owner-no-normalization` | deny     | `true`             | `false`                   |
+
+Both checks completed with worker exit **0**, confirmed child and worker-directory cleanup, and
+confirmed evidence persistence and file binding. The before comparison failed because of the two
+expected case mismatches, not an infrastructure failure. Only `non-owner` and
+`exact-owner-no-normalization` changed from `true` to `false`; the after comparison passed.
+
+The final checkpoint is **`restored-before`, generation 3**, with completed application and restoration
+and retained historical before/after observations. Its historical `comparison_status=passed` describes
+the earlier applied-after check, **not a passing check of the now-restored before file**. No check was
+rerun after restoration. The private files and evidence were retained; session and plan identifiers,
+local artifact digests, private paths, raw records and the raw model capture are not published here.
+
+After that checkpoint, `close()` released the descriptor and marked the in-memory session closed;
+the host exited **0**. `close()` does not rewrite `record.json`, so its last durable `closed` field
+remains `false`. This is not an open or resumable session. The record digest identifies retained bytes
+for integrity comparison only; it is not execution proof, a signature or authorization. Receipts and
+provenance remain unauthenticated, and `authorization_status` remains `unknown`.
+
+This is source-API acceptance for one registered pure-policy pair and eight cases, not arbitrary
+repository execution, HTTP/FastAPI or authentication-provider enforcement, an OS sandbox, or a
+cross-platform/native-binary claim. No network/provider call, installation or release occurred; these
+completed approvals grant no continuing authority. Readable CLI integration under #82 and the wider
+#81/#35/release gates remain separate; published alpha.3 is unchanged.
 
 ## Supported input and API boundaries
 
@@ -132,5 +206,6 @@ original exception; an uncertain write is not reported as safely rolled back.
 File replacement and evidence recording are not one transaction. There is no automatic rollback,
 deletion, process restart/resume or imported-receipt recovery. Validation of a saved JSON checkpoint
 checks data consistency only and cannot reopen its path, authenticate its origin or authorize work.
-The next acceptance slice requires separate before-check, exact-diff, apply, after-check and restore
-decisions. Readable CLI integration remains separate under #82.
+Any future acceptance requires fresh separate before-check, exact-diff, apply, after-check and restore
+decisions; the recorded workflow above grants no continuing authority. Readable CLI integration remains
+separate under #82.

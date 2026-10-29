@@ -80,8 +80,16 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 別の未リリース[登録済み修正ポリシー検査 Python API](../../reference/OWNER_POLICY_REPAIR_CHECK.md) を追加：
   POSIX の Python ソースモードのみで、before/after の対照条件にはそれぞれ新たな個別承認が必要。
   過去の承認済み実行では、想定どおり before の 2 件の不一致と after の 8 件の一致を観測した。
-  適用ファイルの検証ではなく、CLI/UI も追加しない。実際のファイルと結び付けた適用・検査・復元と
-  #81/#82/#35 は未完成のまま
+  適用ファイルの検証ではない。この対照 API は下記のファイルフローとは別で、CLI/UI を追加しない
+- 未リリースの[所有ファイル修正ソース API](../../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst) を追加。
+  2026-10-29 KST、main `fb90c46` でコピーから取得した before の検査、正確な diff の受け入れ、
+  適用、取得した after の検査、復元をそれぞれ範囲を限定した承認の下で実施した。
+  Before は期待値 6/8 件に一致し、`non-owner` と `exact-owner-no-normalization` の意図した
+  過剰な許可 2 件を観測、after は 8/8 件に一致した。両検査は終了 `0`、後処理確認済みで、
+  ファイル・証拠も確認済み。最終状態は `restored-before`、generation `3` で記録を保持した。
+  以前の推薦を再検証し、新たな AI 呼び出しは行っていない。受け入れ検証は macOS/Python
+  `3.12.7` の POSIX non-frozen API のみで、HTTP 認可やインストール済み CLI の検証ではない。
+  #82 の読みやすいインストール型 CLI 統合と #81/#35 全体は未完成で、alpha.3 と別途のリリース条件は不変
 - 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
   同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
   Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない
@@ -327,6 +335,8 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 1. ソースに実装済み: [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)。
 2. [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)
+3. 次は [#82: 読みやすいインストール型 CLI 統合](https://github.com/casing1/authzest/issues/82)。
+   受け入れ検証済みのファイル修正ソース API を接続し、別途承認されたエンドツーエンドの受け入れ検証を行います。
 
 [オフライン基盤](../../reference/AI_CONTRACT.md) は alpha.3 の fixture コマンドが使う契約を提供します。
 評価スクリプトとデータセットは checkout 専用のままで、#35 の全体フローは未完成です。
