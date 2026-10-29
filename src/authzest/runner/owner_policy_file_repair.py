@@ -46,6 +46,8 @@ from authzest.runner._owner_policy_file_workspace import (
 
 STAGES = ("before-check", "diff", "apply", "after-check", "restore")
 MAX_DECISION_SECONDS = 300.0
+MAX_APPLICATION_BYTES = 32_768
+MAX_EVENTS = 256
 _SOURCE_LIMIT = 32_768
 _REASONS = {
     "attempt-already-consumed",
@@ -117,6 +119,15 @@ def _finite(value) -> float:
     return float(value)
 
 
+def _expiry(now: float, duration: float) -> float:
+    expires = _finite(now + duration)
+    if expires - now > duration:
+        expires = math.nextafter(expires, now)
+    if not 0 < expires - now <= duration:
+        raise ContractError("Decision clock cannot represent the approval lifetime")
+    return expires
+
+
 def _stage(value) -> str:
     if type(value) is not str or value not in STAGES:
         raise ContractError("Unknown file workflow stage")
@@ -145,6 +156,8 @@ def _recipe() -> dict:
         "case_count": 8,
         "attempt_limit": 1,
         "max_decision_seconds": MAX_DECISION_SECONDS,
+        "max_application_bytes": MAX_APPLICATION_BYTES,
+        "max_events": MAX_EVENTS,
         "environment": {
             "PATH": "/usr/bin:/bin",
             "LANG": "C.UTF-8",
@@ -202,6 +215,8 @@ class OwnerPolicyRepairFileSession:
         if type(application) is not OwnerPolicyFileRepairApplication or not callable(clock):
             raise ContractError("Invalid application or clock")
         self._application = validate_owner_policy_file_repair(application.payload_json)
+        if len(self._application.payload_json.encode("utf-8")) > MAX_APPLICATION_BYTES:
+            raise ContractError("Application exceeds the live checkpoint budget")
         self._clock = clock
         self._last_time = _finite(clock())
         self._recipe = _recipe()
@@ -280,12 +295,16 @@ class OwnerPolicyRepairFileSession:
         )
 
     def _record(self, event):
+        if len(self._events) >= MAX_EVENTS:
+            self._evidence = "unconfirmed"
+            self._critical = self._failure = "evidence-unconfirmed"
+            return
         self._events.append(event)
         if self._closed or self._workspace is None or self._evidence != "confirmed":
             return
         try:
             self._workspace.write_record(self.result().payload_json.encode("utf-8"))
-        except (OSError, WorkspaceError):
+        except (OSError, WorkspaceError, ContractError):
             self._evidence = "unconfirmed"
             self._critical = self._failure = "evidence-unconfirmed"
         except BaseException as exc:
@@ -458,6 +477,7 @@ class OwnerPolicyRepairFileSession:
                 raise ContractError("Stage plan changed")
             return self._plans[stage]
         now = self._time()
+        expires = _expiry(now, MAX_DECISION_SECONDS)
         self._plans[stage] = plan
         self._decisions[stage] = {
             "stage": stage,
@@ -465,7 +485,7 @@ class OwnerPolicyRepairFileSession:
             "plan_id": plan.plan_id,
             "choice": "pending",
             "created_at": now,
-            "expires_at": now + MAX_DECISION_SECONDS,
+            "expires_at": expires,
             "reviewer_authenticated": False,
         }
         self._record("plan-" + stage)
@@ -502,11 +522,12 @@ class OwnerPolicyRepairFileSession:
         now = self._time()
         if not now < decision["expires_at"]:
             raise ContractError("Pending decision expired during revalidation")
+        expires = min(decision["expires_at"], _expiry(now, duration))
         self._decisions[stage] = {
             **decision,
             "choice": choice,
             "created_at": now,
-            "expires_at": min(decision["expires_at"], _finite(now + duration)),
+            "expires_at": expires,
         }
         self._record("decision-" + stage + "-" + choice)
         if self._critical:
@@ -514,6 +535,9 @@ class OwnerPolicyRepairFileSession:
         return _snapshot(self._decisions[stage])
 
     def _guard(self, stage):
+        if len(self._events) >= MAX_EVENTS:
+            self._evidence = "unconfirmed"
+            self._critical = self._failure = "evidence-unconfirmed"
         if self._critical or self._evidence != "confirmed":
             return self._critical or "evidence-unconfirmed"
         if self._closed:
@@ -541,6 +565,9 @@ class OwnerPolicyRepairFileSession:
         if stage in self._used:
             return "attempt-already-consumed"
         self._used.add(stage)
+        if len(self._events) >= MAX_EVENTS:
+            self._evidence = "unconfirmed"
+            self._critical = self._failure = "evidence-unconfirmed"
         reason = self._prerequisite(stage)
         if reason:
             return reason
@@ -1030,6 +1057,7 @@ def validate_owner_policy_file_result(raw: str) -> OwnerPolicyFileResult:
             },
         )
         application = validate_owner_policy_file_repair(canonical(data["application"]))
+        require(len(application.payload_json.encode("utf-8")) <= MAX_APPLICATION_BYTES)
         require(
             data["schema_version"] == "1.0"
             and data["kind"] == "owner-policy-file-repair-result"
@@ -1357,7 +1385,11 @@ def validate_owner_policy_file_result(raw: str) -> OwnerPolicyFileResult:
             event_values.update(
                 "result-" + stage + "-" + reason for reason in _REASONS | {"completed"}
             )
-        require(type(events) is list and all(enum(event, event_values) for event in events))
+        require(
+            type(events) is list
+            and len(events) <= MAX_EVENTS
+            and all(enum(event, event_values) for event in events)
+        )
         return _snapshot(data, OwnerPolicyFileResult)
     except ContractError:
         raise

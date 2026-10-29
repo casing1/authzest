@@ -12,8 +12,8 @@
 
 ## Availability and evidence — 2026-10-29 KST
 
-The source implementation in **draft [PR #118](https://github.com/casing1/authzest/pull/118)** is
-unreleased and under offline verification. The maintainer
+The unreleased source implementation is introduced in
+[PR #118](https://github.com/casing1/authzest/pull/118). The maintainer
 [approved design `29d8c82` and offline implementation](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422),
 not a real file-policy worker run or an operator acceptance applying a repair. Verification in this
 slice uses pure-data checks, temporary-file I/O, static worker inspection and fake process responses.
@@ -53,6 +53,12 @@ The live coordinator is
 status; a copy-creation request for either outcome creates no directory and reports
 `recommendation-has-no-change`. The `_parent` injection point is private to temporary-file tests,
 not a supported destination option.
+
+The live session additionally limits the complete application to **32 KiB** before any copy creation.
+The pure recommendation/application contracts keep their existing envelope rules. This smaller live
+budget reserves room for both captured-check plans in a retained checkpoint. Session history is limited
+to **256 events**; exhausting that budget or failing checkpoint serialization marks evidence unconfirmed
+and blocks subsequent effects. The full JSON byte/depth/node limits also apply.
 
 ## Separate plans and decisions
 

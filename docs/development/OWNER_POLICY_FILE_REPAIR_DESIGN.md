@@ -13,7 +13,7 @@
 ## Current status — 2026-10-29 KST
 
 The maintainer [approved this design at `29d8c82` and offline implementation](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422).
-Implementation and offline verification are in progress in draft
+Source implementation and offline verification records are tracked in
 [PR #118](https://github.com/casing1/authzest/pull/118); see the
 [file-repair API reference](../reference/OWNER_POLICY_FILE_REPAIR.md) for current source boundaries.
 This approval covers temporary-file and mocked-process implementation tests, not an actual new worker

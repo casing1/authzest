@@ -63,7 +63,7 @@ PR #110의 `ea081e0`로 완료됐으며 `c265bf1`의
 [자동 리뷰 두 건은 지적 없이 완료됐습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699).
 관리자가 [소유 파일 적용/검사/복구 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)와 오프라인
 구현을 승인했습니다. 별도 [소유 파일 수정 Python API](reference/OWNER_POLICY_FILE_REPAIR.md)를
-초안 PR #118에서 구현하고 임시 파일·모의 프로세스로 검증했습니다. 새 결정·worker를 실제 복사본에서
+PR #118에서 구현하고 임시 파일·모의 프로세스로 검증했습니다. 새 결정·worker를 실제 복사본에서
 읽은 바이트와 연결하고 이후 사용자 편집을 보존합니다. 새 worker의 실제 수용 검증과 통합 CLI 전달은
 미완료이며 scripted 결과는 정책 관찰이 아닙니다.
 새 CLI/UI나 적용 파일 검증은 없으며

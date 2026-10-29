@@ -69,7 +69,7 @@ completed through PR #110 at `ea081e0` on 2026-10-28 13:52:15 KST; both
 on `c265bf1`. The maintainer approved the
 [owned-file apply/check/restore design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) and offline
 implementation. The separate [owned-file repair Python API](reference/OWNER_POLICY_FILE_REPAIR.md)
-is implemented in draft PR #118 with temporary-file and scripted-process verification. It binds new
+is introduced in PR #118 with temporary-file and scripted-process verification. It binds new
 decisions and a new worker to captured copied-file bytes and preserves later edits. Actual new-worker
 acceptance and integrated CLI delivery remain pending; scripted results are not policy observations.
 There is no new CLI/UI or applied-file verification;

@@ -217,7 +217,7 @@ file-bound new-copy apply/check/restore design remains the next core gate; exist
 `codex-owner-review`, S1 and the #80 worker stay unchanged.
 
 The maintainer approved the [owned-file repair design](OWNER_POLICY_FILE_REPAIR_DESIGN.md) at `29d8c82`.
-Draft PR #118 implements the [source API](../reference/OWNER_POLICY_FILE_REPAIR.md): separate
+PR #118 introduces the [source API](../reference/OWNER_POLICY_FILE_REPAIR.md): separate
 before/diff/apply/after/restore decisions, one fresh private `policy.py`, checks of captured file bytes,
 and preservation of user edits. Offline verification uses temporary files and scripted processes;
 the new worker has not been executed. Separately approved file-workflow acceptance and #82's installed

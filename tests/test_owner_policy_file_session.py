@@ -16,8 +16,11 @@ from pathlib import Path
 
 import pytest
 
-from authzest.codex.contracts import ContractError, canonical
-from authzest.codex.owner_policy_file_repair import prepare_owner_policy_file_repair
+from authzest.codex.contracts import MAX_JSON_BYTES, ContractError, canonical
+from authzest.codex.owner_policy_file_repair import (
+    prepare_owner_policy_file_repair,
+    validate_owner_policy_file_repair,
+)
 from authzest.codex.owner_policy_repair_pair import build_owner_policy_repair_pair
 from authzest.codex.owner_policy_repair_recommendation import (
     build_owner_policy_repair_recommendation_request,
@@ -676,3 +679,235 @@ def test_invalid_decision_clock_is_rejected_before_copy_creation(clock, tmp_path
     with pytest.raises(ContractError):
         session_module.OwnerPolicyRepairFileSession(_application(), clock=clock)
     assert list(tmp_path.iterdir()) == []
+
+
+def test_pure_valid_large_application_is_rejected_before_live_copy_creation(tmp_path):
+    request = build_owner_policy_repair_recommendation_request()
+    data = _application().to_dict()["recommendation"]
+    data["rationale"] = "r" * 4096
+    data["limitations"] = ["l" * 4096] * 8
+    recommendation = validate_owner_policy_repair_recommendation(canonical(data), request)
+    application = prepare_owner_policy_file_repair(request, recommendation)
+    assert session_module.MAX_APPLICATION_BYTES == 32_768
+    assert (
+        session_module.MAX_APPLICATION_BYTES
+        < len(application.payload_json.encode("utf-8"))
+        <= MAX_JSON_BYTES
+    )
+    assert validate_owner_policy_file_repair(application.payload_json) == application
+    with pytest.raises(ContractError):
+        session_module.OwnerPolicyRepairFileSession(application)
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_pending_event_budget_terminates_with_valid_checkpoint_and_no_worker(
+    sessions, tmp_path, monkeypatch
+):
+    calls = _mock_worker(monkeypatch)
+    session = sessions()
+    _create_copy(session, tmp_path)
+    plan = session.prepare("before-check")
+    assert session_module.MAX_EVENTS == 256
+    remaining = session_module.MAX_EVENTS - len(session.result().to_dict()["events"])
+    for _ in range(remaining):
+        session.decide("before-check", "pending", plan_id=plan.plan_id)
+        snapshot = session.result()
+        assert session_module.validate_owner_policy_file_result(snapshot.payload_json) == snapshot
+        assert len(snapshot.to_dict()["events"]) <= session_module.MAX_EVENTS
+    with pytest.raises(ContractError):
+        session.decide("before-check", "pending", plan_id=plan.plan_id)
+    exhausted = session.result()
+    assert exhausted.to_dict()["evidence_status"] == "unconfirmed"
+    assert exhausted.to_dict()["failure"] == "evidence-unconfirmed"
+    assert len(exhausted.to_dict()["events"]) == session_module.MAX_EVENTS
+    assert session_module.validate_owner_policy_file_result(exhausted.payload_json) == exhausted
+    with pytest.raises(ContractError):
+        session.decide("before-check", "approved", plan_id=plan.plan_id)
+    stopped = asyncio.run(session.run_check("before-check"))
+    assert calls == []
+    assert stopped.to_dict()["checks"]["before"]["observations"] is None
+    assert session_module.validate_owner_policy_file_result(stopped.payload_json) == stopped
+
+
+def test_record_serialization_failure_blocks_effects_and_preserves_valid_result(
+    sessions, tmp_path, monkeypatch
+):
+    calls = _mock_worker(monkeypatch)
+    session = sessions()
+    policy = _create_copy(session, tmp_path)
+    plan = session.prepare("before-check")
+    old_record = (policy.parent / "record.json").read_bytes()
+    result = session.result
+    serializations = []
+
+    def fail_once():
+        serializations.append(True)
+        if len(serializations) == 1:
+            raise ContractError("Scripted complete-record serialization limit")
+        return result()
+
+    monkeypatch.setattr(session, "result", fail_once)
+    with pytest.raises(ContractError):
+        session.decide("before-check", "approved", plan_id=plan.plan_id)
+    failed = session.result()
+    assert failed.to_dict()["evidence_status"] == "unconfirmed"
+    assert failed.to_dict()["failure"] == "evidence-unconfirmed"
+    assert (policy.parent / "record.json").read_bytes() == old_record
+    assert session_module.validate_owner_policy_file_result(failed.payload_json) == failed
+    stopped = asyncio.run(session.run_check("before-check"))
+    assert calls == []
+    assert stopped.to_dict()["checks"]["before"]["observations"] is None
+    assert session_module.validate_owner_policy_file_result(stopped.payload_json) == stopped
+
+
+def test_unrepresentable_expiry_does_not_store_invalid_decision(sessions, tmp_path):
+    session = sessions(clock=lambda: 1e308)
+    _create_copy(session, tmp_path)
+    initial = session.result()
+    assert session_module.validate_owner_policy_file_result(initial.payload_json) == initial
+    with pytest.raises(ContractError):
+        session.prepare("before-check")
+    unchanged = session.result()
+    assert unchanged == initial
+    assert unchanged.to_dict()["decisions"] == {}
+    assert unchanged.to_dict()["evidence_status"] == "confirmed"
+    assert session_module.validate_owner_policy_file_result(unchanged.payload_json) == unchanged
+
+
+def test_near_live_application_limit_retains_both_check_plans_within_result_budget(
+    tmp_path, monkeypatch
+):
+    request = build_owner_policy_repair_recommendation_request()
+    data = _application().to_dict()["recommendation"]
+    data["rationale"] = "r"
+    data["limitations"] = ["l"] * 8
+
+    def prepare():
+        recommendation = validate_owner_policy_repair_recommendation(canonical(data), request)
+        return prepare_owner_policy_file_repair(request, recommendation)
+
+    target = session_module.MAX_APPLICATION_BYTES - 1
+    remaining = target - len(prepare().payload_json.encode("utf-8"))
+    assert 0 < remaining <= 9 * 4095
+    extra = min(remaining, 4095)
+    data["rationale"] += "r" * extra
+    remaining -= extra
+    for index in range(8):
+        extra = min(remaining, 4095)
+        data["limitations"][index] += "l" * extra
+        remaining -= extra
+    assert remaining == 0
+    application = prepare()
+    assert len(application.payload_json.encode("utf-8")) == target
+
+    calls = _mock_worker(monkeypatch)
+    session = session_module.OwnerPolicyRepairFileSession(application)
+    try:
+        policy = _reach(session, tmp_path, "restore")
+        _choose(session, "restore")
+        snapshot = session.restore()
+        result = snapshot.to_dict()
+        assert result["phase"] == "restored-before"
+        assert result["application_status"] == result["restoration_status"] == "completed"
+        assert result["comparison_status"] == "passed"
+        assert result["evidence_status"] == "confirmed"
+        assert [item["candidate"] for item in calls] == ["before", "after"]
+        assert result["checks"]["before"]["plan"]["application"] == application.to_dict()
+        assert result["checks"]["after"]["plan"]["application"] == application.to_dict()
+        assert len(snapshot.payload_json.encode("utf-8")) <= MAX_JSON_BYTES
+        pending = [result]
+        nodes = 0
+        while pending:
+            value = pending.pop()
+            nodes += 1
+            if type(value) is dict:
+                pending.extend(value.keys())
+                pending.extend(value.values())
+            elif type(value) is list:
+                pending.extend(value)
+        assert nodes <= 8192
+        assert session_module.validate_owner_policy_file_result(snapshot.payload_json) == snapshot
+        assert policy.read_text() == request.to_dict()["content"]["before"]["text"]
+    finally:
+        session.close()
+
+
+def test_clock_rounding_cannot_extend_plan_lifetime_beyond_300_seconds(sessions, tmp_path):
+    now = 3e18
+    assert now + session_module.MAX_DECISION_SECONDS - now > session_module.MAX_DECISION_SECONDS
+    session = sessions(clock=lambda: now)
+    _create_copy(session, tmp_path)
+    initial = session.result()
+    with pytest.raises(ContractError):
+        session.prepare("before-check")
+    unchanged = session.result()
+    assert unchanged == initial
+    assert unchanged.to_dict()["decisions"] == {}
+    assert session_module.validate_owner_policy_file_result(unchanged.payload_json) == unchanged
+
+
+def test_subresolution_decision_lifetime_does_not_mutate_pending_choice(sessions, tmp_path):
+    session = sessions(clock=lambda: 100.0)
+    _create_copy(session, tmp_path)
+    plan = session.prepare("before-check")
+    initial = session.result()
+    assert 100.0 + 1e-20 == 100.0
+    with pytest.raises(ContractError):
+        session.decide("before-check", "approved", plan_id=plan.plan_id, lifetime_seconds=1e-20)
+    unchanged = session.result()
+    assert unchanged == initial
+    assert unchanged.to_dict()["decisions"]["before-check"]["choice"] == "pending"
+    assert session_module.validate_owner_policy_file_result(unchanged.payload_json) == unchanged
+
+
+def test_event_limit_reached_during_launch_wait_blocks_child(sessions, tmp_path, monkeypatch):
+    calls = _mock_worker(monkeypatch)
+    scripted = session_module._run_worker
+    session = sessions()
+    policy = _create_copy(session, tmp_path)
+    plan = session.prepare("before-check")
+    remaining = session_module.MAX_EVENTS - 2 - len(session.result().to_dict()["events"])
+    for _ in range(remaining):
+        session.decide("before-check", "pending", plan_id=plan.plan_id)
+    session.decide("before-check", "approved", plan_id=plan.plan_id)
+    assert len(session.result().to_dict()["events"]) == session_module.MAX_EVENTS - 1
+    original_bytes = policy.read_bytes()
+
+    async def scenario():
+        entered, release = asyncio.Event(), asyncio.Event()
+
+        async def paused(wire, *, before_launch):
+            entered.set()
+            await release.wait()
+            try:
+                before_launch()
+            except ContractError:
+                return transport.WorkerTransport(
+                    b"", None, "worker-process-error", "not-needed", "confirmed", "not-attempted"
+                )
+            return await scripted(wire)
+
+        monkeypatch.setattr(session_module, "_run_worker", paused)
+        task = asyncio.create_task(session.run_check("before-check"))
+        await asyncio.wait_for(entered.wait(), timeout=5)
+        try:
+            busy = session.apply().to_dict()
+            assert busy["failure"] == "operation-in-progress"
+            assert len(busy["events"]) == session_module.MAX_EVENTS
+            assert busy["application_status"] == "not-run"
+            assert calls == []
+        finally:
+            release.set()
+        return await asyncio.wait_for(task, timeout=5)
+
+    snapshot = asyncio.run(scenario())
+    result = snapshot.to_dict()
+    assert calls == []
+    assert result["evidence_status"] == "unconfirmed"
+    assert result["failure"] == "evidence-unconfirmed"
+    assert len(result["events"]) == session_module.MAX_EVENTS
+    assert result["checks"]["before"]["observations"] is None
+    assert result["checks"]["before"]["transport"]["launch_status"] == "not-attempted"
+    assert result["checks"]["before"]["transport"]["workspace_cleanup_status"] == "confirmed"
+    assert policy.read_bytes() == original_bytes
+    assert session_module.validate_owner_policy_file_result(snapshot.payload_json) == snapshot

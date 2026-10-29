@@ -212,7 +212,7 @@ before 전용 소스 실행은 예상한 두 불일치와 정리 확인으로 �
 `codex-owner-review`, S1, #80 worker는 그대로 유지합니다.
 
 관리자가 `29d8c82`의 [소유 파일 수정 설계](OWNER_POLICY_FILE_REPAIR_DESIGN.md)를 승인했습니다.
-초안 PR #118에서 [소스 API](../reference/OWNER_POLICY_FILE_REPAIR.md)를 구현했습니다.
+PR #118에서 [소스 API](../reference/OWNER_POLICY_FILE_REPAIR.md)를 구현했습니다.
 before 검사/diff 동의/적용/after 검사/복구의 별도 결정, 새 비공개 `policy.py` 하나,
 읽은 파일 바이트의 검사와 사용자 편집 보존을 제공합니다. 오프라인 검증은 임시 파일과 scripted
 프로세스를 사용하며 새 worker를 실행하지 않았습니다. 별도 승인한 실제 파일 흐름 수용 검증과

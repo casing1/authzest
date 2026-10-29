@@ -13,7 +13,7 @@
 ## 현재 상태 — 2026-10-29 KST
 
 관리자는 [`29d8c82`의 이 설계와 오프라인 구현을 승인했습니다](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422).
-초안 [PR #118](https://github.com/casing1/authzest/pull/118)에서 구현과 오프라인 검증이 진행 중입니다.
+[PR #118](https://github.com/casing1/authzest/pull/118)에서 소스 구현과 오프라인 검증 기록을 관리합니다.
 현재 소스 경계는 [파일 수정 API 참조](../reference/OWNER_POLICY_FILE_REPAIR.md)를 보세요.
 이 승인은 임시 파일·모의 프로세스 구현 테스트를 대상으로 하며 실제 새 worker 실행, 운영자 패치
 인수 검증, 리뷰 활성화, 병합이나 발행을 승인하지 않습니다. 정확한 검증 근거는 PR에 별도로
