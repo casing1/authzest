@@ -16,6 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record the separately scoped [owned-file source API acceptance](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+  on main `fb90c46`, 2026-10-29 KST: captured-copy before check, exact-diff acceptance, apply,
+  captured-copy after check and restore. Before matched 6/8 expectations with the intended over-allows
+  for `non-owner` and `exact-owner-no-normalization`; after matched 8/8. Both checks exited `0`,
+  cleanup and file/evidence state were confirmed, and the retained final record reports
+  `restored-before`, generation `3`. The earlier recommendation was revalidated without a new AI call.
+  This is POSIX non-frozen source API acceptance on macOS/Python `3.12.7`, not HTTP authorization,
+  installed-CLI or native-binary acceptance. Align the four READMEs and the next #82 installed-CLI
+  integration step; broader #81/#35, #89 and release gates remain open. Published alpha.3, package
+  version and report schema are unchanged; this records no new release or revision of historical
+  recommendation-only and embedded-control observations.
 - Implement the unreleased source-only owned-file repair Python API from the approved design:
   explicit private-copy creation, separate expiring one-attempt decisions, captured-source worker
   protocol, file-state-bound checks and restoration, retained records and fail-closed recovery.

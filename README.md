@@ -79,7 +79,16 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Adds a separate unreleased [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md):
   POSIX Python source-only before/after controls require separate fresh decisions. Historical checks
   observed the expected two before mismatches and eight after matches. These are not checks of an
-  applied file; there is no new CLI/UI. File-bound apply/check/restore and #81/#82/#35 remain unfinished.
+  applied file; this control API remains separate from the file workflow below and adds no CLI/UI.
+- Adds the unreleased [owned-file repair source API](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
+  On main `fb90c46`, 2026-10-29 KST, independently scoped approvals covered captured-copy before check,
+  exact-diff acceptance, apply, captured-copy after check and restore. Before matched 6/8 expectations,
+  with the intended over-allows for `non-owner` and `exact-owner-no-normalization`; after matched 8/8.
+  Both checks exited `0` with cleanup confirmed; file/evidence were confirmed and the final state was
+  `restored-before`, generation `3`, with records retained. No new AI call was made; the earlier
+  recommendation was revalidated. Acceptance covers only the POSIX non-frozen API on macOS/Python
+  `3.12.7`, not HTTP authorization or installed-CLI delivery. Readable installed-CLI integration under
+  #82 and the broader #81/#35 workflow remain pending; alpha.3 and separate release gates are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -320,6 +329,8 @@ Current source and next step:
 
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
+3. Next: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
+   for the accepted file-repair source API, followed by separately approved end-to-end acceptance.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.

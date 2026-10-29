@@ -16,6 +16,16 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 2026-10-29 KST의 main `fb90c46`에서 각각 범위를 정해 승인받은
+  [소유 파일 소스 API 인수 검증](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)을 기록합니다.
+  복사본의 캡처 before 검사, 정확한 diff 수락, 적용, 캡처 after 검사와 복구를 수행했습니다.
+  Before는 예상값 6/8개가 일치하고 `non-owner`·`exact-owner-no-normalization`의 의도한 과도 허용
+  2개를 관찰했으며 after는 8/8개가 일치했습니다. 두 검사는 종료 `0`, 정리와 파일/증거 상태가
+  확인됐고 보존한 최종 기록은 `restored-before`, generation `3`입니다. 새 AI 호출 없이 이전
+  추천을 재검증했습니다. macOS/Python `3.12.7`의 POSIX non-frozen 소스 API 인수 검증이며
+  HTTP 인가·설치 CLI·native 바이너리 검증이 아닙니다. README 네 언어와 다음 #82 설치 CLI 통합
+  작업을 맞추며 더 넓은 #81/#35, #89와 릴리스 조건은 미완료로 유지합니다. 공개 alpha.3·패키지 버전·
+  리포트 스키마는 그대로이며 새 릴리스나 과거 추천 전용·내장 대조군 관찰의 수정을 기록하지 않습니다.
 - 승인된 설계에 따라 미출시 소스 전용 소유 파일 수정 Python API를 구현합니다. 명시적 비공개
   복사본 생성, 만료·1회 시도 제한의 단계별 결정, 캡처 소스 worker 프로토콜, 파일 상태에 연결된
   검사·복구, 기록 보존과 불확실성 차단을 제공합니다. 순수 데이터·AST·임시 파일·모의 프로세스로
