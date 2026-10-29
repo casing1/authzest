@@ -76,7 +76,7 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   버전 고정 App Server 시도 1회를 수행합니다. `before` 또는 `after`에 대해 `registered-change`,
   `no-change`, `unknown`을 반환하며 host가 등록된 단일 파일 diff를 구성합니다. 임의 교체 코드를
   생성하는 흐름은 아닙니다. 2026-10-28 별도 승인한 실제 시도에서 등록 템플릿을 선택했고 그 승인은
-  소비됐습니다. 이 명령은 변경 적용·파일 복구·정책 실행을 하지 않습니다.
+  소비됐습니다. 기본 동작은 추천 전용으로 유지하며 변경 적용·파일 복구·정책 실행을 하지 않습니다.
 - 별도 미출시 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md) 추가:
   POSIX Python 소스 전용 before/after 대조군마다 별도의 새 결정이 필요합니다. 과거 검사에서
   예상한 before 불일치 2개와 after 일치 8개를 관찰했습니다. 적용한 파일의 검사가 아니며,
@@ -88,8 +88,14 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   after는 8/8개가 일치했습니다. 두 검사는 종료 `0`·정리 확인, 파일/증거 확인 상태였고 최종 상태는
   `restored-before`, generation `3`이며 기록을 보존했습니다. 이전 추천을 재검증했고 새 AI 호출은
   없었습니다. 인수 검증은 macOS/Python `3.12.7`의 POSIX non-frozen API에 한정되며 HTTP 인가나
-  설치 CLI 전달 검증이 아닙니다. #82의 읽기 쉬운 설치 CLI 통합과 더 넓은 #81/#35 흐름은
-  미완료이며 alpha.3와 별도의 릴리스 조건은 그대로입니다.
+  새 설치 CLI 흐름의 인수 검증이 아닙니다. 더 넓은 #81/#35 흐름과 별도의 릴리스 조건은
+  미완료이며 alpha.3는 그대로입니다.
+- 미출시 명시적 [`codex-owner-repair --file-workflow` 옵션](guides/OWNER_FILE_WORKFLOW.md)을 추가합니다.
+  현재 검증된 추천에서 새 소유 복사본, before 검사, 정확한 diff 수락, 적용, after 검사, 복구로
+  이어지며 각각 별도로 동의해야 합니다. 옵션 자체는 승인이 아니고 `--preview-only`는 여전히
+  공유 입력만 표시합니다. 사람용 출력은 단계 상태와 사례 8개의 관찰을 구분하고 `--json`은 최종
+  문서 하나를 유지합니다. CLI 검증은 오프라인·모의 검증이지 새 실제 AI·worker·패치 수용이
+  아닙니다. #82의 별도 승인한 설치 흐름 수용은 미완료이며 공개 버전·리포트 스키마는 바뀌지 않습니다.
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
@@ -333,8 +339,9 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 
 1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
-3. 다음: [#82: 읽기 쉬운 설치 CLI 통합](https://github.com/casing1/authzest/issues/82).
-   인수 검증을 마친 파일 수정 소스 API를 연결한 뒤 별도 승인한 종단간 인수 검증을 진행합니다.
+3. 미출시 소스: [#82: 읽기 쉬운 설치 CLI 통합](https://github.com/casing1/authzest/issues/82)에
+   opt-in 파일 흐름과 오프라인 테스트를 추가합니다. 다음은 별도 승인한 설치 흐름의 종단간
+   인수 검증이며, #82는 완료되지 않았습니다.
 
 [오프라인 기반](reference/AI_CONTRACT.md)은 alpha.3 fixture 명령에서 사용하는 계약을 제공합니다.
 평가 스크립트와 데이터셋은 checkout 전용으로 유지하며 완전한 #35 흐름은 미완료입니다.

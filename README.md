@@ -75,7 +75,7 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   attempt on supported POSIX systems. For `before` or `after`, results are `registered-change`,
   `no-change` or `unknown`; the host derives a registered one-file diff, not arbitrary replacement code.
   One separately approved live attempt on 2026-10-28 selected the registered template; that approval
-  is consumed. This command does not apply changes, restore files or execute policies.
+  is consumed. By default this command stays recommendation-only: no application, restoration or policy execution.
 - Adds a separate unreleased [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md):
   POSIX Python source-only before/after controls require separate fresh decisions. Historical checks
   observed the expected two before mismatches and eight after matches. These are not checks of an
@@ -87,8 +87,15 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   Both checks exited `0` with cleanup confirmed; file/evidence were confirmed and the final state was
   `restored-before`, generation `3`, with records retained. No new AI call was made; the earlier
   recommendation was revalidated. Acceptance covers only the POSIX non-frozen API on macOS/Python
-  `3.12.7`, not HTTP authorization or installed-CLI delivery. Readable installed-CLI integration under
-  #82 and the broader #81/#35 workflow remain pending; alpha.3 and separate release gates are unchanged.
+  `3.12.7`, not HTTP authorization or acceptance of the new installed-CLI flow. The broader #81/#35
+  workflow and separate release gates remain pending; alpha.3 is unchanged.
+- Adds the unreleased, explicit [`codex-owner-repair --file-workflow` option](docs/guides/OWNER_FILE_WORKFLOW.md):
+  a current validated recommendation can proceed to a fresh owned copy, then before-check, exact-diff
+  acceptance, apply, after-check and restore, each with separate consent. The option itself is not
+  approval; `--preview-only` still shows sharing input only. Human output separates stage statuses and
+  eight case observations; `--json` retains one final document. CLI verification is offline/scripted,
+  not new live AI/worker/patch acceptance. Separately approved installed-flow acceptance under #82
+  remains pending; this does not change the published version or report schema.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -329,8 +336,9 @@ Current source and next step:
 
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
-3. Next: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
-   for the accepted file-repair source API, followed by separately approved end-to-end acceptance.
+3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
+   adds the opt-in file workflow with offline tests. Next is separately approved installed-flow
+   end-to-end acceptance; #82 is not complete.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.

@@ -69,11 +69,16 @@ completed through PR #110 at `ea081e0` on 2026-10-28 13:52:15 KST; both
 on `c265bf1`. The maintainer approved the
 [owned-file apply/check/restore design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) and offline
 implementation. The separate [owned-file repair Python API](reference/OWNER_POLICY_FILE_REPAIR.md)
-is introduced in PR #118 with temporary-file and scripted-process verification. It binds new
-decisions and a new worker to captured copied-file bytes and preserves later edits. Actual new-worker
-acceptance and integrated CLI delivery remain pending; scripted results are not policy observations.
-There is no new CLI/UI or applied-file verification;
-#81/#35/#82 remain open and #80 is unchanged.
+was delivered in PR #118, initially with temporary-file and scripted-process verification. A later
+separately approved source-API sequence at `fb90c46` observed captured before bytes (6/8 matches),
+exact diff acceptance/application, captured after bytes (8/8) and restoration; see the
+[bounded file-flow record](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
+It made no new AI call and does not establish installed-CLI acceptance. The separate
+[#82 opt-in CLI source implementation](guides/OWNER_FILE_WORKFLOW.md) now connects current validated
+recommendations through `--file-workflow`, preserving recommendation-only defaults and separate
+copy/five-stage decisions. Its verification uses fake adapters, temporary files and scripted workers,
+not new policy observations. Installed live acceptance and delivery gates remain pending;
+#81/#35/#82 remain open, the UI is unchanged and #80 is unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
@@ -140,7 +145,8 @@ docs/
 | Offline registered repair-pair API (source reference)                   | [Repair-pair API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   | [등록 수정 쌍 API](i18n/ko/reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
 | Registered repair recommendation and sharing (source)                   | [Repair recommendation](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | Registered repair-policy check API (source; separate controls observed) | [Repair check](reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](i18n/ko/reference/OWNER_POLICY_REPAIR_CHECK.md)               |
-| Owned-file repair API (source; offline verification)                    | [Owned-file repair](reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](i18n/ko/reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| Owned-file repair API (source; bounded file observation)                | [Owned-file repair](reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](i18n/ko/reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| Opt-in owned-file CLI (source; offline implementation verification)     | [Owned-file CLI](guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](i18n/ko/guides/OWNER_FILE_WORKFLOW.md)                              |
 | Owned-file apply/check/restore (reviewed design)                        | [Owned-file repair design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](i18n/ko/development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | Dedicated repair-policy fixed check (historical design)                 | [Repair-check design](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](i18n/ko/development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | Test-only owner-policy repair pair (proposed)                           | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |

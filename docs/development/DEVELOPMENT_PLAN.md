@@ -147,16 +147,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                            |
-| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                    |
-| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                        |
-| Source API observed           | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #118 delivered; separate actual file-flow acceptance completed at `fb90c46`, with approvals consumed. Broader remediation and CLI acceptance remain open                                          |
-| Next core: CLI integration    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | Connect the existing session through an explicit opt-in flow; preserve readable/JSON output, separate decisions, failure/refusal/user-edit/recovery states and installed-source checks               |
-| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #114 native baseline and #116 local source-install evidence recorded; #89 disposition and exact versioned candidate/platform/distribution/publication gates remain; describe unfinished #35 honestly |
-| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                     |
-| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                            |
+| Priority                        | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Completed                       | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                            |
+| Completed                       | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                    |
+| Completed                       | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                        |
+| Source API observed             | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #118 delivered; separate actual file-flow acceptance completed at `fb90c46`, with approvals consumed. Broader remediation and CLI acceptance remain open                                          |
+| Active: offline CLI integration | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | Opt-in source implementation and fake-adapter/scripted-worker tests; separately approved installed live flow and required final-head review/delivery still pending                                   |
+| Active prerelease preparation   | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #114 native baseline and #116 local source-install evidence recorded; #89 disposition and exact versioned candidate/platform/distribution/publication gates remain; describe unfinished #35 honestly |
+| Evaluation                      | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                     |
+| Delivery                        | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                            |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -229,8 +229,17 @@ made: the earlier recommendation was revalidated. The final copy is `restored-be
 the passing after comparison is historical, not a pass for the restored before file. See the
 [exact file-workflow record](../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
 The old expired preparation ran no worker and remains separate. All actual stage approvals are
-consumed. #82's installed readable CLI and integrated refusal/recovery acceptance remain next;
-one macOS/Python 3.12.7 source observation is not CLI, cross-platform, HTTP or release acceptance.
+consumed. One macOS/Python 3.12.7 source observation is not CLI, cross-platform, HTTP or release acceptance.
+
+The maintainer subsequently approved #82's **offline implementation only**. The
+[`--file-workflow` CLI extension](../guides/OWNER_FILE_WORKFLOW.md) preserves recommendation-only
+defaults and connects only the current validated response, after separate copy and five-stage
+decisions. POSIX non-frozen preflight, original 300-second expiry, one-attempt limits, no-change/unknown
+without a copy and honest partial/refusal/user-edit/recovery output remain required. Temporary-file,
+fake-adapter and scripted-worker tests exercise coordination, not actual policy behavior. A draft PR
+and existing CI are in scope; review activation, merge, real product AI/worker calls, operational patch
+acceptance and release are not. Fresh installed end-to-end acceptance and final-head delivery gates
+remain pending under #82; this slice does not close #81/#35 or accept #89 risk.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only

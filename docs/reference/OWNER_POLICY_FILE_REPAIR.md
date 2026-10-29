@@ -23,8 +23,10 @@ binding remain recorded in the PR. The later, separately approved
 observations without changing the scope of that earlier approval.
 
 The live file workflow supports **POSIX, non-frozen Python source mode only**, with the required
-descriptor-relative filesystem primitives and a trusted local operator. There is no new CLI command,
-API endpoint or GUI view. Published alpha.3 does not contain this implementation. #81/#82/#35 remain
+descriptor-relative filesystem primitives and a trusted local operator. The separate unreleased
+[#82 CLI extension](../guides/OWNER_FILE_WORKFLOW.md) connects the existing command only through
+explicit `--file-workflow`; recommendation-only remains its default. No API endpoint or GUI view
+is added. Published alpha.3 does not contain this implementation. #81/#82/#35 remain
 open; neither this document nor offline test success grants review activation, merge, execution,
 patch acceptance or release authority. Existing #80/#110 controls and their historical observations
 remain unchanged and do not establish execution of this new file worker.
