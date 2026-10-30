@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add the opt-in [`codex-owner-repair --file-workflow` source CLI](docs/guides/OWNER_FILE_WORKFLOW.md)
+  for the current validated recommendation and existing owned-copy session. Keep recommendation-only
+  defaults, separate sharing/copy/five-stage choices, original 300-second expiry and one-attempt
+  boundaries; retain partial/failure/user-edit/recovery states. Show readable eight-case summaries and
+  a single JSON stdout result with complete interactive previews on stderr. Temporary-file, fake-adapter
+  and scripted-worker checks are offline, not new provider/worker observations or operational patch
+  acceptance. #82/#81/#35 and release gates remain open; published alpha.3 is unchanged.
 - Record the separately scoped [owned-file source API acceptance](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
   on main `fb90c46`, 2026-10-29 KST: captured-copy before check, exact-diff acceptance, apply,
   captured-copy after check and restore. Before matched 6/8 expectations with the intended over-allows

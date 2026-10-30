@@ -10,7 +10,7 @@
 [Unchanged S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-28 KST
+## Availability and boundary — 2026-10-29 KST
 
 This **unreleased source feature** is tracked under #81. The pure offline selection contract in
 `authzest.codex.owner_policy_repair_recommendation` was delivered through
@@ -36,6 +36,11 @@ file application or restoration. `policy.py` remains a logical display label, no
 It accepts no arbitrary source, repository, callback, replacement pair, cases or labels. Rendering
 the prompt or CLI sharing preview sends nothing to Codex. Only the separately approved interactive
 transport path starts Codex; it does not execute either policy candidate or apply the selected diff.
+
+This reference describes the recommendation-only default. The separate unreleased
+[`--file-workflow` extension](../guides/OWNER_FILE_WORKFLOW.md) can connect the current validated
+response to the owned-file session only with additional copy and individual stage decisions.
+Sharing approval alone still grants no execution, application or restoration.
 
 ## Bounded live acceptance — 2026-10-28 KST
 
@@ -299,6 +304,7 @@ on 2026-10-29 at `fb90c46` revalidated the historical real recommendation and co
 before-check, exact-diff, apply, after-check and restore approvals. It observed 6/8 before and 8/8
 applied-after matches and restored the owned copy, with no new provider call. This is source-API
 acceptance, not a new model acceptance or installed CLI integration; an embedded after control still
-cannot verify an applied file. Readable CLI integration remains the next separate #82 work.
+cannot verify an applied file. The separate [#82 opt-in CLI implementation](../guides/OWNER_FILE_WORKFLOW.md)
+has offline fake-adapter/scripted-worker verification; installed live acceptance remains pending.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.

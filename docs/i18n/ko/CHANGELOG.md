@@ -16,6 +16,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 선택형 [`codex-owner-repair --file-workflow` 소스 CLI](guides/OWNER_FILE_WORKFLOW.md)를 추가해
+  현재 검증한 추천과 기존 소유 복사본 세션을 연결합니다. 추천 전용 기본 동작, 공유/복사본/다섯 단계의
+  별도 결정, 원래 300초 만료·1회 시도 경계를 유지하며 부분 효과·실패·사용자 편집·복구 상태를 보존합니다.
+  읽기 쉬운 사례 8개 요약과 단일 stdout JSON 결과를 제공하며 전체 대화형 미리보기는 stderr로 보냅니다.
+  임시 파일·가짜 adapter·scripted worker 검사는 오프라인이며 새 제공자/worker 관찰이나 운영 패치
+  수용이 아닙니다. #82/#81/#35와 릴리스 조건은 열려 있고 공개 alpha.3는 그대로입니다.
 - 2026-10-29 KST의 main `fb90c46`에서 각각 범위를 정해 승인받은
   [소유 파일 소스 API 인수 검증](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)을 기록합니다.
   복사본의 캡처 before 검사, 정확한 diff 수락, 적용, 캡처 after 검사와 복구를 수행했습니다.

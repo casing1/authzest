@@ -308,12 +308,19 @@ def codex_owner_repair(
         bool,
         typer.Option("--preview-only", help="Show complete sharing input offline; no account use."),
     ] = False,
+    file_workflow: Annotated[
+        bool,
+        typer.Option(
+            "--file-workflow",
+            help="Opt into separate owned-copy/check/diff/apply/restore decisions; not approval.",
+        ),
+    ] = False,
     as_json: Annotated[
         bool,
         typer.Option("--json", help="One final/preview JSON on stdout; interaction on stderr."),
     ] = False,
 ) -> None:
-    """Request a registered policy repair recommendation; never execute or apply it."""
+    """Recommend a registered repair; optional file workflow requires separate decisions."""
     from authzest.codex.diagnostics import sanitize_failure
     from authzest.runner.codex_owner_repair import (
         OwnerRepairInputError,
@@ -323,10 +330,24 @@ def codex_owner_repair(
 
     output = WorkflowOutput(as_json)
     try:
-        result = (
-            build_owner_repair_preview(model, candidate=candidate, timeout_seconds=timeout_seconds)
-            if preview_only
-            else asyncio.run(
+        if preview_only:
+            result = build_owner_repair_preview(
+                model, candidate=candidate, timeout_seconds=timeout_seconds
+            )
+        elif file_workflow:
+            from authzest.runner.codex_owner_file_workflow import run_codex_owner_file_workflow
+
+            result = asyncio.run(
+                run_codex_owner_file_workflow(
+                    model,
+                    candidate=candidate,
+                    timeout_seconds=timeout_seconds,
+                    emit=output.emit,
+                    read=output.read,
+                )
+            )
+        else:
+            result = asyncio.run(
                 run_codex_owner_repair(
                     model,
                     candidate=candidate,
@@ -335,13 +356,14 @@ def codex_owner_repair(
                     read=output.read,
                 )
             )
-        )
     except OwnerRepairInputError as exc:
         output.finish({"status": "invalid-input", "detail": str(exc)}, error=True)
         raise typer.Exit(code=2) from exc
     except (asyncio.CancelledError, KeyboardInterrupt):
         output.finish(
-            {
+            _unknown_owner_file_result(cancelled=True)
+            if file_workflow and not preview_only
+            else {
                 "status": "cancelled",
                 "execution_status": "not-run",
                 "failure": sanitize_failure(None, code="cancelled"),
@@ -350,7 +372,9 @@ def codex_owner_repair(
         raise typer.Exit(code=130) from None
     except Exception:
         output.finish(
-            {
+            _unknown_owner_file_result(cancelled=False)
+            if file_workflow and not preview_only
+            else {
                 "status": "recommendation-failed",
                 "execution_status": "not-run",
                 "failure": sanitize_failure(None),
@@ -359,6 +383,34 @@ def codex_owner_repair(
         raise typer.Exit(code=1) from None
     output.finish(result, preview=preview_only)
     raise typer.Exit(code=result.get("exit_code", 0))
+
+
+def _unknown_owner_file_result(*, cancelled: bool) -> dict:
+    """Last-resort diagnostic; missing runner state cannot establish non-execution."""
+    from authzest.codex.diagnostics import sanitize_failure
+
+    failure = sanitize_failure(None, code="cancelled" if cancelled else "unexpected-error")
+    return {
+        "kind": "codex-owner-file-workflow",
+        "status": "cancelled" if cancelled else "file-workflow-failed",
+        "exit_code": 130 if cancelled else 1,
+        "execution_status": "unknown",
+        "patch_application": "unknown",
+        "restoration_status": "unknown",
+        "comparison_status": "inconclusive",
+        "authorization_status": "unknown",
+        "failure": failure,
+        "file_workflow": {
+            "copy_decision": "unknown",
+            "copy_confirmation": None,
+            "session_result": None,
+            "failure": failure,
+            "retention_notice": (
+                "Runner checkpoint unavailable. No rollback, deletion or non-execution is "
+                "implied. Inspect any retained copy and evidence before further action."
+            ),
+        },
+    }
 
 
 @app.command("fixture-demo")

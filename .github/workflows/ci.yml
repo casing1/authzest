@@ -42,6 +42,7 @@ jobs:
           tests/test_owner_case_plan.py
           tests/test_owner_policy_recommendation.py
           tests/test_codex_owner_repair_cli.py
+          tests/test_codex_owner_file_cli.py
           tests/test_release_smoke.py
 
   frontend:

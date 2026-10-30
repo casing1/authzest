@@ -63,11 +63,15 @@ PR #110의 `ea081e0`로 완료됐으며 `c265bf1`의
 [자동 리뷰 두 건은 지적 없이 완료됐습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6460924699).
 관리자가 [소유 파일 적용/검사/복구 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)와 오프라인
 구현을 승인했습니다. 별도 [소유 파일 수정 Python API](reference/OWNER_POLICY_FILE_REPAIR.md)를
-PR #118에서 구현하고 임시 파일·모의 프로세스로 검증했습니다. 새 결정·worker를 실제 복사본에서
-읽은 바이트와 연결하고 이후 사용자 편집을 보존합니다. 새 worker의 실제 수용 검증과 통합 CLI 전달은
-미완료이며 scripted 결과는 정책 관찰이 아닙니다.
-새 CLI/UI나 적용 파일 검증은 없으며
-#81/#35/#82는 열려 있고 #80은 그대로입니다.
+PR #118로 전달했으며 최초 검증은 임시 파일·모의 프로세스를 사용했습니다. 이후 `fb90c46`에서
+별도 승인한 소스 API 흐름으로 캡처 before 바이트(6/8 일치), 정확한 diff 수용/적용, 캡처 after
+바이트(8/8)와 복구를 관찰했습니다.
+[제한된 파일 흐름 기록](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)을 참고하세요.
+새 AI 호출은 없었으며 설치 CLI 수용을 입증하지 않습니다. 별도
+[#82 선택형 CLI 소스 구현](guides/OWNER_FILE_WORKFLOW.md)은 현재 검증한 추천을 `--file-workflow`로
+연결하며 추천 전용 기본 동작과 별도 복사본/다섯 단계 결정을 유지합니다. 가짜 adapter·임시 파일·
+scripted worker를 사용하는 검증은 새 정책 관찰이 아닙니다. 설치형 실제 수용과 전달 조건은
+계속 미완료이며 #81/#35/#82는 열려 있고 UI와 #80은 그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
@@ -133,7 +137,8 @@ docs/
 | 오프라인 등록 수정 쌍 API (소스 참조)            | [Repair-pair API](../../reference/OWNER_POLICY_REPAIR_PAIR.md)                   | [등록 수정 쌍 API](reference/OWNER_POLICY_REPAIR_PAIR.md)                   |
 | 등록 수정 추천과 공유 (소스)                     | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | 등록 수정 정책 검사 API (소스; 별도 대조군 관찰) | [Repair check](../../reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](reference/OWNER_POLICY_REPAIR_CHECK.md)               |
-| 소유 파일 수정 API (소스; 오프라인 검증)         | [Owned-file repair](../../reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| 소유 파일 수정 API (소스; 제한된 파일 관찰)      | [Owned-file repair](../../reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](reference/OWNER_POLICY_FILE_REPAIR.md)                 |
+| 선택형 소유 파일 CLI (소스; 오프라인 구현 검증)  | [Owned-file CLI](../../guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](guides/OWNER_FILE_WORKFLOW.md)                              |
 | 소유 파일 적용/검사/복구 (검토한 설계)           | [Owned-file repair design](../../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | 전용 수정 정책 고정 검사 (과거 설계)             | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | 테스트 전용 소유 정책 수정 쌍 (제안)             | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
