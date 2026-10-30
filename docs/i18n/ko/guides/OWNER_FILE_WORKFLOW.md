@@ -7,11 +7,14 @@
 
 [문서 목차](../INDEX.md) · [수정 추천과 공유](../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [파일 세션 API와 과거 관찰](../reference/OWNER_POLICY_FILE_REPAIR.md) ·
-[개발 계획](../development/DEVELOPMENT_PLAN.md)
+[개발 계획](../development/DEVELOPMENT_PLAN.md) ·
+[설치 흐름 수용 runbook](OWNER_FILE_ACCEPTANCE.md)
 
 ## 제공 범위와 한계
 
 이 미출시 #82 소스 구현은 `codex-owner-repair --file-workflow`를 기존 파일 세션 API에 연결합니다.
+[PR #120](https://github.com/casing1/authzest/pull/120)은 필수 최종 head 리뷰와 소스 전달을
+`a0ae879`에서 완료했습니다.
 플래그를 생략하면 기존 추천 전용 동작을 유지하며 복사본 생성·정책 실행·적용·복구를 하지 않습니다.
 공개 alpha.3와 패키지 버전 `0.1.0a3`는 그대로입니다. 선택적인 웹 대시보드는 이 흐름을 표시하거나
 제어하지 않습니다.
@@ -25,10 +28,19 @@ Windows/frozen 실행 파일도 이식 가능한 오프라인 공유 미리보�
 host가 정확한 diff를 도출합니다. 임의의 AI 생성 코드 수정, HTTP 인가 검증, OS sandbox나 보안
 보장이 아닙니다. 기존 Codex ChatGPT 로그인과 고정 adapter는 그대로이며 API key를 추가하지 않습니다.
 
-이 구현은 임시 파일·가짜 adapter·scripted worker 응답으로 검증합니다. 이 응답은 **정책 관찰이
-아닙니다.** 이전에 별도 승인한 소스 API 관찰은 연결된 참조 문서에 있으며 새 CLI의 실제 수용을
-입증하지 않습니다. 새 설치 흐름/제공자/worker 수용과 필수 리뷰 조건은 #82/#81/#35에 열려 있습니다.
-문서 예제는 실제 실행을 허가하거나 수행하지 않습니다.
+최초 검증은 임시 파일·가짜 adapter·scripted worker 응답을 사용했으며 **정책 관찰이 아닙니다.**
+2026-10-30 KST에는 Python 3.12.7의 noneditable wheel 설치 한 건에서 소스 일치를 확인하고
+기존 13개와 추가 10개를 합한 오프라인 검사 23개를 통과했습니다. 이후 각각 별도 승인한 실제
+추천 시도 두 번을 수행했습니다. 첫 시도는 만료된 복사 선택을 거절하고 종료 `0`으로 끝났습니다.
+둘째 시도는 복사본 하나와 before 계획을 준비한 뒤 승인하지 않은 worker 단계를 거절하여
+`before-check-declined`, 종료 `0`으로 끝났습니다. 두 시도 모두 정책 worker·수정 적용·복구는
+수행하지 않았습니다. 둘째 raw stdout 수집은 불완전했습니다. 전체 before 계획·최종 workflow 객체·
+영속 기록·실제 파일을 별도 대조한 것은 stdout 전체가 단일 JSON으로 파싱됐다는 근거가 아닙니다.
+
+이는 제한된 설치형 추천·준비 근거이며 전체 종단간 수용이나 pipx/업그레이드/native 배포 근거가
+아닙니다. 과거 소스 API 관찰도 별도 결과입니다. 관찰 한계·증거 수집·다음 별도 승인 단계는
+[설치 흐름 수용 runbook](OWNER_FILE_ACCEPTANCE.md)을 참고하세요. #82/#81/#35의 전체 설치
+흐름 수용은 미완료입니다. 문서 예제와 완료된 승인은 새 실제 실행을 허용하지 않습니다.
 
 ## 부작용 없는 미리보기
 

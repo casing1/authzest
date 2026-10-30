@@ -7,13 +7,15 @@
 
 [Documentation index](../README.md) · [Recommendation and sharing](../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [File-session API and prior observations](../reference/OWNER_POLICY_FILE_REPAIR.md) ·
-[Development plan](../development/DEVELOPMENT_PLAN.md)
+[Development plan](../development/DEVELOPMENT_PLAN.md) ·
+[Installed-flow acceptance runbook](OWNER_FILE_ACCEPTANCE.md)
 
 ## Availability and scope
 
 This unreleased #82 source implementation connects `codex-owner-repair --file-workflow` to the
-existing file-session API. Without the flag, the command remains recommendation-only: no copy,
-policy execution, application or restoration. Published alpha.3 and package version `0.1.0a3` are
+existing file-session API. [PR #120](https://github.com/casing1/authzest/pull/120) completed its
+required final-head reviews and source delivery at `a0ae879`. Without the flag, the command remains
+recommendation-only: no copy, policy execution, application or restoration. Published alpha.3 and package version `0.1.0a3` are
 unchanged. The optional web dashboard does not display or control this workflow.
 
 The active file path requires **POSIX non-frozen Python source mode** and the supported
@@ -26,11 +28,20 @@ The model selects a registered template; the host derives its exact diff. This i
 AI-generated code repair, HTTP authorization verification, an OS sandbox or a security guarantee.
 Existing Codex ChatGPT login and the pinned adapter are unchanged; no API key is introduced.
 
-This implementation is verified with temporary files, fake adapters and scripted worker responses.
-Those responses are **not policy observations**. The prior separately approved source-API observation
-is documented in the linked reference; it does not establish live acceptance of this new CLI.
-Fresh installed-flow/provider/worker acceptance and required review gates remain open under
-#82/#81/#35. Documentation examples do not authorize or perform a live attempt.
+Initial verification used temporary files, fake adapters and scripted worker responses, **not policy
+observations**. On 2026-10-30 KST, one noneditable Python 3.12.7 wheel installation matched the source
+and passed 23 offline checks: the existing 13 plus 10 additional checks. Two separately approved real
+recommendation attempts followed. The first declined an expired copy choice and exited `0`; the second
+created one copy, prepared the before plan, then declined the unapproved worker step and exited `0`
+as `before-check-declined`. Neither attempt ran a policy worker, applied a repair or restored a file.
+The second raw stdout capture was incomplete; separate checks of the full before plan, final workflow
+object, durable record and actual file do not establish a complete single-JSON stdout parse.
+
+This is bounded installed recommendation/preparation evidence, not full end-to-end acceptance or
+pipx/upgrade/native distribution evidence. The prior source-API observation is also a separate result.
+See the [installed-flow acceptance runbook](OWNER_FILE_ACCEPTANCE.md) for the observation boundaries,
+evidence capture and next separately approved gates. Full installed-flow acceptance remains open under
+#82/#81/#35. Documentation examples and completed approvals do not authorize a new live attempt.
 
 ## Preview without side effects
 
