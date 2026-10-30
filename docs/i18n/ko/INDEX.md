@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-10-29 KST
+## 현재 작업 — 2026-10-30 KST
 
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
@@ -69,9 +69,17 @@ PR #118로 전달했으며 최초 검증은 임시 파일·모의 프로세스�
 [제한된 파일 흐름 기록](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)을 참고하세요.
 새 AI 호출은 없었으며 설치 CLI 수용을 입증하지 않습니다. 별도
 [#82 선택형 CLI 소스 구현](guides/OWNER_FILE_WORKFLOW.md)은 현재 검증한 추천을 `--file-workflow`로
-연결하며 추천 전용 기본 동작과 별도 복사본/다섯 단계 결정을 유지합니다. 가짜 adapter·임시 파일·
-scripted worker를 사용하는 검증은 새 정책 관찰이 아닙니다. 설치형 실제 수용과 전달 조건은
-계속 미완료이며 #81/#35/#82는 열려 있고 UI와 #80은 그대로입니다.
+연결하며 추천 전용 기본 동작과 별도 복사본/다섯 단계 결정을 유지합니다. 최종 head의 CI·코드/보안
+리뷰를 거쳐 [PR #120](https://github.com/casing1/authzest/pull/120)의 `a0ae879`로 소스 전달을
+완료했습니다. 최초 가짜 adapter·임시 파일·scripted worker 검증은 새 정책 관찰이 아닙니다.
+2026-10-30 KST에 Python `3.12.7`의 별도 non-editable wheel 설치에서 패키지 파일 64개가 해당
+소스와 일치했고 오프라인 검사 23개를 통과했습니다. 이어 별도 승인한 설치 CLI 추천 2회가
+성공했습니다. 첫 실행은 복사 확인 만료 후 복사 없이 종료했고, 둘째는 비공개 복사본 1개와
+before 검사 계획을 준비한 뒤 미승인 worker 실행을 거절했습니다. 두 실행 모두 종료 `0`이며
+정책 worker·diff 수용/적용·after 검사·복구는 수행하지 않았고 원본 checkout은 바뀌지 않았습니다.
+남은 별도 승인 단계는 [설치 흐름 수용 검증 runbook](guides/OWNER_FILE_ACCEPTANCE.md)을
+참고하세요. 전체 설치형 실제 수용은 미완료이며 #81/#35/#82는 열려 있고 UI·#80·공개 alpha.3는
+그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
 아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
@@ -138,7 +146,8 @@ docs/
 | 등록 수정 추천과 공유 (소스)                     | [Repair recommendation](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | 등록 수정 정책 검사 API (소스; 별도 대조군 관찰) | [Repair check](../../reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](reference/OWNER_POLICY_REPAIR_CHECK.md)               |
 | 소유 파일 수정 API (소스; 제한된 파일 관찰)      | [Owned-file repair](../../reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](reference/OWNER_POLICY_FILE_REPAIR.md)                 |
-| 선택형 소유 파일 CLI (소스; 오프라인 구현 검증)  | [Owned-file CLI](../../guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](guides/OWNER_FILE_WORKFLOW.md)                              |
+| 선택형 소유 파일 CLI (소스; 부분 설치 관찰)      | [Owned-file CLI](../../guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](guides/OWNER_FILE_WORKFLOW.md)                              |
+| 설치형 소유 파일 수용 검증 runbook과 제한된 관찰 | [Installed-flow acceptance](../../guides/OWNER_FILE_ACCEPTANCE.md)               | [설치 흐름 수용 검증](guides/OWNER_FILE_ACCEPTANCE.md)                      |
 | 소유 파일 적용/검사/복구 (검토한 설계)           | [Owned-file repair design](../../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | 전용 수정 정책 고정 검사 (과거 설계)             | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | 테스트 전용 소유 정책 수정 쌍 (제안)             | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |

@@ -93,9 +93,13 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   a current validated recommendation can proceed to a fresh owned copy, then before-check, exact-diff
   acceptance, apply, after-check and restore, each with separate consent. The option itself is not
   approval; `--preview-only` still shows sharing input only. Human output separates stage statuses and
-  eight case observations; `--json` retains one final document. CLI verification is offline/scripted,
-  not new live AI/worker/patch acceptance. Separately approved installed-flow acceptance under #82
-  remains pending; this does not change the published version or report schema.
+  eight case observations; `--json` retains one final document. Source delivery completed in PR #120
+  at `a0ae879` after CI and code/security reviews. Separate installed-CLI observations received two
+  live recommendations; the first stopped after copy confirmation expired, and the second created
+  one private copy and prepared its before plan before declining worker execution. This does not
+  establish installed worker/diff/application/after/restoration acceptance. See the
+  [remaining acceptance runbook](docs/guides/OWNER_FILE_ACCEPTANCE.md); #82 remains open, and the
+  published version and report schema are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -337,8 +341,9 @@ Current source and next step:
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
-   adds the opt-in file workflow with offline tests. Next is separately approved installed-flow
-   end-to-end acceptance; #82 is not complete.
+   delivered the opt-in file workflow and offline tests through PR #120. Installed observations
+   reached recommendation, one private copy and before-plan preparation only. Next are the
+   [remaining separately approved acceptance stages](docs/guides/OWNER_FILE_ACCEPTANCE.md); #82 is not complete.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.

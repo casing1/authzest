@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-29 KST
+## Current work — 2026-10-30 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -76,9 +76,18 @@ exact diff acceptance/application, captured after bytes (8/8) and restoration; s
 It made no new AI call and does not establish installed-CLI acceptance. The separate
 [#82 opt-in CLI source implementation](guides/OWNER_FILE_WORKFLOW.md) now connects current validated
 recommendations through `--file-workflow`, preserving recommendation-only defaults and separate
-copy/five-stage decisions. Its verification uses fake adapters, temporary files and scripted workers,
-not new policy observations. Installed live acceptance and delivery gates remain pending;
-#81/#35/#82 remain open, the UI is unchanged and #80 is unchanged.
+copy/five-stage decisions. Source delivery completed through
+[PR #120](https://github.com/casing1/authzest/pull/120) at `a0ae879`, following exact-head CI and code/security
+reviews. Initial verification used fake adapters, temporary files and scripted workers, not new policy
+observations. On 2026-10-30 KST a separate non-editable wheel installation on Python `3.12.7` matched all
+64 package files to that source and passed 23 offline checks. Two separately approved installed-CLI
+recommendation attempts then succeeded: the first stopped without a copy after its copy confirmation
+expired; the second created one private copy and prepared its before-check plan, then declined the
+unapproved worker. Both exited `0`. Neither attempt executed a policy worker, accepted/applied a diff,
+performed an after check or restored a file; the original checkout stayed unchanged. See the
+[installed-flow acceptance runbook](guides/OWNER_FILE_ACCEPTANCE.md) for the remaining separately scoped
+stages. Full installed live acceptance remains pending; #81/#35/#82 remain open, the UI and #80 are
+unchanged, and published alpha.3 is unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
@@ -146,7 +155,8 @@ docs/
 | Registered repair recommendation and sharing (source)                   | [Repair recommendation](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)   | [수정 추천과 공유](i18n/ko/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)         |
 | Registered repair-policy check API (source; separate controls observed) | [Repair check](reference/OWNER_POLICY_REPAIR_CHECK.md)                     | [등록 수정 정책 검사](i18n/ko/reference/OWNER_POLICY_REPAIR_CHECK.md)               |
 | Owned-file repair API (source; bounded file observation)                | [Owned-file repair](reference/OWNER_POLICY_FILE_REPAIR.md)                 | [소유 파일 수정 API](i18n/ko/reference/OWNER_POLICY_FILE_REPAIR.md)                 |
-| Opt-in owned-file CLI (source; offline implementation verification)     | [Owned-file CLI](guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](i18n/ko/guides/OWNER_FILE_WORKFLOW.md)                              |
+| Opt-in owned-file CLI (source; partial installed observation)           | [Owned-file CLI](guides/OWNER_FILE_WORKFLOW.md)                            | [소유 파일 CLI](i18n/ko/guides/OWNER_FILE_WORKFLOW.md)                              |
+| Installed owned-file acceptance runbook and bounded observations        | [Installed-flow acceptance](guides/OWNER_FILE_ACCEPTANCE.md)               | [설치 흐름 수용 검증](i18n/ko/guides/OWNER_FILE_ACCEPTANCE.md)                      |
 | Owned-file apply/check/restore (reviewed design)                        | [Owned-file repair design](development/OWNER_POLICY_FILE_REPAIR_DESIGN.md) | [소유 파일 수정 설계](i18n/ko/development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)       |
 | Dedicated repair-policy fixed check (historical design)                 | [Repair-check design](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](i18n/ko/development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | Test-only owner-policy repair pair (proposed)                           | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
