@@ -94,12 +94,18 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   acceptance, apply, after-check and restore, each with separate consent. The option itself is not
   approval; `--preview-only` still shows sharing input only. Human output separates stage statuses and
   eight case observations; `--json` retains one final document. Source delivery completed in PR #120
-  at `a0ae879` after CI and code/security reviews. Separate installed-CLI observations received two
-  live recommendations; the first stopped after copy confirmation expired, and the second created
-  one private copy and prepared its before plan before declining worker execution. This does not
-  establish installed worker/diff/application/after/restoration acceptance. See the
-  [remaining acceptance runbook](docs/guides/OWNER_FILE_ACCEPTANCE.md); #82 remains open, and the
-  published version and report schema are unchanged.
+  at `a0ae879` after CI and code/security reviews. Two earlier installed recommendation attempts stopped
+  at expired copy confirmation or before-worker decline; the second attempt's stdout capture was
+  incomplete. A fresh, separately approved installed run from `c868152` on one macOS/Python `3.12.7`
+  host completed on **2026-10-30 KST**: one real recommendation, one new private copy,
+  before 6/8 matches, exact diff acceptance/application, actual applied-byte after 8/8 matches, and
+  restoration to exact before bytes (`restored-before`, generation `3`). Complete final stdout JSON
+  and stderr logs were retained privately; the original checkout remained clean. See the
+  [bounded installed-flow record](docs/guides/OWNER_FILE_ACCEPTANCE.md). Remaining #82 work is final
+  walkthrough/criteria review, mapping the existing offline refusal/user-edit/recovery tests, and
+  required documentation CI/reviews, not additional live failure injection. Broader #81/#35 and #83's
+  release gates remain open. Windows/frozen active file execution remains unsupported; the published
+  version and report schema are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -341,9 +347,11 @@ Current source and next step:
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
 3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
-   delivered the opt-in file workflow and offline tests through PR #120. Installed observations
-   reached recommendation, one private copy and before-plan preparation only. Next are the
-   [remaining separately approved acceptance stages](docs/guides/OWNER_FILE_ACCEPTANCE.md); #82 is not complete.
+   delivered the opt-in file workflow and offline tests through PR #120. A separately approved,
+   one-host installed happy path now covers recommendation through applied-file checking and restoration.
+   Next are [final walkthrough/criteria review and mapping existing offline refusal/user-edit/recovery
+   evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md), with required documentation CI/reviews, followed by
+   #83's separately gated candidate work; #82/#81/#35 are not declared complete.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.

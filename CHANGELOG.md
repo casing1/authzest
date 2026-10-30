@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record one separately approved [installed owned-file CLI happy path](docs/guides/OWNER_FILE_ACCEPTANCE.md#installed-happy-path-observation--2026-10-30-kst)
+  at source `c868152` on macOS/Python 3.12.7: current registered recommendation, one private copy,
+  captured before check (6/8), exact diff/apply, captured actual applied-after check (8/8), then verified
+  restoration to before / generation 3. Complete original JSON, stderr and file/record bindings were
+  checked privately; original checkout unchanged. Earlier preparation/capture gaps remain historical.
+  This is not live failure-injection, general repository remediation, native/upgrade acceptance or
+  closure of #82/#81/#35. Published alpha.3, package/schema versions and #83/#89 gates are unchanged.
 - Add the opt-in [`codex-owner-repair --file-workflow` source CLI](docs/guides/OWNER_FILE_WORKFLOW.md)
   for the current validated recommendation and existing owned-copy session. Keep recommendation-only
   defaults, separate sharing/copy/five-stage choices, original 300-second expiry and one-attempt

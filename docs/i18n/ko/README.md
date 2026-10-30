@@ -95,10 +95,17 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   이어지며 각각 별도로 동의해야 합니다. 옵션 자체는 승인이 아니고 `--preview-only`는 여전히
   공유 입력만 표시합니다. 사람용 출력은 단계 상태와 사례 8개의 관찰을 구분하고 `--json`은 최종
   문서 하나를 유지합니다. CI·코드/보안 리뷰 후 PR #120의 `a0ae879`로 소스 전달을 완료했습니다.
-  별도 설치 CLI 관찰에서 실제 추천 2회를 받았습니다. 첫 실행은 복사 확인 만료 후 종료했고,
-  둘째는 비공개 복사본 1개와 before 계획을 준비한 뒤 worker 실행을 거절했습니다. 이는 설치형
-  worker·diff·적용·after·복구의 수용 검증이 아닙니다. [남은 수용 검증 runbook](guides/OWNER_FILE_ACCEPTANCE.md)을
-  참고하세요. #82는 열려 있고 공개 버전·리포트 스키마는 바뀌지 않습니다.
+  이전 설치 추천 시도 2회는 복사 확인 만료 또는 before worker 거절에서 멈췄으며, 둘째의 stdout
+  수집은 불완전했습니다. 이후 별도 승인한 `c868152` 설치본을 macOS/Python `3.12.7` host 한 대에서
+  **2026-10-30 KST**에 실행해 실제 추천 1회, 새 비공개 복사본 1개, before 6/8 일치,
+  정확한 diff 수락·적용, 실제 적용 바이트의 after 8/8 일치와 정확한 before 바이트 복구를
+  완료했습니다(`restored-before`, generation `3`). 완전한 최종 stdout JSON과 stderr 로그는
+  비공개로 보존했고 원본 checkout은 clean 상태를 유지했습니다.
+  [제한된 설치 흐름 기록](guides/OWNER_FILE_ACCEPTANCE.md)을 참고하세요. #82의 남은 작업은 최종
+  walkthrough·완료 기준 검토, 기존 오프라인 거절·사용자 편집·복구 테스트와 기준의 대응 확인,
+  문서의 필수 CI·리뷰이며 추가 실제 고장 주입이 아닙니다. 더 넓은 #81/#35와 #83 릴리스 조건은
+  열려 있습니다. Windows/frozen의 활성 파일 실행은 여전히 지원하지 않으며 공개 버전·리포트
+  스키마는 바뀌지 않습니다.
 - 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
@@ -343,9 +350,11 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35)
 3. 미출시 소스: [#82: 읽기 쉬운 설치 CLI 통합](https://github.com/casing1/authzest/issues/82)에
-   opt-in 파일 흐름과 오프라인 테스트를 PR #120으로 전달했습니다. 설치 관찰은 추천·비공개
-   복사본 1개·before 계획 준비까지만 완료했습니다. 다음은 [남은 별도 승인 수용 단계](guides/OWNER_FILE_ACCEPTANCE.md)이며,
-   #82는 완료되지 않았습니다.
+   opt-in 파일 흐름과 오프라인 테스트를 PR #120으로 전달했습니다. 별도 승인한 host 한 대의
+   설치 정상 경로에서 추천부터 적용 파일 검사·복구까지 관찰했습니다. 다음은
+   [최종 walkthrough·완료 기준 검토와 기존 오프라인 거절·사용자 편집·복구 근거의 대응 확인](guides/OWNER_FILE_ACCEPTANCE.md),
+   문서의 필수 CI·리뷰, 이후 별도 조건을 따르는 #83 후보 준비입니다. #82/#81/#35 전체 완료를
+   선언하지 않습니다.
 
 [오프라인 기반](reference/AI_CONTRACT.md)은 alpha.3 fixture 명령에서 사용하는 계약을 제공합니다.
 평가 스크립트와 데이터셋은 checkout 전용으로 유지하며 완전한 #35 흐름은 미완료입니다.

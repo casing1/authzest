@@ -9,8 +9,8 @@
 [File-session contract](../reference/OWNER_POLICY_FILE_REPAIR.md) ·
 [Development plan](../development/DEVELOPMENT_PLAN.md)
 
-This is a **planned acceptance procedure, not execution permission or a completed acceptance
-record**. It preserves the existing CLI and its separate decisions. It adds no unattended approval,
+This is an **acceptance procedure with a bounded observation record, not execution permission or
+completion of every #82/release gate**. It preserves the existing CLI and its separate decisions. It adds no unattended approval,
 resume/import, deadline extension, worker selection or new execution route.
 
 ## Recorded boundary — 2026-10-30 KST
@@ -46,9 +46,56 @@ were separately checked. Do not reconstruct the missing stdout from those source
 original capture. Detailed local records/identifiers remain private; this is a recorded maintainer
 walkthrough, not an independent benchmark or authenticated receipt.
 
-No installed CLI policy observations or full installed repair/recovery pass have been recorded.
-#82/#81/#35 and the separate #83 release gates remain open. Published alpha.3, package `0.1.0a3`
-and report schema `1.2` are unchanged.
+Those two attempts did not establish installed policy execution or repair/recovery. The later,
+separately approved happy path below supplies that narrow evidence without repairing the earlier
+capture gap. #82/#81/#35 and the separate #83 release gates remain open. Published alpha.3,
+package `0.1.0a3` and report schema `1.2` are unchanged.
+
+## Installed happy-path observation — 2026-10-30 KST
+
+A fresh non-editable wheel installation from main `c868152590b70fdaae6fd8274d5344b09e5d948f`
+matched all 64 packaged source files and passed the existing 13 installed-smoke checks plus 10
+additional offline workflow checks. One separately approved installed-CLI walkthrough then completed
+on macOS/Python 3.12.7, Codex 0.153.0, adapter 0.1 and exact model `gpt-6-astra`, candidate `before`.
+The product ran from its installed console entrypoint without development-only execution helpers;
+separate read-only probes compared the saved evidence. This is one-host source-install evidence.
+
+- The current recommendation passed host validation and selected the existing registered template.
+  Only the fixed public synthetic pair, criteria/assumptions, eight reviewed cases and prompt/schema
+  were shared. No arbitrary replacement source or new cases were generated.
+- All seven current sharing/copy/before/diff/apply/after/restore previews were separately reviewed,
+  and their exact fresh choices were entered within the applicable original lifetimes. No approval
+  automation, imported decisions, model fallback, AuthZest-level retry or expired-state continuation was used.
+- One fresh private copy was checked before modification: 6/8 expectations matched, with the intended
+  `non-owner` and `exact-owner-no-normalization` over-allows. The exact registered diff was accepted
+  and applied only to that copy. The captured actual applied bytes then matched all 8/8 expectations.
+- Both fixed-worker checks completed once with exit `0` and confirmed child/workspace cleanup.
+  Separate restoration completed; the retained actual file matches the exact registered before bytes,
+  final phase `restored-before`, generation 3, with confirmed file/evidence bindings.
+- Complete original stdout parsed as one final JSON object; original stderr, exit codes and private
+  files/records were retained. CLI and capture both exited `0`. Directory 0700 and regular single-link
+  files 0600 were verified. The final closed checkpoint matches the durable record except for `closed`.
+  The original checkout stayed clean. Raw evidence, identifiers, account data and usage remain private.
+
+The single recommendation and all copy/stage allowances are consumed. Negotiated model metadata is
+not independent served-model attestation, and internal transport retries/usage are not hard-capped.
+Historical after success describes the applied bytes, not the currently restored before file.
+This walkthrough is not an independent benchmark, authenticated approval, HTTP/authentication/DB
+test, installed live failure injection, pipx/upgrade/native acceptance or a release decision. Existing
+offline refusal/user-edit/recovery tests and final #82 review remain distinct; no parent issue is closed.
+
+## #82 evidence mapping and remaining review
+
+| Criterion                                                | Recorded evidence                                                                                                                                                                                              | Remaining boundary                                                                                                                         |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Installed active happy path                              | The `c868152` observation above: current recommendation, one copy, actual before/applied-after checks and restore; complete original JSON and private file/record comparison                                   | One macOS/Python source installation, not arbitrary repositories or native/upgrade acceptance                                              |
+| Refusal/failure/user-edit/recovery and no-change/unknown | Existing guarded [coordinator tests](../../tests/test_codex_owner_file_workflow.py) and [CLI tests](../../tests/test_codex_owner_file_cli.py), with fake adapters/scripted observations and pytest-owned files | Offline integration evidence, not live fault injection; new provider/worker runs are not required merely to map these tests                |
+| Human/JSON output and walkthrough                        | [CLI instructions](OWNER_FILE_WORKFLOW.md), complete consent previews, separate output streams and the captured installed happy path                                                                           | Maintainer's final walkthrough/limitations review remains open; the JSON-mode run alone does not observe every human-rendering branch      |
+| Fresh scoped decisions and retained evidence             | Seven separately reviewed current choices; exact application/plan/file bindings, restored bytes and private records compared                                                                                   | Consumed one-run allowances, unauthenticated choices/records, authorization `unknown`; no reuse or independent security proof              |
+| Delivery and parent closure                              | PR #120 implementation and PR #121 runbook completed their separate exact-head checks/reviews                                                                                                                  | This documentation update still needs its own exact-head CI/reviews and normal merge; reconcile #81/#35 before separately deciding closure |
+
+This mapping records where the evidence comes from; it does not declare every criterion accepted,
+request another live run, waive a release gate or grant issue-closing authority.
 
 ## Before a new active run
 
@@ -151,7 +198,8 @@ For the fully approved registered happy path, require observed before results of
 (the intended non-owner and exact-owner-no-normalization over-allows), observed applied-after
 results of 8/8, confirmed exact diff/apply/restore, final `restored-before` / generation 3, and
 consistent file bindings, completed process/cleanup and retained evidence. These numbers are
-**expected acceptance criteria, not new observations**. Authorization remains `unknown`; no HTTP,
+**criteria for a new run, not permission or observations from that future run**. The bounded observation
+above records one completed happy path. Authorization remains `unknown`; no HTTP,
 authentication-provider, database or endpoint enforcement is tested.
 
 Read outer provider attempt/configuration/identity/usage/latency separately from nested pure

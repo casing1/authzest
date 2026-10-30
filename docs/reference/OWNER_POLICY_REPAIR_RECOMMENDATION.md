@@ -305,6 +305,9 @@ before-check, exact-diff, apply, after-check and restore approvals. It observed 
 applied-after matches and restored the owned copy, with no new provider call. This is source-API
 acceptance, not a new model acceptance or installed CLI integration; an embedded after control still
 cannot verify an applied file. The separate [#82 opt-in CLI implementation](../guides/OWNER_FILE_WORKFLOW.md)
-has offline fake-adapter/scripted-worker verification; installed live acceptance remains pending.
+has offline fake-adapter/scripted-worker verification and a later separately approved installed
+happy-path observation at `c868152`: current recommendation, captured before 6/8, exact diff/apply,
+actual applied-after 8/8 and verified restore. See the [installed observation record](../guides/OWNER_FILE_ACCEPTANCE.md)
+for complete-output/private-evidence checks and limits; final #82 acceptance review remains open.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
 Wider #81/#82 and prerelease gates remain open.

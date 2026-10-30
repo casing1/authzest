@@ -37,11 +37,17 @@ as `before-check-declined`. Neither attempt ran a policy worker, applied a repai
 The second raw stdout capture was incomplete; separate checks of the full before plan, final workflow
 object, durable record and actual file do not establish a complete single-JSON stdout parse.
 
-This is bounded installed recommendation/preparation evidence, not full end-to-end acceptance or
-pipx/upgrade/native distribution evidence. The prior source-API observation is also a separate result.
-See the [installed-flow acceptance runbook](OWNER_FILE_ACCEPTANCE.md) for the observation boundaries,
-evidence capture and next separately approved gates. Full installed-flow acceptance remains open under
-#82/#81/#35. Documentation examples and completed approvals do not authorize a new live attempt.
+Those attempts remain preparation evidence, separate from a later approved installed happy path at
+`c868152` on the same date: a fresh source installation completed current recommendation → private copy
+→ captured before check (6/8) → exact diff/apply → captured applied-after check (8/8) → restore.
+The actual restored file matched registered before bytes at generation 3. Complete original stdout
+JSON, stderr and retained records were checked privately; CLI/capture exited `0`, original checkout clean.
+
+See the [installed-flow acceptance record and runbook](OWNER_FILE_ACCEPTANCE.md) for exact scope and
+remaining gates. This is one macOS/Python 3.12.7 POSIX source installation, not live failure injection,
+pipx/upgrade/native distribution evidence or general repository repair. Existing offline refusal,
+user-edit and recovery checks need their final #82 review; #82/#81/#35 and release gates remain open.
+Documentation examples and consumed approvals do not authorize a new live attempt.
 
 ## Preview without side effects
 
