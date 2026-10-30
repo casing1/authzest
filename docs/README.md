@@ -80,14 +80,21 @@ copy/five-stage decisions. Source delivery completed through
 [PR #120](https://github.com/casing1/authzest/pull/120) at `a0ae879`, following exact-head CI and code/security
 reviews. Initial verification used fake adapters, temporary files and scripted workers, not new policy
 observations. On 2026-10-30 KST a separate non-editable wheel installation on Python `3.12.7` matched all
-64 package files to that source and passed 23 offline checks. Two separately approved installed-CLI
+64 package files to that source and passed the existing 13 plus 10 additional offline checks. Two separately approved installed-CLI
 recommendation attempts then succeeded: the first stopped without a copy after its copy confirmation
 expired; the second created one private copy and prepared its before-check plan, then declined the
 unapproved worker. Both exited `0`. Neither attempt executed a policy worker, accepted/applied a diff,
-performed an after check or restored a file; the original checkout stayed unchanged. See the
-[installed-flow acceptance runbook](guides/OWNER_FILE_ACCEPTANCE.md) for the remaining separately scoped
-stages. Full installed live acceptance remains pending; #81/#35/#82 remain open, the UI and #80 are
-unchanged, and published alpha.3 is unchanged.
+performed an after check or restored a file; the second stdout capture was incomplete. These historical
+preparation attempts remain distinct from the fresh, separately approved installed run from `c868152`
+on **2026-10-30 KST**. On one macOS/Python `3.12.7` host, that run completed one real
+recommendation and new private copy, before 6/8 matches, exact diff acceptance/application, actual
+applied-byte after 8/8 matches and exact-before restoration (`restored-before`, generation `3`).
+Complete final stdout JSON and stderr logs were retained privately; the original checkout remained clean.
+See the [bounded installed-flow record and remaining gates](guides/OWNER_FILE_ACCEPTANCE.md).
+#82 still needs final walkthrough/criteria review, mapping of existing offline refusal/user-edit/recovery
+tests, and required documentation CI/reviews, not additional live failure injection. Broader #81/#35 and
+#83 release gates remain open. This is not cross-platform/native acceptance; Windows/frozen active file
+execution remains unsupported. The UI, #80 and published alpha.3 are unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
