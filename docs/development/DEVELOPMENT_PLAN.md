@@ -21,14 +21,19 @@ Improve CLI usability before adding an AI GUI, deployment or a second adapter. M
 not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
 value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
 
-## Current baseline — 2026-10-30 KST
+## Current baseline — 2026-11-02 KST
 
-The recorded source baseline is main `c868152`, after
+The documentation delivery baseline is main `17df20a`, after
+[PR #122](https://github.com/casing1/authzest/pull/122) completed its required checks/reviews and normal
+merge. The recorded installed observation remains bound to source `c868152`, after
 [PR #120](https://github.com/casing1/authzest/pull/120) delivered the reviewed opt-in owned-file CLI and
 [PR #121](https://github.com/casing1/authzest/pull/121) delivered its acceptance/capture runbook.
 A separately approved installed happy path at that source completed recommendation, before/diff/apply/
-after/restore with full original output and actual file verification. It is not an accepted final
-release candidate or completion of every #82 gate. The earlier file-API observation remains bound to `fb90c46`, after
+after/restore with full original output and actual file verification. On 2026-11-02 KST the maintainer
+accepted that bounded walkthrough, English/Korean limitations and existing offline failure/refusal/
+user-edit/recovery and no-change/unknown evidence. This is a review decision, not a new live run or
+release-candidate acceptance. Acceptance-status documentation still needs its own required checks,
+separately approved reviews and normal merge before #82 → #81 → #35 completion. The earlier file-API observation remains bound to `fb90c46`, after
 [PR #118](https://github.com/casing1/authzest/pull/118); do not transfer that observation to the new CLI.
 [PR #114](https://github.com/casing1/authzest/pull/114) delivered #113's nonpublishing native preview
 workflow. Its separately approved baseline run at `b5de9d9` passed all three hosted platforms' binary,
@@ -94,23 +99,27 @@ bytes and preserves their distinct provenance; it does not select or freeze a ne
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
-| Implemented                                     | Actual boundary                                                                                                                                                                                                                          |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Installed CLI, local API/UI and static parser   | Bounded FastAPI route/registration/local-inherited dependency declarations; no complete Python interpretation or authorization verdict                                                                                                   |
-| Evidence, proposal and expectation contracts    | Exact identities/references, draft expectations and read-only comparison; schema `1.2`                                                                                                                                                   |
-| Mock review/walkthrough and copy application    | Separate source/apply/check/restore decisions; new owned single-file POSIX copy, not arbitrary checkout editing                                                                                                                          |
-| Opt-in App Server fixture workflow              | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                                                                                                                         |
-| Owned report policy example                     | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance                                                                                                          |
-| Read-only owner Codex review (#75 / PR #76)     | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof                                                                                                     |
-| Readable CLI output (#79 / PR #90)              | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                                                                                                                        |
-| Offline case-review / fixed-plan API (#77)      | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable                                                                                                      |
-| Fixed owned-policy check API (#80 / PR #97)     | Source-only fixed policy observations under a fresh one-use decision; Windows/frozen execution refuses; no HTTP/authentication proof                                                                                                     |
-| S1 recommendation contract (PR #99)             | Pure data request/result validation and output-only preview; caller-supplied provenance, empty changes, no provider/policy execution                                                                                                     |
-| Registered repair-pair API (PR #101)            | Exact registered data and host-derived one-file diff preview only; unreleased, no observations or apply/execute capability                                                                                                               |
-| Repair recommendation / sharing (source)        | PR #102/#103 delivered; one historical separately approved live response selected the registered template and passed host validation; approval consumed, no apply or policy execution                                                    |
-| Registered repair-policy check (PR #110 source) | Initial offline/mock checks, then separately approved before/after runs: expected two before mismatches and eight after matches; both approvals consumed, no CLI/UI or applied-file check                                                |
-| Owned-file repair API (PR #118 source)          | Separately approved captured-before check, diff acceptance, apply, captured-after check and restore observed at `fb90c46`: 6/8 before, 8/8 after; restored copy and records retained; historical API, not installed CLI acceptance       |
-| Owned-file CLI (#82 / PR #120)                  | Installed happy path at `c868152` on one macOS/Python 3.12.7 host: before 6/8, exact diff/apply, actual applied-after 8/8, restored before / generation 3; full JSON and private file/record evidence verified; final #82 review remains |
+| Implemented                                     | Actual boundary                                                                                                                                                                                                                         |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Installed CLI, local API/UI and static parser   | Bounded FastAPI route/registration/local-inherited dependency declarations; no complete Python interpretation or authorization verdict                                                                                                  |
+| Evidence, proposal and expectation contracts    | Exact identities/references, draft expectations and read-only comparison; schema `1.2`                                                                                                                                                  |
+| Mock review/walkthrough and copy application    | Separate source/apply/check/restore decisions; new owned single-file POSIX copy, not arbitrary checkout editing                                                                                                                         |
+| Opt-in App Server fixture workflow              | Pinned adapter, exact sharing approval; default AST check, separately approved fixed debug/health runtime option                                                                                                                        |
+| Owned report policy example                     | Pure-policy developer tests and scanner inventory; authentication is unconfigured/fail-closed, no HTTP authorization acceptance                                                                                                         |
+| Read-only owner Codex review (#75 / PR #76)     | Exact two-source sharing; one approved live run returned one host-valid answer / ten unexecuted cases, not a patch or security proof                                                                                                    |
+| Readable CLI output (#79 / PR #90)              | Human-readable defaults, explicit JSON streams and complete sharing previews; no new AI authority                                                                                                                                       |
+| Offline case-review / fixed-plan API (#77)      | Pure data with exact source/case/decision bindings; caller choices are not authenticated approval, and every plan is non-executable                                                                                                     |
+| Fixed owned-policy check API (#80 / PR #97)     | Source-only fixed policy observations under a fresh one-use decision; Windows/frozen execution refuses; no HTTP/authentication proof                                                                                                    |
+| S1 recommendation contract (PR #99)             | Pure data request/result validation and output-only preview; caller-supplied provenance, empty changes, no provider/policy execution                                                                                                    |
+| Registered repair-pair API (PR #101)            | Exact registered data and host-derived one-file diff preview only; unreleased, no observations or apply/execute capability                                                                                                              |
+| Repair recommendation / sharing (source)        | PR #102/#103 delivered; one historical separately approved live response selected the registered template and passed host validation; approval consumed, no apply or policy execution                                                   |
+| Registered repair-policy check (PR #110 source) | Initial offline/mock checks, then separately approved before/after runs: expected two before mismatches and eight after matches; both approvals consumed, no CLI/UI or applied-file check                                               |
+| Owned-file repair API (PR #118 source)          | Separately approved captured-before check, diff acceptance, apply, captured-after check and restore observed at `fb90c46`: 6/8 before, 8/8 after; restored copy and records retained; historical API, not installed CLI acceptance      |
+| Owned-file CLI (#82 / PR #120)                  | Installed happy path at `c868152` on one macOS/Python 3.12.7 host: before 6/8, exact diff/apply, actual applied-after 8/8, restored before / generation 3; bounded maintainer review accepted 2026-11-02, final status delivery pending |
+
+The accepted core uses one registered synthetic policy pair, eight reviewed cases and Codex template
+selection. General FastAPI repository PoC generation and model-authored repair source are **not implemented**.
+The acceptance of this bounded flow is not independent evaluation or HTTP/authentication/DB enforcement.
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate
@@ -136,14 +145,14 @@ fixture application/runtime mode is supported only on tested POSIX platforms.
 
 GitHub milestone numbers below are phase identifiers, not development-week numbers or exact release manifests.
 
-| Phase                                       | Current status    | Completion gate / remaining tracking                             |
-| ------------------------------------------- | ----------------- | ---------------------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                     |
-| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                     |
-| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results  |
-| 04 — User-approved Codex workflow           | Open              | #77/#80 complete; #35 epic still needs #81/#82, #78 coordination |
-| 05 — CLI usability and prerelease readiness | Open              | #79 completed; #83 candidate/install/artifact/release gates      |
-| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze   |
+| Phase                                       | Current status    | Completion gate / remaining tracking                                                                                |
+| ------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved | Completed foundation history                                                                                        |
+| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved | Completed evidence/release follow-up history                                                                        |
+| 03 — Offline AI contract and evaluation     | Closed; preserved | #33 contracts/mock evaluation; not actual model-quality results                                                     |
+| 04 — User-approved Codex workflow           | Open              | #77/#80 complete; bounded #81/#82 acceptance recorded, final status delivery and #82 → #81 → #35 completion pending |
+| 05 — CLI usability and prerelease readiness | Open              | #79 completed; #83 candidate/install/artifact/release gates                                                         |
+| 06 — Evaluation and course delivery         | Open              | #84 reviewed comparison, #85 reproducible demo/evidence freeze                                                      |
 
 Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
 and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
@@ -153,16 +162,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority                           | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                              |
-| ---------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Completed                          | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                         |
-| Completed                          | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                                 |
-| Completed                          | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                     |
-| Source API observed                | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #118 delivered and separate file-API path observed at `fb90c46`; later installed happy path is recorded separately under #82. Final parent-criteria reconciliation remains open                                                |
-| Active: acceptance evidence review | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | Installed happy path completed at `c868152`. Next: map the saved observations and existing offline refusal/user-edit/recovery tests to every criterion, review the reproducible walkthrough and exact-head documentation delivery |
-| Active prerelease preparation      | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #114 native baseline and #116 local source-install evidence recorded; #89 disposition and exact versioned candidate/platform/distribution/publication gates remain; describe unfinished #35 honestly                              |
-| Evaluation                         | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                                                  |
-| Delivery                           | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                         |
+| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                               |
+| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                       |
+| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                           |
+| Bounded acceptance recorded   | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #118 file-API observation and later #82 installed evidence remain distinct. Maintainer accepted bounded criteria on 2026-11-02; final status-documentation delivery and conditional completion remain pending        |
+| Active: final status delivery | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | Walkthrough/limitations and existing offline evidence accepted 2026-11-02. Complete acceptance-status documentation's exact-head checks, separately approved reviews and normal merge before #82 → #81 → #35 completion |
+| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | #114 native baseline and #116 local source-install evidence recorded; #89 disposition and exact versioned candidate/platform/distribution/publication gates remain; describe unfinished #35 honestly                    |
+| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; offline setup can run in parallel, workflow measures after #82                                                                                        |
+| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                               |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -262,12 +271,13 @@ private file/record bindings were checked; CLI/capture exited `0` and original c
 The new installation again matched 64 package files and passed the existing 13 plus 10 offline checks.
 See the [bounded installed observation and runbook](../guides/OWNER_FILE_ACCEPTANCE.md).
 
-Next is final #82 evidence reconciliation: map that happy path and the existing offline refusal,
-user-edit and recovery checks to the criteria, then review the reproducible walkthrough and required
-exact-head documentation checks/reviews. Those offline failure tests are not live failure injection;
-their acceptance does not inherently require another provider/worker run. All one-run allowances are
-consumed. #82/#81/#35, #89 disposition and exact-candidate release gates remain open; no new effects
-or issue closure follow from this record.
+The maintainer accepted the bounded #82 evidence mapping and English/Korean walkthrough/limitations
+on 2026-11-02 KST. Offline failure/refusal/user-edit/recovery and no-change/unknown tests remain separate
+from the recorded installed happy path; acceptance is not live failure injection or a new run.
+Next is final acceptance-status documentation delivery: required exact-head checks, separately approved
+reviews and normal merge, then conditional #82 → #81 → #35 completion. All one-run allowances are
+consumed. These issues and independent #83/#84/#85/#89 remain open; no new execution, file effect,
+risk acceptance or release follows from this record.
 
 Implemented #79 defines human-readable defaults and explicit JSON compatibility: one final result on stdout
 in JSON mode, interactive previews/prompts/progress on stderr, and one complete preview for preview-only
@@ -284,8 +294,9 @@ limitations are explicit. It still requires #83's own checks; a docs PR or passi
 - [x] #80 source-only fixed harness delivered through [PR #97](https://github.com/casing1/authzest/pull/97), with exact-head CI/code/security reviews complete on 2026-10-15 KST. Source observations are not endpoint authorization evidence.
 - [x] Separately approved #81 file-API sequence observed at `fb90c46` on 2026-10-29 KST: before 6/8, exact diff/apply, after 8/8, restore and retained records; no new AI call or installed CLI acceptance.
 - [x] Separately approved installed-source happy path observed at `c868152` on 2026-10-30 KST: current recommendation, before 6/8, exact diff/apply, actual applied-after 8/8, restore, complete original JSON and retained evidence; one macOS host only.
-- [ ] Reviewed bounded defensive reproduction and evidence-linked remediation/no-change accepted (#81).
-- [ ] Final installed-flow/walkthrough review and mapping of existing offline failure/refusal/user-edit/recovery evidence completed (#82). The happy path and PR #120 source reviews do not alone close #35; further changes need their own required reviews.
+- [x] Reviewed bounded defensive reproduction and evidence-linked registered remediation/no-change accepted on 2026-11-02 KST (#81); not general repository PoC or repair-source generation.
+- [x] Final bounded installed-flow/walkthrough, bilingual limitations and existing offline failure/refusal/user-edit/recovery/no-change evidence mapping accepted on 2026-11-02 KST (#82); not new live execution.
+- [ ] Acceptance-status documentation passes required exact-head checks, separately approved reviews and normal merge; then verify #82 → #81 → #35 completion in order. Prior delivery reviews do not cover this change.
 - [ ] Frozen independent reference review and measured evaluation, or explicit unavailable evidence, recorded (#84).
 - [ ] Exact distribution claims, reproducible demo and course evidence freeze accepted (#83/#85).
 

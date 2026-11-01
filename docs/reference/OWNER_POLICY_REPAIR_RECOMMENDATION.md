@@ -308,6 +308,10 @@ cannot verify an applied file. The separate [#82 opt-in CLI implementation](../g
 has offline fake-adapter/scripted-worker verification and a later separately approved installed
 happy-path observation at `c868152`: current recommendation, captured before 6/8, exact diff/apply,
 actual applied-after 8/8 and verified restore. See the [installed observation record](../guides/OWNER_FILE_ACCEPTANCE.md)
-for complete-output/private-evidence checks and limits; final #82 acceptance review remains open.
+for complete-output/private-evidence checks and limits. The maintainer accepted the bounded walkthrough,
+bilingual limitations and separate offline evidence on 2026-11-02 KST, not through another live run.
+General FastAPI PoC generation and model-authored repair source are not implemented. Acceptance-status
+documentation still needs required exact-head checks, separately approved reviews and normal merge
+before conditional #82 → #81 → #35 completion.
 No execution, patch, merge, tag or release follows from these data objects or a valid provider result.
-Wider #81/#82 and prerelease gates remain open.
+#82/#81/#35 and independent #83/#84/#85/#89 gates remain open.

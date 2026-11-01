@@ -16,6 +16,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Record [bounded maintainer acceptance](docs/guides/OWNER_FILE_ACCEPTANCE.md#bounded-maintainer-acceptance--2026-11-02-kst)
+  on 2026-11-02 KST of the existing installed walkthrough, English/Korean limitations and separate
+  offline failure/refusal/user-edit/recovery/no-change evidence. Align four READMEs, indexes, roadmap
+  and #82/#81/#35 criteria without claiming a new live run or issue closure. The accepted core is one
+  registered synthetic pair/eight cases, Codex template selection and the POSIX source CLI; general
+  FastAPI PoC generation and model-authored repair source are not implemented. Final status-document
+  checks, separately approved reviews and normal merge precede ordered issue completion. Independent
+  #83/#84/#85/#89, published alpha.3, package/schema versions and runtime permissions are unchanged.
 - Record one separately approved [installed owned-file CLI happy path](docs/guides/OWNER_FILE_ACCEPTANCE.md#installed-happy-path-observation--2026-10-30-kst)
   at source `c868152` on macOS/Python 3.12.7: current registered recommendation, one private copy,
   captured before check (6/8), exact diff/apply, captured actual applied-after check (8/8), then verified
