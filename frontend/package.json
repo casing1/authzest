@@ -2,6 +2,9 @@
   "name": "authzest-web",
   "private": true,
   "type": "module",
+  "overrides": {
+    "minimatch": "11.0.1"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

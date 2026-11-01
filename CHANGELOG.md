@@ -34,8 +34,9 @@ remain gates in [#83](https://github.com/casing1/authzest/issues/83).
   in native executables and Windows.
 - Bounded core delivery completed through PR #123 and ordered #82 → #81 → #35 completion on
   2026-11-02 KST. Independent evaluation, course evidence and distribution acceptance remain separate.
-- Prepare an unused package version and align four README languages without a new provider/policy run,
-  dependency change, risk acceptance, tag or release. Existing approval/refusal boundaries are unchanged.
+- PR #125 prepared an unused package version and aligned four README languages without a new
+  provider/policy run, dependency change, risk acceptance, tag or release. The later minimatch
+  maintenance below changes the candidate dependency graph; existing approval/refusal boundaries stay unchanged.
 
 The entries below retain the scope and status of each development checkpoint since alpha.3. References
 to an unchanged package version, pending issues or an unreleased slice describe that checkpoint, not
@@ -268,6 +269,21 @@ the candidate's current status. Historical observations are not reruns on this c
 
 ### Fixed
 
+- Override standalone frontend `minimatch` from `10.2.6` to exact `11.0.1` for Dependabot alert #12,
+  [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) / CVE-2026-118764.
+  This deliberately crosses the `^10.x` ranges of ESLint, `@eslint/config-array` and
+  `@typescript-eslint/typescript-estree`; scoped inspection found no use of v11's removed `makeRe`/`AST`
+  APIs in those consumers, not general major-version compatibility. Add only the required transitive
+  `@isaacs/nonrecursive-glob-match` `1.0.3`, keeping direct pins, package `0.1.0a4` and schema `1.2` unchanged.
+  Ten focused regressions passed: locked/installed consumer resolution, CJS/ESM tiny-cap
+  preprocessing bounds, ordinary globs/partial/Windows-path behavior, ESLint file traversal and
+  TypeScript project-service allow/deny behavior. Maintenance is tracked in
+  [#126](https://github.com/casing1/authzest/issues/126).
+  These use bounded inputs and an immediate comparison sentinel, not a DoS load test. Inspected consumers
+  use default optimization level `1`; AuthZest exploitation remains `needs_review` / medium, not a confirmed
+  runtime bug. A zero-result npm audit covers the dependency graph only, not embedded copies. Prettier's
+  independent #89 copy remains unchanged; final-head CI/reviews and the revised candidate's release gates
+  remain pending. No risk acceptance, native workflow, tag or release is added.
 - Update lint tooling's transitive Zod lock entry from `4.5.4` to `4.6.7` (#106) for
   [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5), without changing direct
   dependency pins or ESLint configuration. Pick up upstream's leading collection upper-bound check

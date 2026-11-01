@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { createRequire } from "node:module";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const frontend = fileURLToPath(new URL("../frontend/", import.meta.url));
 const lock = JSON.parse(
@@ -20,6 +21,159 @@ const hooksRequire = createRequire(
 const errorRequire = createRequire(hooksRequire.resolve("zod-validation-error/v4"));
 const { z } = hooksRequire("zod/v4");
 const { fromZodError } = hooksRequire("zod-validation-error/v4");
+
+const minimatchConsumers = [
+  createRequire(frontendRequire.resolve("eslint")),
+  createRequire(frontendRequire.resolve("@eslint/config-array")),
+  createRequire(frontendRequire.resolve("@typescript-eslint/typescript-estree")),
+];
+
+// GHSA-g3hv-75wg-m249: tiny bounded substitutes, never an exhaustion test.
+test("every locked and installed standalone minimatch uses the exact security override", () => {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(frontend, "package.json"), "utf8"),
+  );
+  assert.equal(manifest.overrides?.minimatch, "11.0.1");
+  const copies = Object.entries(lock.packages).filter(([location]) =>
+    location.endsWith("node_modules/minimatch"),
+  );
+  assert.ok(copies.length > 0);
+  for (const [location, metadata] of copies) {
+    assert.equal(metadata.version, "11.0.1", location);
+    const installed = JSON.parse(
+      fs.readFileSync(path.join(frontend, location, "package.json"), "utf8"),
+    );
+    assert.equal(installed.name, "minimatch", location);
+    assert.equal(installed.version, metadata.version, location);
+  }
+});
+
+test("ESLint, config-array and TypeScript ESTree resolve checked minimatch copies", () => {
+  const checked = Object.keys(lock.packages)
+    .filter((location) => location.endsWith("node_modules/minimatch"))
+    .map((location) => fs.realpathSync(path.join(frontend, location)));
+  for (const consumer of minimatchConsumers) {
+    const packageFile = consumer.resolve("minimatch/package.json");
+    assert.ok(checked.includes(path.dirname(fs.realpathSync(packageFile))));
+    assert.equal(consumer("minimatch/package.json").version, "11.0.1");
+    assert.equal(
+      fs.realpathSync(consumer.resolve("minimatch")),
+      path.join(path.dirname(fs.realpathSync(packageFile)), "dist/commonjs/index.js"),
+    );
+  }
+});
+
+for (const mode of ["CJS", "ESM"]) {
+  const root = path.dirname(frontendRequire.resolve("minimatch/package.json"));
+  const api = mode === "CJS"
+    ? frontendRequire("minimatch")
+    : await import(pathToFileURL(path.join(root, "dist/esm/index.js")));
+
+  test(`${mode} minimatch bounds two level-two splits at a tiny explicit limit`, () => {
+    const matcher = new api.Minimatch("**/../a/b/**/../c/d", {
+      optimizationLevel: 2,
+      braceExpandMax: 2,
+    });
+    assert.equal(matcher.set.length, 2);
+    // The tiny explicit budget checks the cap, not full level-two expansion.
+    // Check ordinary matching separately with the maintained default budget.
+    const ordinary = new api.Minimatch("**/../a/b/**/../c/d", {
+      optimizationLevel: 2,
+    });
+    assert.equal(ordinary.set.length, 4);
+    assert.equal(ordinary.match("x/a/b/y/c/d"), true);
+  });
+
+  test(`${mode} minimatch skips large pairwise preprocessing before any comparison`, () => {
+    const matcher = new api.Minimatch("ordinary");
+    const parts = Array.from({ length: 1001 }, () => ["ordinary"]);
+    // The old code fails immediately on the first comparison: no quadratic work.
+    matcher.partsMatch = () => assert.fail("pairwise preprocessing was not skipped");
+    assert.equal(matcher.secondPhasePreProcess(parts), parts);
+  });
+
+  test(`${mode} minimatch retains consumer glob, partial and Windows path contracts`, () => {
+    assert.equal(api.minimatch("src/.hidden.ts", "**/*.{ts,tsx}", { dot: true }), true);
+    assert.equal(api.minimatch("src/main.css", "**/*.{ts,tsx}", { dot: true }), false);
+    assert.equal(new api.Minimatch("src/**/*.ts", { dot: true }).match("src/nested", true), true);
+    const windows = new api.Minimatch("C:/repo/**/*.ts", {
+      platform: "win32",
+      windowsPathsNoEscape: true,
+      nocase: true,
+    });
+    assert.equal(windows.match("c:/repo/src/main.ts"), true);
+    assert.equal(windows.match("c:/repo/src/main.css"), false);
+  });
+}
+
+test("ESLint file traversal retains nested TS/TSX, dotfiles and ignored directories", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "authzest-lint-globs-"));
+  try {
+    for (const [name, source] of [
+      ["src/good.ts", "export const value: number = 1;"],
+      ["src/nested/view.tsx", "debugger; export const view = <div />;"],
+      ["src/.hidden.ts", "debugger; export const hidden = 1;"],
+      ["ignored/skip.ts", "debugger;"],
+      ["src/style.css", "body { color: red; }"],
+    ]) {
+      const target = path.join(directory, name);
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, source);
+    }
+    const { ESLint } = frontendRequire("eslint");
+    const linter = new ESLint({
+      cwd: directory,
+      overrideConfigFile: true,
+      overrideConfig: [
+        { ignores: ["ignored/**"] },
+        {
+          files: ["**/*.{ts,tsx}"],
+          languageOptions: { parser: frontendRequire("@typescript-eslint/parser") },
+          rules: { "no-debugger": "error" },
+        },
+      ],
+    });
+    const results = await linter.lintFiles(["."]);
+    const byPath = new Map(results.map((result) => [
+      path.relative(directory, result.filePath).split(path.sep).join("/"), result,
+    ]));
+    assert.deepEqual([...byPath.keys()].sort(), [
+      "src/.hidden.ts", "src/good.ts", "src/nested/view.tsx",
+    ]);
+    assert.deepEqual(byPath.get("src/good.ts").messages, []);
+    for (const name of ["src/.hidden.ts", "src/nested/view.tsx"]) {
+      assert.deepEqual(byPath.get(name).messages.map(({ ruleId }) => ruleId), ["no-debugger"]);
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("TypeScript project-service default-project globs retain allow and deny behavior", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "authzest-ts-globs-"));
+  const parser = frontendRequire("@typescript-eslint/parser");
+  try {
+    const filename = path.join(directory, ".config.ts");
+    const source = "export const value: number = 1;";
+    fs.writeFileSync(filename, source);
+    const options = {
+      tsconfigRootDir: directory,
+      projectService: { allowDefaultProject: ["*.ts"] },
+    };
+    const result = parser.parseForESLint(source, { ...options, filePath: filename });
+    assert.ok(result.services.program.getSourceFile(filename));
+    assert.throws(
+      () => parser.parseForESLint("const value = 1;", {
+        ...options,
+        filePath: path.join(directory, "outside.js"),
+      }),
+      /not found by the project service/,
+    );
+  } finally {
+    parser.clearCaches();
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 // GHSA-mrhx-c7xc-m3w5: small collection checks, never a resource-exhaustion test.
 // The upstream fix covers leading upper bounds; it does not bound Hooks options.

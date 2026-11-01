@@ -34,8 +34,9 @@ AuthZest의 주요 변경사항을 기록합니다.
   실행파일과 Windows에서는 활성 소유 파일 실행을 지원하지 않습니다.
 - PR #123과 2026-11-02 KST의 #82→#81→#35 순차 완료로 제한된 핵심 전달을 마쳤습니다.
   독립 평가·과목 시연 근거·배포 수용은 별도 작업입니다.
-- 새 제공자/정책 실행·의존성 변경·위험 수용·태그·릴리스 없이 미사용 패키지 버전을 준비하고
-  README 네 언어를 맞춥니다. 기존 승인/거절 경계는 바뀌지 않습니다.
+- PR #125는 새 제공자/정책 실행·의존성 변경·위험 수용·태그·릴리스 없이 미사용 패키지 버전과
+  README 네 언어를 준비했습니다. 이후 아래 minimatch 정비는 후보의 의존성 그래프를 바꾸며
+  기존 승인/거절 경계는 유지합니다.
 
 아래 항목은 alpha.3 이후 각 개발 체크포인트의 범위와 당시 상태를 보존합니다. 패키지 버전이
 그대로라는 설명·미완료 이슈·미출시 단계는 현재 후보가 아닌 당시 상태를 뜻합니다. 과거 관찰을
@@ -255,6 +256,20 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- Dependabot 경고 #12의 [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) /
+  CVE-2026-118764에 대응해 standalone frontend `minimatch`를 `10.2.6`에서 정확한 `11.0.1`로
+  override합니다. ESLint·`@eslint/config-array`·`@typescript-eslint/typescript-estree`의 `^10.x`
+  범위를 의도적으로 넘으며, 범위를 정한 점검에서 이 소비자들이 v11의 삭제된 `makeRe`/`AST` API를
+  사용하지 않음을 확인했습니다. 일반적인 major 버전 호환성 보장은 아닙니다. 필수 전이 의존성
+  `@isaacs/nonrecursive-glob-match` `1.0.3`만 추가하고 직접 고정 버전·패키지 `0.1.0a4`·스키마 `1.2`는 유지합니다.
+  집중 회귀 검사 10개가 통과했습니다. lock/설치 소비자 해석, CJS/ESM의 작은 명시적 전처리 상한,
+  정상 glob/partial/Windows 경로 동작, ESLint 파일 탐색과 TypeScript project-service 허용/거절을
+  확인합니다. 정비는 [#126](https://github.com/casing1/authzest/issues/126)에서 추적합니다. 제한된 입력과 즉시 비교를
+  중단하는 sentinel을 사용하며 DoS 부하 검사가 아닙니다. 점검한 소비자는 기본 최적화 수준 `1`을
+  사용하므로 AuthZest 악용 가능성은 `needs_review` / medium이며 런타임 결함을 확정하지 않습니다.
+  npm audit 0건은 의존성 그래프에 한정하며 내장 복사본까지 포함하지 않습니다. 독립적인 Prettier
+  #89 복사본은 그대로이고 최종 head CI/리뷰와 변경된 후보의 릴리스 조건은 미완료입니다.
+  위험 수용·native workflow·태그·릴리스를 추가하지 않습니다.
 - lint 도구의 전이 의존성 Zod lock 항목을 `4.5.4`에서 `4.6.7`로 갱신해(#106)
   [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)에 대응합니다. 직접
   의존성 고정 버전이나 ESLint 설정은 변경하지 않습니다. upstream의 선행 컬렉션 상한 검사
