@@ -11,7 +11,8 @@
 
 [#61](https://github.com/casing1/authzest/issues/61) adds a pure, caller-authored expectation manifest
 under #35. It is an unreleased source-checkout addition after alpha.3, with its own schema `1.0`.
-Package version `0.1.0a3`, report schema `1.2`, and the existing proposal/decision schemas are unchanged.
+Report schema `1.2` and the existing proposal/decision schemas are unchanged. Package versioning is
+tracked separately in the [release record](../releases/RELEASING.md).
 The implementation is [codex/expectations.py](../../src/authzest/codex/expectations.py).
 
 The manifest connects an exact proposal to baseline source/registration evidence, cited policy and
@@ -21,8 +22,9 @@ and executes no source, process or network operation. The separate
 The later [#69 source-only check](../guides/PROPOSAL_CHECK.md) compares declaration targets with a
 bounded subset of that bundle's source snapshots. No adapter, patch-application or execution service,
 or approval decision consumes or binds this manifest.
-The existing fixed configuration/health fixture workflow is unchanged; #35 and broader
-defensive regression-test drafting remain unfinished.
+The existing fixed configuration/health fixture workflow is unchanged. #35 is now closed for the
+[accepted bounded core](../guides/OWNER_FILE_ACCEPTANCE.md); broader defensive regression-test drafting
+for general FastAPI repositories, new PoC generation and model-authored repair source remain unimplemented.
 
 ## Bound data and validation
 

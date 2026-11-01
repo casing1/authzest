@@ -23,7 +23,7 @@ value is a hypothesis to measure, not an established advantage; see [model strat
 
 ## Current baseline — 2026-11-02 KST
 
-The delivery baseline is main `ee49f5a`, after
+The recorded bounded-core delivery baseline is `ee49f5a`, after
 [PR #123](https://github.com/casing1/authzest/pull/123) delivered the bounded acceptance-status record
 by normal merge and #82 → #81 → #35 were completed in order. Exact head `a24b859` passed ten CI checks;
 both automatic reviews completed with no published findings or unresolved review threads. The security
@@ -50,7 +50,10 @@ installation and same-version source replacement at `1d0ebb8` passed 13 checks e
 The [source-install record](../releases/RELEASING.md#local-source-install-observation--2026-10-29)
 does not establish a versioned alpha.4 upgrade or other platforms/routes. #83 candidate preparation
 continues with #89 disposition and final version/documentation/platform/distribution gates still open.
-No final versioned candidate has been selected. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst)
+The 2026-11-02 preparation sets the source version to `0.1.0a4` and proposes unused tag
+`v0.1.0-alpha.4`, without tagging or publication. The exact candidate commit remains pending the
+preparation PR's required checks/reviews and normal merge; record its SHA afterward rather than
+substituting a historical observation commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst)
 separates source-only active owner-file operation from native scan/static UI/offline previews.
 The [2026-11-02 static recheck](FORMATTING.md#current-static-recheck--2026-11-02-kst) retains #89's
 `needs_review` / medium disposition: official `prettier@3.9.10` still embeds `brace-expansion` `5.0.6`.
@@ -150,8 +153,9 @@ Both one-run approvals are consumed. Final-head review/CI and delivery subsequen
 A host-valid response proves shape/reference checks, not correctness.
 
 Published [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) remains
-package `0.1.0a3`, schema `1.2`. Main has newer unreleased commands; unchanged version output is not proof
-that a binary contains them. Do not rewrite existing tags/assets. Windows supports scan; the current
+package `0.1.0a3`, schema `1.2`. The prepared source candidate is `0.1.0a4` and remains unpublished;
+version output alone proves neither candidate acceptance nor the contents of an older binary.
+Do not rewrite existing tags/assets. Windows supports scan; the current
 fixture application/runtime mode is supported only on tested POSIX platforms.
 
 ## One milestone map
@@ -175,16 +179,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                      |
-| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                              |
-| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                  |
-| Completed in bounded scope    | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #123 delivered accepted criteria; one registered pair/eight cases/template selection only. Preserve distinct file-API and installed-source evidence; general repository PoC/repair-source generation unimplemented          |
-| Completed in bounded scope    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | PR #123 exact-head checks/reviews and normal merge completed; #82 → #81 → #35 closed in order. One-host installed happy path and offline failure/refusal/recovery evidence are not native or independent evaluation acceptance |
-| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | Historical native/source-install evidence retained; #89 decision, exact versioned candidate/platform/distribution/publication gates remain. Publication no-go until those gates pass; November 4 remains conditional           |
-| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; use separate approved measurement scope. Core acceptance and historical development observations are not independent benchmark results                       |
-| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                      |
+| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                       |
+| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                               |
+| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                   |
+| Completed in bounded scope    | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #123 delivered accepted criteria; one registered pair/eight cases/template selection only. Preserve distinct file-API and installed-source evidence; general repository PoC/repair-source generation unimplemented           |
+| Completed in bounded scope    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | PR #123 exact-head checks/reviews and normal merge completed; #82 → #81 → #35 closed in order. One-host installed happy path and offline failure/refusal/recovery evidence are not native or independent evaluation acceptance  |
+| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | `0.1.0a4` / proposed `v0.1.0-alpha.4` preparation; exact candidate SHA pending normal PR merge. Historical evidence is not final-candidate evidence; #89/platform/distribution/publication gates remain, November 4 conditional |
+| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; use separate approved measurement scope. Core acceptance and historical development observations are not independent benchmark results                        |
+| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                       |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -302,8 +306,9 @@ The guides document the default-output migration rather than claiming unchanged 
 The source core's bounded #35 completion does not satisfy #83 automatically. Keep the implemented
 scope and source/native limitations explicit; a documentation merge or passing mock is not a release gate.
 
-The next work is #83's release readiness, not expanding the accepted core: prepare #89's response
-options/evidence, identify and document a versioned commit candidate, then bind the final #89 decision
+The next work is #83's release readiness, not expanding the accepted core: complete the `0.1.0a4`
+preparation PR through normal required checks/reviews and merge, record the exact candidate commit
+and #89 response options/evidence, then bind the final #89 decision
 to that same candidate before satisfying the remaining verification/publication gates. A decision for
 an unspecified or earlier candidate is not transferable. Obtain separately scoped platform,
 installation and release-workflow evidence. #84's independent evaluation and #85's reproducible course
@@ -372,5 +377,7 @@ actually satisfied and merged; do not inflate commit counts.
 
 English documents require Korean counterparts; the root README additionally requires Japanese and
 Russian. Update guides only for implemented behavior and keep links/commands/status/limitations aligned.
-No planning change grants paid/manual reviews, source transmission, case review, patch/execution or
-publication. See [contributing](../../CONTRIBUTING.md) and [branch rules](BRANCH_RULES.md).
+Ordinary development, standard checks, configured PR reviews and normal merge proceed through the
+required gates without a new per-attempt confirmation. This does not bypass product source-sharing,
+case-review or file-stage consent, exact-candidate residual-risk decisions, or publication gates.
+Historical approval records remain unchanged. See [contributing](../../CONTRIBUTING.md) and [branch rules](BRANCH_RULES.md).

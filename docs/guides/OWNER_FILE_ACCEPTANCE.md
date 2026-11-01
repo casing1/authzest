@@ -28,10 +28,14 @@ not establish HTTP/authentication/DB enforcement, live fault injection, native/u
 or independent evaluation. The JSON-mode live walkthrough and offline human-output tests remain
 distinct; not every human-rendering branch was observed live.
 
-#82/#81/#35 remain open until the acceptance-status documentation passes its own required exact-head
-checks, separately approved reviews and normal merge, followed by completion in that order.
-#83/#84/#85/#89 remain independent. This sign-off grants no new AI/worker execution, file effects,
-risk acceptance or release; published alpha.3, package `0.1.0a3` and schema `1.2` are unchanged.
+[PR #123](https://github.com/casing1/authzest/pull/123) delivered the acceptance-status documentation
+by normal merge at `ee49f5a` on 2026-11-02 KST. Its exact-head CI passed all 10 checks, the separately
+approved automatic code and security reviews completed, and all 6 post-merge CI checks passed.
+#82 → #81 → #35 were then closed in that order for this bounded scope. #83/#84/#85/#89 remain
+independent open work. This sign-off grants no new AI/worker execution, file effects, risk acceptance
+or release. The [current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst)
+uses source package `0.1.0a4` and is unpublished; the latest public release remains alpha.3 with package
+`0.1.0a3`, and report schema `1.2` is unchanged.
 
 ## Recorded boundary — 2026-10-30 KST
 
@@ -105,19 +109,19 @@ test, installed live failure injection, pipx/upgrade/native acceptance or a rele
 offline refusal/user-edit/recovery tests remain separate evidence accepted in the bounded review
 above; no parent issue is closed by the observation alone.
 
-## #82 accepted evidence mapping and remaining delivery
+## #82 accepted evidence mapping and delivery record
 
-| Criterion                                                | Recorded evidence                                                                                                                                                                                              | Remaining boundary                                                                                                                                  |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Installed active happy path                              | The `c868152` observation above: current recommendation, one copy, actual before/applied-after checks and restore; complete original JSON and private file/record comparison                                   | One macOS/Python source installation, not arbitrary repositories or native/upgrade acceptance                                                       |
-| Refusal/failure/user-edit/recovery and no-change/unknown | Existing guarded [coordinator tests](../../tests/test_codex_owner_file_workflow.py) and [CLI tests](../../tests/test_codex_owner_file_cli.py), with fake adapters/scripted observations and pytest-owned files | Offline integration evidence, not live fault injection; new provider/worker runs are not required merely to map these tests                         |
-| Human/JSON output and walkthrough                        | [CLI instructions](OWNER_FILE_WORKFLOW.md), complete consent previews, separate output streams and the captured installed happy path                                                                           | Bounded walkthrough/limitations accepted on 2026-11-02 KST; the JSON-mode run alone does not observe every human-rendering branch                   |
-| Fresh scoped decisions and retained evidence             | Seven separately reviewed current choices; exact application/plan/file bindings, restored bytes and private records compared                                                                                   | Consumed one-run allowances, unauthenticated choices/records, authorization `unknown`; no reuse or independent security proof                       |
-| Delivery and parent closure                              | PR #120 implementation, PR #121 runbook and PR #122 observation documentation completed their separate exact-head checks/reviews and normal merge                                                              | Acceptance-status documentation still needs its own required checks, separately approved reviews and normal merge before #82 → #81 → #35 completion |
+| Criterion                                                | Recorded evidence                                                                                                                                                                                                                                                                                             | Remaining boundary                                                                                                                |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Installed active happy path                              | The `c868152` observation above: current recommendation, one copy, actual before/applied-after checks and restore; complete original JSON and private file/record comparison                                                                                                                                  | One macOS/Python source installation, not arbitrary repositories or native/upgrade acceptance                                     |
+| Refusal/failure/user-edit/recovery and no-change/unknown | Existing guarded [coordinator tests](../../tests/test_codex_owner_file_workflow.py) and [CLI tests](../../tests/test_codex_owner_file_cli.py), with fake adapters/scripted observations and pytest-owned files                                                                                                | Offline integration evidence, not live fault injection; new provider/worker runs are not required merely to map these tests       |
+| Human/JSON output and walkthrough                        | [CLI instructions](OWNER_FILE_WORKFLOW.md), complete consent previews, separate output streams and the captured installed happy path                                                                                                                                                                          | Bounded walkthrough/limitations accepted on 2026-11-02 KST; the JSON-mode run alone does not observe every human-rendering branch |
+| Fresh scoped decisions and retained evidence             | Seven separately reviewed current choices; exact application/plan/file bindings, restored bytes and private records compared                                                                                                                                                                                  | Consumed one-run allowances, unauthenticated choices/records, authorization `unknown`; no reuse or independent security proof     |
+| Delivery and parent closure                              | PR #120 implementation, PR #121 runbook and PR #122 observation documentation completed their separate checks/reviews and normal merge; PR #123 delivered the acceptance status at `ee49f5a` after its exact-head CI/reviews, followed by passing post-merge CI and #82 → #81 → #35 closure on 2026-11-02 KST | Closed for the accepted bounded core, not release acceptance or completion of the independent #83/#84/#85/#89 work                |
 
 This mapping supports the accepted bounded criteria, not broader capabilities. It requests no new
-live run and waives no delivery/release gate. Conditional issue completion requires the remaining
-delivery gates above; the issues are not closed by this record.
+live run and waives no delivery/release gate. The status-documentation delivery and ordered issue
+closure are complete; the current candidate's checks and release gates remain separate.
 
 ## Before a new active run
 

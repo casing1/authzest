@@ -15,12 +15,14 @@ It was introduced after alpha.2. The evaluation scripts and corpus below still r
 checkout; they are not standalone binary commands or installed fixture resources.
 AI schema `1.0` remains the compatible default for numeric-temperature requests. Schema `1.1` additionally
 allows `temperature: null` for provider-managed sampling. These are separate from scan report schema
-`1.2` and package version `0.1.0a3`. Existing numeric requests and identities remain unchanged; the
+`1.2` and the package version in [pyproject.toml](../../pyproject.toml). Existing numeric requests and identities remain unchanged; the
 `AdapterConfig` temperature default remains `0.0`. Null does not mean zero or deterministic output.
 The contract itself performs no provider call or file application. The separate
 [#50 owned-fixture command](../guides/CODEX_FIXTURE.md) uses the nullable schema for a pinned App Server
-draft; one owned-fixture live draft/apply/restore check passed. Ordinary scan JSON/exits remain unchanged and offline. The complete
-#35 flow, general repository AI and broader application validation remain unfinished. The separate
+draft; one owned-fixture live draft/apply/restore check passed. Ordinary scan JSON/exits remain unchanged and offline.
+The bounded #35 core is now closed; see the [acceptance record](../guides/OWNER_FILE_ACCEPTANCE.md).
+General FastAPI repository PoC generation, model-authored repair source and broader application validation
+remain unimplemented. The separate
 [#54 runtime check](../guides/RUNTIME_VERIFICATION.md) is limited to the maintained fixture and requires
 its own exact-plan approval; it does not change this offline contract.
 The old unused `CodexFinding` placeholder is removed; adapters now return untrusted JSON, not findings.

@@ -11,13 +11,15 @@
 
 [#75](https://github.com/casing1/authzest/issues/75)는 현재 소스에 `codex-owner-review`를 추가합니다.
 유지하는 보고서 접근 예제 하나를 opt-in 읽기 전용 Codex 검토와 구조화된 방어적 테스트 사례
-초안에 연결합니다. 공개 alpha.3 바이너리에는 없습니다. 패키지 버전 `0.1.0a3`, scan report
-schema `1.2`, 공개 산출물과 별도 `codex-fixture` 흐름은 그대로입니다.
+초안에 연결합니다. 공개 alpha.3 바이너리에는 없습니다. scan report schema `1.2`, 공개 산출물과
+별도 `codex-fixture` 흐름은 그대로입니다. 패키지 버전은 [릴리스 기록](../releases/RELEASING.md)에서
+별도로 추적합니다.
 
 이 단계에는 코드 생성·diff·패치 적용·HTTP endpoint 검사·예제 애플리케이션·endpoint·정책 함수 실행이
 없습니다. 유효한 결과는 unknown을 유지하거나 근거 있는 변경이 필요 없다고 답할 수 있으며
-억지로 패치를 만들지 않습니다. 일반 저장소 검토와 더 넓은
-[#35 흐름](https://github.com/casing1/authzest/issues/35)은 미완료입니다.
+억지로 패치를 만들지 않습니다. [#35의 제한된 핵심 범위](https://github.com/casing1/authzest/issues/35)는
+종료했습니다. [수용 기록](OWNER_FILE_ACCEPTANCE.md)을 참고하세요. 일반 저장소 검토, 새 FastAPI
+PoC 생성과 모델이 작성하는 수정 소스는 미구현입니다.
 오프라인 테스트와 미리보기는 실제 모델 인수 검증 결과가 아닙니다. 2026-09-24·2026-09-30의
 실패 이후, 새로 승인받은 2026-10-01 `9257bd7` 실제 시도에서 `draft-ready`를 받았습니다.
 근거 연결 답변 1개와 구조화된 사례 10개가 host 검증을 통과해 제한된 읽기 전용 제공자 인수

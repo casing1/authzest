@@ -11,7 +11,7 @@ This describes schema **1.2**, introduced in
 [v0.1.0-alpha.2](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2) and retained unchanged in
 published [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) and this source.
 The original alpha.1 binary uses the legacy unversioned inventory. The report schema version is independent
-of package version `0.1.0a3`; see the [release record](../releases/RELEASING.md). The core, CLI JSON, and local API
+of the package version; see the [release record](../releases/RELEASING.md). The core, CLI JSON, and local API
 serialize the same report. No dependency classification, AI proposal, source modification, or target
 execution is performed by this report implementation.
 

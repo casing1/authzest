@@ -13,7 +13,8 @@
 and an independent regression matrix to the source checkout. It is a developer example, not a new
 AuthZest command or runtime mode. Use a checkout containing this change with the
 [development environment](../../README.md#development-setup) active. Published alpha.3 binaries do
-not install this example or its tests; package `0.1.0a3` and scan report schema `1.2` are unchanged.
+not install this example or its tests; scan report schema `1.2` is unchanged. Package versioning is
+tracked separately in the [release record](../releases/RELEASING.md).
 The issue records acceptance and policy-review status; this guide does not claim a new release.
 
 The example separates three things: a pure policy function exercised by developer unit tests,

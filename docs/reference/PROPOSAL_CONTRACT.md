@@ -10,7 +10,7 @@
 ## Implemented scope
 
 #46 implements the first offline slice of #35, after #33. Proposal and decision schemas are `1.0`,
-independent of report schema `1.2` and package version `0.1.0a3`. Introduced after alpha.2, these pure
+independent of report schema `1.2` and the package version in [pyproject.toml](../../pyproject.toml). Introduced after alpha.2, these pure
 modules now support the fixture command in published
 [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3).
 The original #46 contract change added no product CLI/API command or changed scan behavior.
@@ -18,7 +18,8 @@ The demonstration scripts below still require a source checkout; they are not na
 
 The library packages explicit caller-authored replacement text and validates a proposal/decision.
 It does not call Codex, synthesize code, write a draft workspace, apply a patch, execute tests, or
-recover files. #35 remains open for the complete, separately approved integration stages.
+recover files. #35 is now closed for the [accepted bounded core](../guides/OWNER_FILE_ACCEPTANCE.md).
+General FastAPI repository PoC generation and model-authored repair source remain unimplemented.
 
 The separate [#48 fixture-copy service](../guides/FIXTURE_APPLICATION.md) now demonstrates actual
 approved application/restoration in a fresh POSIX copy only. This contract module remains pure; neither

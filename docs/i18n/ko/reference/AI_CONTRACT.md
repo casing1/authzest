@@ -14,12 +14,14 @@
 사용됩니다. alpha.2 이후 도입됐으며 아래 평가 스크립트·corpus는 계속 소스 checkout이 필요합니다.
 독립 실행 파일의 명령이나 설치된 fixture 자료가 아닙니다.
 AI 스키마 `1.0`은 숫자 temperature 요청의 호환 기본값입니다. 스키마 `1.1`은 제공자 관리 sampling을
-위한 `temperature: null`을 추가로 허용합니다. 스캔 리포트 스키마 `1.2`, 패키지 버전 `0.1.0a3`와는
+위한 `temperature: null`을 추가로 허용합니다. 스캔 리포트 스키마 `1.2`, [pyproject.toml](../../../../pyproject.toml)의 패키지 버전과는
 별개입니다. 기존 숫자 요청과 식별값은 유지하고 `AdapterConfig` temperature 기본값은 `0.0`입니다.
 null은 0이나 결정론적 출력을 뜻하지 않습니다. 계약 자체는 제공자 호출이나 파일 적용을 하지 않습니다.
 별도의 [#50 소유 fixture 명령](../guides/CODEX_FIXTURE.md)은 고정 App Server 초안에 nullable 스키마를
 사용하며 한 소유 fixture의 실제 초안·적용·복구 확인 1회가 성공했습니다. 기본 스캔 JSON/종료는 그대로이며 오프라인을 유지합니다.
-완전한 #35 흐름, 일반 저장소 AI와 더 넓은 애플리케이션 검증은 미완료입니다. 별도의
+#35의 제한된 핵심 범위는 종료했습니다. [수용 기록](../guides/OWNER_FILE_ACCEPTANCE.md)을 참고하세요.
+일반 FastAPI 저장소의 PoC 생성, 모델이 작성하는 수정 소스와 더 넓은 애플리케이션 검증은
+미구현입니다. 별도의
 [#54 런타임 검사](../guides/RUNTIME_VERIFICATION.md)는 관리하는 fixture에 한정하며 정확한 계획의
 별도 승인을 요구합니다. 이 오프라인 계약은 바꾸지 않습니다.
 사용하지 않던 `CodexFinding` 초안은 제거했고 adapter는 finding이 아닌 비신뢰 JSON을 반환합니다.

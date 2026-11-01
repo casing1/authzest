@@ -11,8 +11,9 @@
 
 [#63](https://github.com/casing1/authzest/issues/63) adds `authzest proposal-preview` after alpha.3.
 Use an editable source checkout containing this change; the published alpha.3 binaries do not contain
-this command. Package version `0.1.0a3`, report schema `1.2`, and existing proposal/expectation schemas
-are unchanged. This is a presentation step under #35, not completion of its approval or execution workflow.
+this command. Report schema `1.2` and existing proposal/expectation schemas are unchanged; package
+versioning is tracked separately in the [release record](../releases/RELEASING.md).
+This is a presentation step under #35, not completion of its approval or execution workflow.
 
 The command reads one explicitly selected JSON bundle and revalidates its request, review, proposal and
 expectation manifest before displaying their linked evidence, exact diff, rationale, expected outcomes

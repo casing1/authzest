@@ -11,7 +11,8 @@
 
 [#63](https://github.com/casing1/authzest/issues/63)은 alpha.3 이후 `authzest proposal-preview`를 추가합니다.
 이 변경이 포함된 editable 소스 checkout을 사용하세요. 공개 alpha.3 바이너리에는 이 명령이 없습니다.
-패키지 버전 `0.1.0a3`, 리포트 스키마 `1.2`와 기존 제안·예상 결과 스키마는 그대로입니다.
+리포트 스키마 `1.2`와 기존 제안·예상 결과 스키마는 그대로이며 패키지 버전은
+[릴리스 기록](../releases/RELEASING.md)에서 별도로 추적합니다.
 #35의 표시 단계이며 승인·실행 흐름 전체를 완료하는 것은 아닙니다.
 
 명령은 명시적으로 선택한 JSON bundle 하나를 읽고 요청·검토·제안·예상 결과 manifest를 다시 검증한 뒤

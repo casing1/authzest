@@ -11,8 +11,9 @@
 
 [#69](https://github.com/casing1/authzest/issues/69) adds `authzest proposal-check` to the source
 checkout after alpha.3. Use a source revision containing this change; the published alpha.3 binaries
-do not contain this command. Package version `0.1.0a3`, scan report schema `1.2`, and the existing
-proposal, expectation and preview-bundle schemas are unchanged. This is not a new release.
+do not contain this command. Scan report schema `1.2` and the existing proposal, expectation and
+preview-bundle schemas are unchanged. Package versioning is tracked separately in the
+[release record](../releases/RELEASING.md); this feature addition itself is not a new release.
 
 The command reads the same validated offline bundle as `proposal-preview`, then compares supported
 declaration expectations with its baseline and proposed source strings. It does not import or execute

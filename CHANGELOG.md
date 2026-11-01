@@ -14,6 +14,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+No additional changes are queued beyond the alpha.4 candidate below.
+
+## [0.1.0-alpha.4] - 2026-11-02
+
+**Candidate preparation, not publication.** The date above records preparation of package `0.1.0a4`;
+confirm the date in both languages before publishing. No alpha.4 tag or public assets exist yet.
+Published alpha.3 and scan report schema `1.2` are unchanged. Final-candidate checks, installation/update
+evidence and the exact-candidate disposition of [#89](https://github.com/casing1/authzest/issues/89)
+remain gates in [#83](https://github.com/casing1/authzest/issues/83).
+
+### Candidate summary
+
+- Readable CLI output by default, with explicit `--json` for scripts and separate interactive previews.
+- Offline proposal/declaration previews and a bounded Codex owner-policy recommendation/file workflow.
+  The accepted core covers one registered synthetic policy pair, eight reviewed cases, Codex selection
+  of a registered template and a POSIX non-frozen source installation. It does not generate new PoCs
+  or arbitrary repair source for general FastAPI repositories; active owner-file execution is unsupported
+  in native executables and Windows.
+- Bounded core delivery completed through PR #123 and ordered #82 → #81 → #35 completion on
+  2026-11-02 KST. Independent evaluation, course evidence and distribution acceptance remain separate.
+- Prepare an unused package version and align four README languages without a new provider/policy run,
+  dependency change, risk acceptance, tag or release. Existing approval/refusal boundaries are unchanged.
+
+The entries below retain the scope and status of each development checkpoint since alpha.3. References
+to an unchanged package version, pending issues or an unreleased slice describe that checkpoint, not
+the candidate's current status. Historical observations are not reruns on this candidate.
+
 ### Added
 
 - Reconcile [alpha.4 readiness](docs/releases/RELEASING.md) after PR #123's reviewed delivery and

@@ -12,8 +12,9 @@
 
 [#77](https://github.com/casing1/authzest/issues/77) adds a pure Python data API in unreleased source,
 schema `1.0`, under `authzest.codex.owner_case_plan`. There is no new CLI command or executor. The
-published alpha.3 assets, package version `0.1.0a3`, scan schema `1.2`, provider and fixture allowlists
-are unchanged. On 2026-10-09 KST the maintainer explicitly approved the exact ten recorded
+published alpha.3 assets, scan schema `1.2`, provider and fixture allowlists are unchanged.
+Current package versioning is tracked separately in the [release record](../releases/RELEASING.md).
+On 2026-10-09 KST the maintainer explicitly approved the exact ten recorded
 expectations: `owner-read` and `exact-padded-owner` allow; the other eight deny. The separate
 [review record](../../tests/fixtures/owner_case_review/maintainer_review.json) preserves that
 labels-only chat decision without changing model authorship or claiming authenticated approval.
