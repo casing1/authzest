@@ -52,7 +52,7 @@ diff 도출 전에 이를 수행합니다. 위조·오래된 상태·변경된 �
 ## 등록된 manifest와 식별값
 
 쌍 스키마 `1.0`, 레지스트리 버전 `owned-synthetic-v1` 및 내용 버전 `test-only-v1`은
-S1의 빈 레지스트리, 리포트 스키마 `1.2`, 패키지 버전 `0.1.0a3`와 별개입니다.
+S1의 빈 레지스트리, 리포트 스키마 `1.2`, [pyproject.toml](../../../../pyproject.toml)의 패키지 버전과 별개입니다.
 manifest에는 정확히 `schema_version`, `kind`, `registry_version`, `content`, `review_binding`이
 있으며 `kind`는 `owner-policy-repair-pair`입니다. 폐쇄형 전체 content는 다음과 같습니다.
 

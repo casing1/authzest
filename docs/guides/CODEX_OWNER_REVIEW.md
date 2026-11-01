@@ -11,13 +11,16 @@
 
 [#75](https://github.com/casing1/authzest/issues/75) adds `codex-owner-review` to the current source.
 It connects one maintained report-access example to an opt-in, read-only Codex review and structured
-defensive test-case drafts. It is not in the published alpha.3 binaries. Package version `0.1.0a3`,
-scan report schema `1.2`, released assets and the separate `codex-fixture` workflow are unchanged.
+defensive test-case drafts. It is not in the published alpha.3 binaries. Scan report schema `1.2`,
+released assets and the separate `codex-fixture` workflow are unchanged. Package versioning is tracked
+separately in the [release record](../releases/RELEASING.md).
 
 This slice has no generated code, diff, patch application, HTTP endpoint tests or execution of the example
 application, endpoint or policy function. A valid result may retain unknowns or say no supported
-change is needed; it never has to invent a patch. General repository review and the broader
-[#35 workflow](https://github.com/casing1/authzest/issues/35) remain unfinished.
+change is needed; it never has to invent a patch. The bounded
+[#35 core](https://github.com/casing1/authzest/issues/35) is now closed; see the
+[acceptance record](OWNER_FILE_ACCEPTANCE.md). General repository review, new FastAPI PoC generation
+and model-authored repair source remain unimplemented.
 Offline tests and previews are not a live-model acceptance result. After two unsuccessful attempts
 on 2026-09-24 and 2026-09-30, a separately approved live run on 2026-10-01 at `9257bd7` returned
 `draft-ready`: one evidence-linked answer and ten structured cases passed host validation.

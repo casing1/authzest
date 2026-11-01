@@ -8,8 +8,11 @@ the current release process. The binaries are not signed or notarized.
 ## Alpha.4 readiness — 2026-11-02 KST
 
 **Publication remains no-go.** [#83](https://github.com/casing1/authzest/issues/83) retains a conditional
-2026-11-04 KST target, not a promised publication date. No final versioned candidate is selected;
-the package remains `0.1.0a3`, scan report schema `1.2`, and published alpha.3 tags/assets are unchanged.
+2026-11-04 KST target, not a promised publication date. The 2026-11-02 candidate preparation sets
+the source package to `0.1.0a4` and proposes the unused tag `v0.1.0-alpha.4`; it creates neither a tag
+nor a published release. Record the exact candidate commit after the preparation PR passes required
+checks/reviews and merges normally. No final candidate SHA or successful candidate validation is
+claimed yet. Scan report schema stays `1.2`, and published alpha.3 tags/assets remain unchanged.
 The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
 
 The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
@@ -37,17 +40,19 @@ commits and scopes. They are useful preparation evidence, not substitutes for th
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                            |
 | #89 residual tooling risk     | Open; the [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) remains `needs_review` / medium. Record a reviewed compatible upstream shipped-byte fix or an explicit maintainer residual-risk decision for the exact candidate in #83 |
-| Exact candidate and claims    | Pending: select an unused version and exact commit; align English/Korean changelogs, four README languages and source/native limitations                                                                                                                                             |
+| Exact candidate and claims    | In preparation: source `0.1.0a4`, proposed unused `v0.1.0-alpha.4`, aligned English/Korean changelogs and four README languages. Required PR checks/reviews and normal merge must precede recording the exact candidate SHA                                                          |
 | Candidate verification        | Pending: required exact-head checks/reviews, final three-platform native/artifact checks and each advertised installation/update route; scope any actual runtime execution separately                                                                                                |
 | Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                         |
 
 The official npm `prettier@3.9.10` follow-up still found the embedded `brace-expansion` `5.0.6` copy;
 a version bump alone is not #89 clearance or a compatibility result. The static assessment did not
 prove supported AuthZest availability impact through actual direct editor/API inputs, execute hostile
-tests or accept residual risk. #89/#83 stay open. This reconciliation performs no new provider/worker
-run, native workflow, version bump, tag or release; each later action retains its own scope and gates.
-Prepare #89 response options now, then identify the versioned candidate before requesting its final
-disposition. Bind the decision to that exact candidate; relevant source/toolchain changes need a new
+tests or accept residual risk. #89/#83 stay open. This preparation changes version metadata and
+documentation only; it performs no new provider/worker run, native workflow, tag or release.
+Normal development, standard checks, configured PR reviews and normal merge use the required gates
+without a new per-attempt confirmation. Product source sharing and file-stage consent remain distinct.
+Prepare #89 response options now, then record the merged versioned candidate before its final
+disposition. Bind that explicit decision to the exact candidate; relevant source/toolchain changes need a new
 assessment rather than reuse of an earlier or unspecified-candidate decision.
 
 ## Published preview and current source
@@ -191,8 +196,9 @@ workflow and its runtime/publication gates remain unchanged.
 
 Artifact containers use `preview-` plus the full run SHA, run ID, attempt, OS and architecture, with a
 requested seven-day retention period. They are Actions test artifacts, not GitHub Release assets.
-The executable still reports the current package version; a preflight labelled `0.1.0a3` is not an
-immutable published alpha.3 download. Retain the run URL, full SHA, actual runner architecture,
+The executable reports its checkout's package version. A historical `0.1.0a3` preflight is not an
+immutable published alpha.3 download, and a prepared `0.1.0a4` label alone does not establish an alpha.4
+publication or accepted candidate. Retain the run URL, full SHA, actual runner architecture,
 dependency/build logs, artifact IDs and checksums with the test evidence. Match the download to that
 same run and attempt; partial job reruns are not a supported way to reuse another attempt's artifacts.
 Any rerun requires a fresh decision on its scope rather than automatic retry.
@@ -448,8 +454,8 @@ Record the full source SHA and dirty status, OS/architecture, Python/pipx/backen
 exact launcher/venv, installer results, and smoke results. In a separate installed-interpreter process
 using `-I` outside the checkout, verify that package and distribution paths are inside that venv,
 `direct_url.json` names the selected source and is noneditable, and installed non-bytecode package files
-match that source. The displayed version alone cannot prove replacement when both snapshots still use
-`0.1.0a3`. The commands above do not automate these provenance checks.
+match that source. The displayed version alone cannot prove replacement when both snapshots use
+the same package version. The commands above do not automate these provenance checks.
 
 ### Local source-install observation — 2026-10-29
 

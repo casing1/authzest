@@ -12,8 +12,9 @@
 
 [#77](https://github.com/casing1/authzest/issues/77)은 미출시 소스의
 `authzest.codex.owner_case_plan`에 스키마 `1.0`의 순수 Python 데이터 API를 추가합니다.
-새 CLI 명령이나 executor는 없습니다. 발행한 alpha.3 산출물·패키지 버전 `0.1.0a3`·scan 스키마
-`1.2`·제공자·fixture 허용 목록은 유지합니다. 관리자는 2026-10-09 KST에 기록된 정확한 예상값
+새 CLI 명령이나 executor는 없습니다. 발행한 alpha.3 산출물·scan 스키마 `1.2`·제공자·fixture
+허용 목록은 유지합니다. 현재 패키지 버전은 [릴리스 기록](../releases/RELEASING.md)에서 별도로 추적합니다.
+관리자는 2026-10-09 KST에 기록된 정확한 예상값
 10개를 명시적으로 승인했습니다. `owner-read`·`exact-padded-owner`는 허용, 나머지 8개는
 거절입니다. 별도 [검토 기록](../../../../tests/fixtures/owner_case_review/maintainer_review.json)은
 예상값만의 채팅 결정을 보존하며 모델 작성 이력을 바꾸거나 인증된 승인을 주장하지 않습니다.

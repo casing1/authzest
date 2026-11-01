@@ -29,6 +29,13 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > commit and validation evidence. A checkout of `main` can advance beyond that tag.
 > This is still an alpha tool, not a complete vulnerability scanner or a general repository repair loop.
 
+> [!NOTE]
+> **Alpha.4 candidate, not published:** this source uses Python package `0.1.0a4` and unchanged report
+> schema `1.2`; the planned tag is `v0.1.0-alpha.4`. That tag and release have not been created, and
+> alpha.3 remains the latest published release. #83 still requires final-candidate checks/reviews,
+> installation/update and native-artifact evidence. #89's residual tooling risk remains open and has
+> not been accepted; the version change alone does not clear these publication gates.
+
 ## What the current source supports
 
 - Recognizes statically constructed `FastAPI` and `APIRouter` owners, including supported import aliases.
@@ -105,10 +112,11 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   [bounded installed-flow record](docs/guides/OWNER_FILE_ACCEPTANCE.md). On **2026-11-02 KST**, the
   maintainer accepted the bounded core: the registered synthetic policy pair, eight cases, Codex
   template selection and POSIX source CLI. Acceptance uses the documented run above and existing
-  offline refusal/user-edit/recovery tests; it is not a new live run. Final status-documentation
-  delivery and required checks, separately approved reviews and normal merge remain pending before
-  sequential closure of #82 → #81 → #35. #83/#84/#85/#89 remain independently open. Windows/frozen
-  active file execution remains unsupported; published alpha.3 and the report schema are unchanged.
+  offline refusal/user-edit/recovery tests; it is not a new live run. Final status documentation was
+  normally merged in [PR #123](https://github.com/casing1/authzest/pull/123) at `ee49f5a`, followed by
+  closure of #82 → #81 → #35 for this bounded core. #83/#84/#85/#89 remain independently open;
+  #89's residual tooling risk has not been accepted. Windows/frozen active file execution remains
+  unsupported; published alpha.3 and the report schema are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -280,8 +288,9 @@ EditorConfig, and the guard's limits.
 ## Standalone binaries
 
 The [alpha.3 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) provides Linux x64,
-macOS arm64, and Windows x64 executables with matching SHA-256 manifests. They include the source-analysis
-features above and report schema `1.2`. They are standalone CLI programs, not graphical installers;
+macOS arm64, and Windows x64 executables with matching SHA-256 manifests. They include alpha.3's static
+inventory and report schema `1.2`, not the current unreleased owner-review/repair additions.
+They are standalone CLI programs, not graphical installers;
 running a prebuilt binary does not require installing Python or Node.js. POSIX binaries also include
 the owned-fixture workflow and its runtime dependencies. Codex remains a separate trusted installation
 with its own login; source sharing and each change/check need separate approval. Windows fixture
@@ -295,6 +304,11 @@ smokes through standard-library controllers under Python `-I -S`, without import
 No live Codex call was part of these package checks. Consumer-device clean installation,
 upgrades, and compatibility with every OS version have not been established. The binaries are unsigned
 and unnotarized, so an operating system may warn about an unverified publisher.
+
+Current-source native packaging includes static scan and offline owner previews, but not active
+`codex-owner-repair --file-workflow`: that path requires a POSIX non-frozen Python source installation.
+Historical native preview checks do not validate the final alpha.4 candidate or its installation/update
+routes. No alpha.4 binaries have been published.
 
 To build the current source locally, activate the development venv and run from the repository root:
 
@@ -348,14 +362,16 @@ The later [alpha.3 checkpoint](https://github.com/casing1/authzest/releases/tag/
 Current source and next step:
 
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
-2. [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35)
+2. Closed for the accepted bounded core: [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35).
 3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
    delivered the opt-in file workflow and offline tests through PR #120. A separately approved,
    one-host installed happy path now covers recommendation through applied-file checking and restoration.
    The maintainer accepted the [bounded core and existing offline evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md)
-   on 2026-11-02 KST, not a new live run or general repository repair. Next are final status-documentation
-   delivery/checks, separately approved reviews and normal merge, then conditional closure in the order
-   #82 → #81 → #35. Those issues are not yet closed; #83/#84/#85/#89 remain independent open work.
+   on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
+   normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
+4. Next: [#83: alpha.4 release preparation](https://github.com/casing1/authzest/issues/83), including
+   final-candidate checks/reviews and installation/update/native-artifact evidence. #89 remains open
+   without residual-risk acceptance; #84/#85's independent evaluation and course evidence remain open.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not

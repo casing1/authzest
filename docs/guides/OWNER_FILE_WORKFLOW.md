@@ -15,8 +15,10 @@
 This unreleased #82 source implementation connects `codex-owner-repair --file-workflow` to the
 existing file-session API. [PR #120](https://github.com/casing1/authzest/pull/120) completed its
 required final-head reviews and source delivery at `a0ae879`. Without the flag, the command remains
-recommendation-only: no copy, policy execution, application or restoration. Published alpha.3 and package version `0.1.0a3` are
-unchanged. The optional web dashboard does not display or control this workflow.
+recommendation-only: no copy, policy execution, application or restoration. The
+[current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst) uses source package
+`0.1.0a4` and is unpublished. The latest public release remains alpha.3 with package `0.1.0a3`;
+report schema `1.2` is unchanged. The optional web dashboard does not display or control this workflow.
 
 The active file path requires **POSIX non-frozen Python source mode** and the supported
 descriptor-relative filesystem primitives. It rejects unsupported platforms before provider access
@@ -50,8 +52,11 @@ user-edit and recovery checks remain offline evidence. On 2026-11-02 KST the mai
 bounded walkthrough, evidence mapping and bilingual limitations; this was not a new live run.
 The accepted scope is the registered synthetic pair/eight cases/template selection, not general
 FastAPI repository PoC generation or model-authored repair source, which are not implemented.
-Acceptance-status documentation needs its own required checks, separately approved reviews and normal
-merge before #82 → #81 → #35 completion. Those issues and independent #83/#84/#85/#89 remain open.
+[PR #123](https://github.com/casing1/authzest/pull/123) delivered the acceptance-status documentation
+by normal merge at `ee49f5a` on 2026-11-02 KST after all 10 exact-head CI checks passed and the separately
+approved automatic code and security reviews completed. All 6 post-merge CI checks passed, followed by
+#82 → #81 → #35 closure for this bounded scope. Independent #83/#84/#85/#89 remain open;
+this completion is not candidate/release acceptance or residual-risk acceptance.
 Documentation examples and consumed approvals do not authorize a new live attempt.
 
 ## Preview without side effects

@@ -11,8 +11,9 @@
 
 [#69](https://github.com/casing1/authzest/issues/69)는 alpha.3 이후 소스 checkout에
 `authzest proposal-check`를 추가합니다. 이 변경을 포함한 소스 revision을 사용하세요.
-공개 alpha.3 바이너리에는 이 명령이 없습니다. 패키지 버전 `0.1.0a3`, scan report schema `1.2`와
-기존 제안·예상 결과·preview bundle 스키마는 그대로이며 새 릴리스가 아닙니다.
+공개 alpha.3 바이너리에는 이 명령이 없습니다. scan report schema `1.2`와 기존 제안·예상 결과·
+preview bundle 스키마는 그대로입니다. 패키지 버전은 [릴리스 기록](../releases/RELEASING.md)에서
+별도로 추적하며 이 기능 추가 자체가 새 릴리스는 아닙니다.
 
 명령은 `proposal-preview`와 같은 검증된 오프라인 bundle을 읽은 뒤 지원하는 선언 기대값을
 기준·제안 소스 문자열과 비교합니다. 해당 문자열을 import·실행하거나 Codex를 호출하거나 worker를

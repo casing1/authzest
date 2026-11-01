@@ -41,7 +41,7 @@ repository, model choice, callback, case set, label record or observation record
 `policy.py` identifies displayed data, not a file to open or a patch destination.
 
 The proposed schema version is `1.0`, independent of report schema `1.2`, existing owner-review
-schemas and package version `0.1.0a3`. The following are the complete request payload fields:
+schemas and the package version. The following are the complete request payload fields:
 
 | Field            | Host-owned value or rule                                                                                                  |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------- |

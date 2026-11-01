@@ -53,7 +53,7 @@ the preview builder does this before deriving the diff. Forged, stale or modifie
 ## Registered manifest and identities
 
 Pair schema `1.0`, registry version `owned-synthetic-v1` and content version `test-only-v1` are
-separate from S1's empty registry, report schema `1.2` and package version `0.1.0a3`.
+separate from S1's empty registry, report schema `1.2` and the package version in [pyproject.toml](../../pyproject.toml).
 The manifest has exactly `schema_version`, `kind`, `registry_version`, `content` and `review_binding`.
 Its `kind` is `owner-policy-repair-pair`. The full closed content is:
 

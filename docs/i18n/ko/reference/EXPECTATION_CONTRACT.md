@@ -11,7 +11,8 @@
 
 [#61](https://github.com/casing1/authzest/issues/61)은 #35의 하위 단계로 호출자가 작성하는 순수 예상 결과
 manifest를 추가합니다. alpha.3 이후 소스 checkout에 추가한 미출시 기능이며 자체 스키마는 `1.0`입니다.
-패키지 버전 `0.1.0a3`, 리포트 스키마 `1.2`와 기존 제안·결정 스키마는 바뀌지 않습니다.
+리포트 스키마 `1.2`와 기존 제안·결정 스키마는 바뀌지 않습니다. 패키지 버전은
+[릴리스 기록](../releases/RELEASING.md)에서 별도로 추적합니다.
 구현은 [codex/expectations.py](../../../../src/authzest/codex/expectations.py)에 있습니다.
 
 manifest는 이후 검토를 위해 정확한 제안을 기준 소스·등록 근거, 인용한 정책, 의도한 결과에 연결합니다.
@@ -20,7 +21,9 @@ manifest는 이후 검토를 위해 정확한 제안을 기준 소스·등록 �
 bundle에서 이를 표시합니다. 이후 [#69 소스 전용 검사](../guides/PROPOSAL_CHECK.md)는 해당
 bundle의 지원 범위 내 소스 snapshot을 선언 목표와 비교합니다. adapter·패치 적용·실행 서비스나
 승인 결정은 이 manifest를 사용하거나 여기에 연결되지 않습니다. 기존의 고정된
-설정·health fixture 흐름은 그대로이며 #35와 더 넓은 방어적 회귀 테스트 초안 생성은 미완료입니다.
+설정·health fixture 흐름은 그대로입니다. #35는 [수용한 제한된 핵심 범위](../guides/OWNER_FILE_ACCEPTANCE.md)에서
+종료했으며 일반 FastAPI 저장소를 위한 더 넓은 방어적 회귀 테스트 초안, 새 PoC 생성과 모델이
+작성하는 수정 소스는 미구현입니다.
 
 ## 연결한 데이터와 검증
 

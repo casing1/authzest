@@ -48,7 +48,7 @@ validator의 `raw` 인자는 dictionary·경로·실행 입력이 아닌 직렬�
 
 ## 요청과 원시 추천
 
-요청 스키마 `1.0`은 리포트 스키마 `1.2`·패키지 버전 `0.1.0a3`와 독립적입니다.
+요청 스키마 `1.0`은 리포트 스키마 `1.2`·[pyproject.toml](../../../../pyproject.toml)의 패키지 버전과 독립적입니다.
 `schema_version`·`kind`·`scenario_id`·`source`·`criteria`·`assumptions`·`registry`만
 포함합니다. 등록된 `OWNER_POLICY_SOURCE` 바이트는 줄 끝을 유지하고 새 정책 전용 기준
 snapshot은 끝에 LF가 없습니다. 고정 순서의 신뢰 입력 가정과 쌍이 없는 registry 버전

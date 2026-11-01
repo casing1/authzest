@@ -50,7 +50,7 @@ The validators' `raw` argument is serialized JSON text, not a dictionary, path o
 
 ## Request and raw recommendation
 
-Request schema `1.0` is independent of report schema `1.2` and package version `0.1.0a3`.
+Request schema `1.0` is independent of report schema `1.2` and the package version in [pyproject.toml](../../pyproject.toml).
 It contains exactly `schema_version`, `kind`, `scenario_id`, `source`, `criteria`, `assumptions`
 and `registry`. The registered `OWNER_POLICY_SOURCE` bytes retain their line endings; the new
 policy-only criteria snapshot has no trailing LF. Fixed ordered trusted-input assumptions and

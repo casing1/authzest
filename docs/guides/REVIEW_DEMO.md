@@ -11,8 +11,9 @@
 
 [#71](https://github.com/casing1/authzest/issues/71) adds `authzest review-demo` to the source
 checkout after alpha.3. Use a source revision containing this change; the published alpha.3 binaries
-do not contain the command. Package version `0.1.0a3`, scan report schema `1.2` and existing artifact
-schemas are unchanged. Acceptance and merge status are tracked in the issue; this is not a new release.
+do not contain the command. Scan report schema `1.2` and existing artifact schemas are unchanged.
+Package versioning is tracked separately in the [release record](../releases/RELEASING.md).
+Acceptance and merge status are tracked in the issue; this feature addition itself is not a new release.
 
 This read-only command combines one packaged example's exact diff, linked evidence, expectations,
 source declaration comparison and a non-executable defensive regression-test draft. All feature data
