@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-10-30 KST
+## Current work — 2026-11-02 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -41,7 +41,7 @@ provides the [pure registered repair-pair API](reference/OWNER_POLICY_REPAIR_PAI
 and host-derived diff preview, merged at `cbe6b37` on 2026-10-21 KST. It remains unreleased;
 delivery records are tracked in PR #101. It adds no CLI, provider call, policy
 evaluation, file application or observation. S1's empty registry and the #80 worker remain unchanged;
-#81 is still incomplete.
+that slice did not complete #81.
 The separate [repair recommendation and sharing reference](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md)
 covers the offline contract delivered through [PR #102](https://github.com/casing1/authzest/pull/102)
 at `8409bc7` and the unreleased `codex-owner-repair` sharing/adapter source implementation delivered
@@ -91,10 +91,14 @@ recommendation and new private copy, before 6/8 matches, exact diff acceptance/a
 applied-byte after 8/8 matches and exact-before restoration (`restored-before`, generation `3`).
 Complete final stdout JSON and stderr logs were retained privately; the original checkout remained clean.
 See the [bounded installed-flow record and remaining gates](guides/OWNER_FILE_ACCEPTANCE.md).
-#82 still needs final walkthrough/criteria review, mapping of existing offline refusal/user-edit/recovery
-tests, and required documentation CI/reviews, not additional live failure injection. Broader #81/#35 and
-#83 release gates remain open. This is not cross-platform/native acceptance; Windows/frozen active file
-execution remains unsupported. The UI, #80 and published alpha.3 are unchanged.
+On **2026-11-02 KST**, the maintainer accepted the bounded core: the registered synthetic policy pair,
+eight cases, Codex template selection and POSIX source CLI. Acceptance uses the documented run above
+and existing offline refusal/user-edit/recovery tests; it is not a new live run. Final status-documentation
+delivery and required checks, separately approved reviews and normal merge remain pending before
+sequential closure of #82 → #81 → #35. #83/#84/#85/#89 remain independently open. New PoC generation
+and model-generated repair source for general FastAPI repositories remain unimplemented. This is not
+cross-platform/native acceptance; Windows/frozen active file execution remains unsupported.
+The UI, #80, published alpha.3 and report schema are unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
@@ -234,7 +238,8 @@ AST configuration check of the applied fixture with pinned source hashes, not ru
 ([한국어](i18n/ko/guides/RUNTIME_VERIFICATION.md)) through `--runtime-check`; static checking remains the default.
 The selector is not execution approval. Only the exact bundled fixture may execute, with a separate
 decision and no automatic dependency installation. #54's bounded live source acceptance and the separate
-alpha.3 publication checks passed. General repository AI and the complete #35 workflow remain open.
+alpha.3 publication checks passed. General repository AI remains unimplemented; the later bounded-core
+acceptance above does not extend to arbitrary repositories or generated repair source.
 
 The [offline AI contract and evaluation](reference/AI_CONTRACT.md) is implemented in the source checkout
 with a matching [Korean guide](i18n/ko/reference/AI_CONTRACT.md). Its pure contracts support alpha.3's fixture

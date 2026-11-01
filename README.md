@@ -15,7 +15,8 @@ AuthZest is an installable, CLI-first open-source project for source-aware acces
 FastAPI applications. Its current Python core inventories routes without importing or executing the target
 application. The core product goal is Codex-assisted review and defensive test/patch proposals, user
 approval or refusal, approved-only changes, and separately approved isolated verification with a change
-record. The broader workflow remains unfinished. Alpha.3 includes the opt-in owned-fixture path;
+record. New PoC generation and model-generated repair source for general FastAPI repositories are not
+implemented. Alpha.3 includes the opt-in owned-fixture path;
 one live source-CLI draft/apply/runtime-check/restore check has passed. Static scans remain offline.
 
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
@@ -87,8 +88,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   Both checks exited `0` with cleanup confirmed; file/evidence were confirmed and the final state was
   `restored-before`, generation `3`, with records retained. No new AI call was made; the earlier
   recommendation was revalidated. Acceptance covers only the POSIX non-frozen API on macOS/Python
-  `3.12.7`, not HTTP authorization or acceptance of the new installed-CLI flow. The broader #81/#35
-  workflow and separate release gates remain pending; alpha.3 is unchanged.
+  `3.12.7`, not HTTP authorization or acceptance of the new installed-CLI flow. At that checkpoint,
+  the broader #81/#35 workflow and separate release gates were pending; alpha.3 is unchanged.
 - Adds the unreleased, explicit [`codex-owner-repair --file-workflow` option](docs/guides/OWNER_FILE_WORKFLOW.md):
   a current validated recommendation can proceed to a fresh owned copy, then before-check, exact-diff
   acceptance, apply, after-check and restore, each with separate consent. The option itself is not
@@ -101,11 +102,13 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   before 6/8 matches, exact diff acceptance/application, actual applied-byte after 8/8 matches, and
   restoration to exact before bytes (`restored-before`, generation `3`). Complete final stdout JSON
   and stderr logs were retained privately; the original checkout remained clean. See the
-  [bounded installed-flow record](docs/guides/OWNER_FILE_ACCEPTANCE.md). Remaining #82 work is final
-  walkthrough/criteria review, mapping the existing offline refusal/user-edit/recovery tests, and
-  required documentation CI/reviews, not additional live failure injection. Broader #81/#35 and #83's
-  release gates remain open. Windows/frozen active file execution remains unsupported; the published
-  version and report schema are unchanged.
+  [bounded installed-flow record](docs/guides/OWNER_FILE_ACCEPTANCE.md). On **2026-11-02 KST**, the
+  maintainer accepted the bounded core: the registered synthetic policy pair, eight cases, Codex
+  template selection and POSIX source CLI. Acceptance uses the documented run above and existing
+  offline refusal/user-edit/recovery tests; it is not a new live run. Final status-documentation
+  delivery and required checks, separately approved reviews and normal merge remain pending before
+  sequential closure of #82 → #81 → #35. #83/#84/#85/#89 remain independently open. Windows/frozen
+  active file execution remains unsupported; published alpha.3 and the report schema are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
@@ -349,12 +352,14 @@ Current source and next step:
 3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
    delivered the opt-in file workflow and offline tests through PR #120. A separately approved,
    one-host installed happy path now covers recommendation through applied-file checking and restoration.
-   Next are [final walkthrough/criteria review and mapping existing offline refusal/user-edit/recovery
-   evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md), with required documentation CI/reviews, followed by
-   #83's separately gated candidate work; #82/#81/#35 are not declared complete.
+   The maintainer accepted the [bounded core and existing offline evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md)
+   on 2026-11-02 KST, not a new live run or general repository repair. Next are final status-documentation
+   delivery/checks, separately approved reviews and normal merge, then conditional closure in the order
+   #82 → #81 → #35. Those issues are not yet closed; #83/#84/#85/#89 remain independent open work.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
-its evaluation scripts and corpus remain checkout-only. The complete #35 workflow remains open.
+its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not
+implement general FastAPI PoC generation or model-generated repair source.
 The first #35 slice, [#46's offline proposal/decision contract](docs/reference/PROPOSAL_CONTRACT.md),
 is implemented in source with diff previews and simulated approval checks; it never applies files or runs verification.
 The subsequent [#48 copy-only application demo](docs/guides/FIXTURE_APPLICATION.md) adds explicit
@@ -371,7 +376,8 @@ subprocess. It executes no target source and adds no live-model evidence or veri
 #54 adds the [owned-fixture runtime plan](docs/guides/RUNTIME_VERIFICATION.md) through `--runtime-check`,
 with a separate exact verification decision, bounded worker, optional dependencies and no automatic
 installation. Its bounded live source acceptance passed, and alpha.3's public assets passed the separate
-release checks. General repository AI and the complete #35 workflow remain open.
+release checks. General repository AI remains unimplemented; the later bounded-core acceptance above
+does not extend to arbitrary repositories or generated repair source.
 The six-case, three-mode mock evaluation tests contracts, not model performance. Whether AI assistance improves results is a hypothesis to
 evaluate, not an established advantage; the core remains useful without a provider or a fixed GPT model.
 The final demo targets a maintained owned fixture, with separate data-sharing, patch, and execution

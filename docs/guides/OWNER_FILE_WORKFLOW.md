@@ -46,7 +46,12 @@ JSON, stderr and retained records were checked privately; CLI/capture exited `0`
 See the [installed-flow acceptance record and runbook](OWNER_FILE_ACCEPTANCE.md) for exact scope and
 remaining gates. This is one macOS/Python 3.12.7 POSIX source installation, not live failure injection,
 pipx/upgrade/native distribution evidence or general repository repair. Existing offline refusal,
-user-edit and recovery checks need their final #82 review; #82/#81/#35 and release gates remain open.
+user-edit and recovery checks remain offline evidence. On 2026-11-02 KST the maintainer accepted the
+bounded walkthrough, evidence mapping and bilingual limitations; this was not a new live run.
+The accepted scope is the registered synthetic pair/eight cases/template selection, not general
+FastAPI repository PoC generation or model-authored repair source, which are not implemented.
+Acceptance-status documentation needs its own required checks, separately approved reviews and normal
+merge before #82 → #81 → #35 completion. Those issues and independent #83/#84/#85/#89 remain open.
 Documentation examples and consumed approvals do not authorize a new live attempt.
 
 ## Preview without side effects
