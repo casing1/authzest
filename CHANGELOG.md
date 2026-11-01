@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Reconcile [alpha.4 readiness](docs/releases/RELEASING.md) after PR #123's reviewed delivery and
+  ordered #82 → #81 → #35 completion. Separate accepted POSIX source-CLI core evidence from portable
+  scan/preview capabilities, final versioned candidate, consumer install/upgrade and publication gates.
+  Refresh the dated [#89 static tooling assessment](docs/development/FORMATTING.md#current-static-recheck--2026-11-02-kst):
+  the inspected official Prettier 3.9.10 still embeds brace-expansion 5.0.6 on the selected paths;
+  `needs_review` / medium confidence and the exact-candidate disposition gate remain. No dependency,
+  runtime, package/schema version, release asset or risk-acceptance change is made.
 - Record [bounded maintainer acceptance](docs/guides/OWNER_FILE_ACCEPTANCE.md#bounded-maintainer-acceptance--2026-11-02-kst)
   on 2026-11-02 KST of the existing installed walkthrough, English/Korean limitations and separate
   offline failure/refusal/user-edit/recovery/no-change evidence. Align four READMEs, indexes, roadmap
