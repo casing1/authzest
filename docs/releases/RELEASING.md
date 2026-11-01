@@ -5,6 +5,51 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
+## Alpha.4 readiness — 2026-11-02 KST
+
+**Publication remains no-go.** [#83](https://github.com/casing1/authzest/issues/83) retains a conditional
+2026-11-04 KST target, not a promised publication date. No final versioned candidate is selected;
+the package remains `0.1.0a3`, scan report schema `1.2`, and published alpha.3 tags/assets are unchanged.
+The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
+
+The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
+acceptance-status documentation by normal merge `ee49f5a`, followed by #82 → #81 → #35 completion.
+Its exact head `a24b859` passed ten CI checks and both automatic reviews completed with no published
+findings or unresolved review threads. The security review did not report a finding count; do not
+translate that into a zero-finding assessment. Six post-merge checks passed. This delivery does not
+select a release candidate or turn source acceptance into native/consumer acceptance.
+
+The accepted flow uses one registered synthetic policy pair, eight reviewed cases, Codex selection
+of a registered template and separately approved file stages. General FastAPI repository PoC generation
+and model-authored replacement source are **not implemented**. Keep these distribution boundaries explicit:
+
+| Capability                                                  | Source installation                                                                                     | Native executable / remaining evidence                                                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Static scan and optional local inventory UI                 | Implemented; UI requires its dependencies/assets                                                        | Packaging supports these features; final-candidate checks remain required, and scan/preview smoke alone does not verify UI behavior |
+| Offline owner-review and before/after owner-repair previews | Implemented without a provider call                                                                     | Historical `b5de9d9` preflight passed three hosted platforms; not evidence for the final versioned candidate                        |
+| Active `codex-owner-repair --file-workflow`                 | POSIX non-frozen source only; bounded installed acceptance at `c868152` on one macOS/Python 3.12.7 host | Unsupported in frozen executables and Windows; no native owner-file workflow claim                                                  |
+| Installation/replacement                                    | Historical `1d0ebb8` source install/replacement and later installed-flow records have different scopes  | Neither proves a versioned alpha.4 upgrade, clean-device native installation or other consumer platforms                            |
+
+The native preview, source-install and installed-flow observations remain bound to their original
+commits and scopes. They are useful preparation evidence, not substitutes for the following gates:
+
+| Gate                          | Current disposition / next action                                                                                                                                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                            |
+| #89 residual tooling risk     | Open; the [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) remains `needs_review` / medium. Record a reviewed compatible upstream shipped-byte fix or an explicit maintainer residual-risk decision for the exact candidate in #83 |
+| Exact candidate and claims    | Pending: select an unused version and exact commit; align English/Korean changelogs, four README languages and source/native limitations                                                                                                                                             |
+| Candidate verification        | Pending: required exact-head checks/reviews, final three-platform native/artifact checks and each advertised installation/update route; scope any actual runtime execution separately                                                                                                |
+| Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                         |
+
+The official npm `prettier@3.9.10` follow-up still found the embedded `brace-expansion` `5.0.6` copy;
+a version bump alone is not #89 clearance or a compatibility result. The static assessment did not
+prove supported AuthZest availability impact through actual direct editor/API inputs, execute hostile
+tests or accept residual risk. #89/#83 stay open. This reconciliation performs no new provider/worker
+run, native workflow, version bump, tag or release; each later action retains its own scope and gates.
+Prepare #89 response options now, then identify the versioned candidate before requesting its final
+disposition. Bind the decision to that exact candidate; relevant source/toolchain changes need a new
+assessment rather than reuse of an earlier or unspecified-candidate decision.
+
 ## Published preview and current source
 
 ### Published alpha.3
@@ -93,8 +138,9 @@ application execution, or user-source modification was part of the smoke checks.
 Release timing is milestone-based at the maintainer's discretion, not one tag per issue or a fixed
 calendar cadence. The maintainer delegated timing decisions on 2026-09-11; this does not waive any
 release checks below. Group internal contract slices into a coherent user-facing checkpoint only after
-artifact/compatibility checks pass. Alpha.3 includes the bounded fixture part of #35; broader acceptance
-remains open. Choose the next checkpoint from verified progress, not a promised date or reserved version. Preserve the
+artifact/compatibility checks pass. Alpha.3 includes the historical bounded fixture part of #35;
+the later bounded source-core completion above is not release-candidate acceptance.
+Choose the next checkpoint from verified progress, not a promised date or reserved version. Preserve the
 seven development weeks and separate exam/submission buffer; do not publish to inflate activity.
 
 Use Semantic Versioning. Versions below `1.0.0` may introduce breaking changes while AuthZest is in initial
@@ -172,11 +218,13 @@ its bundled dependency follow-up remains under #89/#83. Release preparation belo
 
 The scoped `source-map-js` development-lock update (#94 / PR #95) was merged, and its Dependabot
 alert was read back as fixed on 2026-10-08. That is a historical readback, not a new alert query in
-this 2026-10-16 documentation sync. It is separate from #89's residual Prettier-embedded `brace-expansion` copy.
+this readiness reconciliation. It is separate from #89's residual Prettier-embedded `brace-expansion` copy.
 The [2026-10-08 static assessment](../development/FORMATTING.md#dependency-evidence-and-limits), against
 `4218b807ad892bb92e27a6bb23c4d64000e2a3bf`, recorded #89 as `needs_review` with medium confidence.
 It verified affected embedded code, not exploitation of the guarded commands or the AuthZest runtime.
-This sync adds no newer upstream check, security assessment or risk acceptance.
+The [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) separately records the official
+`prettier@3.9.10` shipped-byte check and unchanged `needs_review` / medium disposition; it does not
+establish a compatible fix or accept risk. Preserve the earlier assessment as historical evidence.
 Neither dependency maintenance nor that recorded assessment establishes full tooling security clearance or
 changes an existing release, tag, package version or alpha.3 asset.
 

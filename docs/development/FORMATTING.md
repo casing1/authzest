@@ -125,6 +125,42 @@ Node toolchain; the optional dashboard used built frontend assets. That record s
 developer-tooling route from runtime claims; it was not an audit of every dependency or a new
 binary-content attestation.
 
+## Current static recheck — 2026-11-02 KST
+
+A separate static recheck at source `ee49f5a04be41453aa7bf7b75438d04761b5880a` keeps the supplied
+[#89](https://github.com/casing1/authzest/issues/89) claim at **`needs_review` / medium confidence**,
+rank 1 in this one-item needs-review queue. This is a follow-up to the dated record above, not a
+claim of a newly confirmed AuthZest runtime vulnerability or a risk-acceptance decision.
+
+The committed formatter is still Prettier **3.9.6**. On this date the official
+[npm metadata](https://registry.npmjs.org/prettier/3.9.10) and
+[upstream release](https://github.com/prettier/prettier/releases/tag/3.9.10) identify **3.9.10** as the
+latest release inspected. Its official tarball matched the registry's SHA-512 integrity and SHA-1
+`ac378e432f1a7381518f2e080816bbaefa38d585`. No package was installed or upgraded for this inspection.
+
+- The 3.9.10 notices still identify embedded `brace-expansion` **5.0.6**. Selected ESM sections retain
+  recursive comma parsing, `push.apply`, recursive expansion and the rewrite branch named by the
+  advisories above. The EditorConfig glob → Minimatch → brace-expansion route remains; the CJS API
+  delegates to that ESM implementation and the legacy CLI resolves configuration through it.
+- The repository guard still validates the bounded root settings and reviewed section patterns
+  before launching the formatter, with explicit options/ignore paths and the child timeout. The
+  optional review workspace is not enforcement of a developer's effective editor settings.
+- Actual lower-trust direct editor/API configuration exposure and a supported AuthZest availability
+  consequence remain unverified. The trusted-toolchain, stable-file and no hostile same-user writer
+  assumptions remain. Runtime source/spec inspection does not select the Prettier Node toolchain;
+  this is static packaging evidence, not a new native-artifact attestation.
+
+No hostile/resource-exhaustion input, test, build, application or dynamic reproduction was run during
+this static triage. Inspection covered selected paths, not every bundled component or all formatter
+behavior. In particular, an update to the inspected 3.9.10 alone is **not** a demonstrated replacement
+of this embedded parser, and its compatibility has not been accepted here. Neither an empty npm audit
+nor green CI changes that conclusion. Ordinary documentation/compatibility checks performed after
+this triage are separate from security validation.
+
+The smallest remaining decision is unchanged: establish the relevant direct-integration exposure or
+record a reviewed compatible shipped-byte replacement / explicit exact-candidate residual-tooling-risk
+decision under #83 before publication. #89 remains open; no risk is silently accepted.
+
 ## Prerelease disposition
 
 Keep #89 and #83 open. Normal development and separately scoped candidate compatibility/artifact
