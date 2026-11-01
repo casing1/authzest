@@ -10,9 +10,12 @@ the current release process. The binaries are not signed or notarized.
 **Publication remains no-go.** [#83](https://github.com/casing1/authzest/issues/83) retains a conditional
 2026-11-04 KST target, not a promised publication date. The 2026-11-02 candidate preparation sets
 the source package to `0.1.0a4` and proposes the unused tag `v0.1.0-alpha.4`; it creates neither a tag
-nor a published release. Record the exact candidate commit after the preparation PR passes required
-checks/reviews and merges normally. No final candidate SHA or successful candidate validation is
-claimed yet. Scan report schema stays `1.2`, and published alpha.3 tags/assets remain unchanged.
+nor a published release. [PR #125](https://github.com/casing1/authzest/pull/125) delivered that preparation
+by normal merge `676c1cc` after ten CI checks and both reviews, followed by six passing main checks.
+That is the preparation baseline, not validation of the subsequent minimatch dependency repair.
+Record a new exact candidate commit after that repair's own required checks/reviews and normal merge;
+do not reuse `676c1cc` as evidence for changed dependency bytes. Scan report schema stays `1.2`, and
+published alpha.3 tags/assets remain unchanged. Final native/install/publication validation is still pending.
 The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
 
 The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
@@ -40,15 +43,21 @@ commits and scopes. They are useful preparation evidence, not substitutes for th
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                            |
 | #89 residual tooling risk     | Open; the [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) remains `needs_review` / medium. Record a reviewed compatible upstream shipped-byte fix or an explicit maintainer residual-risk decision for the exact candidate in #83 |
-| Exact candidate and claims    | In preparation: source `0.1.0a4`, proposed unused `v0.1.0-alpha.4`, aligned English/Korean changelogs and four README languages. Required PR checks/reviews and normal merge must precede recording the exact candidate SHA                                                          |
+| Exact candidate and claims    | Preparation delivered at `676c1cc` through PR #125; package `0.1.0a4` and proposed unused tag unchanged. The minimatch dependency repair needs its own checks/reviews and normal merge before recording the revised exact candidate SHA                                              |
 | Candidate verification        | Pending: required exact-head checks/reviews, final three-platform native/artifact checks and each advertised installation/update route; scope any actual runtime execution separately                                                                                                |
 | Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                         |
 
 The official npm `prettier@3.9.10` follow-up still found the embedded `brace-expansion` `5.0.6` copy;
 a version bump alone is not #89 clearance or a compatibility result. The static assessment did not
 prove supported AuthZest availability impact through actual direct editor/API inputs, execute hostile
-tests or accept residual risk. #89/#83 stay open. This preparation changes version metadata and
-documentation only; it performs no new provider/worker run, native workflow, tag or release.
+tests or accept residual risk. #89/#83 stay open. The separate minimatch repair changes the standalone
+development dependency graph, not Prettier's embedded copy or #89's disposition. Its exact `11.0.1`
+override deliberately crosses the three inspected parents' `^10.x` ranges. Ten bounded
+regressions passed; a zero-result npm audit covers the graph only. Neither is final-head CI, general
+major-version compatibility or security clearance. See the [candidate changelog](../../CHANGELOG.md#fixed)
+for the scoped checks and unchanged `needs_review` / medium product-impact assessment. Package
+`0.1.0a4` and schema `1.2` remain unchanged; no provider/worker run, native workflow, risk acceptance,
+tag or release is added.
 Normal development, standard checks, configured PR reviews and normal merge use the required gates
 without a new per-attempt confirmation. Product source sharing and file-stage consent remain distinct.
 Prepare #89 response options now, then record the merged versioned candidate before its final
