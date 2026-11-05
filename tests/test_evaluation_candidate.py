@@ -389,7 +389,7 @@ def test_cli_invalid_usage_does_not_read_candidate(monkeypatch, capsys):
 
 def test_repository_draft_has_bound_inputs_without_claiming_an_evaluation():
     result = checker.check_candidate(Path(__file__).resolve().parents[1])
-    assert (result["case_count"], result["question_count"]) == (6, 18)
+    assert (result["case_count"], result["question_count"]) == (7, 21)
     assert result["integrity"] == "matched"
     assert result["status"] == "draft-not-frozen"
     assert result["review_status"] == "pending-exact-maintainer-review"
@@ -405,14 +405,57 @@ def test_repository_draft_denominators_remain_explicit_proposals():
     inputs = review["review_inputs"]
     families = [question["family"] for case in inputs for question in case["questions"]]
     assert {family: families.count(family) for family in set(families)} == {
-        "declaration": 6,
-        "policy-intent": 6,
-        "runtime-assurance": 6,
+        "declaration": 7,
+        "policy-intent": 7,
+        "runtime-assurance": 7,
     }
     assert all(len(case["questions"]) == 3 for case in inputs)
     expected = [item["expected"] for case in review["reference_drafts"] for item in case["answers"]]
-    assert sum(value is None for value in expected) == 6
-    assert sum(value is not None for value in expected) == 12
+    assert sum(value is None for value in expected) == 7
+    assert sum(value is not None for value in expected) == 14
     assert "" in expected  # Empty CSV is a known declaration answer, not unknown.
     splits = [case["proposed_split"] for case in review["cases"]]
-    assert splits.count("development") == splits.count("reserved-evaluation") == 3
+    assert splits.count("development") == 3
+    assert splits.count("reserved-evaluation") == 4
+    policies = [
+        answer["expected"]
+        for case, refs in zip(inputs, review["reference_drafts"], strict=True)
+        for question, answer in zip(case["questions"], refs["answers"], strict=True)
+        if question["family"] == "policy-intent"
+    ]
+    assert {value: policies.count(value) for value in set(policies)} == {
+        "restricted": 4,
+        "mixed": 2,
+        "public": 1,
+    }
+
+
+def test_public_control_preserves_the_exact_original_six_candidate_entries():
+    root = Path(__file__).resolve().parents[1] / checker.CANDIDATE
+    tasks = json.loads((root / "tasks.json").read_text(encoding="utf-8"))
+    references = json.loads((root / "references.json").read_text(encoding="utf-8"))
+    original = {
+        "tasks": tasks | {"cases": tasks["cases"][:6]},
+        "references": references | {"cases": references["cases"][:6]},
+    }
+    # Canonical draft identity at PR #133 / main 8b204e2, not a label approval.
+    assert identity(original) == "e596cc93d136f537fc7c909c7294399e8688672d0183557dd5e0d7feeed37482"
+
+
+def test_public_intent_control_is_explicit_and_does_not_claim_anonymous_reachability():
+    root = Path(__file__).resolve().parents[1]
+    review = checker.check_candidate(root, review=True)
+    public, refs = review["review_inputs"][-1], review["reference_drafts"][-1]
+    assert public["case_id"] == refs["id"] == "status-probe-context"
+    assert review["cases"][-1]["proposed_split"] == "reserved-evaluation"
+    assert "both intentionally public" in public["policies"][0]
+    assert "ordinary response formatting" in public["policies"][1]
+    assert "Depends(parse_display_units)" in public["sources"]["main.py"]
+    assert public["sources"]["main.py"].count("@app.get(") == 2
+    answers = {answer["question_id"]: answer for answer in refs["answers"]}
+    assert answers["source-http-declaration-count"]["expected"] == "2"
+    assert answers["registration-policy-intent"]["expected"] == "public"
+    assert answers["registration-policy-intent"]["source_refs"] == []
+    assert answers["anonymous-reachability-assurance"]["expected"] is None
+    assert review["review_status"] == "pending-exact-maintainer-review"
+    assert review["benchmark_ready"] is False

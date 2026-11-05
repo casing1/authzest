@@ -16,7 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
-- Prepare a separate source-checkout evaluation draft for [#84](https://github.com/casing1/authzest/issues/84):
+- Append a maintainer-requested public-intent control before evaluation freeze; this draft places it
+  in reserved evaluation.
+  Preserve the original six scenarios/18 proposals and their splits exactly; the revised candidate has
+  seven scenarios/21 assistant-authored references, three development/four reserved and four
+  restricted/two mixed/one public policy proposals, not balanced coverage. Update English/Korean
+  review status and measurement denominators. All 21 answers remain pending exact review; the
+  earlier positive reaction approves neither the original 18 nor the new three. No freeze, scorer/
+  comparison-harness implementation, measured result, live call, release or #84 completion is added.
+
+- Initially prepare a separate source-checkout evaluation draft in
+  [PR #133](https://github.com/casing1/authzest/pull/133) for [#84](https://github.com/casing1/authzest/issues/84):
   six new owned-source data scenarios and 18 assistant-authored reference proposals, all awaiting exact
   maintainer review and not frozen. Add a bounded, read-only preflight and human/JSON review packet;
   keep task-only inputs separate from references and bind each draft to its canonical input identity.

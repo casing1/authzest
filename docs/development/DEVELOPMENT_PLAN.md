@@ -148,9 +148,16 @@ The [historical evaluation inventory](EVALUATION_INVENTORY.md) completed
 [#108](https://github.com/casing1/authzest/issues/108) through PR #109. It checks existing artifact
 bytes and preserves their distinct provenance; it does not select or freeze a new benchmark.
 #84's independent reference review and measured comparison remain open.
-The [draft evaluation protocol](EVALUATION_PROTOCOL.md) adds six new source-data candidates and
-18 assistant-authored reference proposals with an inert preflight/review packet. Exact-label review,
-freeze and any measured comparison remain separate next steps; no #84 acceptance item is complete.
+The [draft evaluation protocol](EVALUATION_PROTOCOL.md) now contains seven source-data candidates and
+21 assistant-authored reference proposals with an inert preflight/review packet. At the maintainer's
+request, append one public-intent control before freeze; this draft places it in reserved evaluation.
+Preserve the original six scenarios/18 proposals and their splits exactly. The split is now three
+development/four reserved;
+policy proposals are four restricted/two mixed/one public, not balanced. Reserved evaluation has only
+one public control; these public proposals are not secret or guaranteed unseen holdouts.
+All 21 exact references await review: the earlier positive reaction is not approval of the original
+18 or the new three. Review the revised set before freezing or implementing its scorer/comparison
+harness. No measured comparison or #84 acceptance item is complete.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 

@@ -256,6 +256,42 @@
           ]
         }
       ]
+    },
+    {
+      "id": "status-probe-context",
+      "input_sha256": "0711430ec27a7272f240f6805a1fd4efc674abe391dd323c7b745612f7754635",
+      "answers": [
+        {
+          "question_id": "source-http-declaration-count",
+          "expected": "2",
+          "rationale": "The supplied source has app.get('/status/summary') and app.get('/status/schema') on distinct handlers. These are two source decorator declarations, not evidence that a deployment serves two reachable endpoints.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 12,
+              "line_end": 18
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "public",
+          "rationale": "The supplied policy explicitly states that both status routes are intentionally public and require no authenticated principal, role, ownership, or scope. The public label comes from that policy, not absent Security syntax or the ordinary Depends declaration.",
+          "source_refs": []
+        },
+        {
+          "question_id": "anonymous-reachability-assurance",
+          "expected": null,
+          "rationale": "The source and policy describe intended public routes, but no serving configuration, anonymous request observation, or successful deployed response is supplied. Unknown records missing runtime evidence and neither denies nor guarantees anonymous reachability.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 5,
+              "line_end": 19
+            }
+          ]
+        }
+      ]
     }
   ]
 }

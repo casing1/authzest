@@ -3,11 +3,19 @@
 [Documentation](../README.md) · English · [한국어](../i18n/ko/development/EVALUATION_PROTOCOL.md)
 
 This is an offline preparation slice of [#84](https://github.com/casing1/authzest/issues/84),
-not a frozen benchmark, evaluation result or completed acceptance criterion. It proposes six newly
-owned synthetic scenarios, three development and three reserved-evaluation scenarios, with three
-questions each: 18 questions in total. The sources and reference answers are assistant-authored drafts;
+not a frozen benchmark, evaluation result or completed acceptance criterion. It proposes seven newly
+owned synthetic scenarios, three development and four reserved-evaluation scenarios, with three
+questions each: 21 questions in total. The sources and reference answers are assistant-authored drafts;
 every exact reference still requires maintainer review. A general instruction to proceed, approval of
 policy criteria, passing tests or this PR's merge does not approve those individual answers.
+
+The maintainer requested a public-intent control before freeze; this draft places the added scenario
+`status-probe-context` in reserved evaluation. It changes the candidate identity while preserving the
+original six scenarios,
+their splits and their 18 reference proposals exactly; none is reassigned or retuned. The earlier
+positive reaction to the draft is not recorded as approval of those 18 answers or the three new ones.
+All 21 exact references remain pending review, and the revised candidate is not frozen. Scoring and
+comparison-harness implementation are deferred until that revised-set review.
 
 The [historical inventory](EVALUATION_INVENTORY.md) and its existing files, identities and approvals
 remain unchanged. The new candidate is not another observation of those cases. Follow the
@@ -65,14 +73,20 @@ Each scenario has one question in each family:
 
 The reserved cases are public assistant-authored proposals, not secret, independently certified or
 provably unseen holdouts. Do not tune prompts on them. Record any exposure or use, and do not relabel
-development cases as fresh holdouts. Six scenarios support a small descriptive comparison, not a
+development cases as fresh holdouts. Seven scenarios support a small descriptive comparison, not a
 representative population or statistically established superiority.
-The proposed policy answers are four restricted and two mixed, with no wholly public answer.
-Before freeze, add a public-intent control or explicitly retain this coverage limitation; the draft
-is not a balanced policy-classification benchmark.
+The proposed policy answers are four restricted, two mixed and one public. Development retains two
+restricted/one mixed/no public proposal; reserved evaluation now has two restricted/one mixed/one
+public. A public answer is now present in reserved evaluation, but its single public control cannot
+establish representative coverage. This remains a small, unbalanced policy-classification draft.
+The new control declares public intent for two informational GET routes; its ordinary dependency is
+formatting only, not authorization evidence. Public intent comes from the explicit supplied policy,
+not from a missing authentication dependency or the presence of `Depends`. It does not establish
+runtime enforcement. Its proposed answers are two route declarations, public intent and unknown
+runtime assurance, all awaiting exact review.
 
 Explicit-policy questions are intent-reading controls, not tests of access-control enforcement.
-The six unknown assurance questions deliberately lack runtime evidence; they do not establish
+The seven unknown assurance questions deliberately lack runtime evidence; they do not establish
 general uncertainty calibration. Score these controls separately, not as an aggregate AI advantage.
 Source declaration truth is not parser self-agreement: the keyword-path scenario has two source
 declarations even if the supported inventory emits one. An incomplete inventory is a lower bound,
@@ -98,19 +112,20 @@ implementation. No new live runner, scoring result or provider integration is de
 ## Predeclared measurement rules
 
 Keep declaration, policy-intent and runtime-assurance results separate. One complete mode/repetition
-has 18 question opportunities, six per family and nine per split. There are 12 proposed answerable
-references and six required-unknown references. These counts are provisional until exact review and
+has 21 question opportunities, seven per family, nine in development and 12 in reserved evaluation.
+There are 14 proposed answerable references and seven required-unknown references.
+These counts are provisional until exact review and
 freeze; later revisions require a new reviewed identity, not silent denominator changes.
 
-| Measure                   | Numerator / denominator                                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Answered accuracy         | Correct non-unknown answers / all non-unknown answers; answering a required-unknown question is incorrect. |
-| Task coverage             | Non-unknown answers / all 18 question opportunities.                                                       |
-| Correct-answer yield      | Correct non-unknown answers / all 18 opportunities; also report answerable-only yield / 12.                |
-| Required-unknown handling | Correct unknown responses / six required-unknown references.                                               |
-| False abstention          | Unknown responses to answerable questions / 12 answerable references.                                      |
-| False certainty           | Non-unknown responses to required-unknown questions / six required-unknown references.                     |
-| Invalid responses         | Invalid scenario responses / six requested scenario responses; retain their missing/uncredited questions.  |
+| Measure                   | Numerator / denominator                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Answered accuracy         | Correct non-unknown answers / all non-unknown answers; answering a required-unknown question is incorrect.  |
+| Task coverage             | Non-unknown answers / all 21 question opportunities.                                                        |
+| Correct-answer yield      | Correct non-unknown answers / all 21 opportunities; also report answerable-only yield / 14.                 |
+| Required-unknown handling | Correct unknown responses / seven required-unknown references.                                              |
+| False abstention          | Unknown responses to answerable questions / 14 answerable references.                                       |
+| False certainty           | Non-unknown responses to required-unknown questions / seven required-unknown references.                    |
+| Invalid responses         | Invalid scenario responses / seven requested scenario responses; retain their missing/uncredited questions. |
 
 Apply the corresponding fixed family/split denominators as well. Invalid responses earn no answer or
 unknown-handling credit and no coverage; they are not successful abstentions. A zero denominator is
