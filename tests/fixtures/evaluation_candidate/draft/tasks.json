@@ -190,6 +190,37 @@
           "answer_format": "unknown-or-boolean"
         }
       ]
+    },
+    {
+      "id": "status-probe-context",
+      "proposed_split": "reserved-evaluation",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI\n\napp = FastAPI()\n\n\ndef parse_display_units():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\n@app.get(\"/status/summary\")\ndef status_summary(units=Depends(parse_display_units)):\n    return {\"status\": \"nominal\", \"units\": units}\n\n\n@app.get(\"/status/schema\")\ndef status_schema():\n    return {\"format\": \"status-v1\"}\n"
+      },
+      "policies": [
+        "GET /status/summary and GET /status/schema are both intentionally public: their declared policy requires no authenticated principal, role, ownership, or scope.",
+        "parse_display_units represents ordinary response formatting, not an access-control requirement. Its Depends declaration does not establish a public or restricted policy."
+      ],
+      "questions": [
+        {
+          "id": "source-http-declaration-count",
+          "family": "declaration",
+          "text": "How many direct FastAPI HTTP decorator declarations appear in the supplied source? Count the distinct summary and schema handler declarations, not successful requests or deployed endpoints. Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policies, is the intended access policy across GET /status/summary and GET /status/schema public, restricted, or mixed? Report the explicit intent, not an inference from dependency names or missing authentication syntax.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "anonymous-reachability-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and stated intent establish that anonymous clients can successfully reach both status routes in a running deployment? Answer unknown when deployment and anonymous reachability are not established; public intent alone is not a runtime observation.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
     }
   ]
 }

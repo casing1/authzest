@@ -64,10 +64,19 @@ installation instructions, limitations and OSS contribution evidence. If a measu
 report that gap rather than manufacturing a model-quality claim. Complete the bounded course scope
 before adding models, another transport, a complete Python interpreter or AI GUI.
 
-The separate [draft evaluation protocol](EVALUATION_PROTOCOL.md) supplies six new source-data
-candidates, 18 assistant-authored reference proposals and an inert preflight/review packet. They are
-not frozen, independently label-approved or measured. Review each exact reference next; merging the
-preparatory slice is not that approval. Historical corpus bytes and observations remain unchanged.
+The separate [draft evaluation protocol](EVALUATION_PROTOCOL.md) supplies seven source-data candidates,
+21 assistant-authored reference proposals and an inert preflight/review packet. The maintainer requested
+a public-intent control before freeze; this draft places it in reserved evaluation. The original six
+scenarios/18 references
+and their splits remain unchanged. The revised split is three development/four reserved, with four
+restricted/two mixed/one public policy proposals: a public control is present, not class balance.
+Reserved evaluation includes only one public control, and the public proposals are not secret or
+guaranteed unseen holdouts. Do not use them for prompt tuning or claim fresh independent trials.
+Its explicit policy establishes public intent, not runtime enforcement; ordinary formatting DI is not
+access-control evidence. All 21 exact references are pending review, not frozen or measured. Neither
+the earlier positive reaction nor merging preparation approves the original 18 or the added three.
+Review the revised set before freeze or scorer/comparison-harness implementation. Historical corpus
+bytes and observations remain unchanged.
 
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
