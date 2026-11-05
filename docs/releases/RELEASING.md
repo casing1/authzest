@@ -18,6 +18,9 @@ main passed six checks. Security finding counts were unreported, not zero-count 
 The November 5 nonpublishing native and source-install observations below add candidate-bound
 preflight evidence, not full release/runtime or public-asset verification. Published alpha.3 is unchanged.
 The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
+The maintainer has since accepted the named residual formatting risk for the forthcoming alpha.4 with
+[visible warnings and follow-up conditions](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
+This does not waive the remaining release gates or fix the embedded parser.
 
 The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
 acceptance-status documentation by normal merge `ee49f5a`, followed by #82 → #81 → #35 completion.
@@ -40,13 +43,13 @@ and model-authored replacement source are **not implemented**. Keep these distri
 The native preview, source-install and installed-flow observations remain bound to their original
 commits and scopes. They are useful preparation evidence, not substitutes for the following gates:
 
-| Gate                          | Current disposition / next action                                                                                                                                                                                                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                            |
-| #89 residual tooling risk     | Open; the [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) remains `needs_review` / medium. Record a reviewed compatible upstream shipped-byte fix or an explicit maintainer residual-risk decision for the exact candidate in #83 |
-| Exact candidate and claims    | Preflight candidate `b5f3eb81d318e94c5e400ec52e78f1550e13f931` includes reviewed PR #125/#127 delivery; later documentation commits are not the commit observed below                                                                                                                |
-| Candidate verification        | November 5 scan/preview native checks and one-host source install/versioned replacement passed at that candidate. Final release-commit checks, full runtime/native release workflow and any other advertised consumer routes remain separate gates                                   |
-| Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                         |
+| Gate                          | Current disposition / next action                                                                                                                                                                                                                                             |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                     |
+| #89 residual tooling risk     | Follow-up OPEN; `needs_review` / medium unchanged. Explicit November 5 acceptance covers only the forthcoming alpha.4 under the linked warnings/assumptions, not a fix. Bind the exact warning candidate in #83 after normal merge and unchanged non-Markdown byte comparison |
+| Exact candidate and claims    | Preflight candidate `b5f3eb81d318e94c5e400ec52e78f1550e13f931` includes reviewed PR #125/#127 delivery; later documentation commits are not the commit observed below                                                                                                         |
+| Candidate verification        | November 5 scan/preview native checks and one-host source install/versioned replacement passed at that candidate. Final release-commit checks, full runtime/native release workflow and any other advertised consumer routes remain separate gates                            |
+| Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                  |
 
 The November 2 official npm `prettier@3.9.10` follow-up found the embedded `brace-expansion` `5.0.6` copy;
 a version bump alone is not #89 clearance or a compatibility result. The static assessment did not
@@ -58,12 +61,14 @@ regressions passed; a zero-result npm audit covers the graph only. The subsequen
 normal merge are recorded above; they do not establish general major-version compatibility or security
 clearance. See the [candidate changelog](../../CHANGELOG.md#fixed)
 for the scoped checks and unchanged `needs_review` / medium product-impact assessment. Package
-`0.1.0a4` and schema `1.2` remain unchanged. November 5 adds only the bounded native preview and
-source-install checks below, with no provider/policy-worker call, risk acceptance, tag or release.
+`0.1.0a4` and schema `1.2` remain unchanged. The November 5 native preview and source-install checks
+below did not themselves accept risk. The later maintainer decision linked above accepts the named
+residual risk with warnings; neither step adds a provider/policy-worker call, tag or release.
 Normal development, standard checks, configured PR reviews and normal merge use the required gates
 without a new per-attempt confirmation. Product source sharing and file-stage consent remain distinct.
-Resolve #89's response options against the exact intended publication candidate before its final
-disposition. Bind that explicit decision to that candidate; relevant source/toolchain changes need a new
+Record the exact warning candidate in #83 and compare its tracked non-Markdown bytes with the
+decision basis `7509a6a821947b516f543222d7cd620ab2ad8e83` before publication. Bind the explicit alpha.4
+decision to that candidate; relevant source/toolchain/workflow or exposure changes need a new
 assessment rather than reuse of an earlier or unspecified-candidate decision.
 
 ### Candidate preflight observation — 2026-11-05 KST
@@ -90,7 +95,8 @@ AI/worker or fresh consumer-device acceptance. Raw evidence and local environmen
 These results remain bound to `b5f3eb8`, not a later documentation merge or eventual release commit.
 The historical October 29 same-version installation and October 30 active-flow records retain their
 different scopes. #83/#89 remain open; full release/runtime execution, final-commit verification,
-exact-candidate tooling disposition, tagging and public-asset verification are still required.
+binding the documented tooling decision to the exact warning candidate, tagging and public-asset
+verification are still required.
 
 ## Published preview and current source
 
@@ -275,7 +281,9 @@ Before tagging or publishing a candidate, record #89's disposition in #83: eithe
 upstream replacement verified from shipped bytes and ordinary compatibility checks, or an explicit
 maintainer decision on the exact candidate's residual developer-tooling risk. Name wrapper-only coverage,
 direct editor/API gaps and the trusted-toolchain/stable-file assumptions; do not silently accept or dismiss
-the risk. This documentation is not such a decision. Normal development and separately scoped candidate
+the risk. Static assessments are not acceptance; the later
+[explicit alpha.4 maintainer decision](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst)
+is recorded separately, with exact-candidate binding in #83. Normal development and separately scoped candidate
 checks may continue while publication remains gated. #77's exact ten expectations were approved on
 2026-10-09 KST in the separate [label record](../../tests/fixtures/owner_case_review/maintainer_review.json);
 see the [case-plan contract](../reference/OWNER_CASE_PLAN.md). That exact labels-only decision is not
