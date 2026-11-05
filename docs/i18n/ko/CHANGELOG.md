@@ -16,6 +16,33 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 변경
 
+- alpha.4의 태그·패키지/스키마 버전·산출물을 바꾸지 않는 발행 후 문서 후속 작업으로 검증한
+  발행을 기록합니다. README 네 언어·영한 릴리스 기록/index·현재 개발/모델 우선순위를 맞추고
+  과거 관찰·소스 전용 실제 파일 한계를 보존합니다. #130 테스트 harness 수정·#84/#85 근거·최종
+  검사를 조건으로 11월 10–11일 RC·12–13일 정식 목표를 두고 14–17일은 제출 여유로 남깁니다.
+  alpha.4 한정 #89 결정은 정식 릴리스 검토 완료가 아닙니다. 공개 릴리스 바이트를 바꾸지 않는
+  정상 문서 전달은 #83에서 추적합니다.
+
+## [0.1.0-alpha.4] - 2026-11-05
+
+[v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)를 2026-11-05
+03:02:07 UTC에 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`에서 발행했습니다. 패키지는
+`0.1.0a4`, 스캔 스키마는 기존 `1.2`이며 불변 태그의 11월 2일은 발행일이 아닌 패키지 준비일입니다.
+[태그 실행 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의 attempt 2가
+job 8개·Python 4,924개·Node 71개를 통과했습니다. attempt 1은 4,923개 통과·fake-server JSONL
+race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에서 열어 두며 같은 태그
+재실행으로 수정된 것은 아닙니다. 공개 파일 6개는 체크섬·태그 산출물과 일치했고 공개 macOS 파일의
+스캔/미리보기 13개·고정 런타임 1개도 통과했습니다.
+[정확한 기록과 한계](releases/RELEASING.md#alpha4-발행과-공개-파일-검증--2026-11-05-kst)를 참고하세요.
+이 릴리스 검사에는 실제 모델 호출·임의 대상 실행·사용자 소스 패치가 없었습니다. 패키징 근거와
+`c868152`의 과거 실제 수용·독립적인 #84/#85 평가/과목 근거는 구별합니다. #89는 alpha.4 한정
+잔여 도구 판단 아래 OPEN을 유지합니다.
+
+아래 항목은 각 개발 체크포인트의 범위와 당시 상태를 보존합니다. 앞선 미완료 이슈·미출시 단계
+설명은 당시 상황이며 새 실행이나 최종 릴리스 상태를 뜻하지 않습니다.
+
+### 변경
+
 - 11월 5일 관리자가 명시적 경고를 조건으로 다가오는 alpha.4의 #89 개발용 포맷터 가용성 잔여
   위험만 수용한 결정을 기록하고 README 네 언어·영한 기여/포맷 안내에 경고를 추가합니다.
   보호 명령의 가정·직접 CLI/에디터/API 공백을 유지하고 #89 OPEN·`needs_review` / medium을
@@ -36,15 +63,7 @@ AuthZest의 주요 변경사항을 기록합니다.
   release/runtime·다른 사용자 경로·공개 파일 조건은 유지합니다. 제품 AI/정책 worker 호출·위험 수용·
   패키지/스키마 변경·태그·릴리스는 추가하지 않습니다.
 
-## [0.1.0-alpha.4] - 2026-11-02
-
-**발행이 아닌 후보 준비입니다.** 위 날짜는 패키지 `0.1.0a4`의 준비일이며 발행 전에 두 언어의
-날짜를 확인합니다. alpha.4 태그나 공개 산출물은 아직 없습니다. 공개 alpha.3와 스캔 리포트 스키마
-`1.2`는 그대로입니다. 최종 후보 검사·설치/업데이트 근거·정확한 후보에 대한
-[#89](https://github.com/casing1/authzest/issues/89) 판단은
-[#83](https://github.com/casing1/authzest/issues/83)의 발행 조건으로 남습니다.
-
-### 후보 요약
+### 릴리스 범위
 
 - CLI는 기본으로 읽기 쉬운 결과를 출력하고 스크립트는 명시적으로 `--json`을 선택하며 대화형
   미리보기를 분리합니다.
@@ -514,7 +533,8 @@ Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은
 - HTTP scan endpoint의 대상을 로컬 프로세스 소유자가 선택한 workspace로 제한했습니다.
 - HTTP API 계약에서 호출자가 지정하는 파일시스템 경로를 제거했습니다.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.3...main
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.4...main
+[0.1.0-alpha.4]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

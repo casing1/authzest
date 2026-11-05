@@ -23,21 +23,25 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 없습니다.
 
 > [!IMPORTANT]
-> [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 2026-09-12에
-> Python 패키지 버전 `0.1.0a3`, 리포트 스키마 `1.2`로 발행됐습니다. 정적 목록 기능을 유지하고
-> 지원하는 POSIX 시스템에 제한된 Codex fixture·복사본·검사 흐름을 추가합니다. Windows 스캔 지원은 유지합니다.
+> **최신 공개 릴리스:**
+> [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에 발행됐습니다.
+> 정확한 태그 소스는
+> `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, Python 패키지 `0.1.0a4`, 리포트 스키마 `1.2`입니다.
+> [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의 attempt 2에서
+> 발행을 포함한 job 8개가 모두 통과했고 공개 파일 6개를 내려받아 검증했습니다.
 > 정확한 커밋과 검증 근거는 [변경 기록](CHANGELOG.md)과 [릴리스 기록](releases/RELEASING.md)을
 > 확인하세요. `main` checkout은 해당 태그 이후로 변경될 수 있습니다.
 > 아직 알파 도구이며 완성된 취약점 스캐너나 일반 저장소 수정 흐름은 아닙니다.
 
 > [!NOTE]
-> **미발행 alpha.4 후보:** 이 소스의 Python 패키지 버전은 `0.1.0a4`이고 리포트 스키마는 `1.2`로
-> 유지하며 계획된 태그는 `v0.1.0-alpha.4`입니다. 해당 태그와 릴리스는 아직 만들지 않았고 최신 공개
-> 릴리스는 alpha.3입니다. 2026-11-05 KST에 `b5f3eb8`은 아래의 제한된 native 미리보기와 단일 host
-> 소스 설치·업데이트 사전 검사를 통과했습니다. #83의 나머지 최종 릴리스·런타임·설치·공개 산출물
-> 조건은 남아 있습니다. 관리자는 2026-11-05 KST에 `7509a6a`를 기준으로 아래의 명시적 경고와 함께
-> #89의 도구 잔여 위험을 **다음 alpha.4에만** 조건부로 수용했습니다. #89는 열린 상태이고 평가는
-> `needs_review` / medium 그대로이며 수정 완료나 발행 승인이 아닙니다.
+> **범용 수정 엔진이 아닌 제한된 범위:** alpha.4는 읽기 쉬운 CLI 결과와 소유 정책 추천 흐름을
+> 포함합니다. 활성 `codex-owner-repair --file-workflow`에는 POSIX non-frozen Python 소스 설치가
+> 필요합니다. native 바이너리는 정적 스캔·오프라인 미리보기를 지원하며 해당 활성 파일 흐름은 지원하지
+> 않습니다. 테스트 harness 안정화(#130)·독립 평가(#84)·제출용 시연 고정(#85)은 남아 있습니다.
+> 태그 attempt 1은 JSONL 테스트 harness 읽기 경합 1건으로 4,923개 통과/1개 실패했으며 소스를
+> 바꾸지 않은 재실행이 통과했습니다. 첫 실행 통과나 수정 완료가 아닙니다. 아래 경고와 함께 수용한 #89의
+> 잔여 위험은 **alpha.4에만** 해당하며 #89는 `needs_review` / medium으로 열려 있습니다.
+> 수정 완료나 이후 정식 릴리스의 위험 면제가 아닙니다.
 
 > [!WARNING]
 > **개발 도구 위험(#89):** 영향받는 Prettier는 악의적인 EditorConfig로 멈추거나 실패할 수 있습니다.
@@ -50,7 +54,7 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 ## 현재 소스에서 지원하는 기능
 
 - 정적으로 생성한 `FastAPI`·`APIRouter` 소유 객체와 지원하는 import 별칭 인식
-- 미출시 Python [소유 사례 검토/고정 계획 API](reference/OWNER_CASE_PLAN.md)를 추가합니다.
+- Python [소유 사례 검토/고정 계획 API](reference/OWNER_CASE_PLAN.md)를 포함합니다.
   정확한 모델 사례를 미검토/승인/변경/거절 호출자 기록과 검토 가능한 내장 정책 계획에 연결합니다.
   기록된 정확한 예상값 10개는 2026-10-09 KST에 별도로 승인됐고 원래 모델 작성 이력을 유지합니다.
   새 CLI는 없으며 오프라인 계획은 실행 불가·not-run/인가 unknown입니다. 별도
@@ -65,41 +69,41 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
-- 현재 미출시 소스의 `codex-owner-review`·`codex-owner-repair`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
+- alpha.4의 `codex-owner-review`·`codex-owner-repair`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
   기본으로 사용합니다. `--json`은 stdout에 최종 결과 하나만 출력하고 완전한 동의 미리보기·질문은
   stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 또는 수정 추천 미리보기 하나를
   반환합니다. 스크립트는 JSON을 명시해야 하며 필드·기록한 결정·별도 승인은 유지하고 미확인은
   통과가 아닙니다. [출력·전환 계약](guides/CODEX_OWNER_REVIEW.md#결과-해석)을 참고하세요.
   공개 alpha.3는 기존 표시를 유지하며 GUI·새 제공자 호출/실행 권한은 추가하지 않습니다.
-- 소스에 미출시 읽기 전용 [`authzest proposal-preview`](guides/PROPOSAL_PREVIEW.md) 추가:
+- 읽기 전용 [`authzest proposal-preview`](guides/PROPOSAL_PREVIEW.md) 포함:
   지원하는 POSIX 시스템에서 bundle의 정확한 diff·근거·예상 결과를 표시하며 승인·실행은 하지 않음
-- 미출시 [`authzest proposal-check`](guides/PROPOSAL_CHECK.md)로 지원 범위 내 변경 전후 소스
+- [`authzest proposal-check`](guides/PROPOSAL_CHECK.md)로 지원 범위 내 변경 전후 소스
   snapshot을 선언 목표와 비교함. 소스를 실행하지 않으며 정책 의도는 평가하지 않고
   일치도 인가 보장이 아님
-- 미출시 [`authzest review-demo`](guides/REVIEW_DEMO.md)로 메모리 내 mock 예제 하나의 정확한
+- [`authzest review-demo`](guides/REVIEW_DEMO.md)로 메모리 내 mock 예제 하나의 정확한
   diff·선언 결과·설명문 전용 테스트 초안을 함께 표시하며 `--json`도 지원함.
   입력 파일·제공자·적용·실행이 없고 런타임 인가 검사가 아님
 - 소스 checkout에 [소유 보고서 정책 예제](guides/OWNER_POLICY.md) 추가: 순수 소유자·scope 정책,
   독립적인 개발용 단위 테스트와 별도로 스캔하는 FastAPI 참조를 제공함.
   실제 인증·endpoint 런타임 검사·새 제품 실행 모드가 아님
-- 미출시 [`authzest codex-owner-review`](guides/CODEX_OWNER_REVIEW.md) 추가: 모든 지원 OS에서
+- [`authzest codex-owner-review`](guides/CODEX_OWNER_REVIEW.md) 포함: 모든 지원 OS에서
   전체 입력을 오프라인으로 미리 보고, 정확한 공유 동의 후 지원 POSIX 시스템에서 패키지 내
   소유 정책 snapshot 두 개를 Codex로 읽기 전용 검토함. 출력은 미검토 방어적 사례 초안이며
   실행한 테스트나 패치가 아님. 이전 두 번의 실패 이후 새로 승인받은 2026-10-01 실제 시도에서
   약 74초 만에 `draft-ready`를 받았고 답변 1개·사례 10개가 host 검증을 통과함. 제한된 제공자
   인수 검증이며 사례 정답 승인이나 endpoint 검증은 아님. 다음 시도에는 새 승인이 필요하고
   공개 alpha.3는 그대로임
-- 미출시 [`authzest codex-owner-repair`](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) 추가:
+- [`authzest codex-owner-repair`](reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) 포함:
   지원 OS에서 전체 공유 입력을 오프라인으로 미리 보고, 지원 POSIX 시스템에서 명시적으로 승인한
   버전 고정 App Server 시도 1회를 수행합니다. `before` 또는 `after`에 대해 `registered-change`,
   `no-change`, `unknown`을 반환하며 host가 등록된 단일 파일 diff를 구성합니다. 임의 교체 코드를
   생성하는 흐름은 아닙니다. 2026-10-28 별도 승인한 실제 시도에서 등록 템플릿을 선택했고 그 승인은
   소비됐습니다. 기본 동작은 추천 전용으로 유지하며 변경 적용·파일 복구·정책 실행을 하지 않습니다.
-- 별도 미출시 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md) 추가:
+- 별도 [등록 수정 정책 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md) 포함:
   POSIX Python 소스 전용 before/after 대조군마다 별도의 새 결정이 필요합니다. 과거 검사에서
   예상한 before 불일치 2개와 after 일치 8개를 관찰했습니다. 적용한 파일의 검사가 아니며,
   이 대조군 API는 아래 파일 흐름과 별개이고 새 CLI/UI를 추가하지 않습니다.
-- 미출시 [소유 파일 수정 소스 API](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)를 추가합니다.
+- [소유 파일 수정 소스 API](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)를 포함합니다.
   2026-10-29 KST의 main `fb90c46`에서 복사본의 캡처 before 검사, 정확한 diff 수락, 적용,
   캡처 after 검사와 복구를 각각 범위를 정해 승인받아 수행했습니다. Before는 예상값 6/8개가
   일치하고 `non-owner`·`exact-owner-no-normalization`의 의도한 과도 허용 2개를 관찰했으며,
@@ -108,7 +112,7 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   없었습니다. 인수 검증은 macOS/Python `3.12.7`의 POSIX non-frozen API에 한정되며 HTTP 인가나
   새 설치 CLI 흐름의 인수 검증이 아닙니다. 당시에는 더 넓은 #81/#35 흐름과 별도의 릴리스 조건이
   미완료였으며 alpha.3는 그대로입니다.
-- 미출시 명시적 [`codex-owner-repair --file-workflow` 옵션](guides/OWNER_FILE_WORKFLOW.md)을 추가합니다.
+- 명시적 [`codex-owner-repair --file-workflow` 옵션](guides/OWNER_FILE_WORKFLOW.md)을 포함합니다.
   현재 검증된 추천에서 새 소유 복사본, before 검사, 정확한 diff 수락, 적용, after 검사, 복구로
   이어지며 각각 별도로 동의해야 합니다. 옵션 자체는 승인이 아니고 `--preview-only`는 여전히
   공유 입력만 표시합니다. 사람용 출력은 단계 상태와 사례 8개의 관찰을 구분하고 `--json`은 최종
@@ -124,11 +128,11 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
   위 기록의 실행과 기존 오프라인 거절·사용자 편집·복구 테스트를 근거로 한 결정이며 새 실제 실행이
   아닙니다. 최종 상태 문서는 [PR #123](https://github.com/casing1/authzest/pull/123)의 `ee49f5a`로
   정상 병합했고 이 제한된 핵심 범위에서 #82 → #81 → #35를 순서대로 종료했습니다.
-  #83/#84/#85/#89는 각각 별도로 열려 있으며 #89의 도구 잔여 위험은 다음 alpha.4에만 조건부로
-  수용했습니다. 수정 완료는 아닙니다.
+  #84/#85/#89는 별도로 열려 있으며 #83의 공개 릴리스 검증 기록은 별개입니다. #89의 도구 잔여
+  위험은 alpha.4에만 수용했으며 수정 완료는 아닙니다.
   Windows/frozen의 활성 파일 실행은 여전히 지원하지 않으며 공개 alpha.3·리포트 스키마는
   바뀌지 않습니다.
-- 미출시 [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 추가: 지원하는 POSIX 시스템에서 패키지에
+- [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 포함: 지원하는 POSIX 시스템에서 패키지에
   포함한 오프라인 mock으로 복사본 적용·고정 소스 검사·복구를 각각 결정하며 시연함.
   Codex·계정·네트워크·fixture 소스 실행은 사용하지 않고 공개 alpha.3는 변경하지 않음
 - 기존 JSON 필드를 유지하며 스키마 `1.2`, 구조화된 진단, bounded/partial 상태와 원본 선언·app·
@@ -198,6 +202,11 @@ pipx install --force .
 설치된 패키지 파일 바이트를 대조했습니다. 다른 OS·깨끗한 일반 사용자 기기·native 설치 프로그램·UI
 지원까지 입증하지는 않습니다. 이 검사에서 AI 호출·정책 worker·활성 파일 흐름은 실행하지 않았으며
 이전 `c868152` 소유 파일 흐름 관찰은 별도입니다.
+
+최종 소스 `090002d`는 2026-11-05 KST에 별도로 검사했습니다. macOS/Python 3.12 host 한 대에서
+신규 설치와 실제 alpha.3 → alpha.4 교체가 각각 오프라인 설치 CLI 검사 13/13개를 통과했고,
+noneditable 출처·설치 패키지 바이트를 대조했습니다. native 업데이트·다른 플랫폼 설치나 새로운
+실제 소유 파일 흐름 관찰을 뜻하지 않습니다.
 
 미리 빌드된 파일은 [독립 실행 파일](#독립-실행-파일)을 참고하세요. `ui` extra는 Python backend 의존성을
 설치하지만 일반 wheel·pipx 설치에 빌드된 대시보드 자산을 포함하지 않습니다. 선택적인 대시보드는
@@ -305,9 +314,17 @@ node scripts/format.mjs markdown --check
 
 ## 독립 실행 파일
 
-[alpha.3 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)는 Linux x64,
-macOS arm64, Windows x64 실행 파일과 대응하는 SHA-256 manifest를 제공합니다. alpha.3의 정적 목록
-기능과 리포트 스키마 `1.2`를 포함하며 현재 미출시 소유 정책 검토·수정 추가 기능은 포함하지 않습니다.
+[alpha.4 릴리스](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 Linux x64,
+macOS arm64, Windows x64 실행 파일과 SHA-256 manifest, 정적 목록·읽기 쉬운 출력·오프라인 소유
+정책 검토/수정 미리보기를 제공합니다. 태그 workflow attempt 2의 job 8개가 모두 통과했습니다.
+플랫폼마다 선택/이동 26개·패키지 13개·새 다운로드 13개의 스캔/미리보기 검사와 고정 런타임 parent
+검사 2/1/1개를 통과했습니다(POSIX는 AFTER debug/health만, Windows는 명시적 미지원 동작).
+공개 파일 6개의 바이트가 attempt 2 산출물·GitHub API SHA-256과 일치하고 checksum sidecar
+3개가 바이너리와 일치했습니다. 이동한 공개 macOS 바이너리는 Python `-I -S`의 표준 라이브러리
+제어기로 스캔/미리보기 13개·고정 런타임 1개를 통과했습니다. Codex·대상·패치는 사용하지 않았습니다.
+발행·공개 다운로드 검증은 완료했으며 문서 전달은 [#83](https://github.com/casing1/authzest/issues/83)에서
+추적합니다. [공개 검증 기록](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)과
+[릴리스 안내](releases/RELEASING.md)를 참고하세요.
 그래픽 설치 프로그램이 아닌 독립 CLI이며,
 빌드된 실행 파일을 사용하려고 Python이나 Node.js를 설치할 필요는 없습니다. POSIX 바이너리에는
 소유 fixture 흐름과 런타임 의존성도 포함됩니다. Codex는 자체 로그인을 사용하는 별도의 신뢰할 수 있는
@@ -316,7 +333,7 @@ macOS arm64, Windows x64 실행 파일과 대응하는 SHA-256 manifest를 제�
 
 자신의 OS/아키텍처에 맞는 파일과 `.sha256` manifest를 함께 받고 실행 전에
 [체크섬·실행 안내](releases/RELEASING.md#검증과-복구)를 따르세요.
-세 플랫폼 CI 빌드와 새 작업의 산출물 smoke 검사가 통과했고 공개 파일 6개를 모두 내려받아 검사된
+과거 alpha.3에서는 세 플랫폼 CI 빌드와 새 작업의 산출물 smoke 검사가 통과했고 공개 파일 6개를 모두 내려받아 검사된
 산출물과 대조했습니다. 공개 macOS 바이너리는 Python `-I -S`의 표준 라이브러리 제어 프로그램으로
 프로젝트 의존성을 import하지 않고 로컬 스캔·런타임 smoke도 통과했습니다. 이 패키지 검사에서 실제
 Codex를 호출하지 않았습니다. 일반 사용자 기기의 깨끗한 설치·업그레이드와
@@ -331,7 +348,15 @@ Linux x64·macOS arm64·Windows x64 각각 선택·이동 26개, 패키지 13개
 13개 검사를 통과했습니다. 바이너리·체크섬 manifest 쌍 3개도 모두 로컬로 내려받아 일치를 확인했으며
 로컬에서 바이너리는 실행하지 않았습니다. 스캔·미리보기 근거이지 UI·런타임·AI·정책 worker·활성 파일
 흐름 수용은 아닙니다. 해당 소스에만 연결된 관찰이며 후속 문서 병합은 새로 검증한 후보가 아닙니다.
-최종 릴리스·런타임·설치·공개 산출물 조건은 남아 있고 alpha.4 바이너리는 아직 발행하지 않았습니다.
+이 기록은 과거 사전 검사이며 alpha.4 공개 다운로드 검증 기록은 아닙니다.
+
+정확한 alpha.4 소스 `090002d`는 별도로
+[비배포 릴리스 사전 검사 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082)에서
+job 7개가 통과했고 발행은 건너뛰었습니다. 패키지 런타임 검사는 POSIX에서 고정된 소유 AFTER
+fixture의 debug/health만 확인하며 Windows는 명시적 미지원 동작을 확인합니다. 전체 회귀 검사는
+유지하는 BEFORE/AFTER fixture도 실행하며 임의 저장소는 실행하지 않습니다. 태그 발행·공개 파일은
+릴리스 안내의 별도 관찰입니다. UI 수용·일반 사용자 기기 설치/업데이트·서명/공증·native 활성 소유 파일
+지원을 입증하지 않습니다.
 
 현재 소스를 로컬에서 빌드하려면 개발 venv를 활성화하고 저장소 루트에서 실행하세요.
 
@@ -376,7 +401,8 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 
 범위가 정해진 작업을 issue로 추적하고, 단기 브랜치에서 개발한 뒤 의미 있는 커밋과 검증을 담은 PR을
 만들어 주세요. 보호된 `main`은 Python, frontend, CodeQL 검사를 요구합니다. 자유 주제 과목의 개발 계획은
-7주로 잡고, 별도의 4–5주는 시험 기간·지연·최종 준비를 위한 여유로 남깁니다.
+기존 개발 7주에는 완료한 작업이 포함됩니다. 새 7주를 시작하지 않고 예상 제출일 2026-11-18 전의
+남은 시험·제출 여유를 보존합니다.
 [#32](https://github.com/casing1/authzest/issues/32)의 리포트·근거 기반과
 [#28](https://github.com/casing1/authzest/issues/28)·[#29](https://github.com/casing1/authzest/issues/29)의
 라우트 직접·상속 근거는 alpha.2에 포함됩니다.
@@ -386,17 +412,19 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
 
 1. 소스에 구현됨: [#33: 근거를 연결한 오프라인 AI 계약·mock·평가](https://github.com/casing1/authzest/issues/33).
 2. 수용한 제한된 핵심 범위에서 종료: [#35: Codex 제안·정확한 diff 승인·승인된 패치 적용·격리 검증](https://github.com/casing1/authzest/issues/35).
-3. 미출시 소스: [#82: 읽기 쉬운 설치 CLI 통합](https://github.com/casing1/authzest/issues/82)에
+3. 포함된 소스 전용 활성 흐름: [#82: 읽기 쉬운 설치 CLI 통합](https://github.com/casing1/authzest/issues/82)에
    opt-in 파일 흐름과 오프라인 테스트를 PR #120으로 전달했습니다. 별도 승인한 host 한 대의
    설치 정상 경로에서 추천부터 적용 파일 검사·복구까지 관찰했습니다. 관리자는 2026-11-02 KST에
    [제한된 핵심 흐름과 기존 오프라인 근거](guides/OWNER_FILE_ACCEPTANCE.md)를 수용했으며 새 실제
    실행이나 일반 저장소 수정의 수용은 아닙니다. 최종 상태 문서는 PR #123(`ee49f5a`)으로 정상
    병합했고 해당 범위에서 #82 → #81 → #35를 순서대로 종료했습니다.
-4. 다음 작업은 [#83: alpha.4 릴리스 준비](https://github.com/casing1/authzest/issues/83)로, 기록한
-   `b5f3eb8` 사전 검사를 활용하면서 나머지 최종 릴리스·런타임·설치·공개 산출물 조건을 완료합니다.
-   #89는 다음 alpha.4에만 잔여 위험을 조건부 수용한 채 `needs_review` / medium으로 열어두며,
-   수정 완료는 아닙니다. #84/#85의 독립 평가·과목 증빙도
-   남아 있습니다. 조건부 2026-11-04 목표일은 지났으며 새 발행일을 약속하지 않습니다.
+4. 다음은 [#130 테스트 harness 안정화](https://github.com/casing1/authzest/issues/130),
+   [#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
+   [#85 재현 가능한 시연·과목 증빙](https://github.com/casing1/authzest/issues/85)입니다.
+   [#83의 정확한 릴리스·공개 파일 검증 기록](https://github.com/casing1/authzest/issues/83)은 별도로
+   유지합니다. #89는 `needs_review` / medium으로 열어두며 alpha.4 한정 위험 수용은 수정 완료나
+   정식 릴리스의 면제가 아닙니다. 범위를 정한 `0.1.0` 정식 릴리스는 평가·시연·회귀/설치 검사와
+   관련 위험의 새 판단이 충족돼야 하며 현재 alpha는 범용 저장소 수정을 약속하지 않습니다.
 
 [오프라인 기반](reference/AI_CONTRACT.md)은 alpha.3 fixture 명령에서 사용하는 계약을 제공합니다.
 평가 스크립트와 데이터셋은 checkout 전용으로 유지합니다. 위 제한된 핵심 흐름 수용은 일반

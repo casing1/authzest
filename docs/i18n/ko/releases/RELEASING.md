@@ -7,6 +7,79 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 
 ## Alpha.4 준비 상태 — 2026-11-05 KST
 
+**발행·공개 파일 검증 완료:**
+[`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)를
+`090002d64d1ec5072c4e2ddf403a0e73e35d61ce`에서 **2026-11-05 03:02:07 UTC**에 프리릴리스로
+발행했습니다. 패키지는 `0.1.0a4`, 스캔 스키마는 기존 `1.2`이며 태그와 바이너리는 서명하지 않았습니다.
+불변 태그의 변경 이력에 있는 11월 2일은 준비일이고 현재 변경 이력에는 실제 발행일을 기록합니다.
+정상 문서 전달은 [#83](https://github.com/casing1/authzest/issues/83)에서 추적하며 발행으로
+#84/#85를 완료하거나 #89/#130을 수정한 것으로 보지 않습니다.
+
+### Alpha.4 발행과 공개 파일 검증 — 2026-11-05 KST
+
+[공개 릴리스 기록](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)에
+릴리스/asset 식별값·실제 검사·남은 한계를 기록했습니다.
+
+[태그 실행 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의 **attempt 2**가
+Python 4,924개·Node 71개와 **발행을 포함한 job 8개**를 통과했습니다. attempt 1은 Python
+4,923개 통과·1개 실패로 중단됐습니다. Fake App Server 테스트의 reader가 쓰는 중인 JSONL 기록을
+읽은 테스트 harness race이며 [#130](https://github.com/casing1/authzest/issues/130)에서 열린 상태로
+추적합니다. 같은 태그의 한 번 재실행으로 수정된 것은 아닙니다. assertion·릴리스 소스를 바꾸지
+않았으며 실패한 시도의 빌드/다운로드/발행 job은 모두 건너뛰었습니다. 반복 재시도에 의존하지 말고
+RC 전에 harness를 수정·회귀 검사합니다.
+
+Linux x64·macOS arm64·Windows x64 각각 스캔/오프라인 미리보기 **선택/이동 26 + 패키징 13 +
+새 다운로드 13개**, 고정 런타임 부모 **2 + 1 + 1개**를 통과했습니다. POSIX는 소유 AFTER의
+debug/ASGI-health만 실행하고 Windows는 worker 없는 명시적 미지원을 확인합니다.
+**공개 파일 6개 전체**를 내려받아 SHA-256 sidecar 3개가 모두 일치함을 확인했고 모든 공개 파일이
+attempt-2 태그 실행의 해당 산출물과 바이트 단위로 같으며 GitHub asset metadata와도 일치했습니다.
+다운로드한 macOS 실행 파일은 `python -I -S`의 표준 라이브러리 controller로 이동한 복사본의
+스캔/미리보기 **13개**·고정 런타임 **1개**도 통과했습니다. Linux/Windows 실행 근거는 동일 OS CI와
+일치하는 공개 바이트이며 독립 사용자 기기 검사는 아닙니다.
+
+| 플랫폼      | 공개 실행 파일                           | SHA-256                                                            |
+| ----------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| Linux x64   | `authzest-0.1.0-alpha.4-linux-x64`       | `d320bf6df871615541238368893d4d57edd6d9322e82374e5e92373d7e426dd6` |
+| macOS arm64 | `authzest-0.1.0-alpha.4-macos-arm64`     | `d120393f7f6101e429c24c7f2889db6aba01dafc6472b2935fabaa29bc0761a4` |
+| Windows x64 | `authzest-0.1.0-alpha.4-windows-x64.exe` | `183abcfd2f36d58f4056bbf82eebe38402b706a14059adfcfca429bf0954e6a3` |
+
+각 실행 파일에는 대응하는 `.sha256` 공개 sidecar가 있습니다. 대조한 attempt-2 Actions artifact ID는
+Linux `13383908551`, macOS `13383938350`, Windows `13383444171`입니다.
+이 검사에서는 실제 Codex 호출·임의 대상 실행·사용자 소스 패치를 하지 않았습니다.
+
+정확한 후보의 [비배포 main 실행 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082)
+1차 시도는 발행 단계를 건너뛰고 job 7개를 통과했습니다. Python 4,924개·Node 71개와 frontend·문서 검사,
+세 동일 OS native 빌드/다운로드 검사가 포함됩니다. 각 플랫폼의 스캔/오프라인 미리보기는
+선택/이동 26개·패키징 13개·새 다운로드 13개를 통과했습니다. 고정 런타임 부모 검사는 각각 2/1/1개이며,
+POSIX는 소유 AFTER의 debug/ASGI-health만, Windows는 worker 없는 명시적 미지원 처리를 확인했습니다.
+Windows 런타임 지원을 뜻하지 않습니다. 전체 회귀 검사에는 신뢰한 소유 BEFORE/AFTER fixture와
+테스트 자식 프로세스 실행도 포함됩니다.
+
+정확한 이 소스의 noneditable core 새 설치·실제 alpha.3 → alpha.4 교체는 macOS/Python 3.12 host
+한 대에서 각각 오프라인 설치 CLI 13/13을 통과했고 provenance·패키지 바이트가 각 Git snapshot과
+일치했습니다. 새 사용자 기기·native 업데이트 검사가 아닙니다. 실제
+`codex-owner-repair --file-workflow`는 POSIX non-frozen 소스 전용이며 별도 수용한 실제 재현은
+계속 `c868152`에만 연결합니다. Native 파일은 실험용 scan/preview 배포물이지 설치기·UI 동작·일반 OS
+호환성·서명·공증의 근거가 아닙니다. 일반 FastAPI PoC와 모델 작성 교체 소스 생성은 미구현입니다.
+
+[#89의 명시적 alpha.4 한정 판단](../development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)은
+추적 non-Markdown 211개 파일의 모드/blob을 `7509a6a`와 대조한 뒤
+[#83](https://github.com/casing1/authzest/issues/83)에서 이 정확한 경고 후보에 연결했습니다.
+#89는 수정 완료가 아닌 OPEN / `needs_review` / medium을 유지합니다. 정식 릴리스에서는 다시
+판단하고 alpha.4 결정을 자동 연장하지 않습니다. 제품 소스 공유와 파일 단계 결정도 별도입니다.
+
+[추적 가능한 빌드 inventory](https://github.com/casing1/authzest/issues/83#issuecomment-6648515311)는
+[명확히 한 릴리스 조건](https://github.com/casing1/authzest/issues/83#issuecomment-6648284258)에 따라
+버전이 정해진 소스/workflow/frontend lock 절차와 실제 태그 실행의 해결된 의존성/빌드 관찰을 기록합니다.
+Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현성 보장이 아닙니다. 동적 빌드 입력과
+버전 파일명이 달라질 수 있으므로 태그 실행 inventory와 비배포 main 산출물을 구별합니다.
+독립 평가와 재현 가능한 과목 근거는 #84/#85에서 계속 추적합니다.
+
+### 과거 준비와 초기 사전 검사 — 2026-11-05 KST
+
+아래 미충족 표는 최종 후보 검사 이전 `b5f3eb8` 시점의 기록입니다. 당시 미완료 항목과 원래
+소스 식별값을 보존하며 현재 발행 상태로 해석하지 않습니다.
+
 **현재 발행 조건은 미충족입니다.** [#83](https://github.com/casing1/authzest/issues/83)의
 조건부 2026-11-04 KST 목표는 발행 없이 지났으며 새 날짜를 약속하지 않습니다. 아래에서 확인한
 후보는 `b5f3eb81d318e94c5e400ec52e78f1550e13f931`, 패키지 `0.1.0a4`, 미사용 제안 태그
@@ -88,9 +161,14 @@ bytecode를 제외한 전체 패키지 파일을 각 소스 snapshot과 대조�
 
 이 결과는 `b5f3eb8`에만 연결하며 이후 문서 병합이나 최종 릴리스 커밋으로 옮기지 않습니다.
 10월 29일 같은 버전 설치와 10월 30일 실제 파일 흐름 기록의 별도 범위도 유지합니다.
-#83/#89는 열어 두며 전체 release/runtime 실행·최종 커밋 검증·기록한 도구 위험 결정을 정확한 경고 후보에 연결·태그·공개 파일 검증은 남습니다.
+당시 #83/#89는 열려 있었고 전체 release/runtime·최종 커밋·경고 후보 연결·태그·공개 파일 검증이
+남아 있었습니다. 이후 진척은 위 현재 기록에 남기며 과거 실행의 대상으로 바꾸지 않습니다.
 
 ## 배포된 preview와 현재 소스
+
+최신 공개 프리릴리스는 alpha.4이며 정확한 커밋·공개 파일·제한된 검사 범위는
+[위 현재 기록](#alpha4-발행과-공개-파일-검증--2026-11-05-kst)에 있습니다.
+아래 alpha.3/alpha.2는 과거 기록이며 불변 공개 산출물은 바꾸지 않습니다.
 
 ### 발행된 alpha.3
 
@@ -194,7 +272,8 @@ Python 패키지 메타데이터에는 PEP 440 표기를, Git 태그에는 SemVe
 
 Python 런타임과 API 버전의 기준은 [`pyproject.toml`](../../../../pyproject.toml)입니다. `private: true`로 설정된
 frontend 패키지는 별도로 버전을 관리하지 않습니다. 새 릴리스마다 사용하지 않은 새 버전을
-선택하세요. 이미 배포한 `v0.1.0-alpha.1`, `v0.1.0-alpha.2`, `v0.1.0-alpha.3`는 다시 발행하면 안 됩니다.
+선택하세요. 기존 `v0.1.0-alpha.1`, `v0.1.0-alpha.2`, `v0.1.0-alpha.3`,
+`v0.1.0-alpha.4` 태그는 다시 발행하면 안 됩니다.
 
 ## 발행 없는 native preview 사전 검사
 
@@ -244,9 +323,9 @@ gh run view RUN_ID --json headSha,event,status,conclusion
 
 ## 릴리스 준비
 
-[#89 포맷 guard](../development/FORMATTING.md)는 미출시 개발/CI 도구입니다. 이 제한된 완화는
-릴리스를 만들거나 패키지 버전·기존 태그·alpha.3 산출물을 바꾸지 않으며 내장 의존성 후속 작업은
-#89/#83에서 계속 추적합니다. 아래 릴리스 준비는 별도 결정입니다.
+[#89 포맷 guard](../development/FORMATTING.md)는 alpha.4에 포함한 개발/CI 도구입니다.
+이 제한된 완화가 내장 parser 수정이나 독립 릴리스 승인은 아니며 의존성 후속 작업은 #89에서
+계속 추적합니다. 아래 다른 릴리스 준비는 별도 결정이며 기존 태그·공개 산출물을 바꾸지 않습니다.
 
 제한된 `source-map-js` 개발용 lock 갱신(#94 / PR #95)은 병합됐고 해당 Dependabot 경고를
 2026-10-08에 fixed로 재확인했습니다. 과거 조회 기록이지 이번 준비 상태 정리에서

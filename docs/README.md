@@ -11,6 +11,45 @@ The local dashboard is optional and does not require website deployment.
 
 ## Current work — 2026-11-05 KST
 
+Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
+on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
+report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
+passed all eight jobs in attempt 2, including publication. Attempt 1 failed one JSONL test-harness read
+race (4,923 passed / 1 failed); the unchanged-source rerun is not a first-pass result or a fix. The
+follow-up is [#130](https://github.com/casing1/authzest/issues/130), still open. All six public files
+matched the attempt-2 artifacts and GitHub API SHA-256 values; all three checksum sidecars matched.
+The relocated public macOS binary passed 13 scan/preview and one fixed-runtime check through Python
+`-I -S` standard-library controllers. No Codex, targets or patches were involved. Publication and
+public-download verification are complete; documentation delivery is tracked in
+[#83](https://github.com/casing1/authzest/issues/83).
+See the [release receipt](releases/RELEASING.md). The exact candidate's
+[nonpublishing release preflight 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082)
+passed seven jobs with publication skipped. One macOS/Python 3.12 host separately passed 13/13 fresh
+source-install and 13/13 genuine alpha.3 → alpha.4 replacement checks, including package-byte and
+noneditable-provenance verification. These observations are not a new live Codex/owner-file run.
+
+The accepted bounded source core (#82 → #81 → #35) uses one registered synthetic policy pair, eight
+reviewed cases and Codex template selection. Active owned-file operation requires POSIX non-frozen
+Python source; native binaries support scan/offline previews, not that active file workflow.
+POSIX binaries also retain the older owned-fixture apply/runtime workflow. Packaged
+fixed debug/health runtime checks on POSIX are distinct from owner-policy authorization; Windows checks
+explicit unsupported behavior. UI acceptance, consumer-device installation/upgrades and signing/
+notarization are not established. General FastAPI PoC and model-authored repair-source generation remain
+unimplemented. #89 remains open at `needs_review` / medium with visible warnings and alpha.4-only
+residual-risk acceptance, not a fix or a stable-release waiver.
+
+Next: [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
+[#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
+[#85 reproducible course demo/evidence](https://github.com/casing1/authzest/issues/85). Use the
+[development plan](development/DEVELOPMENT_PLAN.md) for conditional release targets and the remaining
+submission buffer; do not add optional GUI/adapters to the submission scope.
+
+<details>
+<summary>Historical delivery and preflight notes — not the current release receipt</summary>
+
+The following notes retain their original source/date and prepublication wording. The later alpha.4
+publication is recorded separately above; do not transfer an old result to a new candidate.
+
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
 source additions, not published alpha.3 features. The maintainer separately approved the exact ten
@@ -149,6 +188,8 @@ Use the [current development plan](development/DEVELOPMENT_PLAN.md) for prioriti
 release/evaluation gates and the existing seven-development-week budget. Historical completion records
 remain in issues/changelog/releases; issue-count percentages do not measure product completion.
 
+</details>
+
 ## Guides and languages
 
 English is the canonical language. Every repository-owned Markdown document has Korean content;
@@ -218,11 +259,11 @@ The [offline proposal/decision contract](reference/PROPOSAL_CONTRACT.md), also a
 slice of #35. That pure contract does not apply files, call a provider or execute verification.
 
 [#61's offline expectation manifest](reference/EXPECTATION_CONTRACT.md)
-([한국어](i18n/ko/reference/EXPECTATION_CONTRACT.md)) is an unreleased source addition after alpha.3.
+([한국어](i18n/ko/reference/EXPECTATION_CONTRACT.md)) is included in alpha.4 after alpha.3.
 It binds caller-authored policy/declaration targets to an exact proposal and baseline evidence, always
 as draft/not-run data. It generates or executes no tests and grants no approval or source execution.
 [#63's proposal preview](guides/PROPOSAL_PREVIEW.md) ([한국어](i18n/ko/guides/PROPOSAL_PREVIEW.md))
-adds an unreleased, read-only CLI view of a strict bundle on supported POSIX systems. It shows the
+provides a read-only CLI view of a strict bundle on supported POSIX systems, included in alpha.4. It shows the
 exact diff, linked evidence and expected outcomes without changing approval, execution or live-sharing scope.
 [#69's source-only proposal check](guides/PROPOSAL_CHECK.md) ([한국어](i18n/ko/guides/PROPOSAL_CHECK.md))
 compares declaration targets with a bounded subset of the same bundle's before/after source snapshots.
@@ -244,7 +285,7 @@ That provider result remains a draft/not-run record. The later exact-label revie
 [#80 source observation](reference/OWNER_POLICY_CHECK.md) do not retroactively change it or
 approve new model cases.
 [#65's packaged offline walkthrough](guides/FIXTURE_DEMO.md) ([한국어](i18n/ko/guides/FIXTURE_DEMO.md))
-adds the unreleased `fixture-demo` command on supported POSIX systems. It uses a mock draft and
+provides the alpha.4 `fixture-demo` command on supported POSIX systems. It uses a mock draft and
 separate copy-application, fixed AST-check and restoration choices, without Codex or fixture-source
 execution. It accepts neither the preview bundle nor a runtime selector.
 
@@ -283,7 +324,11 @@ composition, repository-local imports, and local/inherited dependency evidence. 
 does not contain these improvements. See the [release record](releases/RELEASING.md) for the exact commit,
 three-platform artifacts, and validation limits. Compare the changelog and commit/tag as well as
 `--version`; `main` can advance beyond the released source. The offline foundation in
-[#33](https://github.com/casing1/authzest/issues/33) is implemented in source; next is [#35](https://github.com/casing1/authzest/issues/35).
+[#33](https://github.com/casing1/authzest/issues/33) is implemented in source, and
+[#35](https://github.com/casing1/authzest/issues/35) is complete for the accepted bounded core.
+Next are [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
+[#84 independent evaluation](https://github.com/casing1/authzest/issues/84) and
+[#85 course-demo evidence](https://github.com/casing1/authzest/issues/85).
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
 route-local plus inherited dependency declarations. They do not classify endpoints

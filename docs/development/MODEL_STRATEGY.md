@@ -17,8 +17,9 @@ to a model is a hypothesis to test, not an established advantage.
 
 Codex integration and the approve/decline improvement flow are core final-demo goals. They are not merely
 optional future explanations. Runtime use remains opt-in: an offline static scan must stay useful, and
-permission to share source is not permission to apply a patch or execute a test. The workflow below is
-a complete design target, not a claim that the full flow is implemented. The separate
+permission to share source is not permission to apply a patch or execute a test. The broader design
+below is not a general-repository implementation claim; the finite accepted core is recorded under
+current priorities. The separate
 [#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; one owned-fixture live draft/apply/restore check passed.
 The later [#54 source-live acceptance](../guides/RUNTIME_VERIFICATION.md#bounded-live-acceptance--2026-09-12)
 also completed the separately approved fixed runtime check and restoration. Published
@@ -30,35 +31,43 @@ and inherited application/router/include context. It does not yet resolve nested
 correctness, or run AI as part of a scan. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
-## Current delivery priorities — 2026-10-09 KST
+## Current delivery priorities — 2026-11-05 KST
 
-PR #76 merged at main `142a0dc`; the read-only owner review is implemented, not an upcoming adapter task.
-The maintainer separately approved its exact ten model-authored labels on 2026-10-09 KST, recorded
-against the unchanged envelope in [#77's contract](../reference/OWNER_CASE_PLAN.md). Original
-authorship remains model-authored; this is not approval of the separate 28 developer labels or
-frozen evaluation set. The original draft and offline plans remain not-run. One later separately
-approved [#80 source check](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst)
-matched all ten expected values without a new model call; authorization remains unknown.
-Host validation does not establish correctness.
-[#79 CLI readability](https://github.com/casing1/authzest/issues/79) and the offline #77 API are implemented.
+The read-only owner review, #77 exact-case review, #79 readable output and
+[#80 fixed-policy API](../reference/OWNER_POLICY_CHECK.md) are delivered. #80's final-head CI/reviews
+completed through PR #97 on October 15; its separately scoped source observations do not establish
+HTTP authorization. Original model authorship, labels-only decisions and consumed execution approvals
+remain distinct from later evidence.
 
-Current work [#80](https://github.com/casing1/authzest/issues/80) adds one
-[fixed maintained pure-policy check API](../reference/OWNER_POLICY_CHECK.md),
-[#81](https://github.com/casing1/authzest/issues/81) reviews a bounded defensive reproduction/remediation
-design before implementation, and [#82](https://github.com/casing1/authzest/issues/82) accepts the integrated
-decision/observation/recovery flow. Defensive PoC means owned synthetic regression-case **data**, not
-AI-generated Python/shell or an external exploit. A correct-policy no-change result is valid; if needed,
-review a clearly labelled intentionally incorrect test-only variant before implementation rather than
-inventing a production defect. Policy observations do not attest HTTP authentication/authorization.
-Label approval is not execution consent. The separately approved single source check is consumed;
-any further execution needs a fresh exact-plan decision. Final-head #80 CI/reviews remain pending.
+The maintainer accepted #81/#82/#35's bounded core on November 2: one registered synthetic policy pair,
+eight reviewed cases, Codex selection of a registered repair template, exact-diff approval/application,
+captured-file before/after observations and recovery through the POSIX non-frozen source CLI.
+PR #123 delivered that acceptance and the issues closed in order. The installed happy-path observation
+remains bound to `c868152`; acceptance and packaging are not new live-model observations.
+General FastAPI PoC generation, model-authored replacement source, native active-file operation and
+Windows policy execution remain unsupported, not prerequisites silently completed by that acceptance.
 
-Keep model selection explicit and the adapter replaceable; do not prioritize a new GPT version, second
-transport, complete Python interpreter or AI GUI over these gates. Freeze independent reference review
-before prompt iteration and measure the three-mode hypothesis under
-[#84](https://github.com/casing1/authzest/issues/84). Actual sharing, case labels, exact-diff application
-and execution still require separate bounded decisions. This planning update grants no live calls.
-See the [development plan](DEVELOPMENT_PLAN.md) for the single milestone map and inclusive seven-week budget.
+Alpha.4 was published on November 5 from exact source `090002d`; the
+[release guide](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst)
+records tag-run attempt 2 and all six public files. Attempt 1's fake-server JSONL race remains open
+in [#130](https://github.com/casing1/authzest/issues/130); fix and deterministically regress it before
+the RC. Packaging success is neither a repair of that test harness nor independent model evaluation.
+
+Next, freeze independently reviewed reference tasks and labels before prompt iteration, then measure
+the three-mode hypothesis under [#84](https://github.com/casing1/authzest/issues/84). Historical model
+inputs and development cases cannot become fresh holdouts. Use
+[#85](https://github.com/casing1/authzest/issues/85) to freeze a reproducible owned-scenario demo,
+installation instructions, limitations and OSS contribution evidence. If a measurement is unavailable,
+report that gap rather than manufacturing a model-quality claim. Complete the bounded course scope
+before adding models, another transport, a complete Python interpreter or AI GUI.
+
+Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
+external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
+attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and
+execution retain separate bound decisions. This planning update grants no live call or execution.
+The alpha.4-only #89 decision is not stable-release clearance: reassess the current shipped bytes,
+exposure and disposition for that new candidate. See the [development plan](DEVELOPMENT_PLAN.md)
+for the conditional RC/stable target, submission buffer and existing inclusive seven-week budget.
 
 ## Stable contracts, replaceable models
 
@@ -135,6 +144,10 @@ transport; a second CLI integration is not required for this term project. AI sc
 provider-managed temperature as null; numeric-temperature requests keep schema 1.0 and their identities.
 
 ## Planned proposal, approval, and verification contract
+
+This preserves the earlier design rationale, not a new backlog replacing the accepted owned-file
+scope above. That finite source workflow is implemented; extending it to general repositories or
+model-authored replacement code remains out of scope for the bounded course release.
 
 The [offline proposal/decision contract](../reference/PROPOSAL_CONTRACT.md) in #46 implements only
 bound artifacts, previews and in-memory decision checks. It neither generates code nor mutates source,
