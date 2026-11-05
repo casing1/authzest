@@ -77,6 +77,10 @@ or review. Re-run the checker and applicable tests in the same focused PR.
 
 ## What remains under #84
 
+The separate [draft protocol and candidate preflight](EVALUATION_PROTOCOL.md) introduces new proposed
+source-data tasks and unapproved references; it does not select these historical artifacts or change
+this inventory. Its exact-reference review, freeze and measurements are still pending.
+
 Follow the [model strategy](MODEL_STRATEGY.md) for independent exact reference-label review, maintained
 task selection, new holdouts, comparable inputs and denominators, abstention handling, and eventual
 three-mode evaluation. Selecting or freezing that evaluation set requires a separate documented

@@ -14,6 +14,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Prepare a separate source-checkout evaluation draft for [#84](https://github.com/casing1/authzest/issues/84):
+  six new owned-source data scenarios and 18 assistant-authored reference proposals, all awaiting exact
+  maintainer review and not frozen. Add a bounded, read-only preflight and human/JSON review packet;
+  keep task-only inputs separate from references and bind each draft to its canonical input identity.
+  Document three-mode comparability, fixed denominators and separate declaration/intent/unknown,
+  citation and workflow measures in English/Korean. Preserve all historical evaluation bytes and
+  approvals. This adds no benchmark result, new scorer/live adapter, product AI/worker call, reference
+  approval, release or completed #84 criterion.
+
 ### Fixed
 
 - Publish the offline fake Codex server's complete JSONL event-log snapshots atomically for
