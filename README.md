@@ -32,9 +32,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > [!NOTE]
 > **Alpha.4 candidate, not published:** this source uses Python package `0.1.0a4` and unchanged report
 > schema `1.2`; the planned tag is `v0.1.0-alpha.4`. That tag and release have not been created, and
-> alpha.3 remains the latest published release. #83 still requires final-candidate checks/reviews,
-> installation/update and native-artifact evidence. #89's residual tooling risk remains open and has
-> not been accepted; the version change alone does not clear these publication gates.
+> alpha.3 remains the latest published release. On 2026-11-05 KST, `b5f3eb8` passed the bounded native
+> preview and one-host source-install/update preflights described below. #83 remains open for the
+> remaining final-release, runtime and public-asset gates. #89 remains `needs_review` / medium without
+> residual-risk acceptance; these preflights are not publication approval.
 
 ## What the current source supports
 
@@ -180,8 +181,12 @@ pipx install --force .
 ```
 
 The [source-install preflight record](docs/releases/RELEASING.md#source-installed-cli-preflight)
-documents disposable macOS pipx installation and same-version source replacement. It does not establish
-a versioned alpha.4 upgrade or source-install support on other operating systems.
+keeps the historical `1d0ebb8` same-version replacement separate. On 2026-11-05 KST, disposable pipx
+environments on one macOS/Python 3.12 host passed 13/13 checks for a fresh `b5f3eb8` candidate install
+and 13/13 after replacing genuine alpha.3 `99be6f5` / `0.1.0a3` with `b5f3eb8` / `0.1.0a4` in the
+same pipx venv. Noneditable provenance and installed package-file bytes were verified. This does not
+establish other-OS, clean consumer-device, native-installer or UI support. No AI call, policy worker or
+active file workflow ran in these checks; the earlier `c868152` owner-flow observation remains separate.
 
 For a prebuilt executable, see [standalone binaries](#standalone-binaries). The `ui` extra installs Python
 backend dependencies; it does not include built dashboard assets in a regular wheel/pipx installation.
@@ -307,8 +312,13 @@ and unnotarized, so an operating system may warn about an unverified publisher.
 
 Current-source native packaging includes static scan and offline owner previews, but not active
 `codex-owner-repair --file-workflow`: that path requires a POSIX non-frozen Python source installation.
-Historical native preview checks do not validate the final alpha.4 candidate or its installation/update
-routes. No alpha.4 binaries have been published.
+On 2026-11-05 KST, [native preview run 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368),
+attempt 1, passed 7/7 jobs for exact source `b5f3eb81d318e94c5e400ec52e78f1550e13f931`.
+Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 packaged and 13 fresh
+matching-OS download checks. All three binary/checksum-manifest pairs were also downloaded and matched
+locally, without local binary execution. This is scan/preview evidence, not UI, runtime, AI, policy-worker
+or active-file acceptance. It is bound only to that source; later documentation merges are not newly
+tested candidates. Final-release/runtime/public-asset gates remain; no alpha.4 binaries are published.
 
 To build the current source locally, activate the development venv and run from the repository root:
 
@@ -369,9 +379,11 @@ Current source and next step:
    The maintainer accepted the [bounded core and existing offline evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md)
    on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
    normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
-4. Next: [#83: alpha.4 release preparation](https://github.com/casing1/authzest/issues/83), including
-   final-candidate checks/reviews and installation/update/native-artifact evidence. #89 remains open
-   without residual-risk acceptance; #84/#85's independent evaluation and course evidence remain open.
+4. Next: [#83: alpha.4 release preparation](https://github.com/casing1/authzest/issues/83), using the
+   recorded `b5f3eb8` preflights while completing remaining final-release/runtime/public-asset gates.
+   #89 remains `needs_review` / medium without residual-risk acceptance; #84/#85's independent
+   evaluation and course evidence remain open. The conditional 2026-11-04 target has passed; no new
+   publication date is promised.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not

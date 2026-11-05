@@ -33,7 +33,7 @@ by normal merge at `ee49f5a` on 2026-11-02 KST. Its exact-head CI passed all 10 
 approved automatic code and security reviews completed, and all 6 post-merge CI checks passed.
 #82 → #81 → #35 were then closed in that order for this bounded scope. #83/#84/#85/#89 remain
 independent open work. This sign-off grants no new AI/worker execution, file effects, risk acceptance
-or release. The [current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst)
+or release. The [current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst)
 uses source package `0.1.0a4` and is unpublished; the latest public release remains alpha.3 with package
 `0.1.0a3`, and report schema `1.2` is unchanged.
 

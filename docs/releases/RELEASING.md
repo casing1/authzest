@@ -5,17 +5,18 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
-## Alpha.4 readiness — 2026-11-02 KST
+## Alpha.4 readiness — 2026-11-05 KST
 
-**Publication remains no-go.** [#83](https://github.com/casing1/authzest/issues/83) retains a conditional
-2026-11-04 KST target, not a promised publication date. The 2026-11-02 candidate preparation sets
-the source package to `0.1.0a4` and proposes the unused tag `v0.1.0-alpha.4`; it creates neither a tag
-nor a published release. [PR #125](https://github.com/casing1/authzest/pull/125) delivered that preparation
-by normal merge `676c1cc` after ten CI checks and both reviews, followed by six passing main checks.
-That is the preparation baseline, not validation of the subsequent minimatch dependency repair.
-Record a new exact candidate commit after that repair's own required checks/reviews and normal merge;
-do not reuse `676c1cc` as evidence for changed dependency bytes. Scan report schema stays `1.2`, and
-published alpha.3 tags/assets remain unchanged. Final native/install/publication validation is still pending.
+**Publication remains no-go.** The conditional 2026-11-04 KST target in
+[#83](https://github.com/casing1/authzest/issues/83) has passed without publication; no replacement date
+is promised. The candidate checked below is `b5f3eb81d318e94c5e400ec52e78f1550e13f931`, package
+`0.1.0a4`, with proposed unused tag `v0.1.0-alpha.4` and unchanged report schema `1.2`.
+[PR #125](https://github.com/casing1/authzest/pull/125) prepared the version at `676c1cc`;
+[PR #127](https://github.com/casing1/authzest/pull/127) then delivered the minimatch repair by normal
+merge at this candidate. Both PR heads passed ten CI checks and both automatic reviews; each merged
+main passed six checks. Security finding counts were unreported, not zero-count assessments.
+The November 5 nonpublishing native and source-install observations below add candidate-bound
+preflight evidence, not full release/runtime or public-asset verification. Published alpha.3 is unchanged.
 The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
 
 The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
@@ -29,12 +30,12 @@ The accepted flow uses one registered synthetic policy pair, eight reviewed case
 of a registered template and separately approved file stages. General FastAPI repository PoC generation
 and model-authored replacement source are **not implemented**. Keep these distribution boundaries explicit:
 
-| Capability                                                  | Source installation                                                                                     | Native executable / remaining evidence                                                                                              |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Static scan and optional local inventory UI                 | Implemented; UI requires its dependencies/assets                                                        | Packaging supports these features; final-candidate checks remain required, and scan/preview smoke alone does not verify UI behavior |
-| Offline owner-review and before/after owner-repair previews | Implemented without a provider call                                                                     | Historical `b5de9d9` preflight passed three hosted platforms; not evidence for the final versioned candidate                        |
-| Active `codex-owner-repair --file-workflow`                 | POSIX non-frozen source only; bounded installed acceptance at `c868152` on one macOS/Python 3.12.7 host | Unsupported in frozen executables and Windows; no native owner-file workflow claim                                                  |
-| Installation/replacement                                    | Historical `1d0ebb8` source install/replacement and later installed-flow records have different scopes  | Neither proves a versioned alpha.4 upgrade, clean-device native installation or other consumer platforms                            |
+| Capability                                                  | Source installation                                                                                        | Native executable / remaining evidence                                                                                              |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Static scan and optional local inventory UI                 | Implemented; UI requires its dependencies/assets                                                           | Packaging supports these features; final-candidate checks remain required, and scan/preview smoke alone does not verify UI behavior |
+| Offline owner-review and before/after owner-repair previews | Implemented without a provider call                                                                        | `b5f3eb8` passed three hosted platforms' scan/preview packaging checks on November 5; no active owner-file execution                |
+| Active `codex-owner-repair --file-workflow`                 | POSIX non-frozen source only; bounded installed acceptance at `c868152` on one macOS/Python 3.12.7 host    | Unsupported in frozen executables and Windows; no native owner-file workflow claim                                                  |
+| Installation/replacement                                    | `b5f3eb8` fresh source install and alpha.3 → alpha.4 replacement each passed 13 offline checks on one host | Does not establish native installer, clean consumer device, other platforms or active owner-file workflow acceptance                |
 
 The native preview, source-install and installed-flow observations remain bound to their original
 commits and scopes. They are useful preparation evidence, not substitutes for the following gates:
@@ -43,26 +44,53 @@ commits and scopes. They are useful preparation evidence, not substitutes for th
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Bounded core delivery         | Complete through PR #123; independent evaluation and course evidence remain under #84/#85                                                                                                                                                                                            |
 | #89 residual tooling risk     | Open; the [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) remains `needs_review` / medium. Record a reviewed compatible upstream shipped-byte fix or an explicit maintainer residual-risk decision for the exact candidate in #83 |
-| Exact candidate and claims    | Preparation delivered at `676c1cc` through PR #125; package `0.1.0a4` and proposed unused tag unchanged. The minimatch dependency repair needs its own checks/reviews and normal merge before recording the revised exact candidate SHA                                              |
-| Candidate verification        | Pending: required exact-head checks/reviews, final three-platform native/artifact checks and each advertised installation/update route; scope any actual runtime execution separately                                                                                                |
+| Exact candidate and claims    | Preflight candidate `b5f3eb81d318e94c5e400ec52e78f1550e13f931` includes reviewed PR #125/#127 delivery; later documentation commits are not the commit observed below                                                                                                                |
+| Candidate verification        | November 5 scan/preview native checks and one-host source install/versioned replacement passed at that candidate. Final release-commit checks, full runtime/native release workflow and any other advertised consumer routes remain separate gates                                   |
 | Publication and public assets | Pending: full release workflow for the exact verified commit, immutable tag, then download/checksum verification and documentation follow-up                                                                                                                                         |
 
-The official npm `prettier@3.9.10` follow-up still found the embedded `brace-expansion` `5.0.6` copy;
+The November 2 official npm `prettier@3.9.10` follow-up found the embedded `brace-expansion` `5.0.6` copy;
 a version bump alone is not #89 clearance or a compatibility result. The static assessment did not
 prove supported AuthZest availability impact through actual direct editor/API inputs, execute hostile
 tests or accept residual risk. #89/#83 stay open. The separate minimatch repair changes the standalone
 development dependency graph, not Prettier's embedded copy or #89's disposition. Its exact `11.0.1`
 override deliberately crosses the three inspected parents' `^10.x` ranges. Ten bounded
-regressions passed; a zero-result npm audit covers the graph only. Neither is final-head CI, general
-major-version compatibility or security clearance. See the [candidate changelog](../../CHANGELOG.md#fixed)
+regressions passed; a zero-result npm audit covers the graph only. The subsequent exact-head CI and
+normal merge are recorded above; they do not establish general major-version compatibility or security
+clearance. See the [candidate changelog](../../CHANGELOG.md#fixed)
 for the scoped checks and unchanged `needs_review` / medium product-impact assessment. Package
-`0.1.0a4` and schema `1.2` remain unchanged; no provider/worker run, native workflow, risk acceptance,
-tag or release is added.
+`0.1.0a4` and schema `1.2` remain unchanged. November 5 adds only the bounded native preview and
+source-install checks below, with no provider/policy-worker call, risk acceptance, tag or release.
 Normal development, standard checks, configured PR reviews and normal merge use the required gates
 without a new per-attempt confirmation. Product source sharing and file-stage consent remain distinct.
-Prepare #89 response options now, then record the merged versioned candidate before its final
-disposition. Bind that explicit decision to the exact candidate; relevant source/toolchain changes need a new
+Resolve #89's response options against the exact intended publication candidate before its final
+disposition. Bind that explicit decision to that candidate; relevant source/toolchain changes need a new
 assessment rather than reuse of an earlier or unspecified-candidate decision.
+
+### Candidate preflight observation — 2026-11-05 KST
+
+The [native preview run 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368),
+attempt 1, completed **7/7 jobs** at `b5f3eb81d318e94c5e400ec52e78f1550e13f931`.
+Linux x64, macOS arm64 and Windows x64 each passed **26** selected/relocated binary checks,
+**13** checksum-packaged checks and **13** fresh matching-OS download checks. All three downloaded
+executable/manifests were also checksum-verified locally without local executable invocation.
+The seven-day Actions test artifacts are not public release assets, permanent downloads or signatures.
+These are offline static scan/owner-preview checks, not UI behavior, Codex, policy/runtime worker,
+active file-workflow, clean-device native installation or upgrade verification.
+
+Separately, disposable noneditable source installations on one macOS/Python 3.12 host passed
+**13/13** offline installed-CLI checks for a fresh candidate install and **13/13** after replacing
+alpha.3 `99be6f5614d283befa2a421b64f84958b680f92f` / `0.1.0a3` with the candidate / `0.1.0a4`
+in the same private pipx environment. Installed provenance and all non-bytecode package files were
+checked against each source snapshot. The old installation also passed version/help/static inventory.
+Two initial inventory probes used a wrong fixture path; their errors were retained and the path was
+corrected, without reinstalling. No user installation/PATH or source checkout was changed.
+This adds a genuine versioned source replacement observation, not other-OS, native/UI, active-flow,
+AI/worker or fresh consumer-device acceptance. Raw evidence and local environment identifiers stay private.
+
+These results remain bound to `b5f3eb8`, not a later documentation merge or eventual release commit.
+The historical October 29 same-version installation and October 30 active-flow records retain their
+different scopes. #83/#89 remain open; full release/runtime execution, final-commit verification,
+exact-candidate tooling disposition, tagging and public-asset verification are still required.
 
 ## Published preview and current source
 

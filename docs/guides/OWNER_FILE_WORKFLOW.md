@@ -16,7 +16,7 @@ This unreleased #82 source implementation connects `codex-owner-repair --file-wo
 existing file-session API. [PR #120](https://github.com/casing1/authzest/pull/120) completed its
 required final-head reviews and source delivery at `a0ae879`. Without the flag, the command remains
 recommendation-only: no copy, policy execution, application or restoration. The
-[current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst) uses source package
+[current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst) uses source package
 `0.1.0a4` and is unpublished. The latest public release remains alpha.3 with package `0.1.0a3`;
 report schema `1.2` is unchanged. The optional web dashboard does not display or control this workflow.
 

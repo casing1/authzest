@@ -14,7 +14,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
-No additional changes are queued beyond the alpha.4 candidate below.
+### Changed
+
+- Record the November 5 nonpublishing preflight at exact candidate `b5f3eb8`:
+  [native preview](https://github.com/casing1/authzest/actions/runs/41946366368) attempt 1 passed 7/7 jobs;
+  Linux x64/macOS arm64/Windows x64 each passed 26 binary, 13 packaged and 13 fresh-download offline
+  scan/preview checks, and the three downloaded executable manifests matched. A one-host disposable
+  fresh source install and genuine alpha.3 → alpha.4 replacement each passed 13/13 installed-CLI checks
+  with noneditable provenance/package-byte verification. Preserve the earlier different-scope records;
+  do not transfer these observations to the documentation merge or eventual release commit.
+  Refresh the four README languages, English/Korean release plan and completed-core index status.
+  The conditional November 4 target passed without publication; #83/#89, final release/runtime,
+  other consumer routes and public-asset gates remain. No product AI/policy-worker call, risk acceptance,
+  package/schema change, tag or release is added.
 
 ## [0.1.0-alpha.4] - 2026-11-02
 

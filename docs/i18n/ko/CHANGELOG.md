@@ -14,7 +14,18 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
-아래 alpha.4 후보 이후 별도로 예정된 변경은 없습니다.
+### 변경
+
+- 11월 5일 정확한 후보 `b5f3eb8`의 비배포 사전 검사를 기록합니다.
+  [Native preview](https://github.com/casing1/authzest/actions/runs/41946366368) attempt 1의 7/7 job을
+  통과했고 Linux x64/macOS arm64/Windows x64 각각 바이너리 26개·패키징 13개·새 다운로드 13개의
+  오프라인 scan/preview 검사와 세 다운로드 실행 파일 manifest의 체크섬 대조를 통과했습니다.
+  host 한 대의 임시 새 소스 설치·실제 alpha.3 → alpha.4 교체도 각각 설치 CLI 13/13을 통과하고
+  noneditable provenance·전체 패키지 바이트를 대조했습니다. 범위가 다른 과거 기록을 보존하며
+  이번 관찰을 문서 병합이나 최종 릴리스 커밋으로 옮기지 않습니다. README 네 언어·영한 릴리스
+  계획·핵심 완료 index 상태를 갱신합니다. 조건부 11월 4일은 발행 없이 지났고 #83/#89·최종
+  release/runtime·다른 사용자 경로·공개 파일 조건은 유지합니다. 제품 AI/정책 worker 호출·위험 수용·
+  패키지/스키마 변경·태그·릴리스는 추가하지 않습니다.
 
 ## [0.1.0-alpha.4] - 2026-11-02
 

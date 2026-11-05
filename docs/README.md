@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-11-02 KST
+## Current work — 2026-11-05 KST
 
 PR #90 merged #79's readable CLI output and explicit JSON streams. Read-only owner-policy Codex review
 and the new [offline case-review / fixed-plan Python API](reference/OWNER_CASE_PLAN.md) are unreleased
@@ -93,11 +93,12 @@ Complete final stdout JSON and stderr logs were retained privately; the original
 See the [bounded installed-flow record and remaining gates](guides/OWNER_FILE_ACCEPTANCE.md).
 On **2026-11-02 KST**, the maintainer accepted the bounded core: the registered synthetic policy pair,
 eight cases, Codex template selection and POSIX source CLI. Acceptance uses the documented run above
-and existing offline refusal/user-edit/recovery tests; it is not a new live run. Final status-documentation
-delivery and required checks, separately approved reviews and normal merge remain pending before
-sequential closure of #82 → #81 → #35. #83/#84/#85/#89 remain independently open. New PoC generation
-and model-generated repair source for general FastAPI repositories remain unimplemented. This is not
-cross-platform/native acceptance; Windows/frozen active file execution remains unsupported.
+and existing offline refusal/user-edit/recovery tests; it is not a new live run. Final status documentation
+was normally merged through [PR #123](https://github.com/casing1/authzest/pull/123) at `ee49f5a`, followed
+by closure of #82 → #81 → #35 for that bounded core. #83/#84/#85/#89 remain independently open.
+New PoC generation and model-generated repair source for general FastAPI repositories remain
+unimplemented. This owned-file acceptance is not cross-platform/native acceptance; Windows/frozen
+active file execution remains unsupported.
 The UI, #80, published alpha.3 and report schema are unchanged.
 Label review is not actual execution consent or an authenticated receipt. The current dashboard
 displays static inventory; it is not an AI review/approval viewer.
@@ -121,6 +122,23 @@ benchmark or model quality. #84's independent reference review, dataset freeze a
 [PR #116](https://github.com/casing1/authzest/pull/116) added installed-CLI smoke with local source-install
 evidence. These are bounded preparation records, not final alpha.4 acceptance, #89 risk acceptance or
 publication; see the [release guide](releases/RELEASING.md).
+
+On **2026-11-05 KST**, exact source `b5f3eb81d318e94c5e400ec52e78f1550e13f931` (PR #127 merge,
+package `0.1.0a4`, report schema `1.2`) passed
+[native preview run 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368), attempt 1:
+7/7 jobs, with 26 selected/relocated, 13 packaged and 13 fresh matching-OS download checks each on
+Linux x64, macOS arm64 and Windows x64. All three binary/checksum-manifest pairs also matched after
+local download; no local binary was executed. On one macOS/Python 3.12 host, disposable pipx environments
+passed 13/13 fresh-candidate checks and 13/13 after replacing genuine alpha.3 `99be6f5` / `0.1.0a3`
+with `b5f3eb8` / `0.1.0a4` in the same pipx venv; noneditable provenance and installed package-file
+bytes were verified. See the [dated candidate observation](releases/RELEASING.md#candidate-preflight-observation--2026-11-05-kst).
+
+These scan/preview observations are bound only to `b5f3eb8`, not later documentation merges. They do
+not establish other-OS source installation, clean consumer-device/native-installer or UI acceptance,
+and made no AI call or policy-worker/active-file run. The historical `1d0ebb8` same-version replacement
+and `c868152` owner-flow observation remain separate. Alpha.4 is unpublished; #83's remaining
+final-release/runtime/public-asset gates and #89 (`needs_review` / medium, no residual-risk acceptance)
+remain open. The conditional 2026-11-04 target has passed; no new publication date is promised.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records
