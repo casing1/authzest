@@ -14,6 +14,16 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
+### 추가
+
+- [#84](https://github.com/casing1/authzest/issues/84)의 소스 checkout 전용 평가 초안으로 새 소유 소스
+  데이터 시나리오 6개·assistant 작성 정답 제안 18개를 준비합니다. 모두 정확한 maintainer 검토 대기이며
+  동결하지 않았습니다. 읽기 상한이 있는 비변경 사전 검사·사람/JSON 검토 자료를 추가하고 정답과
+  분리한 작업 전용 입력의 canonical 식별자에 각 초안을 연결합니다. 세 모드 비교·고정 분모와
+  선언/의도/unknown·인용·워크플로 지표 구분을 영한 문서로 정합니다. 과거 평가 바이트·승인은
+  보존합니다. 벤치마크 결과·새 scorer/실제 adapter·제품 AI/worker 호출·정답 승인·릴리스·#84 조건
+  완료를 추가하지 않습니다.
+
 ### 수정
 
 - [#130](https://github.com/casing1/authzest/issues/130)의 오프라인 가짜 Codex 서버가 append 중인

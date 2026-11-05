@@ -64,6 +64,11 @@ installation instructions, limitations and OSS contribution evidence. If a measu
 report that gap rather than manufacturing a model-quality claim. Complete the bounded course scope
 before adding models, another transport, a complete Python interpreter or AI GUI.
 
+The separate [draft evaluation protocol](EVALUATION_PROTOCOL.md) supplies six new source-data
+candidates, 18 assistant-authored reference proposals and an inert preflight/review packet. They are
+not frozen, independently label-approved or measured. Review each exact reference next; merging the
+preparatory slice is not that approval. Historical corpus bytes and observations remain unchanged.
+
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
 attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and
