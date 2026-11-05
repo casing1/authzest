@@ -24,21 +24,25 @@ React ダッシュボードは任意のローカルインターフェースで�
 デプロイする必要はありません。
 
 > [!IMPORTANT]
-> [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) は 2026-09-12 に
-> Python パッケージ版 `0.1.0a3`、レポートスキーマ `1.2` として公開されました。静的な一覧機能を維持し、
-> 対応 POSIX システムに限定的な Codex fixture・コピー・検査フローを追加します。Windows のスキャン対応は維持します。
+> **最新の公開リリース:**
+> [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) は 2026-11-05 KST に公開されました。
+> 正確なタグのソースは
+> `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`、Python パッケージ `0.1.0a4`、レポートスキーマ `1.2` です。
+> [タグ workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243) の attempt 2 は、
+> 公開を含む全 8 ジョブに合格し、公開ファイル 6 個をダウンロードして検証しました。
 > 正確なコミットと検証結果は[変更履歴](../../../CHANGELOG.md)と[リリース記録](../../releases/RELEASING.md)を
 > 確認してください。`main` の checkout は、このタグより先に進んでいる場合があります。
 > まだアルファ段階のツールであり、完成した脆弱性スキャナーや一般リポジトリの修正フローではありません。
 
 > [!NOTE]
-> **未公開の alpha.4 候補:** このソースの Python パッケージ版は `0.1.0a4`、レポートスキーマは
-> `1.2` のままで、予定タグは `v0.1.0-alpha.4` です。そのタグとリリースはまだ作成しておらず、
-> 最新の公開リリースは alpha.3 です。2026-11-05 KST に `b5f3eb8` は、下記の限定された native
-> プレビューと 1 台でのソースインストール・更新の事前検査に合格しました。#83 の残る最終リリース・
-> ランタイム・インストール・公開成果物の条件は未完了です。管理者は 2026-11-05 KST に `7509a6a` を
-> 基準として、下記の明示的な警告とともに #89 のツール残存リスクを **次の alpha.4 のみに** 条件付きで
-> 受容しました。#89 は未完了で評価は `needs_review` / medium のままです。修正完了や公開承認ではありません。
+> **一般的な修正エンジンではない限定範囲:** alpha.4 は読みやすい CLI と所有者ポリシーの推薦フローを
+> 含みます。能動的な `codex-owner-repair --file-workflow` には POSIX non-frozen Python ソースの
+> インストールが必要です。native バイナリは静的スキャンとオフラインプレビューに対応し、この能動的な
+> ファイルフローには非対応です。テスト harness の安定化 (#130)・独立評価 (#84)・授業デモの固定 (#85) は
+> 未完了です。タグ attempt 1 は JSONL テスト harness の読み取り競合 1 件で失敗し、4,923 件合格・1 件失敗でした。
+> ソースを変更しない再実行は合格しましたが、初回合格や修正完了ではありません。#89 の残存リスクは
+> 下記の警告とともに **alpha.4 のみに** 受容され、`needs_review` / medium のまま未完了です。
+> 修正済みや、その後の安定版に対する免除を意味しません。
 
 > [!WARNING]
 > **開発ツールのリスク (#89):** 影響を受ける Prettier は悪意ある EditorConfig により停止または失敗する可能性があります。
@@ -51,7 +55,7 @@ React ダッシュボードは任意のローカルインターフェースで�
 ## 現在のソースが対応する機能
 
 - 静的に生成された `FastAPI`・`APIRouter` 所有オブジェクトと、対応範囲内の import 別名の認識
-- 未リリースの Python [所有者ケース検討/固定計画 API](../../reference/OWNER_CASE_PLAN.md) は、
+- Python [所有者ケース検討/固定計画 API](../../reference/OWNER_CASE_PLAN.md) は、
   正確なモデル草案と呼び出し元の未検討/承認/変更/拒否記録を結び付け、内蔵ポリシーの計画を
   表示します。記録された正確な期待値 10 件は 2026-10-09 KST に個別承認され、元のモデル作成履歴は
   保持されます。新しい CLI はなく、オフライン計画は実行不可・not-run・認可 unknown です。
@@ -65,41 +69,41 @@ React ダッシュボードは任意のローカルインターフェースで�
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
-- 現在の未リリースソースでは `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
+- alpha.4 では `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
   表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
   出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。
   スクリプトは JSON を明示的に選び、フィールド・記録された判断・個別承認は変わりません。
   unknown は合格ではありません。[出力と移行の契約](../../guides/CODEX_OWNER_REVIEW.md#interpret-the-result)を
   参照してください。公開済み alpha.3 の表示は変更せず、GUI や新しい提供者/実行権限は追加しません
-- 未リリースの読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) をソースに追加：
+- 読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) を提供：
   対応 POSIX システムで bundle の正確な diff・根拠・期待結果を表示し、承認や実行は行わない
-- 未リリースの [`authzest proposal-check`](../../guides/PROPOSAL_CHECK.md) で、対応範囲内の変更前後の
+- [`authzest proposal-check`](../../guides/PROPOSAL_CHECK.md) で、対応範囲内の変更前後の
   ソース snapshot と宣言の期待値を比較する。ソースは実行せず、ポリシーの意図は評価しない。
   一致しても認可を保証するものではない
-- 未リリースの [`authzest review-demo`](../../guides/REVIEW_DEMO.md) は、メモリ内の mock 例一つで
+- [`authzest review-demo`](../../guides/REVIEW_DEMO.md) は、メモリ内の mock 例一つで
   正確な diff・宣言の比較結果・文章のみのテスト草案をまとめて表示し、`--json` にも対応する。
   入力ファイル・プロバイダー・適用・実行はなく、実行時の認可検査ではない
 - ソース checkout に[所有者限定レポートポリシー例](../../guides/OWNER_POLICY.md)を追加：純粋な
   所有者・scope ポリシー、独立した開発用単体テスト、別途スキャンする FastAPI 参照を提供する。
   実際の認証・endpoint の実行時テスト・新しい製品実行モードではない
-- 未リリースの [`authzest codex-owner-review`](../../guides/CODEX_OWNER_REVIEW.md) を追加：すべての
+- [`authzest codex-owner-review`](../../guides/CODEX_OWNER_REVIEW.md) を提供：すべての
   対応 OS で入力全体をオフラインで確認でき、正確な共有同意後、対応 POSIX システムで同梱の
   所有者ポリシー snapshot 二つを Codex が読み取り専用でレビューする。出力は未レビューの
   防御的テストケース草案であり、実行済みテストやパッチではない。過去2回の失敗後、新たに
   承認された2026-10-01の試行は約74秒で `draft-ready` を返し、回答1件とケース10件が
   host検証を通過した。限定的なプロバイダー受け入れ検証であり、期待値の承認やendpoint検証
   ではない。次の試行には新たな承認が必要で、公開済みalpha.3は変更しない
-- 未リリースの [`authzest codex-owner-repair`](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) を追加：
+- [`authzest codex-owner-repair`](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) を提供：
   対応 OS で共有内容全体をオフラインで確認でき、明示的な共有同意後、対応 POSIX システムで
   バージョン固定 App Server による試行を 1 回行う。候補は `before` または `after`、結果は
   `registered-change`・`no-change`・`unknown`。登録済みテンプレートの選択からホストが
   1 ファイルの diff を導出し、任意の置換コードは生成しない。2026-10-28 の個別承認された
   実連携 1 回で登録済みテンプレートが選択され、その承認は消費済み。既定は推薦のみで、適用・復元・ポリシー実行は行わない
-- 別の未リリース[登録済み修正ポリシー検査 Python API](../../reference/OWNER_POLICY_REPAIR_CHECK.md) を追加：
+- 別の[登録済み修正ポリシー検査 Python API](../../reference/OWNER_POLICY_REPAIR_CHECK.md) を提供：
   POSIX の Python ソースモードのみで、before/after の対照条件にはそれぞれ新たな個別承認が必要。
   過去の承認済み実行では、想定どおり before の 2 件の不一致と after の 8 件の一致を観測した。
   適用ファイルの検証ではない。この対照 API は下記のファイルフローとは別で、CLI/UI を追加しない
-- 未リリースの[所有ファイル修正ソース API](../../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst) を追加。
+- [所有ファイル修正ソース API](../../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst) を提供。
   2026-10-29 KST、main `fb90c46` でコピーから取得した before の検査、正確な diff の受け入れ、
   適用、取得した after の検査、復元をそれぞれ範囲を限定した承認の下で実施した。
   Before は期待値 6/8 件に一致し、`non-owner` と `exact-owner-no-normalization` の意図した
@@ -108,7 +112,7 @@ React ダッシュボードは任意のローカルインターフェースで�
   以前の推薦を再検証し、新たな AI 呼び出しは行っていない。受け入れ検証は macOS/Python
   `3.12.7` の POSIX non-frozen API のみで、HTTP 認可や新しいインストール済み CLI フローの受け入れ検証ではない。
   その時点では #81/#35 全体と別途のリリース条件は未完了だった。alpha.3 は不変
-- 未リリースの明示的な [`codex-owner-repair --file-workflow` オプション](../../guides/OWNER_FILE_WORKFLOW.md)を追加。
+- 明示的な [`codex-owner-repair --file-workflow` オプション](../../guides/OWNER_FILE_WORKFLOW.md)を提供。
   今回検証された推薦から新しい所有コピー、before 検査、正確な diff の受け入れ、適用、after 検査、
   復元へ進み、それぞれ個別の同意が必要。オプション自体は承認ではなく、`--preview-only` は引き続き
   共有入力のみを表示する。人向け出力は段階別の状態と 8 ケースの観察を分離し、`--json` は最終文書一つを保つ。
@@ -124,11 +128,11 @@ React ダッシュボードは任意のローカルインターフェースで�
   選択・POSIX ソース CLI に限定した中核フローを受け入れた。上記の実行記録と既存のオフライン
   拒否・ユーザー編集・復元テストに基づく判断であり、新たな実環境での実行ではない。最終状態の文書は
   [PR #123](https://github.com/casing1/authzest/pull/123) の `ee49f5a` で通常マージされ、この限定された
-  中核範囲で #82 → #81 → #35 を順に終了した。#83/#84/#85/#89 は独立した未完了項目で、
-  #89 の開発ツールの残存リスクは次の alpha.4 のみに条件付きで受容されているが、修正済みではない。
+  中核範囲で #82 → #81 → #35 を順に終了した。#84/#85/#89 は独立した未完了項目で、
+  #83 の公開リリース検証記録は別である。#89 の残存リスクは alpha.4 のみに受容され、修正済みではない。
   Windows/frozen での能動的なファイル実行は
   引き続き未対応で、公開済み alpha.3 とレポートスキーマは不変
-- 未リリースの [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を追加：対応 POSIX システムで、
+- [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を提供：対応 POSIX システムで、
   同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
   Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない
 - 既存の JSON フィールドを保持し、スキーマ `1.2`、構造化された診断、bounded/partial 状態と、
@@ -200,6 +204,11 @@ pipx install --force .
 他の OS・クリーンな利用者端末・native インストーラー・UI の対応を立証するものではありません。
 この検査では AI 呼び出し・ポリシー worker・能動的なファイルフローは実行しておらず、
 以前の `c868152` の所有ファイルフローの観察とは別です。
+
+最終ソース `090002d` は 2026-11-05 KST に別途検査しました。1 台の macOS/Python 3.12 環境で
+新規インストールと実際の alpha.3 → alpha.4 置き換えが、それぞれオフラインのインストール済み CLI
+検査 13/13 件に合格し、noneditable の出所とパッケージのバイトを確認しました。native 更新、他の
+プラットフォームのインストール、新しい実所有ファイルフローの観察を意味しません。
 
 ビルド済みファイルについては[独立した実行ファイル](#独立した実行ファイル)を参照してください。
 `ui` extra は Python backend の依存関係をインストールしますが、通常の wheel・pipx インストールに
@@ -308,9 +317,17 @@ EditorConfig、およびガードの制限を確認してください。
 
 ## 独立した実行ファイル
 
-[alpha.3 リリース](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) は Linux x64、
-macOS arm64、Windows x64 の実行ファイルと対応する SHA-256 manifest を提供します。alpha.3 の静的一覧機能と
-レポートスキーマ `1.2` を含みますが、現在の未リリースの所有者レビュー・修正機能は含みません。
+[alpha.4 リリース](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) は Linux x64、
+macOS arm64、Windows x64 の実行ファイルと SHA-256 manifest、静的一覧・読みやすい出力・所有者
+レビュー/修正のオフラインプレビューを提供します。タグ workflow attempt 2 の全 8 ジョブが合格しました。
+各プラットフォームは選択/移動 26 件・パッケージ 13 件・新規ダウンロード 13 件のスキャン/プレビューと、
+固定 runtime parent 検査 2/1/1 件に合格しました（POSIX は AFTER debug/health のみ、Windows は明示的な非対応）。
+公開ファイル 6 個のバイトが attempt 2 成果物と GitHub API SHA-256 に一致し、checksum sidecar 3 個も
+バイナリに一致しました。移動した公開 macOS バイナリは Python `-I -S` の標準ライブラリ制御プログラムで
+スキャン/プレビュー 13 件・固定 runtime 1 件に合格しました。Codex・対象・パッチは使っていません。
+公開・公開ダウンロードの検証は完了し、文書の提供は [#83](https://github.com/casing1/authzest/issues/83) で
+追跡します。[公開検証記録](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)と
+[リリースガイド](../../releases/RELEASING.md)を参照してください。
 GUI インストーラーではなく独立した CLI プログラムであり、
 ビルド済みバイナリの実行に Python や Node.js のインストールは不要です。POSIX バイナリには
 所有 fixture のフローとランタイム依存関係も含まれます。Codex は独自のログインを使う別の信頼できる
@@ -319,7 +336,7 @@ GUI インストーラーではなく独立した CLI プログラムであり�
 
 OS/アーキテクチャに合うファイルと `.sha256` manifest をダウンロードし、実行前に
 [チェックサムと実行の手順](../../releases/RELEASING.md#verify-and-recover)に従ってください。
-3 プラットフォームの CI ビルドと新しいジョブでの成果物 smoke 検査が成功し、公開ファイル6個を
+過去の alpha.3 では、3 プラットフォームの CI ビルドと新しいジョブでの成果物 smoke 検査が成功し、公開ファイル6個を
 ダウンロードして検査済み成果物と照合しました。公開 macOS バイナリも Python `-I -S` の標準
 ライブラリ制御プログラムでプロジェクト依存関係を import せず、ローカルのスキャン・ランタイム smoke に合格しました。これらのパッケージ検査では
 実際の Codex 呼び出しは行っていません。一般ユーザーの機器での
@@ -335,7 +352,15 @@ Linux x64・macOS arm64・Windows x64 のそれぞれで、選択・移動 26 �
 ダウンロードしてすべて照合し、ローカルでのバイナリ実行は行っていません。これはスキャン・プレビューの
 証拠であり、UI・ランタイム・AI・ポリシー worker・能動的なファイルフローの受け入れではありません。
 このソースだけに結び付いた観察で、後続の文書マージは新たに検査した候補ではありません。
-最終リリース・ランタイム・インストール・公開成果物の条件は残り、alpha.4 バイナリはまだ公開していません。
+これは過去の事前検証であり、alpha.4 の公開ダウンロード検証記録ではありません。
+
+正確な alpha.4 ソース `090002d` は別途
+[非公開のリリース事前検証 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082) で
+7 ジョブに合格し、公開はスキップされました。パッケージの runtime 検査は POSIX の固定所有 AFTER
+fixture の debug/health のみで、Windows は明示的な非対応動作を検査します。全体の回帰検査は
+保守対象の BEFORE/AFTER fixture も実行し、任意のリポジトリは実行しません。タグ公開と公開ファイルは
+リリースガイドの別の観察です。UI の受け入れ、利用者端末でのインストール/更新、署名/公証、native の
+能動的な所有ファイルフローの対応を立証するものではありません。
 
 現在のソースをローカルでビルドするには、開発 venv を有効にし、リポジトリルートから実行します。
 
@@ -380,7 +405,8 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
 作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
-授業の開発計画は 7 週間とし、別途 4–5 週間を試験、遅延、最終準備の余裕として残します。
+既存の開発 7 週間には完了済みの作業を含みます。新しい 7 週間は開始せず、提出見込みの
+2026-11-18 より前の試験・提出の余裕を保持します。
 [#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤と
 [#28](https://github.com/casing1/authzest/issues/28)・[#29](https://github.com/casing1/authzest/issues/29) の
 ルート直接・継承宣言の根拠は alpha.2 に含まれます。
@@ -390,17 +416,19 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
 
 1. ソースに実装済み: [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)。
 2. 受け入れた限定的な中核範囲で終了: [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)。
-3. 未リリースソース: [#82: 読みやすいインストール型 CLI 統合](https://github.com/casing1/authzest/issues/82)に
+3. 同梱されたソース専用の能動的なフロー: [#82: 読みやすいインストール型 CLI 統合](https://github.com/casing1/authzest/issues/82)に
    opt-in のファイルフローとオフラインテストを PR #120 で提供しました。個別承認した 1 台の
    インストール済み正常系で、推薦から適用ファイルの検査・復元まで観測しました。管理者は
    2026-11-02 KST に[限定された中核フローと既存のオフライン証拠](../../guides/OWNER_FILE_ACCEPTANCE.md)を
    受け入れました。新たな実環境での実行や一般リポジトリの修正の受け入れではありません。最終状態の
    文書は PR #123（`ee49f5a`）で通常マージされ、この範囲で #82 → #81 → #35 を順に終了しました。
-4. 次は [#83: alpha.4 リリース準備](https://github.com/casing1/authzest/issues/83)です。記録された
-   `b5f3eb8` の事前検査を用い、残る最終リリース・ランタイム・インストール・公開成果物の条件を満たします。
-   #89 は次の alpha.4 のみに残存リスクを条件付きで受容し、`needs_review` / medium のまま未完了で、
-   修正済みではありません。#84/#85 の独立した評価と授業提出用の
-   証拠も未完了です。条件付きの 2026-11-04 目標日は過ぎており、新たな公開日は約束していません。
+4. 次は [#130 テスト harness の安定化](https://github.com/casing1/authzest/issues/130)、
+   [#84 独立評価](https://github.com/casing1/authzest/issues/84) と
+   [#85 再現可能なデモ・授業提出の証拠](https://github.com/casing1/authzest/issues/85)です。
+   [#83 の正確なリリース/公開ファイル検証記録](https://github.com/casing1/authzest/issues/83)は別に保持します。
+   #89 は `needs_review` / medium のまま未完了で、alpha.4 限定のリスク受容は修正や安定版の免除ではありません。
+   範囲を限定した `0.1.0` 安定版は、評価・デモ・回帰/インストール検証と関連リスクの新たな判断が条件です。
+   現在の alpha は一般リポジトリの修正を約束しません。
 
 [オフライン基盤](../../reference/AI_CONTRACT.md) は alpha.3 の fixture コマンドが使う契約を提供します。
 評価スクリプトとデータセットは checkout 専用のままです。上記の限定された中核フローの受け入れは、

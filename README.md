@@ -22,22 +22,25 @@ one live source-CLI draft/apply/runtime-check/restore check has passed. Static s
 The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
 
 > [!IMPORTANT]
-> [v0.1.0-alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published on
-> 2026-09-12 with Python package version `0.1.0a3` and report schema `1.2`. It retains static inventory
-> and adds the bounded Codex fixture/copy/check workflow on supported POSIX systems; Windows scan remains supported.
+> **Latest published release:**
+> [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4), published on
+> 2026-11-05 KST from exact source
+> `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, Python package `0.1.0a4`, report schema `1.2`.
+> [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243), attempt 2,
+> passed all eight jobs including publication; all six public files were downloaded and verified.
 > See the [changelog](CHANGELOG.md) and [release record](docs/releases/RELEASING.md) for the exact
 > commit and validation evidence. A checkout of `main` can advance beyond that tag.
 > This is still an alpha tool, not a complete vulnerability scanner or a general repository repair loop.
 
 > [!NOTE]
-> **Alpha.4 candidate, not published:** this source uses Python package `0.1.0a4` and unchanged report
-> schema `1.2`; the planned tag is `v0.1.0-alpha.4`. That tag and release have not been created, and
-> alpha.3 remains the latest published release. On 2026-11-05 KST, `b5f3eb8` passed the bounded native
-> preview and one-host source-install/update preflights described below. #83 remains open for the
-> remaining final-release, runtime, installation and public-asset gates. On 2026-11-05 KST, the
-> maintainer conditionally accepted #89's residual tooling risk **only for the next alpha.4**, based
-> on `7509a6a` with the visible warning below. #89 stays open with assessment `needs_review` / medium;
-> this is not a fix or publication approval.
+> **Scope, not a general repair engine:** alpha.4 includes readable CLI results and the bounded
+> owner-policy recommendation workflow. Active `codex-owner-repair --file-workflow` requires a POSIX
+> non-frozen Python source installation; native binaries support static scan/offline previews, not
+> that active file workflow. Test-harness stabilization (#130), independent evaluation (#84) and
+> course-demo freeze (#85) remain open. Tag attempt 1 failed one JSONL test-harness read race
+> (4,923 passed / 1 failed); the unchanged-source rerun passed, not a first-pass result or a fix.
+> The maintainer accepted #89's named residual tooling risk **for alpha.4 only**, with the warning
+> below; #89 stays open at `needs_review` / medium. This is not a fix or a future stable-release waiver.
 
 > [!WARNING]
 > **Developer-tooling risk (#89):** affected Prettier can stall or fail on malicious EditorConfig.
@@ -51,7 +54,7 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 ## What the current source supports
 
 - Recognizes statically constructed `FastAPI` and `APIRouter` owners, including supported import aliases.
-- Adds an unreleased Python [owner-case review/fixed-plan API](docs/reference/OWNER_CASE_PLAN.md):
+- Includes the Python [owner-case review/fixed-plan API](docs/reference/OWNER_CASE_PLAN.md):
   bind exact model case data to pending/approved/changed/declined caller records and an inspectable
   maintained-policy plan. The exact ten recorded labels were separately approved on 2026-10-09 KST;
   original model authorship is preserved. No new CLI; offline plans remain non-executable, not-run
@@ -66,41 +69,41 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
-- Current unreleased source makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
+- Alpha.4 makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
   Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly
   select JSON; fields, recorded decisions and separate approvals are unchanged. Unknown is not a pass.
   See the [output/migration contract](docs/guides/CODEX_OWNER_REVIEW.md#interpret-the-result).
   Published alpha.3 retains its older display; no GUI or new provider/execution permission is added.
-- Adds the unreleased, read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md) in source:
+- Includes read-only [`authzest proposal-preview`](docs/guides/PROPOSAL_PREVIEW.md):
   display a bundle's exact diff, evidence and expected outcomes on supported POSIX systems; no approval or execution.
-- Adds the unreleased [`authzest proposal-check`](docs/guides/PROPOSAL_CHECK.md) to compare declaration
+- Includes [`authzest proposal-check`](docs/guides/PROPOSAL_CHECK.md) to compare declaration
   targets with a bounded subset of supplied before/after source snapshots. No source execution;
   policy intent is not evaluated and a match is not an authorization guarantee.
-- Adds the unreleased [`authzest review-demo`](docs/guides/REVIEW_DEMO.md): one in-memory mock example
+- Includes [`authzest review-demo`](docs/guides/REVIEW_DEMO.md): one in-memory mock example
   combining exact diff, declaration results and a prose-only test draft, also available with `--json`.
   No input files, provider, application or execution; not a runtime authorization check.
 - Adds a source-checkout [owned report policy example](docs/guides/OWNER_POLICY.md), with a pure
   owner/scope policy, independent developer unit tests and a separately scanned FastAPI reference.
   This is not real authentication, an endpoint runtime test or a new product execution mode.
-- Adds the unreleased [`authzest codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): an offline
+- Includes [`authzest codex-owner-review`](docs/guides/CODEX_OWNER_REVIEW.md): an offline
   full-input preview on all supported OSes and, after exact sharing consent, a read-only Codex review
   of two packaged owner-policy snapshots on supported POSIX systems. Outputs remain unreviewed
   defensive case drafts, not executed tests or patches. After two unsuccessful attempts, one freshly
   approved live run on 2026-10-01 returned `draft-ready` in about 74 seconds: one answer and ten cases
   passed host validation. This is narrow provider acceptance, not case-label approval or endpoint
   verification. Another attempt needs fresh approval; published alpha.3 is unchanged.
-- Adds the unreleased [`authzest codex-owner-repair`](docs/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md):
+- Includes [`authzest codex-owner-repair`](docs/reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md):
   a complete offline sharing preview on supported OSes and one explicitly approved, pinned App Server
   attempt on supported POSIX systems. For `before` or `after`, results are `registered-change`,
   `no-change` or `unknown`; the host derives a registered one-file diff, not arbitrary replacement code.
   One separately approved live attempt on 2026-10-28 selected the registered template; that approval
   is consumed. By default this command stays recommendation-only: no application, restoration or policy execution.
-- Adds a separate unreleased [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md):
+- Includes the separate [registered repair-policy check Python API](docs/reference/OWNER_POLICY_REPAIR_CHECK.md):
   POSIX Python source-only before/after controls require separate fresh decisions. Historical checks
   observed the expected two before mismatches and eight after matches. These are not checks of an
   applied file; this control API remains separate from the file workflow below and adds no CLI/UI.
-- Adds the unreleased [owned-file repair source API](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
+- Includes the [owned-file repair source API](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
   On main `fb90c46`, 2026-10-29 KST, independently scoped approvals covered captured-copy before check,
   exact-diff acceptance, apply, captured-copy after check and restore. Before matched 6/8 expectations,
   with the intended over-allows for `non-owner` and `exact-owner-no-normalization`; after matched 8/8.
@@ -109,7 +112,7 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   recommendation was revalidated. Acceptance covers only the POSIX non-frozen API on macOS/Python
   `3.12.7`, not HTTP authorization or acceptance of the new installed-CLI flow. At that checkpoint,
   the broader #81/#35 workflow and separate release gates were pending; alpha.3 is unchanged.
-- Adds the unreleased, explicit [`codex-owner-repair --file-workflow` option](docs/guides/OWNER_FILE_WORKFLOW.md):
+- Includes the explicit [`codex-owner-repair --file-workflow` option](docs/guides/OWNER_FILE_WORKFLOW.md):
   a current validated recommendation can proceed to a fresh owned copy, then before-check, exact-diff
   acceptance, apply, after-check and restore, each with separate consent. The option itself is not
   approval; `--preview-only` still shows sharing input only. Human output separates stage statuses and
@@ -126,11 +129,11 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   template selection and POSIX source CLI. Acceptance uses the documented run above and existing
   offline refusal/user-edit/recovery tests; it is not a new live run. Final status documentation was
   normally merged in [PR #123](https://github.com/casing1/authzest/pull/123) at `ee49f5a`, followed by
-  closure of #82 → #81 → #35 for this bounded core. #83/#84/#85/#89 remain independently open;
-  #89's residual tooling risk is conditionally accepted only for the next alpha.4, not fixed.
+  closure of #82 → #81 → #35 for this bounded core. #84/#85/#89 remain independently open;
+  #83's public-release receipt is separate. #89's residual tooling risk is accepted for alpha.4 only, not fixed.
   Windows/frozen active file execution remains
   unsupported; published alpha.3 and the report schema are unchanged.
-- Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
+- Includes [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
   POSIX systems. No Codex, account, network or fixture-source execution; published alpha.3 is unchanged.
 - Adds schema `1.2`, structured diagnostics, bounded/partial status, and distinct registration IDs with
@@ -199,6 +202,11 @@ and 13/13 after replacing genuine alpha.3 `99be6f5` / `0.1.0a3` with `b5f3eb8` /
 same pipx venv. Noneditable provenance and installed package-file bytes were verified. This does not
 establish other-OS, clean consumer-device, native-installer or UI support. No AI call, policy worker or
 active file workflow ran in these checks; the earlier `c868152` owner-flow observation remains separate.
+
+The final source `090002d` was checked separately on 2026-11-05 KST: a fresh installation and genuine
+alpha.3 → alpha.4 replacement each passed 13/13 offline installed-CLI checks on one macOS/Python 3.12
+host, with noneditable provenance and package-byte verification. This is not a native upgrade, another
+platform's installation or a new live owner-file observation.
 
 For a prebuilt executable, see [standalone binaries](#standalone-binaries). The `ui` extra installs Python
 backend dependencies; it does not include built dashboard assets in a regular wheel/pipx installation.
@@ -304,9 +312,18 @@ EditorConfig, and the guard's limits.
 
 ## Standalone binaries
 
-The [alpha.3 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) provides Linux x64,
-macOS arm64, and Windows x64 executables with matching SHA-256 manifests. They include alpha.3's static
-inventory and report schema `1.2`, not the current unreleased owner-review/repair additions.
+The [alpha.4 release](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) provides Linux x64,
+macOS arm64 and Windows x64 executables with matching SHA-256 manifests, static inventory, readable
+output and offline owner-review/repair previews. Tag workflow attempt 2 passed all eight jobs. Each
+platform passed 26 selected/relocated, 13 packaged and 13 fresh-download scan/preview checks, plus
+2/1/1 fixed-runtime parent checks (POSIX AFTER debug/health only; Windows explicit unsupported behavior).
+All six public files matched the attempt-2 artifacts and GitHub API SHA-256 values; all three checksum
+sidecars matched their binaries. The relocated public macOS binary passed 13 scan/preview and one fixed
+runtime check through Python `-I -S` standard-library controllers. No Codex, target or patch was used.
+Publication and public-download verification are complete; documentation delivery is tracked in
+[#83](https://github.com/casing1/authzest/issues/83). See the
+[public receipt](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185) and
+[release guide](docs/releases/RELEASING.md).
 They are standalone CLI programs, not graphical installers;
 running a prebuilt binary does not require installing Python or Node.js. POSIX binaries also include
 the owned-fixture workflow and its runtime dependencies. Codex remains a separate trusted installation
@@ -315,7 +332,7 @@ application/runtime checking is unsupported, not a passing runtime result.
 
 Download the file for your OS/architecture and its `.sha256` manifest. Follow the
 [checksum and execution instructions](docs/releases/RELEASING.md#verify-and-recover) before running it.
-Three-platform CI builds and fresh-artifact smoke checks passed, and all six public assets were
+For historical alpha.3, three-platform CI builds and fresh-artifact smoke checks passed, and all six public assets were
 downloaded and matched to the checked artifacts. The public macOS binary also passed local scan/runtime
 smokes through standard-library controllers under Python `-I -S`, without importing project dependencies.
 No live Codex call was part of these package checks. Consumer-device clean installation,
@@ -330,7 +347,15 @@ Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 pac
 matching-OS download checks. All three binary/checksum-manifest pairs were also downloaded and matched
 locally, without local binary execution. This is scan/preview evidence, not UI, runtime, AI, policy-worker
 or active-file acceptance. It is bound only to that source; later documentation merges are not newly
-tested candidates. Final-release/runtime/installation/public-asset gates remain; no alpha.4 binaries are published.
+tested candidates. This remains a historical preflight, not the alpha.4 public-download receipt.
+
+The exact alpha.4 source `090002d` separately passed
+[nonpublishing release preflight 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082):
+seven jobs passed and publication was skipped. Packaging checks include only the fixed owned AFTER
+debug/health runtime on POSIX; Windows verifies explicit unsupported behavior. Full regression tests
+also exercise maintained BEFORE/AFTER fixtures, not arbitrary repositories. Tag publication and public
+assets are a separate observation in the release guide. These checks do not establish UI acceptance,
+consumer-device installation/upgrades, signing/notarization or native active owner-file support.
 
 To build the current source locally, activate the development venv and run from the repository root:
 
@@ -375,8 +400,8 @@ or a specific AI provider.
 
 Track a bounded task in an issue, develop it on a short-lived branch, and submit a pull request with
 meaningful commits and validation. Protected `main` requires the Python, frontend, and CodeQL checks.
-The open-topic course plan uses 7 development weeks, with a separate 4–5 weeks reserved for exams, delays,
-and final preparation. The report/evidence foundation in [#32](https://github.com/casing1/authzest/issues/32)
+The original 7 development weeks include work already done; preserve the remaining exam/submission
+buffer before the estimated 2026-11-18 submission, not a new 7-week countdown. The report/evidence foundation in [#32](https://github.com/casing1/authzest/issues/32)
 and route-local/inherited evidence in [#28](https://github.com/casing1/authzest/issues/28) and
 [#29](https://github.com/casing1/authzest/issues/29) are included in alpha.2.
 Release preparation and publication [#39](https://github.com/casing1/authzest/issues/39) are complete.
@@ -385,18 +410,19 @@ Current source and next step:
 
 1. Implemented in source: [#33: evidence-linked offline AI contract, mocks, and evaluation](https://github.com/casing1/authzest/issues/33).
 2. Closed for the accepted bounded core: [#35: Codex proposals, exact-diff approval, approved patching, and isolated verification](https://github.com/casing1/authzest/issues/35).
-3. Unreleased source: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
+3. Included source-only active flow: [#82: readable installed-CLI integration](https://github.com/casing1/authzest/issues/82)
    delivered the opt-in file workflow and offline tests through PR #120. A separately approved,
    one-host installed happy path now covers recommendation through applied-file checking and restoration.
    The maintainer accepted the [bounded core and existing offline evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md)
    on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
    normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
-4. Next: [#83: alpha.4 release preparation](https://github.com/casing1/authzest/issues/83), using the
-   recorded `b5f3eb8` preflights while completing remaining final-release/runtime/installation/public-asset gates.
-   #89 stays open at `needs_review` / medium with conditional residual-risk acceptance only for the next alpha.4;
-   it is not fixed. #84/#85's independent
-   evaluation and course evidence remain open. The conditional 2026-11-04 target has passed; no new
-   publication date is promised.
+4. Next: [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
+   [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
+   [#85 reproducible demo and course evidence](https://github.com/casing1/authzest/issues/85).
+   Keep [#83's exact release/public-asset receipt](https://github.com/casing1/authzest/issues/83) separate.
+   #89 stays open at `needs_review` / medium with alpha.4-only risk acceptance, not a fix or stable-release
+   waiver. A scoped `0.1.0` stable release depends on evaluation, demo, regression/install and renewed
+   relevant-risk gates; the current alpha does not promise general repository repair.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not

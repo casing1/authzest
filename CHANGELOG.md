@@ -16,6 +16,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- Record the verified alpha.4 publication in a postpublication documentation follow-up without
+  changing its tag, package/schema version or assets. Align four README languages, English/Korean
+  release records, indexes and current development/model priorities; preserve historical observations
+  and source-only active-file limits. Plan conditional November 10–11 RC and November 12–13 stable
+  targets around #130's test-harness repair, #84/#85 evidence and final checks, with November 14–17
+  reserved for submission buffer. The alpha.4-only #89 decision is not stable-release clearance.
+  Normal documentation delivery is tracked in #83 without changing the published release bytes.
+
+## [0.1.0-alpha.4] - 2026-11-05
+
+Published as [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) on
+2026-11-05 at 03:02:07 UTC, from `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
+unchanged scan schema `1.2`. November 2 in the immutable tag was package preparation, not publication.
+[Tag run 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243) attempt 2 passed
+all eight jobs, 4,924 Python and 71 Node tests. Attempt 1 failed with 4,923 passing tests and one
+fake-server JSONL race, tracked open under [#130](https://github.com/casing1/authzest/issues/130);
+the unchanged-tag rerun did not fix it. All six public assets matched checksums and tag artifacts;
+the public macOS binary passed 13 scan/preview plus one fixed-runtime check. See the
+[exact receipt and limitations](docs/releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
+No actual model call, arbitrary target execution or user-source patch was part of these release checks.
+Keep packaging evidence separate from historical live acceptance at `c868152` and independent
+#84/#85 evaluation/course evidence. #89 remains OPEN under its alpha.4-only residual-tooling decision.
+
+The entries below preserve each development checkpoint's scope and status. Earlier descriptions of
+pending issues or unreleased slices describe those checkpoints, not a new run or the final release state.
+
+### Changed
+
 - Record the November 5 maintainer decision to accept only #89's residual developer-formatting
   availability risk for the forthcoming alpha.4, with visible four-language README and English/Korean
   contributor/formatting warnings. Retain guarded-command assumptions and direct CLI/editor/API gaps;
@@ -38,15 +66,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   other consumer routes and public-asset gates remain. No product AI/policy-worker call, risk acceptance,
   package/schema change, tag or release is added.
 
-## [0.1.0-alpha.4] - 2026-11-02
-
-**Candidate preparation, not publication.** The date above records preparation of package `0.1.0a4`;
-confirm the date in both languages before publishing. No alpha.4 tag or public assets exist yet.
-Published alpha.3 and scan report schema `1.2` are unchanged. Final-candidate checks, installation/update
-evidence and the exact-candidate disposition of [#89](https://github.com/casing1/authzest/issues/89)
-remain gates in [#83](https://github.com/casing1/authzest/issues/83).
-
-### Candidate summary
+### Release scope
 
 - Readable CLI output by default, with explicit `--json` for scripts and separate interactive previews.
 - Offline proposal/declaration previews and a bounded Codex owner-policy recommendation/file workflow.
@@ -537,7 +557,8 @@ These improvements are included in alpha.2, not the alpha.1 binaries.
 - Restricted the HTTP scan endpoint to the workspace selected by the local process owner.
 - Removed caller-controlled filesystem paths from the HTTP API contract.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.3...main
+[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.4...main
+[0.1.0-alpha.4]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.1

@@ -7,6 +7,82 @@ the current release process. The binaries are not signed or notarized.
 
 ## Alpha.4 readiness — 2026-11-05 KST
 
+**Published and public assets verified:**
+[`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published as a
+prerelease on **2026-11-05 at 03:02:07 UTC** from `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`,
+with package `0.1.0a4` and unchanged scan schema `1.2`. The tag and binaries are unsigned.
+The immutable tag's November 2 changelog heading records preparation; the current changelog records
+the actual publication date. Normal documentation delivery is tracked in
+[#83](https://github.com/casing1/authzest/issues/83); publication does not complete #84/#85 or fix #89/#130.
+
+### Alpha.4 publication and public-asset verification — 2026-11-05 KST
+
+The [public release receipt](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)
+records the release/asset identities, checks and remaining limits.
+
+[Tag run 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243), **attempt 2**,
+passed all **eight jobs including publish**, with 4,924 Python and 71 Node tests. Attempt 1 failed
+validation with 4,923 passed / one failed: the fake App Server test reader observed a partially
+written JSONL record. That test-harness race remains open in
+[#130](https://github.com/casing1/authzest/issues/130), not fixed by the one unchanged-tag rerun.
+No test assertion or release source was changed; all build/download/publication jobs were skipped
+in the failed attempt. Fix and regress the harness before the RC rather than relying on repeated retries.
+
+Linux x64, macOS arm64 and Windows x64 each passed scan/offline-preview **26 selected/relocated +
+13 packaged + 13 fresh-download** checks, and fixed-runtime parent **2 + 1 + 1** checks. POSIX checks
+execute only the owned AFTER debug/ASGI-health fixture; Windows confirms unsupported/no-worker behavior.
+All **six public files** were downloaded, all three SHA-256 sidecars matched, and every public file
+was byte-identical to its corresponding attempt-2 tag-run artifact and matched GitHub asset metadata.
+The downloaded macOS binary additionally passed **13** relocated scan/preview and **one** fixed-runtime
+check using standard-library controllers under `python -I -S`. Linux/Windows execution evidence comes
+from matching-OS CI and identical public bytes, not independent consumer devices.
+
+| Platform    | Public executable                        | SHA-256                                                            |
+| ----------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| Linux x64   | `authzest-0.1.0-alpha.4-linux-x64`       | `d320bf6df871615541238368893d4d57edd6d9322e82374e5e92373d7e426dd6` |
+| macOS arm64 | `authzest-0.1.0-alpha.4-macos-arm64`     | `d120393f7f6101e429c24c7f2889db6aba01dafc6472b2935fabaa29bc0761a4` |
+| Windows x64 | `authzest-0.1.0-alpha.4-windows-x64.exe` | `183abcfd2f36d58f4056bbf82eebe38402b706a14059adfcfca429bf0954e6a3` |
+
+Each executable has a matching `.sha256` public sidecar. Matching attempt-2 Actions artifact IDs were
+Linux `13383908551`, macOS `13383938350` and Windows `13383444171`.
+These checks made no actual Codex call, arbitrary target execution or user-source patch.
+
+The exact-candidate [manual main run 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082),
+attempt 1, passed seven jobs with publishing skipped: 4,924 Python tests, 71 Node tests, frontend and
+documentation checks, and all three matching-OS native build/download checks. Each platform passed
+26 selected/relocated, 13 packaged and 13 fresh-download scan/offline-preview checks. Fixed runtime
+parent checks were 2/1/1 per platform: POSIX checked only the owned AFTER debug/ASGI-health fixture;
+Windows confirmed unsupported/no-worker behavior. This is not a Windows runtime-support claim.
+Full regression also executes trusted owned BEFORE/AFTER fixtures and test child processes.
+
+Fresh noneditable core-source installation and genuine alpha.3 → alpha.4 replacement each passed
+13/13 offline installed-CLI checks on one macOS/Python 3.12 host at this exact source. Provenance and
+package bytes matched their Git snapshots. This is not a clean consumer-device or native upgrade test.
+The active `codex-owner-repair --file-workflow` remains POSIX non-frozen source-only; the separately
+accepted live walkthrough stays bound to `c868152`. Native files are experimental scan/preview
+distributions, not installers or evidence of UI, general OS compatibility, signing or notarization.
+General FastAPI PoC generation and model-authored replacement source remain unimplemented.
+
+The [explicit alpha.4-only #89 disposition](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst)
+is bound in [#83](https://github.com/casing1/authzest/issues/83) to this exact warning candidate after
+comparison of all 211 tracked non-Markdown file modes/blobs against `7509a6a`. #89 remains
+OPEN / `needs_review` / medium, not fixed. A stable release needs a new assessment/disposition;
+the alpha.4 decision is not carried forward. Product source sharing and file-stage decisions remain separate.
+
+The [traceable build inventory](https://github.com/casing1/authzest/issues/83#issuecomment-6648515311)
+records the versioned source/workflow/frontend-lock recipe and resolved dependency/build observations
+for the actual tag run, under the
+[clarified release criterion](https://github.com/casing1/authzest/issues/83#issuecomment-6648284258).
+Python/build requirements are not fully locked; this is neither an SBOM nor a bit-reproducible-build
+guarantee. Retain the tag-run inventory separately from manual-main artifacts: dynamic build inputs
+and versioned filenames may differ.
+Independent evaluation and reproducible course evidence remain under #84/#85.
+
+### Historical preparation and early preflight — 2026-11-05 KST
+
+The following no-go matrix records the earlier `b5f3eb8` checkpoint, before final-candidate verification.
+Its pending items and original source identities are preserved as history, not current release status.
+
 **Publication remains no-go.** The conditional 2026-11-04 KST target in
 [#83](https://github.com/casing1/authzest/issues/83) has passed without publication; no replacement date
 is promised. The candidate checked below is `b5f3eb81d318e94c5e400ec52e78f1550e13f931`, package
@@ -94,11 +170,15 @@ AI/worker or fresh consumer-device acceptance. Raw evidence and local environmen
 
 These results remain bound to `b5f3eb8`, not a later documentation merge or eventual release commit.
 The historical October 29 same-version installation and October 30 active-flow records retain their
-different scopes. #83/#89 remain open; full release/runtime execution, final-commit verification,
-binding the documented tooling decision to the exact warning candidate, tagging and public-asset
-verification are still required.
+different scopes. At this checkpoint #83/#89 remained open; full release/runtime execution,
+final-commit verification, exact warning-candidate binding, tagging and public-asset verification
+were still required. The current receipt above records later progress without relabelling this run.
 
 ## Published preview and current source
+
+Alpha.4 is the latest published prerelease; its exact commit, public files and bounded checks are
+recorded in the [current receipt above](#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
+The following alpha.3/alpha.2 records remain historical and their immutable assets are unchanged.
 
 ### Published alpha.3
 
@@ -206,7 +286,8 @@ the mapping; they do not reserve the next release version:
 
 [`pyproject.toml`](../../pyproject.toml) is the source of truth for the Python runtime and API version. The
 frontend package marked `private: true` is not versioned independently. Choose a new, unused version for
-each new release; the published `v0.1.0-alpha.1`, `v0.1.0-alpha.2` and `v0.1.0-alpha.3` may not be issued again.
+each new release; the existing `v0.1.0-alpha.1`, `v0.1.0-alpha.2`, `v0.1.0-alpha.3` and
+`v0.1.0-alpha.4` tags may not be issued again.
 
 ## Nonpublishing native preview preflight
 
@@ -261,9 +342,10 @@ and publication remain separate decisions under #83. No tag or release is create
 
 ## Prepare a release
 
-The [#89 formatting guard](../development/FORMATTING.md) is unreleased developer/CI tooling. That scoped
-mitigation does not create a release or change the package version, existing tags, or alpha.3 assets;
-its bundled dependency follow-up remains under #89/#83. Release preparation below is a separate decision.
+The [#89 formatting guard](../development/FORMATTING.md) is developer/CI tooling included in alpha.4.
+That scoped mitigation is not a bundled-parser fix or independent release approval; its dependency
+follow-up remains under #89. Preparation for another release below is a separate decision and does
+not move existing tags or change published assets.
 
 The scoped `source-map-js` development-lock update (#94 / PR #95) was merged, and its Dependabot
 alert was read back as fixed on 2026-10-08. That is a historical readback, not a new alert query in

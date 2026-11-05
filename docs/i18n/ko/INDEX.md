@@ -11,6 +11,45 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 
 ## 현재 작업 — 2026-11-05 KST
 
+최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
+정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
+발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
+attempt 2에서 발행을 포함한 job 8개가 모두 통과했습니다. Attempt 1은 JSONL 테스트 harness 읽기
+경합 1건으로 4,923개 통과/1개 실패했으며 소스를 바꾸지 않은 재실행은 첫 실행 통과나 수정 완료가
+아닙니다. 후속 [#130](https://github.com/casing1/authzest/issues/130)은 열려 있습니다. 공개 파일 6개가
+attempt 2 산출물·GitHub API SHA-256과 일치했고 checksum sidecar 3개도 일치했습니다. 이동한 공개
+macOS 바이너리는 Python `-I -S` 표준 라이브러리 제어기로 스캔/미리보기 13개·고정 런타임 1개를
+통과했으며 Codex·대상·패치는 사용하지 않았습니다. 발행·공개 다운로드 검증은 완료했으며 문서 전달은
+[#83](https://github.com/casing1/authzest/issues/83)에서 추적합니다.
+[릴리스 검증 기록](releases/RELEASING.md)을 참고하세요.
+같은 후보의
+[비배포 릴리스 사전 검사 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082)는
+job 7개가 통과했고 발행을 건너뛰었습니다. macOS/Python 3.12 host 한 대에서 신규 소스 설치와
+실제 alpha.3 → alpha.4 교체도 각각 13/13개를 통과했으며 패키지 바이트·noneditable 출처를
+확인했습니다. 새로운 실제 Codex/소유 파일 실행 관찰은 아닙니다.
+
+수용한 제한된 소스 핵심(#82 → #81 → #35)은 등록된 합성 정책 쌍 하나·검토한 사례 8개·Codex
+템플릿 선택을 사용합니다. 활성 소유 파일 흐름에는 POSIX non-frozen Python 소스 설치가 필요합니다.
+native 바이너리는 스캔·오프라인 미리보기를 지원하며 해당 활성 소유 파일 흐름은 지원하지 않습니다.
+POSIX 바이너리는 기존 소유 fixture 적용·런타임 흐름도 유지합니다.
+POSIX 패키지의 고정 debug/health 런타임 검사는 소유 정책 인가와 별개이며 Windows는 명시적 미지원
+동작을 검사합니다. UI 수용·일반 사용자 기기 설치/업데이트·서명/공증은 입증하지 않았습니다.
+일반 FastAPI PoC와 모델이 새로 작성하는 수정 소스 생성은 미구현입니다. #89는 명시적 경고와
+alpha.4 한정 잔여 위험 수용 아래 `needs_review` / medium으로 열어두며 수정 완료나 정식 릴리스
+위험 면제가 아닙니다.
+
+다음은 [#130 테스트 harness 안정화](https://github.com/casing1/authzest/issues/130),
+[#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
+[#85 재현 가능한 제출 시연·증빙](https://github.com/casing1/authzest/issues/85)입니다.
+조건부 릴리스 목표·남은 제출 여유는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 따르고
+선택적인 GUI·adapter를 제출 범위에 추가하지 않습니다.
+
+<details>
+<summary>과거 전달·사전 검사 기록 — 현재 릴리스 검증 기록 아님</summary>
+
+아래 기록은 원래 소스·날짜와 발행 전 표현을 보존합니다. 후속 alpha.4 발행은 위에 별도로
+기록했으며 과거 결과를 새 후보에 적용하지 않습니다.
+
 PR #90으로 #79의 읽기 쉬운 CLI 출력과 명시적 JSON 스트림이 병합됐습니다. 읽기 전용 소유 정책
 Codex 검토와 새 [오프라인 사례 검토/고정 계획 Python API](reference/OWNER_CASE_PLAN.md)는 미출시
 소스 기능이며 공개 alpha.3에는 없습니다. 관리자는 2026-10-09 KST에 기록된 정확한 모델 작성
@@ -137,6 +176,8 @@ job 7/7개를 통과했습니다. Linux x64·macOS arm64·Windows x64 각각 선
 기존 개발 7주 예산을 확인하세요. 과거 완료 기록은 이슈/변경 이력/릴리즈에 보존하며 항목 수 완료율로
 제품 완료율을 판단하지 않습니다.
 
+</details>
+
 ## 문서와 지원 언어
 
 영어가 원본 언어입니다. 저장소가 직접 관리하는 모든 Markdown 문서는 한국어를 지원하고,
@@ -206,11 +247,11 @@ docs/
 해당 순수 계약 자체는 파일 적용·제공자 호출·검증 실행을 하지 않습니다.
 
 [#61 오프라인 예상 결과 manifest](reference/EXPECTATION_CONTRACT.md)
-([English](../../reference/EXPECTATION_CONTRACT.md))는 alpha.3 이후 소스에 추가한 미출시 기능입니다.
+([English](../../reference/EXPECTATION_CONTRACT.md))는 alpha.3 이후 alpha.4에 포함한 기능입니다.
 호출자가 작성한 정책·선언 목표를 정확한 제안과 기준 근거에 연결하며 항상 draft/not-run 데이터로
 표시합니다. 테스트를 생성·실행하지 않고 승인이나 소스 실행 권한을 부여하지 않습니다.
 [#63 제안 미리보기](guides/PROPOSAL_PREVIEW.md)([English](../../guides/PROPOSAL_PREVIEW.md))는
-지원하는 POSIX 시스템에서 엄격한 bundle을 읽기 전용으로 표시하는 미출시 CLI 기능입니다.
+지원하는 POSIX 시스템에서 엄격한 bundle을 읽기 전용으로 표시하는 alpha.4 CLI 기능입니다.
 정확한 diff·연결된 근거·예상 결과를 보여주며 승인·실행·실제 공유 범위는 바꾸지 않습니다.
 [#69 소스 전용 제안 검사](guides/PROPOSAL_CHECK.md)([English](../../guides/PROPOSAL_CHECK.md))는
 같은 bundle의 지원 범위 내 변경 전후 소스 snapshot을 선언 목표와 비교합니다.
@@ -232,7 +273,7 @@ import 없이 읽습니다. 인증 서비스나 제품 런타임 모드를 추�
 [#80 소스 관찰](reference/OWNER_POLICY_CHECK.md)은 과거 기록을 소급 변경하거나 새 모델 사례를
 승인하지 않습니다.
 [#65 패키지 오프라인 시연](guides/FIXTURE_DEMO.md)([English](../../guides/FIXTURE_DEMO.md))은
-지원하는 POSIX 시스템에 미출시 `fixture-demo` 명령을 추가합니다. mock 초안과 별도의 복사본
+지원하는 POSIX 시스템에 alpha.4의 `fixture-demo` 명령을 제공합니다. mock 초안과 별도의 복사본
 적용·고정 AST 검사·복구 결정을 사용하며 Codex나 fixture 소스를 실행하지 않습니다.
 미리보기 bundle이나 런타임 선택 옵션은 받지 않습니다.
 
@@ -270,7 +311,11 @@ Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 
 저장소 내부 import와 직접·상속 의존성 근거가 포함됩니다. alpha.1 스캐폴딩에는 이 개선이 없습니다.
 정확한 커밋, 세 플랫폼 산출물과 검증의 한계는 [릴리스 기록](releases/RELEASING.md)을 참고하세요.
 `--version`뿐 아니라 변경 이력과 커밋/태그도 비교하세요. `main`은 배포된 소스 이후로 변경될 수 있습니다.
-[#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐으며 다음 개발은 [#35](https://github.com/casing1/authzest/issues/35)입니다.
+[#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐고
+[#35](https://github.com/casing1/authzest/issues/35)는 수용한 제한 범위 핵심을 완료했습니다.
+다음 작업은 [#130 테스트 하니스 안정화](https://github.com/casing1/authzest/issues/130),
+[#84 독립 평가](https://github.com/casing1/authzest/issues/84),
+[#85 제출 시연 근거](https://github.com/casing1/authzest/issues/85)입니다.
 
 현재 스캔은 스키마 1.2, 구조화된 진단, 구별되는 소스 등록 근거와 라우트 직접·상속 의존성 선언을 제공합니다.
 endpoint의 안전한 인가 여부 분류,
