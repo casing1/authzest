@@ -36,8 +36,10 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > **Scope, not a general repair engine:** alpha.4 includes readable CLI results and the bounded
 > owner-policy recommendation workflow. Active `codex-owner-repair --file-workflow` requires a POSIX
 > non-frozen Python source installation; native binaries support static scan/offline previews, not
-> that active file workflow. Test-harness stabilization (#130), independent evaluation (#84) and
-> course-demo freeze (#85) remain open. Tag attempt 1 failed one JSONL test-harness read race
+> that active file workflow. Independent evaluation (#84) and course-demo freeze (#85) remain ahead.
+> The post-alpha.4 source change tracked in #130 atomically publishes complete fake-server test logs;
+> it is a test-harness reliability change, not a production Codex fix or new live-AI acceptance.
+> The published alpha.4 tag/assets are unchanged. Tag attempt 1 failed one JSONL test-harness read race
 > (4,923 passed / 1 failed); the unchanged-source rerun passed, not a first-pass result or a fix.
 > The maintainer accepted #89's named residual tooling risk **for alpha.4 only**, with the warning
 > below; #89 stays open at `needs_review` / medium. This is not a fix or a future stable-release waiver.
@@ -416,8 +418,8 @@ Current source and next step:
    The maintainer accepted the [bounded core and existing offline evidence](docs/guides/OWNER_FILE_ACCEPTANCE.md)
    on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
    normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
-4. Next: [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
-   [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
+4. Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
+   Next: [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
    [#85 reproducible demo and course evidence](https://github.com/casing1/authzest/issues/85).
    Keep [#83's exact release/public-asset receipt](https://github.com/casing1/authzest/issues/83) separate.
    #89 stays open at `needs_review` / medium with alpha.4-only risk acceptance, not a fix or stable-release

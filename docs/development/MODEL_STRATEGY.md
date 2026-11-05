@@ -49,9 +49,12 @@ Windows policy execution remain unsupported, not prerequisites silently complete
 
 Alpha.4 was published on November 5 from exact source `090002d`; the
 [release guide](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst)
-records tag-run attempt 2 and all six public files. Attempt 1's fake-server JSONL race remains open
-in [#130](https://github.com/casing1/authzest/issues/130); fix and deterministically regress it before
-the RC. Packaging success is neither a repair of that test harness nor independent model evaluation.
+records tag-run attempt 2 and all six public files. Its failed first attempt remains part of the
+release history. The post-alpha.4 source change under [#130](https://github.com/casing1/authzest/issues/130)
+atomically publishes complete fake-server JSONL snapshots with strict record validation and
+deterministic regressions; verification and delivery are tracked in the issue. This is test-harness
+reliability work, not a production Codex fix, new live-AI acceptance or independent model evaluation.
+The published alpha.4 tag/assets are unchanged.
 
 Next, freeze independently reviewed reference tasks and labels before prompt iteration, then measure
 the three-mode hypothesis under [#84](https://github.com/casing1/authzest/issues/84). Historical model

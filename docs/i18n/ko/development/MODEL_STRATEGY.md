@@ -45,9 +45,11 @@ Codex의 등록 수정 템플릿 선택·정확한 diff 승인/적용·캡처한
 
 alpha.4는 11월 5일 정확한 소스 `090002d`에서 발행됐습니다.
 [릴리스 안내](../releases/RELEASING.md#alpha4-발행과-공개-파일-검증--2026-11-05-kst)에 태그 실행
-attempt 2와 공개 파일 6개의 검증을 기록합니다. attempt 1의 fake-server JSONL race는
-[#130](https://github.com/casing1/authzest/issues/130)에서 열어 두며 RC 전에 수정·결정적 회귀 검사를
-추가합니다. 패키징 성공은 이 테스트 harness의 수정이나 독립 모델 평가가 아닙니다.
+attempt 2와 공개 파일 6개의 검증을 기록하며 첫 실행 실패는 릴리스 이력에 그대로 남깁니다.
+alpha.4 이후 [#130](https://github.com/casing1/authzest/issues/130)의 소스 변경은 완성된 가짜 서버
+JSONL 스냅샷을 원자적으로 공개하고 엄격한 기록 검증·결정적 회귀 사례를 유지하며 검증·전달은
+이슈에서 추적합니다. 테스트 harness 안정성 작업이지 운영 Codex 수정·새 실제 AI 수용·독립 모델
+평가가 아니며 공개 alpha.4 태그·산출물은 그대로입니다.
 
 다음은 프롬프트를 수정하기 전에 독립 검토한 과제·정답을 고정하고
 [#84](https://github.com/casing1/authzest/issues/84)에서 3개 모드 가설을 측정하는 일입니다.

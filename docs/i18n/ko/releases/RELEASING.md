@@ -5,6 +5,21 @@
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
+## Alpha.4 이후 테스트 harness 안정화 — 2026-11-05 KST
+
+[#130](https://github.com/casing1/authzest/issues/130)의 소스 전용 후속 수정은 오프라인 가짜 서버의
+실시간 append 기록을 닫힌 JSONL snapshot의 원자적 교체로 바꿉니다. 부모 reader와 후속 가짜 서버
+세대가 엄격한 UTF-8·LF framing·JSON 파싱을 공유합니다. 누락/빈 기록은 이벤트 없음으로 처리하지만
+공개된 기록이 미완성·잘못된 형식이면 계속 오류로 처리합니다. 결정적 테스트는 임시 파일의 분할 쓰기와
+교체 경계, 쓰기/교체 실패 시 자기 임시 파일 정리와 이전 snapshot 보존을 확인합니다. 기존 취소·시간초과·
+진단 단계·프로세스 그룹 정리 단언도 유지합니다.
+
+순차 작성자 전제의 테스트 harness 계약이며 fsync 내구성·다중 작성자 조정·제품 parser 변경·OS sandbox가
+아닙니다. 작성자를 강제 종료하면 공개하지 않은 임시 파일이 비공개 pytest 디렉터리에 남을 수 있습니다.
+이번 수정에는 실제 Codex 호출·새 제품 수용 검사가 없습니다. 로컬 결과와 정상 PR/CI 전달은 #130에
+기록하고 RC/정식판 검사에 회귀 사례를 포함합니다. 아래 alpha.4 태그·공개 파일·첫 실패 이력은 바꾸지
+않습니다.
+
 ## Alpha.4 준비 상태 — 2026-11-05 KST
 
 **발행·공개 파일 검증 완료:**
@@ -23,10 +38,10 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 [태그 실행 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의 **attempt 2**가
 Python 4,924개·Node 71개와 **발행을 포함한 job 8개**를 통과했습니다. attempt 1은 Python
 4,923개 통과·1개 실패로 중단됐습니다. Fake App Server 테스트의 reader가 쓰는 중인 JSONL 기록을
-읽은 테스트 harness race이며 [#130](https://github.com/casing1/authzest/issues/130)에서 열린 상태로
+읽은 테스트 harness race이며 [#130](https://github.com/casing1/authzest/issues/130)에서 별도로
 추적합니다. 같은 태그의 한 번 재실행으로 수정된 것은 아닙니다. assertion·릴리스 소스를 바꾸지
 않았으며 실패한 시도의 빌드/다운로드/발행 job은 모두 건너뛰었습니다. 반복 재시도에 의존하지 말고
-RC 전에 harness를 수정·회귀 검사합니다.
+위 소스 후속 수정의 회귀 사례로 RC를 검사합니다.
 
 Linux x64·macOS arm64·Windows x64 각각 스캔/오프라인 미리보기 **선택/이동 26 + 패키징 13 +
 새 다운로드 13개**, 고정 런타임 부모 **2 + 1 + 1개**를 통과했습니다. POSIX는 소유 AFTER의

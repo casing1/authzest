@@ -14,6 +14,18 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
+### 수정
+
+- [#130](https://github.com/casing1/authzest/issues/130)의 오프라인 가짜 Codex 서버가 append 중인
+  로그를 polling 독자에게 노출하지 않고 완성된 JSONL 이벤트 로그 스냅샷을 원자적으로 공개합니다.
+  부모 독자와 후속 가짜 서버 세대에서 엄격한 UTF-8·줄바꿈 framing·완성된 JSON 기록 검증을
+  공유합니다. 취소·단계 진단·자식 정리 assertion을 유지하고 결정적 공개 시점·실패·잘못된 기록
+  회귀 사례를 추가합니다. 순차적 단일 작성자에 대한 테스트 전용 계약이며 원자적 가시성만 제공하고
+  fsync 내구성·다중 작성자 조정·sandbox를 보장하지 않습니다. 운영 Codex 파서·제품 런타임·
+  패키지/스키마 버전·공개 alpha.4 태그/산출물은 바꾸지 않고 과거 태그 실패를 소급 수정하거나
+  새 실제 AI 수용을 입증하지 않습니다. 새 결정적 로그 테스트 25개를 모두 통과했으며 transport/전체
+  회귀 검사와 정상 PR/CI 전달 결과는 #130에 별도로 기록합니다.
+
 ### 변경
 
 - alpha.4의 태그·패키지/스키마 버전·산출물을 바꾸지 않는 발행 후 문서 후속 작업으로 검증한
@@ -30,7 +42,7 @@ AuthZest의 주요 변경사항을 기록합니다.
 `0.1.0a4`, 스캔 스키마는 기존 `1.2`이며 불변 태그의 11월 2일은 발행일이 아닌 패키지 준비일입니다.
 [태그 실행 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의 attempt 2가
 job 8개·Python 4,924개·Node 71개를 통과했습니다. attempt 1은 4,923개 통과·fake-server JSONL
-race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에서 열어 두며 같은 태그
+race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에서 별도로 추적하며 같은 태그
 재실행으로 수정된 것은 아닙니다. 공개 파일 6개는 체크섬·태그 산출물과 일치했고 공개 macOS 파일의
 스캔/미리보기 13개·고정 런타임 1개도 통과했습니다.
 [정확한 기록과 한계](releases/RELEASING.md#alpha4-발행과-공개-파일-검증--2026-11-05-kst)를 참고하세요.

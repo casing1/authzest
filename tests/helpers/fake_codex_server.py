@@ -4,15 +4,49 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
 SETTINGS = {}
 
 
+def decode_events(data):
+    if data and not data.endswith(b"\n"):
+        raise ValueError("Unterminated fake-server log record")
+    text = data.decode("utf-8")
+    return [json.loads(line) for line in text.split("\n")[:-1]]
+
+
+def read_events(path):
+    try:
+        data = Path(path).read_bytes()
+    except FileNotFoundError:
+        return []
+    return decode_events(data)
+
+
 def record(event, **values):
-    with Path(SETTINGS["log"]).open("a", encoding="utf-8") as stream:
-        stream.write(json.dumps({"event": event, **values}) + "\n")
+    # Transport generations are serialized: this is not a multi-writer logger.
+    # Publish a closed, complete snapshot so cancellation cannot expose a tail.
+    path = Path(SETTINGS["log"])
+    try:
+        previous = path.read_bytes()
+    except FileNotFoundError:
+        previous = b""
+    decode_events(previous)
+    data = previous + (json.dumps({"event": event, **values}) + "\n").encode("utf-8")
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb", dir=path.parent, prefix=f".{path.name}.", delete=False
+        ) as stream:
+            temporary = Path(stream.name)
+            stream.write(data)
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def send(value):
@@ -396,9 +430,7 @@ def finish(case):
 
 def main():
     case = SETTINGS["case"]
-    previous = []
-    if Path(SETTINGS["log"]).exists():
-        previous = [json.loads(line) for line in Path(SETTINGS["log"]).read_text().splitlines()]
+    previous = read_events(SETTINGS["log"])
     generation = 1 + sum(event["event"] == "start" for event in previous)
     record(
         "start",
