@@ -16,7 +16,7 @@ on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 
 report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
 passed all eight jobs in attempt 2, including publication. Attempt 1 failed one JSONL test-harness read
 race (4,923 passed / 1 failed); the unchanged-source rerun is not a first-pass result or a fix. The
-follow-up is [#130](https://github.com/casing1/authzest/issues/130), still open. All six public files
+follow-up is [#130](https://github.com/casing1/authzest/issues/130). All six public files
 matched the attempt-2 artifacts and GitHub API SHA-256 values; all three checksum sidecars matched.
 The relocated public macOS binary passed 13 scan/preview and one fixed-runtime check through Python
 `-I -S` standard-library controllers. No Codex, targets or patches were involved. Publication and
@@ -38,8 +38,12 @@ notarization are not established. General FastAPI PoC and model-authored repair-
 unimplemented. #89 remains open at `needs_review` / medium with visible warnings and alpha.4-only
 residual-risk acceptance, not a fix or a stable-release waiver.
 
-Next: [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
-[#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
+The post-alpha.4 source change under #130 publishes complete fake-server JSONL snapshots atomically,
+with strict completed-record validation and deterministic regression cases. This is test-harness
+reliability work, not a production Codex fix or new live-AI acceptance; verification and delivery are
+tracked in that issue. Published alpha.4 bytes and its historical failed first attempt remain unchanged.
+
+Next: [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
 [#85 reproducible course demo/evidence](https://github.com/casing1/authzest/issues/85). Use the
 [development plan](development/DEVELOPMENT_PLAN.md) for conditional release targets and the remaining
 submission buffer; do not add optional GUI/adapters to the submission scope.
@@ -326,8 +330,8 @@ three-platform artifacts, and validation limits. Compare the changelog and commi
 `--version`; `main` can advance beyond the released source. The offline foundation in
 [#33](https://github.com/casing1/authzest/issues/33) is implemented in source, and
 [#35](https://github.com/casing1/authzest/issues/35) is complete for the accepted bounded core.
-Next are [#130 test-harness stabilization](https://github.com/casing1/authzest/issues/130),
-[#84 independent evaluation](https://github.com/casing1/authzest/issues/84) and
+Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
+Next are [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) and
 [#85 course-demo evidence](https://github.com/casing1/authzest/issues/85).
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and

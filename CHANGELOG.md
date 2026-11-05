@@ -14,6 +14,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Fixed
+
+- Publish the offline fake Codex server's complete JSONL event-log snapshots atomically for
+  [#130](https://github.com/casing1/authzest/issues/130), instead of exposing append writes to polling
+  readers. Reuse strict UTF-8, newline-framing and completed-record JSON validation in the parent
+  reader and successive fake-server generations. Preserve cancellation, phase-diagnostic and child
+  cleanup assertions; add deterministic visibility, failure and malformed-record regressions.
+  This test-only, serialized-writer contract provides atomic visibility, not fsync durability,
+  multiwriter coordination or a sandbox. It does not change production Codex parsing, product
+  runtime, package/schema versions or the published alpha.4 tag/assets, repair the historical
+  failed tag attempt, or establish new live-AI acceptance. All 25 new deterministic log tests passed;
+  transport/full regression and normal PR/CI delivery are recorded separately in #130.
+
 ### Changed
 
 - Record the verified alpha.4 publication in a postpublication documentation follow-up without
@@ -31,7 +44,7 @@ Published as [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v
 unchanged scan schema `1.2`. November 2 in the immutable tag was package preparation, not publication.
 [Tag run 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243) attempt 2 passed
 all eight jobs, 4,924 Python and 71 Node tests. Attempt 1 failed with 4,923 passing tests and one
-fake-server JSONL race, tracked open under [#130](https://github.com/casing1/authzest/issues/130);
+fake-server JSONL race, tracked separately under [#130](https://github.com/casing1/authzest/issues/130);
 the unchanged-tag rerun did not fix it. All six public assets matched checksums and tag artifacts;
 the public macOS binary passed 13 scan/preview plus one fixed-runtime check. See the
 [exact receipt and limitations](docs/releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst).

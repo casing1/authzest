@@ -16,7 +16,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
 attempt 2에서 발행을 포함한 job 8개가 모두 통과했습니다. Attempt 1은 JSONL 테스트 harness 읽기
 경합 1건으로 4,923개 통과/1개 실패했으며 소스를 바꾸지 않은 재실행은 첫 실행 통과나 수정 완료가
-아닙니다. 후속 [#130](https://github.com/casing1/authzest/issues/130)은 열려 있습니다. 공개 파일 6개가
+아닙니다. 후속 작업은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다. 공개 파일 6개가
 attempt 2 산출물·GitHub API SHA-256과 일치했고 checksum sidecar 3개도 일치했습니다. 이동한 공개
 macOS 바이너리는 Python `-I -S` 표준 라이브러리 제어기로 스캔/미리보기 13개·고정 런타임 1개를
 통과했으며 Codex·대상·패치는 사용하지 않았습니다. 발행·공개 다운로드 검증은 완료했으며 문서 전달은
@@ -38,8 +38,12 @@ POSIX 패키지의 고정 debug/health 런타임 검사는 소유 정책 인가�
 alpha.4 한정 잔여 위험 수용 아래 `needs_review` / medium으로 열어두며 수정 완료나 정식 릴리스
 위험 면제가 아닙니다.
 
-다음은 [#130 테스트 harness 안정화](https://github.com/casing1/authzest/issues/130),
-[#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
+alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅샷을 원자적으로 공개하며 완성된
+기록의 엄격한 검증과 결정적 회귀 사례를 유지합니다. 운영 Codex 수정이나 새 실제 AI 수용이 아닌
+테스트 harness 안정성 작업이며 검증·전달은 해당 이슈에서 추적합니다. 공개 alpha.4 바이트와
+과거 첫 실행 실패 기록은 그대로입니다.
+
+다음은 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
 [#85 재현 가능한 제출 시연·증빙](https://github.com/casing1/authzest/issues/85)입니다.
 조건부 릴리스 목표·남은 제출 여유는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 따르고
 선택적인 GUI·adapter를 제출 범위에 추가하지 않습니다.
@@ -313,8 +317,8 @@ Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 
 `--version`뿐 아니라 변경 이력과 커밋/태그도 비교하세요. `main`은 배포된 소스 이후로 변경될 수 있습니다.
 [#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐고
 [#35](https://github.com/casing1/authzest/issues/35)는 수용한 제한 범위 핵심을 완료했습니다.
-다음 작업은 [#130 테스트 하니스 안정화](https://github.com/casing1/authzest/issues/130),
-[#84 독립 평가](https://github.com/casing1/authzest/issues/84),
+소스 테스트 harness 안정화 전달은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다.
+다음 작업은 [#84 독립 평가](https://github.com/casing1/authzest/issues/84),
 [#85 제출 시연 근거](https://github.com/casing1/authzest/issues/85)입니다.
 
 현재 스캔은 스키마 1.2, 구조화된 진단, 구별되는 소스 등록 근거와 라우트 직접·상속 의존성 선언을 제공합니다.

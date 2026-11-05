@@ -41,6 +41,7 @@ from authzest.codex.owner_policy_review import (
     owner_policy_prompt,
     validate_owner_policy_draft,
 )
+from helpers.fake_codex_server import read_events
 from test_fixture_draft import response_data
 from test_owner_policy_repair_recommendation import draft as repair_response_data
 
@@ -65,9 +66,7 @@ class Fake:
     log: Path
 
     def events(self):
-        if not self.log.exists():
-            return []
-        return [json.loads(line) for line in self.log.read_text().splitlines()]
+        return read_events(self.log)
 
     def methods(self):
         return [

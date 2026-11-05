@@ -31,8 +31,11 @@ scan/preview plus one fixed-runtime check; see the
 [release receipt](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
 Normal documentation delivery is tracked in #83. Tag run attempt 1
 failed with 4,923 Python tests passing and one fake-server JSONL race; unchanged-tag attempt 2 passed
-4,924 Python tests, 71 Node tests and all eight jobs including publication. That race remains open
-under [#130](https://github.com/casing1/authzest/issues/130) and must be fixed before the RC.
+4,924 Python tests, 71 Node tests and all eight jobs including publication. The post-alpha.4 source
+change tracked under [#130](https://github.com/casing1/authzest/issues/130) atomically publishes
+complete fake-server JSONL snapshots with strict record validation and deterministic regressions.
+Its verification and delivery are tracked separately; it changes test reliability, not production
+Codex behavior or live-AI acceptance. Published alpha.4 bytes and the failed first attempt are unchanged.
 The earlier exact-source nonpublishing run passed seven jobs with publication skipped. Fresh source
 installation and genuine alpha.3 replacement each passed 13/13 offline checks on one macOS/Python 3.12
 host. These are not new live Codex or active owner-file observations.
@@ -202,7 +205,7 @@ GitHub milestone numbers below are phase identifiers, not development-week numbe
 | 03 — Offline AI contract and evaluation     | Closed; preserved           | #33 contracts/mock evaluation; not actual model-quality results                                                                               |
 | 04 — User-approved Codex workflow           | Open; bounded core complete | #77/#80 complete; PR #123 delivered bounded acceptance and #82 → #81 → #35 completion; milestone closure is separate from core acceptance     |
 | 05 — CLI usability and prerelease readiness | Publication verified        | #79 complete; alpha.4/public readback complete; normal documentation delivery tracked in [#83](https://github.com/casing1/authzest/issues/83) |
-| 06 — Evaluation and course delivery         | Open                        | #130 deterministic test-harness repair before RC; #84 reviewed comparison and #85 reproducible demo/evidence freeze                           |
+| 06 — Evaluation and course delivery         | Open                        | #84 reviewed comparison and #85 reproducible demo/evidence freeze; source test-harness stability delivery tracked separately under #130       |
 
 Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
 and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
@@ -219,8 +222,8 @@ historical items in their original phases.
 | Completed                  | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                  |
 | Completed in bounded scope | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #123 delivered accepted criteria; one registered pair/eight cases/template selection only. Preserve distinct file-API and installed-source evidence; general repository PoC/repair-source generation unimplemented          |
 | Completed in bounded scope | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | PR #123 exact-head checks/reviews and normal merge completed; #82 → #81 → #35 closed in order. One-host installed happy path and offline failure/refusal/recovery evidence are not native or independent evaluation acceptance |
-| Publication verified       | [#83 alpha.4 release](https://github.com/casing1/authzest/issues/83)                  | Exact `090002d` published; attempt-2 checks/public files verified; normal documentation delivery tracked in the issue. #89 and #130 remain independent/open                                                                    |
-| Before RC                  | [#130 fake-server JSONL race](https://github.com/casing1/authzest/issues/130)         | Fix live event-log snapshot/framing and add deterministic regression without weakening transport assertions; the successful rerun is not remediation                                                                           |
+| Publication verified       | [#83 alpha.4 release](https://github.com/casing1/authzest/issues/83)                  | Exact `090002d` published; attempt-2 checks/public files verified; normal documentation delivery tracked in the issue. #89 assessment and post-alpha.4 #130 source delivery are separate                                       |
+| Source delivery tracking   | [#130 fake-server JSONL race](https://github.com/casing1/authzest/issues/130)         | Atomic complete-log publication and strict shared validation with deterministic regressions; retain transport/cancellation/cleanup assertions. Verification and normal delivery tracked in the issue; alpha.4 bytes unchanged  |
 | Evaluation                 | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; use separate approved measurement scope. Core acceptance and historical development observations are not independent benchmark results                       |
 | Delivery                   | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                      |
 
@@ -346,8 +349,8 @@ Keep the earlier `b5f3eb8` preflight, exact `090002d` release checks and `c86815
 separate. Neither release packaging nor historical development cases constitute fresh held-out model
 evaluation. Cut optional scope rather than broaden native support or add a GUI/provider adapter to
 meet a date. A stable candidate needs its own final checks and a fresh #89 assessment/disposition;
-the alpha.4-only risk decision must not carry forward. Resolve #130's test-log race with deterministic
-regression before the RC; do not replace a repair with repeated release retries.
+the alpha.4-only risk decision must not carry forward. Retain #130's deterministic test-log
+regressions in the source candidate; repeated release retries are not a replacement for a repair.
 
 ## Core acceptance and defensive PoC
 
@@ -387,8 +390,8 @@ governs status. Use these remaining calendar targets conditionally, retaining th
 
 | Target (KST)   | Work / gate                                                                                                                                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| November 5–9   | Finish alpha.4 public readback/docs; freeze independently reviewed #84 tasks/labels and record the measured comparison or explicitly unavailable evidence; prepare #85's reproducible demo/OSS evidence             |
-| November 10–11 | Prepare an RC only after #130 repair/regression, frozen bounded scope, reviewable #84/#85 records and normal regression/install/artifact checks; reassess #89 for the exact new candidate                           |
+| November 5–9   | Freeze independently reviewed #84 tasks/labels and record the measured comparison or explicitly unavailable evidence; prepare #85's reproducible demo/OSS evidence; preserve completed alpha.4 release receipts     |
+| November 10–11 | Prepare an RC only after frozen bounded scope, reviewable #84/#85 records and normal regression/install/artifact checks including #130's deterministic cases; reassess #89 for the exact new candidate              |
 | November 12–13 | Target stable `v0.1.0` only after RC findings, bilingual user guidance, demo/cleanup and release/public-download gates pass; removing the prerelease suffix adds no security or general-repository capability claim |
 | November 14–17 | Keep for exams, fixes, recording/report preparation and submission rehearsal; do not fill with new optional features                                                                                                |
 

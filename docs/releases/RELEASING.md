@@ -5,6 +5,22 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
+## Post-alpha.4 test-harness stabilization — 2026-11-05 KST
+
+The source-only follow-up in [#130](https://github.com/casing1/authzest/issues/130) replaces the
+offline fake server's live append log with closed, atomically replaced JSONL snapshots. The parent
+reader and each successive fake-server generation share strict UTF-8, LF-framing and JSON parsing;
+missing/empty logs mean no events, while incomplete or malformed published records remain errors.
+Deterministic tests observe a split temporary write and the replacement boundary, verify failed
+write/replacement cleanup and prior-snapshot preservation, and retain existing cancellation,
+timeout, diagnostic-phase and process-group cleanup assertions.
+
+This is a serialized-writer test-harness contract, not fsync durability, multiwriter coordination,
+a production parser change or an OS sandbox. A force-killed writer may leave an unpublished
+temporary file in its private pytest directory. No actual Codex call or new product acceptance is
+part of this fix. Local results and normal PR/CI delivery are recorded in #130; include its regression
+cases in RC/stable validation. The alpha.4 tag, assets and failed first attempt below remain unchanged.
+
 ## Alpha.4 readiness — 2026-11-05 KST
 
 **Published and public assets verified:**
@@ -23,10 +39,10 @@ records the release/asset identities, checks and remaining limits.
 [Tag run 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243), **attempt 2**,
 passed all **eight jobs including publish**, with 4,924 Python and 71 Node tests. Attempt 1 failed
 validation with 4,923 passed / one failed: the fake App Server test reader observed a partially
-written JSONL record. That test-harness race remains open in
+written JSONL record. That test-harness race is tracked separately in
 [#130](https://github.com/casing1/authzest/issues/130), not fixed by the one unchanged-tag rerun.
 No test assertion or release source was changed; all build/download/publication jobs were skipped
-in the failed attempt. Fix and regress the harness before the RC rather than relying on repeated retries.
+in the failed attempt. The source follow-up above, not repeated retries, supplies RC regression coverage.
 
 Linux x64, macOS arm64 and Windows x64 each passed scan/offline-preview **26 selected/relocated +
 13 packaged + 13 fresh-download** checks, and fixed-runtime parent **2 + 1 + 1** checks. POSIX checks

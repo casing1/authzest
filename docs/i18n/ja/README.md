@@ -38,8 +38,10 @@ React ダッシュボードは任意のローカルインターフェースで�
 > **一般的な修正エンジンではない限定範囲:** alpha.4 は読みやすい CLI と所有者ポリシーの推薦フローを
 > 含みます。能動的な `codex-owner-repair --file-workflow` には POSIX non-frozen Python ソースの
 > インストールが必要です。native バイナリは静的スキャンとオフラインプレビューに対応し、この能動的な
-> ファイルフローには非対応です。テスト harness の安定化 (#130)・独立評価 (#84)・授業デモの固定 (#85) は
-> 未完了です。タグ attempt 1 は JSONL テスト harness の読み取り競合 1 件で失敗し、4,923 件合格・1 件失敗でした。
+> ファイルフローには非対応です。次は独立評価 (#84) と授業デモの固定 (#85) です。#130 で追跡する
+> alpha.4 後のソース変更は、偽サーバーの完成したテストログを原子的に公開します。テスト harness の
+> 信頼性変更であり、運用 Codex の修正や新たな実 AI 受け入れではありません。公開済み alpha.4 の
+> タグと配布物は不変です。タグ attempt 1 は JSONL テスト harness の読み取り競合 1 件で失敗し、4,923 件合格・1 件失敗でした。
 > ソースを変更しない再実行は合格しましたが、初回合格や修正完了ではありません。#89 の残存リスクは
 > 下記の警告とともに **alpha.4 のみに** 受容され、`needs_review` / medium のまま未完了です。
 > 修正済みや、その後の安定版に対する免除を意味しません。
@@ -422,8 +424,8 @@ CLI と任意の API・UI は同じコアを使います。コア解析は Web �
    2026-11-02 KST に[限定された中核フローと既存のオフライン証拠](../../guides/OWNER_FILE_ACCEPTANCE.md)を
    受け入れました。新たな実環境での実行や一般リポジトリの修正の受け入れではありません。最終状態の
    文書は PR #123（`ee49f5a`）で通常マージされ、この範囲で #82 → #81 → #35 を順に終了しました。
-4. 次は [#130 テスト harness の安定化](https://github.com/casing1/authzest/issues/130)、
-   [#84 独立評価](https://github.com/casing1/authzest/issues/84) と
+4. ソースのテスト harness 安定化の提供は [#130](https://github.com/casing1/authzest/issues/130)で追跡します。
+   次は [#84 独立評価](https://github.com/casing1/authzest/issues/84) と
    [#85 再現可能なデモ・授業提出の証拠](https://github.com/casing1/authzest/issues/85)です。
    [#83 の正確なリリース/公開ファイル検証記録](https://github.com/casing1/authzest/issues/83)は別に保持します。
    #89 は `needs_review` / medium のまま未完了で、alpha.4 限定のリスク受容は修正や安定版の免除ではありません。

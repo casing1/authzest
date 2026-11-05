@@ -37,7 +37,9 @@ React 대시보드는 선택적인 로컬 인터페이스입니다. AuthZest를 
 > **범용 수정 엔진이 아닌 제한된 범위:** alpha.4는 읽기 쉬운 CLI 결과와 소유 정책 추천 흐름을
 > 포함합니다. 활성 `codex-owner-repair --file-workflow`에는 POSIX non-frozen Python 소스 설치가
 > 필요합니다. native 바이너리는 정적 스캔·오프라인 미리보기를 지원하며 해당 활성 파일 흐름은 지원하지
-> 않습니다. 테스트 harness 안정화(#130)·독립 평가(#84)·제출용 시연 고정(#85)은 남아 있습니다.
+> 않습니다. 다음은 독립 평가(#84)·제출용 시연 고정(#85)입니다. #130에서 추적하는 alpha.4 이후
+> 소스 변경은 가짜 서버의 완성된 테스트 로그를 원자적으로 공개합니다. 테스트 harness 안정성
+> 변경이지 운영 Codex 수정이나 새 실제 AI 수용이 아니며 공개 alpha.4 태그·산출물은 그대로입니다.
 > 태그 attempt 1은 JSONL 테스트 harness 읽기 경합 1건으로 4,923개 통과/1개 실패했으며 소스를
 > 바꾸지 않은 재실행이 통과했습니다. 첫 실행 통과나 수정 완료가 아닙니다. 아래 경고와 함께 수용한 #89의
 > 잔여 위험은 **alpha.4에만** 해당하며 #89는 `needs_review` / medium으로 열려 있습니다.
@@ -418,8 +420,8 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
    [제한된 핵심 흐름과 기존 오프라인 근거](guides/OWNER_FILE_ACCEPTANCE.md)를 수용했으며 새 실제
    실행이나 일반 저장소 수정의 수용은 아닙니다. 최종 상태 문서는 PR #123(`ee49f5a`)으로 정상
    병합했고 해당 범위에서 #82 → #81 → #35를 순서대로 종료했습니다.
-4. 다음은 [#130 테스트 harness 안정화](https://github.com/casing1/authzest/issues/130),
-   [#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
+4. 소스 테스트 harness 안정화 전달은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다.
+   다음은 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
    [#85 재현 가능한 시연·과목 증빙](https://github.com/casing1/authzest/issues/85)입니다.
    [#83의 정확한 릴리스·공개 파일 검증 기록](https://github.com/casing1/authzest/issues/83)은 별도로
    유지합니다. #89는 `needs_review` / medium으로 열어두며 alpha.4 한정 위험 수용은 수정 완료나
