@@ -21,7 +21,7 @@ Improve CLI usability before adding an AI GUI, deployment or a second adapter. M
 not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
 value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
 
-## Current baseline — 2026-11-02 KST
+## Current baseline — 2026-11-05 KST
 
 The recorded bounded-core delivery baseline is `ee49f5a`, after
 [PR #123](https://github.com/casing1/authzest/pull/123) delivered the bounded acceptance-status record
@@ -48,12 +48,20 @@ does not establish consumer installation/upgrades or acceptance of a later candi
 enforced security boundary or #89 risk acceptance. PR #116 added installed-CLI smoke: clean source
 installation and same-version source replacement at `1d0ebb8` passed 13 checks each on one macOS host.
 The [source-install record](../releases/RELEASING.md#local-source-install-observation--2026-10-29)
-does not establish a versioned alpha.4 upgrade or other platforms/routes. #83 candidate preparation
-continues with #89 disposition and final version/documentation/platform/distribution gates still open.
+does not establish a versioned alpha.4 upgrade or other platforms/routes. Those historical observations
+retain their original scope; the November 5 candidate checks below are separate.
 The 2026-11-02 preparation sets the source version to `0.1.0a4` and proposes unused tag
-`v0.1.0-alpha.4`, without tagging or publication. The exact candidate commit remains pending the
-preparation PR's required checks/reviews and normal merge; record its SHA afterward rather than
-substituting a historical observation commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-02-kst)
+`v0.1.0-alpha.4`, without tagging or publication. PR #125 delivered that preparation; PR #127 then
+delivered the minimatch dependency repair at candidate `b5f3eb81d318e94c5e400ec52e78f1550e13f931`.
+Both heads passed ten CI checks and both automatic reviews; each merged main passed six checks.
+Dependabot #12 is fixed and #126 is complete, independently of #89. On November 5 the exact candidate's
+[native preview](https://github.com/casing1/authzest/actions/runs/41946366368) passed 7/7 jobs: each of
+Linux x64/macOS arm64/Windows x64 passed 26 selected/relocated, 13 packaged and 13 fresh-download
+offline scan/preview checks. Three downloaded binary manifests also passed local checksum verification.
+One-host disposable source installation and genuine alpha.3 → alpha.4 replacement each passed 13/13
+offline installed-CLI checks with noneditable provenance/package-byte verification. No product AI,
+policy/runtime worker, active-flow or UI check was added. These results belong to `b5f3eb8`, not later
+documentation merges or the eventual release commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst)
 separates source-only active owner-file operation from native scan/static UI/offline previews.
 The [2026-11-02 static recheck](FORMATTING.md#current-static-recheck--2026-11-02-kst) retains #89's
 `needs_review` / medium disposition: official `prettier@3.9.10` still embeds `brace-expansion` `5.0.6`.
@@ -179,16 +187,16 @@ historical items in their original phases.
 
 ## Remaining backlog and order
 
-| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                            |
-| ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                       |
-| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                               |
-| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                   |
-| Completed in bounded scope    | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #123 delivered accepted criteria; one registered pair/eight cases/template selection only. Preserve distinct file-API and installed-source evidence; general repository PoC/repair-source generation unimplemented           |
-| Completed in bounded scope    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | PR #123 exact-head checks/reviews and normal merge completed; #82 → #81 → #35 closed in order. One-host installed happy path and offline failure/refusal/recovery evidence are not native or independent evaluation acceptance  |
-| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | `0.1.0a4` / proposed `v0.1.0-alpha.4` preparation; exact candidate SHA pending normal PR merge. Historical evidence is not final-candidate evidence; #89/platform/distribution/publication gates remain, November 4 conditional |
-| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; use separate approved measurement scope. Core acceptance and historical development observations are not independent benchmark results                        |
-| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                       |
+| Priority                      | Focused issue                                                                         | Dependencies and acceptance boundary                                                                                                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Completed                     | [#79 readable CLI](https://github.com/casing1/authzest/issues/79)                     | PR #90 merged; offline formatter/fake-provider checks and exact sharing previews retained                                                                                                                                      |
+| Completed                     | [#77 case review and fixed plan](https://github.com/casing1/authzest/issues/77)       | Exact ten-label approval recorded separately; original model history and non-executable offline plans preserved; closed by PR #97                                                                                              |
+| Completed                     | [#80 fixed owned-policy harness](https://github.com/casing1/authzest/issues/80)       | PR #97 merged; separate recipe 1.0/1.1 source runs matched ten cases each; approvals consumed; exact-head CI/reviews complete                                                                                                  |
+| Completed in bounded scope    | [#81 bounded reproduction/remediation](https://github.com/casing1/authzest/issues/81) | PR #123 delivered accepted criteria; one registered pair/eight cases/template selection only. Preserve distinct file-API and installed-source evidence; general repository PoC/repair-source generation unimplemented          |
+| Completed in bounded scope    | [#82 integrated acceptance](https://github.com/casing1/authzest/issues/82)            | PR #123 exact-head checks/reviews and normal merge completed; #82 → #81 → #35 closed in order. One-host installed happy path and offline failure/refusal/recovery evidence are not native or independent evaluation acceptance |
+| Active prerelease preparation | [#83 next prerelease](https://github.com/casing1/authzest/issues/83)                  | `b5f3eb8` / `0.1.0a4` native preview and one-host source install/versioned replacement passed November 5. #89/final release-runtime/consumer route/publication gates remain; conditional November 4 passed without publication |
+| Evaluation                    | [#84 measured comparison](https://github.com/casing1/authzest/issues/84)              | Freeze independently reviewed tasks/labels before prompt changes; use separate approved measurement scope. Core acceptance and historical development observations are not independent benchmark results                       |
+| Delivery                      | [#85 demo/OSS evidence](https://github.com/casing1/authzest/issues/85)                | #82/#84 results or explicit unavailable evidence; distribution claims consistent with #83                                                                                                                                      |
 
 #80's [fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is delivered with stale/declined/
 expired/reused decision handling and unknown failure outcomes. #79 is complete and #77's exact ten
@@ -306,12 +314,11 @@ The guides document the default-output migration rather than claiming unchanged 
 The source core's bounded #35 completion does not satisfy #83 automatically. Keep the implemented
 scope and source/native limitations explicit; a documentation merge or passing mock is not a release gate.
 
-The next work is #83's release readiness, not expanding the accepted core: complete the `0.1.0a4`
-preparation PR through normal required checks/reviews and merge, record the exact candidate commit
-and #89 response options/evidence, then bind the final #89 decision
-to that same candidate before satisfying the remaining verification/publication gates. A decision for
-an unspecified or earlier candidate is not transferable. Obtain separately scoped platform,
-installation and release-workflow evidence. #84's independent evaluation and #85's reproducible course
+The next work is #83's remaining release readiness, not expanding the accepted core. Keep the
+November 5 preflight receipt bound to `b5f3eb8`; record #89 response options/evidence and bind its final
+decision to the exact intended publication candidate. A decision for an unspecified or earlier candidate
+is not transferable. Full release/runtime execution, final-commit checks, any other advertised consumer
+installation/update route and public-asset verification still need their own evidence. #84's independent evaluation and #85's reproducible course
 evidence can proceed as separate work; neither may relabel historical development cases as new holdouts.
 Do not broaden native support or add a GUI/provider adapter to meet the conditional date.
 
@@ -348,9 +355,9 @@ failed/not-run/unknown distinctly and preserve originals and later user edits.
 The seven **development** weeks agreed on 2026-09-10 include work already done; this audit does not
 start a fresh seven-week plan. The original remaining-calendar estimate is historical, not a current
 submission date. The maintainer now estimates submission around **2026-11-18**, not a confirmed fixed
-deadline. [#83](https://github.com/casing1/authzest/issues/83) has a conditional **2026-11-04 KST**
-alpha.4 target, with November 2–4 for preparation/go-no-go. This is not a publication guarantee;
-defer if a gate remains unmet, and retain the exam/slippage/submission buffer.
+deadline. [#83](https://github.com/casing1/authzest/issues/83)'s conditional **2026-11-04 KST**
+alpha.4 target has passed without publication. The November 5 preflight is progress, not a replacement
+publication promise; resolve the remaining gates and retain the exam/slippage/submission buffer.
 
 The bounded source core is accepted; foundation/evidence/contracts and the recorded live integration
 already consumed the early delivery budget. Use remaining working sessions for #83's exact-candidate
