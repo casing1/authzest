@@ -34,8 +34,19 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > schema `1.2`; the planned tag is `v0.1.0-alpha.4`. That tag and release have not been created, and
 > alpha.3 remains the latest published release. On 2026-11-05 KST, `b5f3eb8` passed the bounded native
 > preview and one-host source-install/update preflights described below. #83 remains open for the
-> remaining final-release, runtime and public-asset gates. #89 remains `needs_review` / medium without
-> residual-risk acceptance; these preflights are not publication approval.
+> remaining final-release, runtime, installation and public-asset gates. On 2026-11-05 KST, the
+> maintainer conditionally accepted #89's residual tooling risk **only for the next alpha.4**, based
+> on `7509a6a` with the visible warning below. #89 stays open with assessment `needs_review` / medium;
+> this is not a fix or publication approval.
+
+> [!WARNING]
+> **Developer-tooling risk (#89):** affected Prettier can stall or fail on malicious EditorConfig.
+> Use only reviewed, guarded formatting commands. Direct `npx prettier`, editor and API integrations
+> are outside the wrapper guarantee; their actual exposure to untrusted configuration and supported AuthZest availability impact
+> remain unverified. This is not a confirmed AuthZest runtime vulnerability or a dependency fix.
+> See the [formatting limits and follow-up](docs/development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst). The next-alpha.4 acceptance
+> is not a blanket future waiver or AI/worker permission; compatible upstream fixes or new impact
+> evidence require follow-up.
 
 ## What the current source supports
 
@@ -116,7 +127,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   offline refusal/user-edit/recovery tests; it is not a new live run. Final status documentation was
   normally merged in [PR #123](https://github.com/casing1/authzest/pull/123) at `ee49f5a`, followed by
   closure of #82 → #81 → #35 for this bounded core. #83/#84/#85/#89 remain independently open;
-  #89's residual tooling risk has not been accepted. Windows/frozen active file execution remains
+  #89's residual tooling risk is conditionally accepted only for the next alpha.4, not fixed.
+  Windows/frozen active file execution remains
   unsupported; published alpha.3 and the report schema are unchanged.
 - Adds the unreleased [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
   walkthrough with separate copy-application, fixed source-check and restoration decisions on supported
@@ -318,7 +330,7 @@ Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 pac
 matching-OS download checks. All three binary/checksum-manifest pairs were also downloaded and matched
 locally, without local binary execution. This is scan/preview evidence, not UI, runtime, AI, policy-worker
 or active-file acceptance. It is bound only to that source; later documentation merges are not newly
-tested candidates. Final-release/runtime/public-asset gates remain; no alpha.4 binaries are published.
+tested candidates. Final-release/runtime/installation/public-asset gates remain; no alpha.4 binaries are published.
 
 To build the current source locally, activate the development venv and run from the repository root:
 
@@ -380,8 +392,9 @@ Current source and next step:
    on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
    normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
 4. Next: [#83: alpha.4 release preparation](https://github.com/casing1/authzest/issues/83), using the
-   recorded `b5f3eb8` preflights while completing remaining final-release/runtime/public-asset gates.
-   #89 remains `needs_review` / medium without residual-risk acceptance; #84/#85's independent
+   recorded `b5f3eb8` preflights while completing remaining final-release/runtime/installation/public-asset gates.
+   #89 stays open at `needs_review` / medium with conditional residual-risk acceptance only for the next alpha.4;
+   it is not fixed. #84/#85's independent
    evaluation and course evidence remain open. The conditional 2026-11-04 target has passed; no new
    publication date is promised.
 

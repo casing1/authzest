@@ -137,8 +137,13 @@ These scan/preview observations are bound only to `b5f3eb8`, not later documenta
 not establish other-OS source installation, clean consumer-device/native-installer or UI acceptance,
 and made no AI call or policy-worker/active-file run. The historical `1d0ebb8` same-version replacement
 and `c868152` owner-flow observation remain separate. Alpha.4 is unpublished; #83's remaining
-final-release/runtime/public-asset gates and #89 (`needs_review` / medium, no residual-risk acceptance)
-remain open. The conditional 2026-11-04 target has passed; no new publication date is promised.
+final-release/runtime/installation/public-asset gates remain open. On 2026-11-05 KST, the maintainer
+conditionally accepted #89's residual developer-tooling risk only for the next alpha.4, based on
+`7509a6a` with [visible warnings and formatting limits](development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
+#89 remains open with assessment `needs_review` / medium. This is not a fix, a confirmed AuthZest
+runtime vulnerability, a blanket future waiver or AI/worker permission. Compatible upstream fixes or
+new impact evidence require follow-up. The conditional 2026-11-04 target has passed; no new publication
+date is promised.
 
 Use the [current development plan](development/DEVELOPMENT_PLAN.md) for priorities, milestone state,
 release/evaluation gates and the existing seven-development-week budget. Historical completion records

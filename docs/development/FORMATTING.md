@@ -6,6 +6,13 @@ The repository formatting commands validate EditorConfig and file discovery befo
 This is a scoped developer/CI mitigation for [#89](https://github.com/casing1/authzest/issues/89), not
 a replacement of Prettier's bundled dependency or a demonstrated AuthZest runtime security fix.
 
+> [!WARNING]
+> Prettier's embedded parser can stall or fail when processing malicious patterns. Use only the reviewed
+> guarded commands below after reviewing the checkout/toolchain; do not bypass a refusal. Direct Prettier
+> CLI, editor and API integrations do not inherit this protection. The remaining developer-tooling risk
+> is [explicitly accepted for the forthcoming alpha.4 only](#alpha4-maintainer-disposition--2026-11-05-kst),
+> not fixed, dismissed or assigned to user fault.
+
 ## Commands
 
 Install the committed frontend dependencies, then run from the repository root:
@@ -157,20 +164,43 @@ of this embedded parser, and its compatibility has not been accepted here. Neith
 nor green CI changes that conclusion. Ordinary documentation/compatibility checks performed after
 this triage are separate from security validation.
 
-The smallest remaining decision is unchanged: establish the relevant direct-integration exposure or
+At that static-assessment checkpoint, the remaining decision was to establish the relevant direct-integration exposure or
 record a reviewed compatible shipped-byte replacement / explicit exact-candidate residual-tooling-risk
-decision under #83 before publication. #89 remains open; no risk is silently accepted.
+decision under #83 before publication. The later maintainer decision below is distinct; #89 remains open.
+
+## Alpha.4 maintainer disposition — 2026-11-05 KST
+
+After reviewing the risks, the maintainer explicitly accepted **only the residual developer-formatting
+availability risk for the forthcoming alpha.4**, with visible warnings and follow-up tracked in
+[#89](https://github.com/casing1/authzest/issues/89) and [#83](https://github.com/casing1/authzest/issues/83).
+The decision basis is source `7509a6a821947b516f543222d7cd620ab2ad8e83` and the
+[November 5 static recheck](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400).
+It retained `needs_review` / medium confidence: inspected official Prettier 3.9.10 still embedded
+brace-expansion 5.0.6, with no established guarded-command exploit or AuthZest runtime consequence.
+That static judgment is separate from the later maintainer acceptance; neither the parser nor the
+dependency is fixed by this documentation.
+
+- Keep the guarded commands, reviewed patterns/options/discovery and child limit. Direct CLI/editor/API
+  calls have no wrapper guarantee, and effective editor exposure remains unknown. The opt-in workspace
+  does not prove machine settings; the timeout is not an OS sandbox.
+- Retain trusted-toolchain/workflow, stable-file and no hostile concurrent same-user writer assumptions.
+  This is not user-fault attribution or a waiver for code execution, data exposure or unrelated findings.
+- Bind the exact resulting candidate SHA in #83 after the warning PR's normal review/merge and a
+  byte comparison showing every tracked non-Markdown file unchanged from the decision basis.
+  Relevant source/toolchain/workflow or exposure changes require reassessment; arbitrary successors
+  and future releases are not automatically accepted.
+- Keep #89 open. Reassess when a compatible shipped-byte upstream fix appears, new exposure/impact
+  or a guard bypass is reported, relevant tooling changes, or the next release is prepared. Apply a
+  reviewed fix with compatibility/regression checks; an incident is not the only follow-up trigger.
+  This records follow-up criteria, not an automated monitoring service.
 
 ## Prerelease disposition
 
-Keep #89 and #83 open. Normal development and separately scoped candidate compatibility/artifact
-checks can continue, but green CI or an empty npm audit does not settle the residual embedded risk.
-Before tagging or publishing, record either a reviewed compatible upstream replacement with shipped-byte
-and ordinary compatibility evidence, or an explicit maintainer decision for the exact candidate's residual
-developer-tooling risk. Such a decision must name the wrapper-only scope, unguarded integrations,
-assumptions, remaining gaps and follow-up; this assessment does not grant risk acceptance.
-The other release gates, including case-label acceptance and advertised-platform/installation checks,
-remain independent. See the [release guide](../releases/RELEASING.md).
+The decision above addresses only the named alpha.4 tooling-risk disposition. It does not turn green CI
+or an empty npm audit into security clearance, complete #89's exposure investigation, waive normal
+review/checks, or authorize product AI, policy/runtime worker execution, file effects, tags or publication.
+Keep #89/#83 open and satisfy the other final-candidate, platform, installation and public-asset gates
+in the [release guide](../releases/RELEASING.md).
 
 This unreleased tooling change does not create a release or change the package version, existing tags,
 or alpha.3 assets. See the [release guide](../releases/RELEASING.md) for the separate release gates.

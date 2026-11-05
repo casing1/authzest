@@ -63,11 +63,13 @@ offline installed-CLI checks with noneditable provenance/package-byte verificati
 policy/runtime worker, active-flow or UI check was added. These results belong to `b5f3eb8`, not later
 documentation merges or the eventual release commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst)
 separates source-only active owner-file operation from native scan/static UI/offline previews.
-The [2026-11-02 static recheck](FORMATTING.md#current-static-recheck--2026-11-02-kst) retains #89's
-`needs_review` / medium disposition: official `prettier@3.9.10` still embeds `brace-expansion` `5.0.6`.
-This is not a compatibility result or residual-risk acceptance. #89/#83 stay open until a reviewed
-compatible shipped-byte fix or an explicit exact-candidate residual-risk decision and the remaining
-release gates are recorded.
+The [November 5 static recheck](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400)
+retains #89's `needs_review` / medium judgment. The maintainer subsequently
+[accepted the named residual tooling risk for the forthcoming alpha.4 only](FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst),
+with visible warnings, guarded-command assumptions and follow-up. This is a release disposition, not
+a parser fix, compatibility result or blanket waiver. #89/#83 stay open; bind the exact warning candidate
+after normal merge and unchanged tracked non-Markdown bytes from `7509a6a821947b516f543222d7cd620ab2ad8e83`.
+Final release/runtime, consumer-route and public-asset gates remain separate.
 
 The sharing/adapter source implementation was delivered through [PR #103](https://github.com/casing1/authzest/pull/103)
 at merge `cc644a1` on 2026-10-25 KST. It builds on offline repair-recommendation delivery `8409bc7`,
@@ -315,9 +317,10 @@ The source core's bounded #35 completion does not satisfy #83 automatically. Kee
 scope and source/native limitations explicit; a documentation merge or passing mock is not a release gate.
 
 The next work is #83's remaining release readiness, not expanding the accepted core. Keep the
-November 5 preflight receipt bound to `b5f3eb8`; record #89 response options/evidence and bind its final
-decision to the exact intended publication candidate. A decision for an unspecified or earlier candidate
-is not transferable. Full release/runtime execution, final-commit checks, any other advertised consumer
+November 5 preflight receipt bound to `b5f3eb8`; deliver the visible warnings and bind the separately
+accepted alpha.4 tooling-risk decision to the exact warning candidate with the byte comparison above.
+Do not carry it to changed relevant code/tooling/exposure or later releases. Full release/runtime execution,
+final-commit checks, any other advertised consumer
 installation/update route and public-asset verification still need their own evidence. #84's independent evaluation and #85's reproducible course
 evidence can proceed as separate work; neither may relabel historical development cases as new holdouts.
 Do not broaden native support or add a GUI/provider adapter to meet the conditional date.

@@ -16,6 +16,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- Record the November 5 maintainer decision to accept only #89's residual developer-formatting
+  availability risk for the forthcoming alpha.4, with visible four-language README and English/Korean
+  contributor/formatting warnings. Retain guarded-command assumptions and direct CLI/editor/API gaps;
+  keep #89 open and `needs_review` / medium unchanged, not fixed or attributed to user fault. Reassess
+  on an upstream shipped-byte fix, new exposure/impact/guard bypass, relevant tooling changes or the
+  next release. Bind the exact warning candidate in #83 after normal merge and non-Markdown byte
+  comparison against decision basis `7509a6a821947b516f543222d7cd620ab2ad8e83`. This is not a future
+  blanket waiver, dependency/code change, new product AI/worker run, tag or publication; other release
+  gates remain separate.
+
 - Record the November 5 nonpublishing preflight at exact candidate `b5f3eb8`:
   [native preview](https://github.com/casing1/authzest/actions/runs/41946366368) attempt 1 passed 7/7 jobs;
   Linux x64/macOS arm64/Windows x64 each passed 26 binary, 13 packaged and 13 fresh-download offline
