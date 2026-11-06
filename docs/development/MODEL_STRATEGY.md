@@ -75,8 +75,15 @@ guaranteed unseen holdouts. Do not use them for prompt tuning or claim fresh ind
 Its explicit policy establishes public intent, not runtime enforcement; ordinary formatting DI is not
 access-control evidence. All 21 exact references are pending review, not frozen or measured. Neither
 the earlier positive reaction nor merging preparation approves the original 18 or the added three.
-Review the revised set before freeze or scorer/comparison-harness implementation. Historical corpus
-bytes and observations remain unchanged.
+Review the revised set before candidate integration/scoring, freeze or comparison-harness
+implementation. Separately develop generic pure metric mathematics in the source-checkout-only
+`scripts/evaluation_metrics.py`; `python -m pytest tests/test_evaluation_metrics.py` uses unrelated
+synthetic unit data, not the actual seven scenarios/21 questions. The earlier deferral concerns the
+candidate workflow; this independent math scope does not imply previous label approval. It adds no
+product command, file/network/provider/source/runner import, schema relaxation or live comparison.
+Citation/prose support, usage, latency, repeats, reviewer effort and workflow measurements remain
+unmeasured null placeholders, not AI-quality evidence. Candidate data/bindings, historical corpus
+bytes and observations remain unchanged; no #84 acceptance item is complete.
 
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not

@@ -16,14 +16,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add source-checkout-only, candidate-independent pure metric mathematics in
+  `scripts/evaluation_metrics.py`, with exact canonical answers, whole-case invalidation and retained
+  denominators, count-weighted family/split summaries and null unmeasured fields. Scope its unit
+  tests to unrelated synthetic data with `python -m pytest tests/test_evaluation_metrics.py`.
+  Clarify the earlier English/Korean deferral: actual candidate integration/scoring, freeze and the
+  comparison harness still await exact-label review; this standalone mathematics does not approve
+  labels or consume the real seven-scenario/21-question candidate. No data/binding, historical
+  artifact, product command/schema, provider/runner integration, live comparison, measured model
+  result, release or #84 acceptance completion is added. Verification and normal delivery are separate.
+
 - Append a maintainer-requested public-intent control before evaluation freeze; this draft places it
   in reserved evaluation.
   Preserve the original six scenarios/18 proposals and their splits exactly; the revised candidate has
   seven scenarios/21 assistant-authored references, three development/four reserved and four
   restricted/two mixed/one public policy proposals, not balanced coverage. Update English/Korean
   review status and measurement denominators. All 21 answers remain pending exact review; the
-  earlier positive reaction approves neither the original 18 nor the new three. No freeze, scorer/
-  comparison-harness implementation, measured result, live call, release or #84 completion is added.
+  earlier positive reaction approves neither the original 18 nor the new three. That control-addition
+  slice added no freeze, scorer/comparison-harness implementation, measured result, live call,
+  release or #84 completion.
 
 - Initially prepare a separate source-checkout evaluation draft in
   [PR #133](https://github.com/casing1/authzest/pull/133) for [#84](https://github.com/casing1/authzest/issues/84):

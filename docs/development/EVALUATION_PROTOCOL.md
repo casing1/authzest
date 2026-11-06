@@ -14,8 +14,10 @@ The maintainer requested a public-intent control before freeze; this draft place
 original six scenarios,
 their splits and their 18 reference proposals exactly; none is reassigned or retuned. The earlier
 positive reaction to the draft is not recorded as approval of those 18 answers or the three new ones.
-All 21 exact references remain pending review, and the revised candidate is not frozen. Scoring and
-comparison-harness implementation are deferred until that revised-set review.
+All 21 exact references remain pending review, and the revised candidate is not frozen. Candidate
+integration, scoring of those references and the comparison harness remain deferred until that
+revised-set review. This does not prevent separately developing candidate-independent pure metric
+mathematics with unrelated synthetic unit-test data, as scoped below; it is not prior label approval.
 
 The [historical inventory](EVALUATION_INVENTORY.md) and its existing files, identities and approvals
 remain unchanged. The new candidate is not another observation of those cases. Follow the
@@ -108,6 +110,36 @@ Token counts need not be equal; record actual available usage rather than assert
 Set repeat counts and ordering before trials, keep failures visible, and report variation by case.
 The existing historical scorer special-cases the question ID `policy`; it is not a new-family scoring
 implementation. No new live runner, scoring result or provider integration is delivered by this draft.
+
+## Candidate-independent offline mathematics
+
+The source-checkout-only module `scripts/evaluation_metrics.py` separates generic measurement
+mathematics from candidate loading or evaluation. Its API is `score_cases(cases, responses)`, with
+`cases` a tuple of `CaseSpec(id, split, questions)` values and each `questions` value a tuple of
+`QuestionSpec(id, family, answer_format, expected)` values. Each expected answer is a canonical string
+or `None` (the unknown value represented by JSON null). Responses map a case ID to a list of records
+containing exactly `question_id` and `answer`, or to `None` for an absent case response.
+
+Answer formats require exact canonical decimal, sorted CSV, boolean or policy strings; the module
+does not trim, coerce, sort, normalize or otherwise repair answers. The empty string is valid only for
+an empty sorted-CSV answer; only `None` means unknown. Invalid, missing, extra or duplicate answer
+records invalidate the whole case without removing any of its question or case denominators.
+Family and split summaries sum counts before calculating rates, rather than averaging group rates.
+Undefined rates remain null. Citation/prose support, latency, provider usage, repeats, reviewer effort
+and workflow metrics are not measured by this module; their placeholders remain null, not zero.
+
+This standalone module has no CLI or file/network/provider/source/runner imports. It is not a product
+command, a schema relaxation, a candidate adapter or a live comparison harness. Its synthetic-only
+tests do not load, score, freeze or approve the actual seven-scenario/21-question candidate; candidate
+data, bindings and historical evaluation artifacts remain unchanged. From the repository root:
+
+```bash
+python -m pytest tests/test_evaluation_metrics.py
+```
+
+This command checks generic math using synthetic unit data only. Passing such tests would establish
+neither correct candidate labels nor a measured model-quality result. Exact candidate review,
+integration, freeze and any future comparison retain the boundaries stated elsewhere in this protocol.
 
 ## Predeclared measurement rules
 
