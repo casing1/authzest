@@ -156,8 +156,14 @@ development/four reserved;
 policy proposals are four restricted/two mixed/one public, not balanced. Reserved evaluation has only
 one public control; these public proposals are not secret or guaranteed unseen holdouts.
 All 21 exact references await review: the earlier positive reaction is not approval of the original
-18 or the new three. Review the revised set before freezing or implementing its scorer/comparison
-harness. No measured comparison or #84 acceptance item is complete.
+18 or the new three. Review the revised set before candidate integration, actual candidate scoring,
+freeze or its comparison harness. Separately develop source-checkout-only pure mathematics in
+`scripts/evaluation_metrics.py`, tested only with unrelated synthetic unit data via
+`python -m pytest tests/test_evaluation_metrics.py`. That module does not read or score the actual
+candidate, approve labels, import a provider/source/runner, relax a product schema or implement the
+live comparison. Candidate data/bindings and historical artifacts remain unchanged. The earlier
+deferral still applies to the candidate workflow, not this independent math slice; it does not imply
+earlier label approval. No measured comparison or #84 acceptance item is complete.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
