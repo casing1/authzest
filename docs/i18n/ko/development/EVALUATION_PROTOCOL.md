@@ -137,8 +137,9 @@ unknown 런타임 보장이며 수용이 독립 검토나 런타임 보장을 �
 2개입니다. 불완전한 inventory는 하한일 뿐 올바른 전체 소스 개수가 아니며, 정적 baseline은 입증하지
 못한 전체 개수의 답을 유보해야 합니다.
 
-v1 참고 정답 스냅샷은 작업 문구·소스/정책 범위를 고정합니다. 향후 시험 전에 응답 스키마·프롬프트·
-모델/설정·반복 예산을 별도로 고정합니다. 비교 모드는 다음과 같습니다.
+v1 참고 정답 스냅샷은 작업 문구·소스/정책 범위를 고정합니다. 아래 오프라인 응답 계약은 개발용
+인터페이스이지 실제 시험 전체 동결이 아닙니다. 향후 시험 전에 응답 계약을 별도로 확인하고 실제
+프롬프트·모델/설정·반복 예산을 고정합니다. 비교 모드는 다음과 같습니다.
 
 1. 정적 전용: 결정적으로 확인한 지원 범위의 선언 사실만 답하고 정책 해석·런타임 보장은 유보합니다.
    평가자 정답을 읽어 정적 답을 만들면 안 됩니다.
@@ -153,6 +154,52 @@ adapter/report 버전·내용 식별자·반환된 모델 ID를 기록합니다.
 보고합니다. 기존 과거 scorer는 질문 ID `policy`를 특별 취급하므로 새 작업 종류의 scoring 구현이
 아닙니다. v1 helper는 오프라인 사전 검사/채점과 합성 대조 응답만 제공하며 실제 실행기·모델 결과·
 제공자 연동은 아닙니다.
+
+## 오프라인 비교 패킷과 엄격한 응답 계약
+
+`scripts/evaluation_response.py`는 제품 스키마를 바꾸지 않는 별도 평가 응답 스키마 `0.1`을
+정의합니다. 정확히 `schema_version`, `kind`, `task_id`, `request_id`, `answers`만 포함하는 완전한
+크기 제한 JSON 객체 하나를 받으며 `kind`는 `evaluation-comparison-response`입니다. 각 답 기록은
+정확히 `question_id`와 `answer`만 포함하며 요청한 질문마다 하나씩 있어야 합니다. 중복 키/답·질문/
+필드 누락·추가·잘못된 연결 값·비정규 값은 사례 전체를 무효로 만듭니다. 문자열을 보정하지 않습니다.
+`""`는 알려진 빈 정렬 CSV 집합이고 JSON null만 unknown입니다. 원본 응답 누락은 성공한 unknown이
+아닌 누락 상태로 유지합니다.
+
+`scripts/evaluation_comparison.py`는 같은 소스·명시적 정책·질문·답 형식·공통 개발 초안 지시를
+사용하는 세 모드 슬롯을 만듭니다. 근거 보조에만 기존 core `parse_source`의 메모리 내 선언 근거를
+추가하며 모듈을 독립적으로 파싱하고 소스를 import·파일화·실행하지 않습니다. 근거는 항상 partial로
+표시합니다. 모듈 간 router/include 맥락과 callable 의존성 그래프는 미해결이고 deferred 선언은
+호출/배포를 입증하지 않으며 진단/파싱 오류도 유지합니다. 추출한 선언은 접근통제나 전체 목록의
+증명이 아닙니다.
+
+불투명 `task_id`는 작업 전용 소스/정책/질문에 연결하며 `request_id`는 모드와 payload에서 파생해
+다른 요청/모드의 응답을 거부합니다. 두 AI payload는 선언 근거와 파생 request ID만 다르며 공통
+초안 지시는 동결한 실제 프롬프트가 아닙니다. 잠재 제공자 payload에서 사례 이름·분할·참고 정답
+manifest/후보 해시·예상 정답·이유·검토 메타데이터를 제외합니다. 평가자 계획 자체에는 사례 매핑이
+있으며 **제공자 입력이 아닙니다**. 해시 연결은 신원 인증이나 비밀성 주장이 아닙니다.
+
+저장소 루트에서 계획이나 명시적인 합성 dry run을 준비합니다.
+
+```bash
+python -m scripts.evaluation_comparison
+python -m scripts.evaluation_comparison --json
+python -m scripts.evaluation_comparison --dry-run
+python -m scripts.evaluation_comparison --dry-run --json
+python -m scripts.evaluation_comparison --dry-run --fault missing
+python -m scripts.evaluation_comparison --dry-run --fault invalid
+```
+
+모든 패킷과 mock 응답을 먼저 구성한 뒤 채점용 참고 정답을 읽습니다. Dry run의 모든 모드 슬롯은
+`static-only`까지 합성 null 답을 사용하며 실제 정적 답 query 매핑/adapter는 **미구현**입니다.
+정적 baseline이나 모델 품질을 측정하지 않습니다. 각 모드는 사례 7개·질문 21개·답할 수 있는 정답
+14개·필수 unknown 7개를 따로 유지합니다. Fault는 각 모드의 첫 사례에 적용합니다. 수학 경계에서
+누락 응답은 `None`, 무효 응답은 `[]`로 전달하며 실패 종류·분모를 유지합니다. 무효 사례에는
+unknown 점수를 주지 않으며 합성 질문 기회 63개를 AI 품질 점수로 합산하지 않습니다.
+`--fault`에는 `--dry-run`이 필요합니다.
+
+정적 답 adapter·독립 검토 증명·실제 프롬프트/모델/설정/반복 동결은 후속 작업입니다. 제공자 호출이나
+실제 모델 시험은 구현하지 않습니다. v1/원본 참고 정답 바이트·고정 수학·과거 기록·제품 스키마/버전·
+위험 수용·릴리스는 바꾸지 않으며 #84는 체크 항목 7개 모두 미완료인 OPEN을 유지합니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

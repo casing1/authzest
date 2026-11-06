@@ -166,6 +166,17 @@ Next collect the missing independent/inspection review evidence and separately f
 model/configuration and repeat budget. `live_benchmark_ready` remains false; no live model/source/
 worker/workflow execution, release or risk acceptance is added. Historical artifacts remain unchanged,
 and all seven #84 checklist items remain pending.
+
+The next offline slice adds `scripts/evaluation_response.py`'s strict, task/request-bound response
+contract and `python -m scripts.evaluation_comparison` paired input plan. Evidence-assisted alone gets
+partial in-memory single-module declarations; source/policy/questions/answer formats/draft instructions
+otherwise match, and expected answers/review metadata stay outside provider payloads. The evaluator
+plan is not provider input. `--dry-run` uses synthetic null answers in all three mode slots, not a real
+static baseline or model comparison; `--fault missing`/`invalid` requires dry-run and preserves failures.
+Actual static-answer query mapping, independent review evidence and live configuration/repeat freeze
+remain next steps. This leaves v1/raw/math/history/product versions and all seven #84 checks unchanged;
+no live calls, source execution, new risk acceptance or release is added.
+
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
