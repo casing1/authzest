@@ -1,0 +1,226 @@
+{
+  "schema_version": "0.1",
+  "kind": "evaluation-candidate-tasks",
+  "status": "draft-not-frozen",
+  "authorship": "assistant",
+  "cases": [
+    {
+      "id": "method-local-context",
+      "proposed_split": "development",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI, Security\n\napp = FastAPI()\n\n\ndef cache_hint():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef parse_window():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef require_editor():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\n@app.get(\"/parcels\", dependencies=[Depends(cache_hint)])\n@app.post(\n    \"/parcels\",\n    dependencies=[Security(require_editor, scopes=[\"parcel:write\"])],\n)\ndef parcels(window=Depends(parse_window)):\n    return {\"window\": window}\n"
+      },
+      "policies": [
+        "GET /parcels is intentionally public; cache_hint and parse_window are ordinary request handling, not access-control requirements.",
+        "POST /parcels is intended to be restricted to a principal allowed parcel:write. A Security declaration alone does not establish enforcement."
+      ],
+      "questions": [
+        {
+          "id": "post-direct-security-scopes",
+          "family": "declaration",
+          "text": "List the literal Security scope strings declared directly for POST /parcels, excluding other methods and callable sub-dependencies. Return unique strings sorted and comma-separated; return an empty string if none are directly declared.",
+          "answer_format": "sorted-csv"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policies, is the intended access policy across the GET and POST /parcels registrations public, restricted, or mixed? Use mixed when the registrations have different intended policies; report intent, not enforcement.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "runtime-authorization-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and policy establish runtime authorization correctness for POST /parcels? Answer unknown when correctness is not established; a Security declaration and restricted intent do not prove enforcement.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "composed-context-levels",
+      "proposed_split": "development",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI\n\nfrom api.pockets import router\n\n\ndef trace_request():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef mark_mount():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\napp = FastAPI(dependencies=[Depends(trace_request)])\napp.include_router(router, prefix=\"/v3\", dependencies=[Depends(mark_mount)])\n",
+        "api/pockets.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import APIRouter, Depends, Security\n\n\ndef parse_region():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef load_context():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\nrouter = APIRouter(prefix=\"/pockets\", dependencies=[Depends(parse_region)])\n\n\n@router.get(\"/recent\")\ndef recent(context=Security(load_context, scopes=[\"pocket:read\"])):\n    return {\"context\": context}\n"
+      },
+      "policies": [
+        "GET /v3/pockets/recent is intended to be restricted to a principal allowed pocket:read.",
+        "trace_request, mark_mount, and parse_region are ordinary request handling, not evidence of access-control enforcement. Inherited context and Security scopes are declaration facts only."
+      ],
+      "questions": [
+        {
+          "id": "composed-dependency-count",
+          "family": "declaration",
+          "text": "For the single GET /v3/pockets/recent registration, how many direct dependency declarations are attached across its application, include_router site, router constructor, and route parameters? Count declarations, not callable sub-dependencies or runtime executions. Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policy, is GET /v3/pockets/recent intended to be public or restricted? Report intent, not the security meaning of dependency names or runtime enforcement.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "runtime-authorization-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and policy establish runtime authorization correctness for GET /v3/pockets/recent? Answer unknown when correctness is not established; a declaration or stated intent is not proof of enforcement.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "keyword-path-coverage",
+      "proposed_split": "development",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/ready\")\ndef ready():\n    return {\"ready\": True}\n\n\n@app.post(path=\"/exports\")\ndef submit_export():\n    return {\"accepted\": True}\n"
+      },
+      "policies": [
+        "GET /ready is intentionally public.",
+        "POST /exports is intended to be restricted. The supplied source is declaration data, not evidence of deployment or successful enforcement."
+      ],
+      "questions": [
+        {
+          "id": "source-http-declaration-count",
+          "family": "declaration",
+          "text": "How many direct FastAPI HTTP decorator declarations appear in the supplied source? Count both positional-path and keyword-path decorators, regardless of the current parser's supported subset. Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "export-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policy, is POST /exports intended to be public or restricted? Report intent, not whether a parser inventories it or whether enforcement succeeds.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "deployed-endpoint-assurance",
+          "family": "runtime-assurance",
+          "text": "Does this source alone establish that exactly two HTTP endpoints are deployed and reachable in a running service? Answer unknown when actual deployment and reachability are not established; source declarations do not prove deployment.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "separate-application-owners",
+      "proposed_split": "reserved-evaluation",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import FastAPI, Security\n\n\ndef staff_context():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\npublic_app = FastAPI()\nstaff_app = FastAPI(dependencies=[Security(staff_context, scopes=[\"ops:read\"])])\n\n\n@public_app.get(\"/summary\")\ndef summary_public():\n    return {\"audience\": \"public\"}\n\n\n@staff_app.get(\"/summary\")\ndef summary_staff():\n    return {\"audience\": \"staff\"}\n"
+      },
+      "policies": [
+        "GET /summary belonging to public_app is intentionally public. An empty dependency list alone would not establish that intent.",
+        "GET /summary belonging to staff_app is intended to be restricted to a principal allowed ops:read. Same path and method do not merge the two application-owned source declarations."
+      ],
+      "questions": [
+        {
+          "id": "source-http-declaration-count",
+          "family": "declaration",
+          "text": "How many direct FastAPI HTTP decorator declarations appear in the supplied source? Keep declarations owned by different FastAPI applications distinct even when path and method match. Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policies, is the intended access policy across public_app's and staff_app's GET /summary registrations public, restricted, or mixed? Use mixed when the application-owned registrations have different intended policies; report intent, not enforcement.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "runtime-authorization-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and policy establish runtime authorization correctness for staff_app's GET /summary? Answer unknown when correctness is not established; an application-level Security declaration and restricted intent do not prove enforcement.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "unexpanded-provider-graph",
+      "proposed_split": "reserved-evaluation",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI, Security\n\n\ndef resolve_principal():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef build_context(principal=Security(resolve_principal, scopes=[\"ledger:read\"])):\n    return principal\n\n\napp = FastAPI()\n\n\n@app.get(\"/ledger\")\ndef ledger(context=Depends(build_context)):\n    return {\"context\": context}\n"
+      },
+      "policies": [
+        "GET /ledger is intended to be restricted to a principal allowed ledger:read.",
+        "Direct route declarations exclude callable sub-dependencies. A scope in a provider signature must not be mislabeled as a direct route Security declaration, and an unexpanded graph does not establish runtime enforcement."
+      ],
+      "questions": [
+        {
+          "id": "direct-route-security-scopes",
+          "family": "declaration",
+          "text": "List the literal Security scope strings declared directly in GET /ledger's decorator and handler parameters, excluding callable sub-dependencies such as build_context's signature. Return unique strings sorted and comma-separated; return an empty string if none are directly declared.",
+          "answer_format": "sorted-csv"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policy, is GET /ledger intended to be public or restricted? Report intent, not whether a callable graph is expanded or enforcement succeeds.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "runtime-authorization-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and policy establish runtime authorization correctness for GET /ledger? Answer unknown when correctness is not established; a provider name, nested scope declaration, or stated policy does not prove enforcement.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "uncalled-factory-source",
+      "proposed_split": "reserved-evaluation",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI\n\n\ndef observe_request():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\ndef make_service():\n    service = FastAPI(dependencies=[Depends(observe_request)])\n\n    @service.get(\"/drafts\")\n    def drafts():\n        return {\"drafts\": []}\n\n    return service\n"
+      },
+      "policies": [
+        "If make_service is called and its application is served, GET /drafts is intended to be restricted.",
+        "observe_request is ordinary request handling, not an access-control guarantee. A source route declared inside a factory does not prove that the factory is called or its application is deployed."
+      ],
+      "questions": [
+        {
+          "id": "source-http-declaration-count",
+          "family": "declaration",
+          "text": "How many direct FastAPI HTTP decorator declarations appear in the supplied source, including declarations inside function bodies even when no call is shown? Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policy, if make_service is called and its application is served, is GET /drafts intended to be public or restricted? Report conditional intent, not whether the factory is called or the endpoint is deployed.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "deployed-endpoint-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source establish that GET /drafts is deployed and reachable in a running service? Answer unknown when deployment and reachability are not established; a deferred factory declaration alone is not proof.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    },
+    {
+      "id": "status-probe-context",
+      "proposed_split": "reserved-evaluation",
+      "sources": {
+        "main.py": "\"\"\"Owned source-only candidate; read as data, never import or execute.\"\"\"\n\nfrom fastapi import Depends, FastAPI\n\napp = FastAPI()\n\n\ndef parse_display_units():\n    raise NotImplementedError(\"Source-only candidate\")\n\n\n@app.get(\"/status/summary\")\ndef status_summary(units=Depends(parse_display_units)):\n    return {\"status\": \"nominal\", \"units\": units}\n\n\n@app.get(\"/status/schema\")\ndef status_schema():\n    return {\"format\": \"status-v1\"}\n"
+      },
+      "policies": [
+        "GET /status/summary and GET /status/schema are both intentionally public: their declared policy requires no authenticated principal, role, ownership, or scope.",
+        "parse_display_units represents ordinary response formatting, not an access-control requirement. Its Depends declaration does not establish a public or restricted policy."
+      ],
+      "questions": [
+        {
+          "id": "source-http-declaration-count",
+          "family": "declaration",
+          "text": "How many direct FastAPI HTTP decorator declarations appear in the supplied source? Count the distinct summary and schema handler declarations, not successful requests or deployed endpoints. Answer a decimal integer.",
+          "answer_format": "integer"
+        },
+        {
+          "id": "registration-policy-intent",
+          "family": "policy-intent",
+          "text": "According to the supplied policies, is the intended access policy across GET /status/summary and GET /status/schema public, restricted, or mixed? Report the explicit intent, not an inference from dependency names or missing authentication syntax.",
+          "answer_format": "policy"
+        },
+        {
+          "id": "anonymous-reachability-assurance",
+          "family": "runtime-assurance",
+          "text": "Does the supplied source and stated intent establish that anonymous clients can successfully reach both status routes in a running deployment? Answer unknown when deployment and anonymous reachability are not established; public intent alone is not a runtime observation.",
+          "answer_format": "unknown-or-boolean"
+        }
+      ]
+    }
+  ]
+}

@@ -71,12 +71,18 @@ def test_committed_inventory_matches_without_promoting_reference_metadata():
     }
 
 
-def test_only_inventoried_artifacts_have_explicit_lf_checkout_attributes():
+def test_only_historical_and_fixed_reference_artifacts_have_explicit_lf_attributes():
     root = Path(__file__).resolve().parents[1]
     manifest = json.loads((root / MANIFEST_PATH).read_text(encoding="utf-8"))
-    expected = sorted(
-        [item["path"], "text", "eol=lf"] for group in manifest["groups"] for item in group["files"]
-    )
+    historical = [item["path"] for group in manifest["groups"] for item in group["files"]]
+    # New v1 reference pins are separate from the unchanged historical inventory.
+    reference = [
+        "scripts/evaluation_metrics.py",
+        "tests/fixtures/evaluation_reference/v1/manifest.json",
+        "tests/fixtures/evaluation_reference/v1/references.json",
+        "tests/fixtures/evaluation_reference/v1/tasks.json",
+    ]
+    expected = sorted([path, "text", "eol=lf"] for path in historical + reference)
     lines = (root / ".gitattributes").read_text(encoding="utf-8").splitlines()
     actual = sorted(
         line.split() for line in lines if line.strip() and not line.lstrip().startswith("#")

@@ -160,7 +160,12 @@ def _inputs(tasks: object) -> list[dict]:
 
 def public_inputs(root: Path) -> list[dict]:
     """Read only task/source data; never open references or include proposed splits."""
-    return _inputs(_load(root.resolve(), "tasks.json"))
+    return candidate_inputs(_load(root.resolve(), "tasks.json"))
+
+
+def candidate_inputs(tasks: object) -> list[dict]:
+    """Validate an in-memory proposal and project task-only data without any I/O."""
+    return _inputs(tasks)
 
 
 def _answer(value: object, answer_format: str) -> bool:
@@ -238,12 +243,15 @@ def _references(references: object, inputs: list[dict]) -> None:
                 )
 
 
-def check_candidate(root: Path, *, review: bool = False) -> dict:
-    """Check declared draft bindings, not label semantics, independence or readiness."""
-    root = root.resolve()
-    tasks = _load(root, "tasks.json")
+def validate_candidate_documents(
+    tasks: object, references: object, *, review: bool = False
+) -> dict:
+    """Inspect proposal documents as data, including archived proposal metadata.
+
+    This pure helper never establishes a freeze or approval. A separately validated
+    reference manifest may bind an unchanged proposal snapshot to a later decision.
+    """
     inputs = _inputs(tasks)
-    references = _load(root, "references.json")
     _references(references, inputs)
     result = {
         "kind": "evaluation-candidate-preflight",
@@ -274,6 +282,16 @@ def check_candidate(root: Path, *, review: bool = False) -> dict:
         result["reference_drafts"] = references["cases"]
         result["review_inputs"] = inputs
     return result
+
+
+def check_candidate(root: Path, *, review: bool = False) -> dict:
+    """Check declared draft bindings, not label semantics, independence or readiness."""
+    root = root.resolve()
+    tasks = _load(root, "tasks.json")
+    # Preserve fail-fast task validation before opening evaluator-only references.
+    candidate_inputs(tasks)
+    references = _load(root, "references.json")
+    return validate_candidate_documents(tasks, references, review=review)
 
 
 def main(argv: list[str] | None = None) -> int:

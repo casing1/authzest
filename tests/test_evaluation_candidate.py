@@ -150,6 +150,44 @@ def test_public_inputs_never_open_references_or_leak_answer_metadata(draft, monk
         assert private not in serialized
 
 
+def test_in_memory_proposal_validation_matches_preflight_without_io(draft, monkeypatch):
+    root, tasks, references = draft
+    expected = checker.check_candidate(root, review=True)
+    before = json.dumps({"tasks": tasks, "references": references}, sort_keys=True)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("in-memory document validation must not read files or execute code")
+
+    monkeypatch.setattr(Path, "open", forbidden)
+    monkeypatch.setattr(socket, "socket", forbidden)
+    monkeypatch.setattr(subprocess, "Popen", forbidden)
+    assert checker.validate_candidate_documents(tasks, references, review=True) == expected
+    assert checker.candidate_inputs(tasks) == [public_case(tasks["cases"][0])]
+    assert json.dumps({"tasks": tasks, "references": references}, sort_keys=True) == before
+
+
+def test_bad_tasks_are_rejected_before_opening_evaluator_references(draft, monkeypatch):
+    root, tasks, references = draft
+    tasks["schema_version"] = "invalid"
+    write_draft(root, tasks, references)
+    original_open = Path.open
+
+    def guarded_open(path, *args, **kwargs):
+        assert path.name != "references.json"
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", guarded_open)
+    with pytest.raises(checker.CandidateError, match="unsupported draft schema"):
+        checker.check_candidate(root)
+
+
+def test_pure_document_validator_cannot_relabel_original_proposals_as_approved(draft):
+    _, tasks, references = draft
+    references["review_status"] = "approved"
+    with pytest.raises(checker.CandidateError, match="cannot establish exact reference approval"):
+        checker.validate_candidate_documents(tasks, references)
+
+
 def test_input_change_rejects_stale_reference_binding(draft):
     root, tasks, references = draft
     tasks["cases"][0]["sources"]["app/main.py"] += "# changed\n"

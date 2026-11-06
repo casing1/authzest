@@ -17,3 +17,7 @@ tests/fixtures/owner_case_review/observed_check.json text eol=lf
 tests/fixtures/owner_case_review/observed_check_recipe_1_1.json text eol=lf
 tests/fixtures/owner_case_review/proposed_review.json text eol=lf
 tests/fixtures/owner_policy/cases.json text eol=lf
+scripts/evaluation_metrics.py text eol=lf
+tests/fixtures/evaluation_reference/v1/manifest.json text eol=lf
+tests/fixtures/evaluation_reference/v1/references.json text eol=lf
+tests/fixtures/evaluation_reference/v1/tasks.json text eol=lf
