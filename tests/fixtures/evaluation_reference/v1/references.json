@@ -1,0 +1,297 @@
+{
+  "schema_version": "0.1",
+  "kind": "evaluation-reference-draft",
+  "authorship": "assistant",
+  "review_status": "pending-exact-maintainer-review",
+  "reviewer": null,
+  "review_record": null,
+  "cases": [
+    {
+      "id": "method-local-context",
+      "input_sha256": "ad2b93777cb6fb81a0655d85856dabcecba57c0b618b226a4ccd4f65593fb3b0",
+      "answers": [
+        {
+          "question_id": "post-direct-security-scopes",
+          "expected": "parcel:write",
+          "rationale": "The POST decorator directly declares Security(require_editor, scopes=['parcel:write']); the GET decorator and shared Depends(parse_window) do not add POST Security scope strings.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 21,
+              "line_end": 25
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "mixed",
+          "rationale": "The supplied policies state 'GET /parcels is intentionally public' and 'POST /parcels is intended to be restricted to a principal allowed parcel:write.' Different stated intents produce mixed; the label is not inferred from dependency syntax.",
+          "source_refs": []
+        },
+        {
+          "question_id": "runtime-authorization-assurance",
+          "expected": null,
+          "rationale": "The POST declaration names a literal scope, but require_editor is a source-only placeholder and no deployed enforcement observation is supplied. Restricted intent and a Security declaration do not establish runtime authorization correctness; unknown is not a safe or vulnerable verdict.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 16,
+              "line_end": 17
+            },
+            {
+              "path": "main.py",
+              "line_start": 21,
+              "line_end": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "composed-context-levels",
+      "input_sha256": "8493c21c0f47c9cdc64e366aa391a4d73685556eef0411b4e574ad535e09ffce",
+      "answers": [
+        {
+          "question_id": "composed-dependency-count",
+          "expected": "4",
+          "rationale": "The application declares trace_request, the include site mark_mount, the router parse_region, and the handler parameter load_context: four declaration sites. No callable graph or runtime execution count is inferred.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 16,
+              "line_end": 17
+            },
+            {
+              "path": "api/pockets.py",
+              "line_start": 14,
+              "line_end": 18
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "restricted",
+          "rationale": "The supplied policy states 'GET /v3/pockets/recent is intended to be restricted to a principal allowed pocket:read.' This is explicit policy intent, not an inference from the scope or dependency names.",
+          "source_refs": []
+        },
+        {
+          "question_id": "runtime-authorization-assurance",
+          "expected": null,
+          "rationale": "The supplied modules declare dependency context, but their provider bodies are source-only placeholders and no deployed authorization observation is supplied. Restricted intent and a literal scope do not establish runtime authorization correctness; unknown is not a verified-safe or verified-vulnerable verdict.",
+          "source_refs": [
+            {
+              "path": "api/pockets.py",
+              "line_start": 10,
+              "line_end": 18
+            },
+            {
+              "path": "main.py",
+              "line_start": 16,
+              "line_end": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keyword-path-coverage",
+      "input_sha256": "6205206272e9b93fd2a7846c6df842dfb57624a403088572d516e2be8c4146d6",
+      "answers": [
+        {
+          "question_id": "source-http-declaration-count",
+          "expected": "2",
+          "rationale": "Both app.get('/ready') and app.post(path='/exports') are source HTTP decorator declarations. The current parser's omission of unsupported keyword-path syntax must not change source ground truth from two to one.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 8,
+              "line_end": 13
+            }
+          ]
+        },
+        {
+          "question_id": "export-policy-intent",
+          "expected": "restricted",
+          "rationale": "The supplied policy states: 'POST /exports is intended to be restricted.' That intent is independent of current parser coverage and does not establish enforcement.",
+          "source_refs": []
+        },
+        {
+          "question_id": "deployed-endpoint-assurance",
+          "expected": null,
+          "rationale": "The two source decorators establish declarations, not that this module is loaded by a running server or either endpoint is reachable. No deployment observation is supplied; answer unknown rather than equating a declaration count with a running endpoint count.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 5,
+              "line_end": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "separate-application-owners",
+      "input_sha256": "7525cf094f5bca1ca79419da4553b44eb1a1d60879d72672d52a65beb76685a4",
+      "answers": [
+        {
+          "question_id": "source-http-declaration-count",
+          "expected": "2",
+          "rationale": "There is one GET decorator owned by public_app and one owned by staff_app. Matching method and path do not collapse two separately owned source declarations.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 10,
+              "line_end": 11
+            },
+            {
+              "path": "main.py",
+              "line_start": 14,
+              "line_end": 19
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "mixed",
+          "rationale": "The supplied policies state that public_app's GET /summary is intentionally public and staff_app's GET /summary is intended to be restricted to a principal allowed ops:read. Their explicitly different intended policies produce mixed; an empty dependency context alone would not establish public intent.",
+          "source_refs": []
+        },
+        {
+          "question_id": "runtime-authorization-assurance",
+          "expected": null,
+          "rationale": "staff_app declares an application-level Security scope, but staff_context is a source-only placeholder and no deployed enforcement observation is supplied. Neither that declaration nor stated restricted intent establishes runtime authorization correctness.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 6,
+              "line_end": 11
+            },
+            {
+              "path": "main.py",
+              "line_start": 19,
+              "line_end": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unexpanded-provider-graph",
+      "input_sha256": "988108dcae031bc94f485c750ddae4b616805a0f94d3c5fb80a537e9e35fe7e7",
+      "answers": [
+        {
+          "question_id": "direct-route-security-scopes",
+          "expected": "",
+          "rationale": "The route decorator and handler parameter contain no direct Security call. ledger:read occurs in build_context's signature, which this question explicitly excludes; empty here does not mean no scope appears anywhere in the source.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 10,
+              "line_end": 10
+            },
+            {
+              "path": "main.py",
+              "line_start": 17,
+              "line_end": 18
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "restricted",
+          "rationale": "The supplied policy states 'GET /ledger is intended to be restricted to a principal allowed ledger:read.' That intent does not depend on whether a scope is direct or nested and is not an enforcement guarantee.",
+          "source_refs": []
+        },
+        {
+          "question_id": "runtime-authorization-assurance",
+          "expected": null,
+          "rationale": "The source supplies a nested scope declaration and a placeholder principal provider, not a deployed authorization observation. An unexpanded dependency graph and restricted intent do not establish correctness; answer unknown without classifying this as confirmed protection or a confirmed vulnerability.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 6,
+              "line_end": 11
+            },
+            {
+              "path": "main.py",
+              "line_start": 17,
+              "line_end": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uncalled-factory-source",
+      "input_sha256": "1f79b3f5587e3e836a91733a6955700e391774548337a57f943cd098711307cd",
+      "answers": [
+        {
+          "question_id": "source-http-declaration-count",
+          "expected": "1",
+          "rationale": "The single service.get('/drafts') decorator is a source declaration inside make_service. Counting its syntax does not require or prove that the factory runs.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 10,
+              "line_end": 14
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "restricted",
+          "rationale": "The supplied policy states 'If make_service is called and its application is served, GET /drafts is intended to be restricted.' This conditional intent is explicit and does not establish a factory call, deployment, or access-control behavior.",
+          "source_refs": []
+        },
+        {
+          "question_id": "deployed-endpoint-assurance",
+          "expected": null,
+          "rationale": "The application construction and route declaration are deferred inside a factory with no call shown, and no serving or reachability observation is supplied. Unknown records the missing runtime evidence; it is not a claim that no external caller exists.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 10,
+              "line_end": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "status-probe-context",
+      "input_sha256": "0711430ec27a7272f240f6805a1fd4efc674abe391dd323c7b745612f7754635",
+      "answers": [
+        {
+          "question_id": "source-http-declaration-count",
+          "expected": "2",
+          "rationale": "The supplied source has app.get('/status/summary') and app.get('/status/schema') on distinct handlers. These are two source decorator declarations, not evidence that a deployment serves two reachable endpoints.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 12,
+              "line_end": 18
+            }
+          ]
+        },
+        {
+          "question_id": "registration-policy-intent",
+          "expected": "public",
+          "rationale": "The supplied policy explicitly states that both status routes are intentionally public and require no authenticated principal, role, ownership, or scope. The public label comes from that policy, not absent Security syntax or the ordinary Depends declaration.",
+          "source_refs": []
+        },
+        {
+          "question_id": "anonymous-reachability-assurance",
+          "expected": null,
+          "rationale": "The source and policy describe intended public routes, but no serving configuration, anonymous request observation, or successful deployed response is supplied. Unknown records missing runtime evidence and neither denies nor guarantees anonymous reachability.",
+          "source_refs": [
+            {
+              "path": "main.py",
+              "line_start": 5,
+              "line_end": 19
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -157,7 +157,10 @@ execution. This delivery published no release; alpha.3 is unchanged.
 The [historical evaluation inventory](development/EVALUATION_INVENTORY.md) completed
 [#108](https://github.com/casing1/authzest/issues/108) through
 [PR #109](https://github.com/casing1/authzest/pull/109). It checks existing artifact bytes, not a new
-benchmark or model quality. #84's independent reference review, dataset freeze and comparison remain open.
+benchmark or model quality. The separate [v1 reference protocol](development/EVALUATION_PROTOCOL.md)
+now fixes seven scenarios/21 current reference values following the November 6 user confirmation,
+preserving the original proposal metadata. This is not authenticated independent review or a frozen
+live benchmark; #84's trial configuration and measured comparison remain open.
 
 [Prerelease preparation #83](https://github.com/casing1/authzest/issues/83) continues separately.
 [PR #114](https://github.com/casing1/authzest/pull/114) delivered nonpublishing native preview checks,
@@ -245,7 +248,7 @@ docs/
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                               |
 | Replaceable models and measurable value                                 | [Model strategy](development/MODEL_STRATEGY.md)                            | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)                                  |
 | Historical evaluation artifact integrity                                | [Evaluation inventory](development/EVALUATION_INVENTORY.md)                | [평가 자료 목록](i18n/ko/development/EVALUATION_INVENTORY.md)                       |
-| Unapproved candidate tasks, review packet and comparison protocol       | [Draft evaluation protocol](development/EVALUATION_PROTOCOL.md)            | [평가 초안 프로토콜](i18n/ko/development/EVALUATION_PROTOCOL.md)                    |
+| Fixed reference values, archived draft and comparison protocol          | [Evaluation protocol](development/EVALUATION_PROTOCOL.md)                  | [평가 프로토콜](i18n/ko/development/EVALUATION_PROTOCOL.md)                         |
 | Versioned diagnostics and registration evidence                         | [Report contract](reference/REPORT_CONTRACT.md)                            | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)                                 |
 | Offline evidence-linked expected outcomes                               | [Expectation contract](reference/EXPECTATION_CONTRACT.md)                  | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)                         |
 | Contributions and commit conventions                                    | [Contributing](../CONTRIBUTING.md)                                         | [기여 안내](i18n/ko/CONTRIBUTING.md)                                                |

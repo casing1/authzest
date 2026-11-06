@@ -147,7 +147,9 @@ Windows/frozen의 활성 파일 실행은 여전히 지원하지 않습니다. U
 [과거 평가 자료 목록](development/EVALUATION_INVENTORY.md)은
 [PR #109](https://github.com/casing1/authzest/pull/109)로
 [#108](https://github.com/casing1/authzest/issues/108)을 완료했습니다. 기존 자료의 바이트를 검사하며
-새 벤치마크나 모델 품질을 검증하지 않습니다. #84의 독립 정답 검토·평가셋 고정·비교는 계속 미완료입니다.
+새 벤치마크나 모델 품질을 검증하지 않습니다. 별도 [v1 정답 프로토콜](development/EVALUATION_PROTOCOL.md)은
+11월 6일 사용자 확인에 따라 7사례·현재 정답 21개를 고정하고 원래 제안 메타데이터를 보존합니다.
+이는 인증한 독립 검토나 실제 벤치마크 전체 동결이 아니며 #84의 실행 설정·비교 측정은 계속 미완료입니다.
 
 별도로 [#83 프리릴리즈 준비](https://github.com/casing1/authzest/issues/83)를 계속합니다.
 [PR #114](https://github.com/casing1/authzest/pull/114)는 비배포 native 미리보기 검사를,
@@ -233,7 +235,7 @@ docs/
 | 별도 승인하는 고정 fixture 런타임 검사           | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                               |
 | 교체 가능한 모델과 측정할 가치                   | [Model strategy](../../development/MODEL_STRATEGY.md)                            | [모델 전략](development/MODEL_STRATEGY.md)                                  |
 | 과거 평가 자료의 무결성                          | [Evaluation inventory](../../development/EVALUATION_INVENTORY.md)                | [평가 자료 목록](development/EVALUATION_INVENTORY.md)                       |
-| 미승인 평가 후보·검토 자료·비교 기준             | [Draft evaluation protocol](../../development/EVALUATION_PROTOCOL.md)            | [평가 초안 프로토콜](development/EVALUATION_PROTOCOL.md)                    |
+| 확정 정답·보존 초안·비교 기준                    | [Evaluation protocol](../../development/EVALUATION_PROTOCOL.md)                  | [평가 프로토콜](development/EVALUATION_PROTOCOL.md)                         |
 | 버전이 있는 진단과 등록 근거                     | [Report contract](../../reference/REPORT_CONTRACT.md)                            | [리포트 계약](reference/REPORT_CONTRACT.md)                                 |
 | 오프라인 근거 연결 예상 결과                     | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md)                  | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)                         |
 | 기여와 커밋 규칙                                 | [Contributing](../../../CONTRIBUTING.md)                                         | [기여 안내](CONTRIBUTING.md)                                                |

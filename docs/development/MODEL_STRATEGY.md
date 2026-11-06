@@ -56,34 +56,34 @@ deterministic regressions; verification and delivery are tracked in the issue. T
 reliability work, not a production Codex fix, new live-AI acceptance or independent model evaluation.
 The published alpha.4 tag/assets are unchanged.
 
-Next, freeze independently reviewed reference tasks and labels before prompt iteration, then measure
-the three-mode hypothesis under [#84](https://github.com/casing1/authzest/issues/84). Historical model
+Next, collect the missing independent-reference review attestation and fix the separate live-trial
+configuration before prompt iteration or measuring the three-mode hypothesis under
+[#84](https://github.com/casing1/authzest/issues/84). Historical model
 inputs and development cases cannot become fresh holdouts. Use
 [#85](https://github.com/casing1/authzest/issues/85) to freeze a reproducible owned-scenario demo,
 installation instructions, limitations and OSS contribution evidence. If a measurement is unavailable,
 report that gap rather than manufacturing a model-quality claim. Complete the bounded course scope
 before adding models, another transport, a complete Python interpreter or AI GUI.
 
-The separate [draft evaluation protocol](EVALUATION_PROTOCOL.md) supplies seven source-data candidates,
-21 assistant-authored reference proposals and an inert preflight/review packet. The maintainer requested
-a public-intent control before freeze; this draft places it in reserved evaluation. The original six
-scenarios/18 references
-and their splits remain unchanged. The revised split is three development/four reserved, with four
-restricted/two mixed/one public policy proposals: a public control is present, not class balance.
-Reserved evaluation includes only one public control, and the public proposals are not secret or
-guaranteed unseen holdouts. Do not use them for prompt tuning or claim fresh independent trials.
-Its explicit policy establishes public intent, not runtime enforcement; ordinary formatting DI is not
-access-control evidence. All 21 exact references are pending review, not frozen or measured. Neither
-the earlier positive reaction nor merging preparation approves the original 18 or the added three.
-Review the revised set before candidate integration/scoring, freeze or comparison-harness
-implementation. Separately develop generic pure metric mathematics in the source-checkout-only
-`scripts/evaluation_metrics.py`; `python -m pytest tests/test_evaluation_metrics.py` uses unrelated
-synthetic unit data, not the actual seven scenarios/21 questions. The earlier deferral concerns the
-candidate workflow; this independent math scope does not imply previous label approval. It adds no
-product command, file/network/provider/source/runner import, schema relaxation or live comparison.
+The separate [evaluation protocol](EVALUATION_PROTOCOL.md) records November 6 direct user acceptance
+of the current 21 reference values in seven assistant-authored scenarios. v1 fixes source, questions,
+splits, reference values and `scripts/evaluation_metrics.py` math, not a live benchmark. Raw task/
+reference copies preserve their historical pending proposal metadata; the new manifest records
+`accepted-current-reference-values` from `direct-user-chat-confirmation`, recorded by assistant.
+It neither authenticates identity nor attests all-source/rationale/citation inspection or human
+authorship. `independent_review_attested` is false; earlier preparation is not retroactively approved.
+The split stays three development/four reserved with four restricted/two mixed/one public policy
+values. One reserved public control is not class balance or a secret/guaranteed unseen holdout.
+Explicit public intent and ordinary formatting DI still establish no runtime authorization guarantee.
+The source-only `python -m scripts.evaluate_reference` preflight checks the pinned snapshot;
+`--control` creates all-unknown synthetic task-only responses before references are loaded. This
+control is not a static baseline, a model run or evidence of model quality. Generic unit math tests
+remain separate from this pinned reference adapter; changed v1 data/math requires reviewed v2.
+Live prompts/model/configuration/repeat budget remain unfixed and `live_benchmark_ready` is false.
 Citation/prose support, usage, latency, repeats, reviewer effort and workflow measurements remain
-unmeasured null placeholders, not AI-quality evidence. Candidate data/bindings, historical corpus
-bytes and observations remain unchanged; no #84 acceptance item is complete.
+unmeasured/null. No product command/schema relaxation, actual model/source/worker/workflow execution,
+release or risk acceptance is added; historical bytes/observations stay unchanged and all seven #84
+checklist items remain pending.
 
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not

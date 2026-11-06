@@ -147,23 +147,25 @@ does not approve all #81 extensions or authorize provider calls, policy executio
 The [historical evaluation inventory](EVALUATION_INVENTORY.md) completed
 [#108](https://github.com/casing1/authzest/issues/108) through PR #109. It checks existing artifact
 bytes and preserves their distinct provenance; it does not select or freeze a new benchmark.
-#84's independent reference review and measured comparison remain open.
-The [draft evaluation protocol](EVALUATION_PROTOCOL.md) now contains seven source-data candidates and
-21 assistant-authored reference proposals with an inert preflight/review packet. At the maintainer's
-request, append one public-intent control before freeze; this draft places it in reserved evaluation.
-Preserve the original six scenarios/18 proposals and their splits exactly. The split is now three
-development/four reserved;
-policy proposals are four restricted/two mixed/one public, not balanced. Reserved evaluation has only
-one public control; these public proposals are not secret or guaranteed unseen holdouts.
-All 21 exact references await review: the earlier positive reaction is not approval of the original
-18 or the new three. Review the revised set before candidate integration, actual candidate scoring,
-freeze or its comparison harness. Separately develop source-checkout-only pure mathematics in
-`scripts/evaluation_metrics.py`, tested only with unrelated synthetic unit data via
-`python -m pytest tests/test_evaluation_metrics.py`. That module does not read or score the actual
-candidate, approve labels, import a provider/source/runner, relax a product schema or implement the
-live comparison. Candidate data/bindings and historical artifacts remain unchanged. The earlier
-deferral still applies to the candidate workflow, not this independent math slice; it does not imply
-earlier label approval. No measured comparison or #84 acceptance item is complete.
+#84's independent-review attestation and measured comparison remain open.
+The [evaluation protocol](EVALUATION_PROTOCOL.md) now records the user's November 6 direct acceptance
+of the current exact 21 reference values across seven assistant-authored scenarios. The v1 snapshot
+at `tests/fixtures/evaluation_reference/v1/` fixes source, questions, splits, reference values and
+scoring math; its raw task/reference copies intentionally preserve the original pending proposal
+metadata. The new manifest records `accepted-current-reference-values` from
+`direct-user-chat-confirmation`, recorded by assistant, not authenticated identity, human authorship
+or an all-rationale/citation inspection. `independent_review_attested` remains false. Earlier positive
+reactions/preparatory merges are not retroactively relabeled as approval.
+The unchanged split is three development/four reserved, with four restricted/two mixed/one public
+policy values. The single reserved public control is not balanced coverage, a secret/unseen holdout
+or a runtime guarantee. Source-checkout preflight uses `python -m scripts.evaluate_reference`
+(`--json` optional); `--control` builds task-only all-unknown synthetic responses before references
+are loaded, not a static baseline or model-quality result. The existing pure math remains separate
+from this pinned offline reference adapter. v1 changes need a new reviewed v2, not refreshed hashes.
+Next collect the missing independent/inspection review evidence and separately fix any live prompt,
+model/configuration and repeat budget. `live_benchmark_ready` remains false; no live model/source/
+worker/workflow execution, release or risk acceptance is added. Historical artifacts remain unchanged,
+and all seven #84 checklist items remain pending.
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 

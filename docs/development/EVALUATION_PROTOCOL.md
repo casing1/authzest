@@ -1,27 +1,27 @@
-# Draft evaluation protocol
+# Evaluation protocol and v1 reference snapshot
 
 [Documentation](../README.md) · English · [한국어](../i18n/ko/development/EVALUATION_PROTOCOL.md)
 
-This is an offline preparation slice of [#84](https://github.com/casing1/authzest/issues/84),
-not a frozen benchmark, evaluation result or completed acceptance criterion. It proposes seven newly
-owned synthetic scenarios, three development and four reserved-evaluation scenarios, with three
-questions each: 21 questions in total. The sources and reference answers are assistant-authored drafts;
-every exact reference still requires maintainer review. A general instruction to proceed, approval of
-policy criteria, passing tests or this PR's merge does not approve those individual answers.
+This is an offline reference-preparation slice of [#84](https://github.com/casing1/authzest/issues/84),
+not a complete frozen live benchmark, model evaluation result or completed acceptance criterion.
+It contains seven owned synthetic scenarios, three development and four reserved-evaluation scenarios,
+with three questions each: 21 questions in total. On November 6 the user directly confirmed the
+current exact 21 reference values in reply to that specific acceptance question. The decision is recorded as
+`accepted-current-reference-values`, with source `direct-user-chat-confirmation` and `recorded_by`
+assistant. Source and reference authorship remains assistant, not human.
 
-The maintainer requested a public-intent control before freeze; this draft places the added scenario
-`status-probe-context` in reserved evaluation. It changes the candidate identity while preserving the
-original six scenarios,
-their splits and their 18 reference proposals exactly; none is reassigned or retuned. The earlier
-positive reaction to the draft is not recorded as approval of those 18 answers or the three new ones.
-All 21 exact references remain pending review, and the revised candidate is not frozen. Candidate
-integration, scoring of those references and the comparison harness remain deferred until that
-revised-set review. This does not prevent separately developing candidate-independent pure metric
-mathematics with unrelated synthetic unit-test data, as scoped below; it is not prior label approval.
+The user had requested a public-intent control; preparation placed `status-probe-context` in reserved
+evaluation without changing the original six scenarios, their splits or their 18 reference proposals.
+The earlier positive reaction and preparatory merges remain nonapprovals at those historical points;
+the November 6 direct confirmation is the new reference-values decision, not a retroactive approval.
+The v1 snapshot fixes source, questions, splits, reference values and scoring math only. Independent
+review attestation and an all-source/rationale/citation inspection attestation were not collected;
+`independent_review_attested` is false. Live prompts, model/configuration and repeat budget remain
+unfixed, `live_benchmark_ready` is false, and all seven #84 checklist items remain pending.
 
 The [historical inventory](EVALUATION_INVENTORY.md) and its existing files, identities and approvals
-remain unchanged. The new candidate is not another observation of those cases. Follow the
-[model strategy](MODEL_STRATEGY.md) before freezing or making model-quality claims.
+remain unchanged. The new reference set is not another observation of those cases. Follow the
+[model strategy](MODEL_STRATEGY.md) before any live trial or model-quality claim.
 
 ## Candidate and read-only preflight
 
@@ -45,7 +45,10 @@ adds the exact proposed-answer/rationale review packet. That packet must never b
 Human review output includes numbered, escaped virtual-source lines and question text;
 review JSON includes the bound public inputs alongside the draft references.
 Successful output still declares `draft-not-frozen`, execution not run, zero live trials and
-benchmark readiness false. Exit `0` means preflight agreement, not correct labels, completed review,
+benchmark readiness false. That checker reads the unchanged original proposal metadata, which
+intentionally retains its historical pending status; it does not read the new v1 decision manifest.
+Do not mistake the archived proposal state for the current reference-values decision, or rewrite it
+as though approval existed earlier. Exit `0` means preflight agreement, not correct labels, completed review,
 performance, permission or security. Exit `1` indicates invalid candidate data or a failed check;
 exit `2` indicates invalid command-line usage.
 
@@ -63,7 +66,57 @@ historical inventory hash, source revision, approval identity or authenticated r
 references, rationales, split and authorship metadata; preflight reads references separately afterward.
 This separation is a leakage check, not an implemented live comparison adapter or consent workflow.
 
-## Proposed task families and comparable inputs
+## Accepted v1 reference snapshot and offline checks
+
+The source-checkout-only snapshot is
+`tests/fixtures/evaluation_reference/v1/{tasks.json,references.json,manifest.json}`. Tasks and
+references are raw-byte copies of the accepted proposal files, including their original historical
+pending/authorship metadata. The separate manifest records the current decision, its November 6
+date and provenance using `current-21-reference-values-confirmed`, without reproducing chat text.
+It does not authenticate a GitHub identity, provide a signature or attest that
+every rationale/citation was inspected. The assistant-recorded chat decision is not tool-authenticated
+reviewer identity or independent/blinded review.
+
+The manifest pins source revision `ee1b988a11d8ce561f6e155451ef6e40c6a5c318`, combined canonical
+task/reference candidate identity `1a84d57c0ea80d9d4f5bf53c1a1676c08a8a66f8902354fb2424285b12bae938`, raw hashes of both
+copied data files and the current `scripts/evaluation_metrics.py` bytes. See the manifest for all
+complete pinned values. These bindings establish agreement, not authenticity or semantic truth.
+Treat v1 as an immutable versioned snapshot: changed data or math needs a new reviewed v2, not
+refreshed v1 hashes.
+
+```bash
+python -m scripts.evaluate_reference
+python -m scripts.evaluate_reference --json
+python -m scripts.evaluate_reference --control
+python -m scripts.evaluate_reference --control --json
+```
+
+Default output is a read-only pinned-reference preflight, not a trial or score. `--control` first builds
+an all-unknown synthetic response from task-only inputs, before loading evaluator references, then
+uses the pinned math. It does not copy labels into a perfect response. Its deliberate control has
+seven cases/21 questions, 14 answerable references and seven required unknowns:
+
+| Control measure           | Expected synthetic value |
+| ------------------------- | ------------------------ |
+| Answered accuracy         | 0/0, null                |
+| Task coverage             | 0/21                     |
+| Required-unknown handling | 7/7                      |
+| False abstention          | 14/14                    |
+| Invalid cases             | 0/7                      |
+
+These are intentionally synthetic mathematics checks, not the static baseline, model quality,
+independent review or a completed comparison. Citation/prose support, latency, provider usage,
+repeats, reviewer effort and workflow observations remain unmeasured/null.
+
+`reference_inputs(root)` reads task-only public inputs. `load_reference(root)` strictly checks the
+three pinned snapshot files and the pinned math in both the trusted owned checkout and supplied
+root; it does not dynamically import a target-root module. This checks source bytes, not Python memory
+attestation or a hostile-filesystem sandbox. `score_reference(root, responses)` accepts
+caller-normalized response records and uses the existing math. None calls a provider, imports or
+executes the embedded source, runs a worker/workflow, or supplies a live prompt/model/trial policy.
+This adds no product command/schema change, release or risk acceptance.
+
+## Task families and comparable inputs
 
 Each scenario has one question in each family:
 
@@ -73,19 +126,19 @@ Each scenario has one question in each family:
 | Policy intent     | The public/restricted intent explicitly supplied with the scenario.               | That the application enforces that intent.                      |
 | Runtime assurance | Unknown: these source-only scenarios do not establish general HTTP authorization. | An endpoint pass, verified vulnerability or security guarantee. |
 
-The reserved cases are public assistant-authored proposals, not secret, independently certified or
+The reserved cases are public assistant-authored data, not secret, independently certified or
 provably unseen holdouts. Do not tune prompts on them. Record any exposure or use, and do not relabel
 development cases as fresh holdouts. Seven scenarios support a small descriptive comparison, not a
 representative population or statistically established superiority.
-The proposed policy answers are four restricted, two mixed and one public. Development retains two
-restricted/one mixed/no public proposal; reserved evaluation now has two restricted/one mixed/one
+The accepted policy values are four restricted, two mixed and one public. Development retains two
+restricted/one mixed/no public value; reserved evaluation has two restricted/one mixed/one
 public. A public answer is now present in reserved evaluation, but its single public control cannot
 establish representative coverage. This remains a small, unbalanced policy-classification draft.
 The new control declares public intent for two informational GET routes; its ordinary dependency is
 formatting only, not authorization evidence. Public intent comes from the explicit supplied policy,
 not from a missing authentication dependency or the presence of `Depends`. It does not establish
-runtime enforcement. Its proposed answers are two route declarations, public intent and unknown
-runtime assurance, all awaiting exact review.
+runtime enforcement. Its accepted reference values are two route declarations, public intent and
+unknown runtime assurance; acceptance is not an independent-review or runtime guarantee.
 
 Explicit-policy questions are intent-reading controls, not tests of access-control enforcement.
 The seven unknown assurance questions deliberately lack runtime evidence; they do not establish
@@ -94,8 +147,8 @@ Source declaration truth is not parser self-agreement: the keyword-path scenario
 declarations even if the supported inventory emits one. An incomplete inventory is a lower bound,
 not a correct whole-source count; the static baseline must abstain from an unestablished total.
 
-Before a future trial, freeze the task wording, source/policy scope, response schema, prompt and
-configuration. Compare:
+The v1 reference snapshot fixes task wording and source/policy scope. Before a future trial, separately
+fix its response schema, prompt, model/configuration and repetition budget. Compare:
 
 1. Static-only: deterministic supported declaration facts; abstain from policy interpretation and
    runtime assurance. Do not read evaluator references to manufacture static answers.
@@ -109,7 +162,8 @@ Do not include expected answers, review packets, answer-revealing metadata or la
 Token counts need not be equal; record actual available usage rather than asserting equal cost.
 Set repeat counts and ordering before trials, keep failures visible, and report variation by case.
 The existing historical scorer special-cases the question ID `policy`; it is not a new-family scoring
-implementation. No new live runner, scoring result or provider integration is delivered by this draft.
+implementation. The v1 helper supplies only offline preflight/scoring and a synthetic control, not
+a live runner, model result or provider integration.
 
 ## Candidate-independent offline mathematics
 
@@ -138,16 +192,17 @@ python -m pytest tests/test_evaluation_metrics.py
 ```
 
 This command checks generic math using synthetic unit data only. Passing such tests would establish
-neither correct candidate labels nor a measured model-quality result. Exact candidate review,
-integration, freeze and any future comparison retain the boundaries stated elsewhere in this protocol.
+neither correct reference labels nor a measured model-quality result. The separate v1 helper now
+connects the accepted reference snapshot to that math; independent review attestation and any future
+live comparison retain the boundaries stated elsewhere in this protocol.
 
 ## Predeclared measurement rules
 
 Keep declaration, policy-intent and runtime-assurance results separate. One complete mode/repetition
 has 21 question opportunities, seven per family, nine in development and 12 in reserved evaluation.
-There are 14 proposed answerable references and seven required-unknown references.
-These counts are provisional until exact review and
-freeze; later revisions require a new reviewed identity, not silent denominator changes.
+There are 14 accepted answerable references and seven required-unknown references. These reference
+denominators are fixed by v1; later changes need a new reviewed version/identity, not silent
+denominator changes or refreshed v1 hashes. No live-trial count or repeat budget is fixed here.
 
 | Measure                   | Numerator / denominator                                                                                     |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -179,11 +234,13 @@ harness only and cannot establish AI value or a model-upgrade recommendation.
 
 ## Review, freeze and workflow boundaries
 
-Before freezing, a maintainer must inspect every exact source/question/reference/rationale/citation,
-accept or correct each answer, and record the reviewed identity, authorship, reviewer decision and
-remaining uncertainty. An assistant-recorded decision is not authenticated reviewer attestation.
-Freeze the approved artifacts and prompt/configuration before using reserved cases for evaluation;
-changes or leakage need explicit versioning and reconsideration of the affected comparison.
+The November 6 direct confirmation accepts the current exact reference values, not an attestation
+that every source/question/rationale/citation was inspected. That inspection attestation was not
+collected, and `independent_review_attested` remains false. Before claiming #84's independent-review
+criterion, collect its actual review evidence and remaining uncertainty without inventing authorship,
+signed approval or authenticated identity. An assistant-recorded decision is not authenticated reviewer
+attestation. Fix the separate prompt/model/configuration/repetition policy before using reserved cases
+for a live evaluation; changes or leakage need versioning and reconsideration of the comparison.
 
 Exact-diff acceptance, decline, stale input, preservation of user edits, check failure and recovery
 belong to a separate workflow outcome table. Existing accepted bounded-core history is evidence of
@@ -192,5 +249,5 @@ Do not pool policy-test pass counts, declaration questions and workflow outcomes
 
 Any later live comparison needs a separately scoped source/account/model/turn/time decision and a
 predeclared repetition budget; label review and preflight supply neither. Source sharing does not
-authorize execution or patch application. This draft closes no #84 checklist item and authorizes no
+authorize execution or patch application. This reference slice closes no #84 checklist item and authorizes no
 live call, worker execution, application, release or new risk acceptance.

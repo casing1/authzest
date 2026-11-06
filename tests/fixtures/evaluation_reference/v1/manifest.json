@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "kind": "evaluation-reference-freeze",
+  "version": "v1",
+  "status": "reference-values-fixed",
+  "source_revision": "ee1b988a11d8ce561f6e155451ef6e40c6a5c318",
+  "candidate_sha256": "1a84d57c0ea80d9d4f5bf53c1a1676c08a8a66f8902354fb2424285b12bae938",
+  "authorship": "assistant",
+  "task_sha256": "99ffd0a47f9f26c041f39669c29e8d0939aa8bdbb51861c2f18de81e34860094",
+  "reference_sha256": "acc988e3586bd8841fc04865f061e7bdcfab203596df839a00343595f35db45b",
+  "metrics_sha256": "bbe440f9286b0333824d5312b032f2cdd0877a549f3917caea1e994a50fb3a44",
+  "metrics_schema_version": "0.1",
+  "counts": {
+    "cases": 7,
+    "questions": 21,
+    "answerable": 14,
+    "required_unknown": 7,
+    "development_cases": 3,
+    "reserved_cases": 4
+  },
+  "decision": {
+    "value": "accepted-current-reference-values",
+    "source": "direct-user-chat-confirmation",
+    "recorded_by": "assistant",
+    "recorded_date": "2026-11-06",
+    "confirmation": "current-21-reference-values-confirmed",
+    "scope": "current-21-reference-values",
+    "identity_assurance": "not-authenticated-by-this-tool",
+    "inspection_attestation": "not-collected",
+    "independent_review_attested": false
+  },
+  "live_benchmark_ready": false,
+  "live_configuration_frozen": false,
+  "live_execution_authorized": false
+}
