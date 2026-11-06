@@ -147,8 +147,9 @@ Source declaration truth is not parser self-agreement: the keyword-path scenario
 declarations even if the supported inventory emits one. An incomplete inventory is a lower bound,
 not a correct whole-source count; the static baseline must abstain from an unestablished total.
 
-The v1 reference snapshot fixes task wording and source/policy scope. Before a future trial, separately
-fix its response schema, prompt, model/configuration and repetition budget. Compare:
+The v1 reference snapshot fixes task wording and source/policy scope. The offline response contract
+below is a development interface, not a complete live-trial freeze. Before a future trial, separately
+confirm its response contract and fix the live prompt, model/configuration and repetition budget. Compare:
 
 1. Static-only: deterministic supported declaration facts; abstain from policy interpretation and
    runtime assurance. Do not read evaluator references to manufacture static answers.
@@ -164,6 +165,56 @@ Set repeat counts and ordering before trials, keep failures visible, and report 
 The existing historical scorer special-cases the question ID `policy`; it is not a new-family scoring
 implementation. The v1 helper supplies only offline preflight/scoring and a synthetic control, not
 a live runner, model result or provider integration.
+
+## Offline comparison packets and strict response contract
+
+`scripts/evaluation_response.py` defines the separate evaluation response schema `0.1`, not a change
+to any product schema. It accepts one complete, bounded JSON object with exactly `schema_version`,
+`kind`, `task_id`, `request_id` and `answers`; `kind` is `evaluation-comparison-response`. Each answer
+record contains exactly `question_id` and `answer`, with one record for every requested question.
+Duplicate keys/answers, missing or extra questions/fields, wrong bindings and noncanonical values
+invalidate the whole case. Strings are not repaired: `""` is a known empty sorted-CSV set, while only
+JSON null is unknown. Missing raw responses remain missing, not successful unknown responses.
+
+`scripts/evaluation_comparison.py` builds three mode slots with the same source, explicit policy,
+questions, answer formats and common development-draft instructions. Only evidence-assisted gets
+additional in-memory declaration evidence from the existing core `parse_source`; modules are parsed
+independently, without importing, materializing or executing their source. Evidence is always marked
+partial: cross-module router/include context and callable dependency graphs are unresolved, deferred
+declarations do not establish invocation/deployment, and diagnostics/parse errors remain visible.
+An extracted declaration is not proof of access control or complete inventory.
+
+Opaque `task_id` values bind task-only source/policy/questions. `request_id` derives from the mode and
+payload, so a response for another request/mode is rejected. The two AI payloads differ only in
+declaration evidence and that derived request ID; their common draft instructions are not a frozen
+live prompt. Case names, splits, reference manifest/candidate hash, expected answers, rationales and
+review metadata are excluded from potential provider payloads. The evaluator plan itself contains
+case mapping and is **not** provider input. Hash bindings are not authentication or a secrecy claim.
+
+From the repository root, prepare a plan or an explicitly synthetic dry run:
+
+```bash
+python -m scripts.evaluation_comparison
+python -m scripts.evaluation_comparison --json
+python -m scripts.evaluation_comparison --dry-run
+python -m scripts.evaluation_comparison --dry-run --json
+python -m scripts.evaluation_comparison --dry-run --fault missing
+python -m scripts.evaluation_comparison --dry-run --fault invalid
+```
+
+All packets and mock responses are staged before evaluator references are loaded for scoring. Every
+mode slot uses synthetic null answers in a dry run, including `static-only`: the real static-answer
+query mapping/adapter is **not implemented**. This measures neither a static baseline nor model
+quality. Each mode separately retains seven cases/21 questions, 14 answerable references and seven
+required unknowns. A fault affects the first case in each mode; missing responses become `None` and
+invalid responses become `[]` at the math boundary, retaining their failure kinds and denominators.
+Invalid cases earn no unknown credit. Do not pool 63 synthetic opportunities into an AI-quality score.
+`--fault` requires `--dry-run`.
+
+The static-answer adapter, independent-review attestation and live prompt/model/configuration/repeat
+freeze remain future work. No provider call or actual model trial is implemented; v1/raw reference
+bytes, pinned math, historical records, product schemas/versions, risk acceptance and releases are
+unchanged. #84 remains open with all seven checklist items pending.
 
 ## Candidate-independent offline mathematics
 

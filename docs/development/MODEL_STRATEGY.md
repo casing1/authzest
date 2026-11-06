@@ -85,6 +85,16 @@ unmeasured/null. No product command/schema relaxation, actual model/source/worke
 release or risk acceptance is added; historical bytes/observations stay unchanged and all seven #84
 checklist items remain pending.
 
+The offline comparison contract now pairs task-only packets and strict schema-`0.1` responses bound
+to opaque task IDs and mode/payload-derived request IDs. Both AI inputs share source, policy,
+questions, answer formats and development-draft instructions; only partial single-module evidence
+and the derived request ID differ. No evaluator references, review metadata or case/split identifiers
+enter provider payloads, and the complete evaluator plan is not provider input. The current
+`python -m scripts.evaluation_comparison --dry-run` feeds synthetic unknowns to all three mode slots;
+it measures no static baseline or model quality. A real static-answer query adapter, independent
+review attestation and live prompt/model/configuration/repetition freeze are still missing. Do not
+aggregate the three synthetic modes into an AI score or interpret strict parsing as semantic quality.
+
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
 attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and

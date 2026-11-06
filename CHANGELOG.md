@@ -16,6 +16,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add an offline evaluation response contract (`scripts/evaluation_response.py`, schema `0.1`) and
+  paired comparison plans via `python -m scripts.evaluation_comparison`. Bind strict whole-case JSON
+  responses to task-only task IDs and mode/payload-derived request IDs; preserve canonical empty
+  CSV versus null and missing/invalid failure kinds. Share source/policy/questions/answer formats/
+  development-draft instructions, adding only partial in-memory single-module declaration evidence
+  to evidence-assisted; keep evaluator references/metadata out of provider payloads. The evaluator
+  plan is not provider input. `--dry-run` stages all three modes' synthetic-null responses before
+  references load; optional missing/invalid faults affect one case per mode without dropping
+  denominators or crediting invalid unknowns. No real static-answer adapter, model-quality result,
+  live configuration/repeat freeze, independent-review attestation, provider call or source execution
+  is added. v1/raw references/math/history/product schemas/versions and all seven #84 checks remain
+  unchanged; no risk acceptance or release. Verification and normal PR delivery are separate.
+
 - Record the November 6 direct user confirmation of the current exact 21 reference values and add
   `tests/fixtures/evaluation_reference/v1/` with raw task/reference copies and a separate pinned
   decision manifest. Preserve assistant authorship and historical pending proposal metadata; record
