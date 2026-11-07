@@ -8,6 +8,29 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
+## Current pure-codec continuation — 2026-11-07 KST
+
+`scripts/evaluation_invocation.py` now provides only an owned offline candidate factory, strict
+outer-`0.2`/unchanged-inner-`0.1` decoder, preview and synthetic dry-run. See the
+[current protocol and CLI examples](EVALUATION_PROTOCOL.md#offline-invocation-codec-continuation).
+Original/final message hashes and schema hashes are distinct. Bounded UTF-8 raw response text is
+retained in returned memory; canonical inner JSON is not the original response. The output schema
+is a shaping subset, while strict decoder checks remain authoritative; pinned App Server support
+is not verified. Echoing current IDs around old inner answers can still pass: decoded responses keep
+caller-supplied/unverified provenance and `runtime_observed=false`, not authentication/provider freshness.
+
+No account/network/process/reference/scoring/log-import access or actual AI/worker call is added.
+Live capture/isolation/failure handling is still a proposal. Next review the versioned transport
+recipe/batch expiry, then separate fake-process tests. Product adapter/pinned `0.153.0`, v1/math/history,
+product `0.1.0a4` / report schema `1.2`, live-freeze false and #84's seven pending checks are unchanged;
+there is no new risk acceptance or release. Codec delivery does not approve live execution/freeze.
+
+## Original proposal — preserved history
+
+The original design below is preserved at its original source/date. Its “not implemented” codec/API
+wording describes that checkpoint, not the current offline continuation above; the live transport
+remains unimplemented today. Do not reinterpret the proposal's delivery as execution approval.
+
 ## Status and purpose
 
 **Proposed, not implemented — 2026-11-07 KST**, against main

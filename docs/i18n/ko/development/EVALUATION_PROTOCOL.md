@@ -338,12 +338,39 @@ worker 실행·패치·실제 동결·위험 수용·릴리스는 제외합니�
 그대로이며 v1/수학/과거 자료/제품 버전도 바꾸지 않습니다. 독립성은 미확립이고 #84 체크 항목
 7개도 모두 미완료입니다.
 
-[제공자 capture 설계 제안](EVALUATION_TRANSPORT_DESIGN.md)은 다음 경계인 모델-visible
-invocation/요청·응답 `0.2` 후보로 기존 내부 `0.1` 답을 감쌉니다. 런타임 capture·격리·실패 처리는
-미구현 제안이며 nonce echo도 신원 인증/제공자 응답 새로움이 아닙니다. 다음은 순수 오프라인 codec,
-이후 별도 transport/가짜 프로세스 lifecycle 테스트입니다. 설계 CI/병합은 실제 실행 승인·벤치마크
-동결이 아닙니다. 제품 adapter/고정 `0.153.0`·v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 스키마
-`1.2`·실제 동결 false·#84 미완료 체크 7개는 그대로이며 실제 호출·위험 수용·릴리스도 없습니다.
+## 오프라인 invocation codec 후속 구현
+
+[Transport 설계와 보존한 원래 제안](EVALUATION_TRANSPORT_DESIGN.md)에
+`scripts/evaluation_invocation.py`의 순수 codec 후속 구현을 연결합니다. 직접 관리하는 factory는 작업
+전용 데이터로 모델-visible `0.2` invocation 후보를 미리 보고 엄격한 외부 `0.2` 검증 후 기존 내부
+`0.1` decoder를 적용하거나 합성 dry-run을 수행합니다. 계정·네트워크·프로세스·평가자 정답/채점·파일 로그
+import는 없습니다. 설정 네 개가 모두 필수이며 `--json`과 `--show-messages`는 상호 배타적이고
+`--fault missing|invalid|stale`에는 `--dry-run`이 필요합니다. 모델/effort는 미확인이며 timeout은
+여기서 강제하는 제한이 아닌 제안입니다.
+
+```bash
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --json
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --fault stale
+```
+
+공통 `0.2` 포장·새 불투명 invocation ID·원래 task는 프롬프트 후보이지 실제 동결한 프롬프트가
+아닙니다. 원래 `0.1` 메시지 SHA-256·최종 `0.2` 메시지 SHA-256·스키마 SHA-256을 구분합니다.
+원래/최종 애플리케이션 메시지는 각각 128 KiB·스키마는 64 KiB, 응답은 UTF-8 텍스트 64 KiB·JSON
+깊이 16으로 제한합니다. Schema shaping은 부분집합이지 최종 validator가 아니며 canonical 답 형식·
+printability·중복 질문 검사는 strict decoder가 강제합니다. 고정 App Server `0.153.0`에서 해당
+스키마를 지원한다고 검증한 것이 아닙니다. 반환값 메모리의 `raw_received_text`는 잘못된 JSON까지
+제한된 유효 UTF-8 원문을 보존하고 잘못된 타입·과대 입력·잘못된 UTF-8이면 null입니다.
+`inner_canonical_json`은 재직렬화이지 그 원문이나 영속 capture/log가 아닙니다. Canonical 내부 텍스트도
+UTF-8 64 KiB 이내만 보존하고 직렬화가 이를 넘으면 `inner_canonical_json`은 null입니다.
+
+반복 1/2/3회의 슬롯 14/28/42개·질문 기회 42/84/126개와 모드/반복당 사례 7개·질문 21개를 유지합니다.
+Missing/invalid/stale 동작은 합성 검증이지 모델 품질 측정이 아닙니다. 현재 echo로 이전 내부 답을
+감싸도 통과할 수 있으므로 출처는 `caller-supplied-unverified`, `runtime_observed`와 제공자 응답
+새로움은 false입니다. 기존 `0.1` 모듈·제품 adapter·v1/수학/과거 자료·제품 `0.1.0a4` / 리포트
+스키마 `1.2`도 그대로입니다. 다음은 버전별 transport recipe/batch 만료 검토·이후 별도 가짜 프로세스
+lifecycle 테스트이며 직접 capture/격리/실패 처리는 여전히 미구현입니다. 실제 AI/worker 호출·실제
+동결·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

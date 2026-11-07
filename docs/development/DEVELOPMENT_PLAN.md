@@ -206,7 +206,14 @@ model/context verification or scoring is implemented. The
 [proposed provider-capture design](EVALUATION_TRANSPORT_DESIGN.md) now separates a model-visible
 invocation/request-response `0.2` candidate from unchanged inner `0.1` answers. Runtime capture,
 isolation and failure policies are still proposals; nonce echo is neither authentication nor provider
-freshness. Next implement only a pure offline codec, then separate transport/fake-lifecycle tests.
+freshness. The owned pure codec is now available in `scripts/evaluation_invocation.py` for candidate
+preview, strict outer `0.2` / inner `0.1` validation and synthetic dry-run only; it reads owned task
+data without account/network/process/reference/scoring access. Original/final message hashes and
+schema hashes stay separate, and raw response text is retained only in returned memory. This neither
+verifies pinned App Server schema support nor proves provider freshness/runtime execution. The
+[protocol](EVALUATION_PROTOCOL.md#offline-invocation-codec-continuation) documents required settings
+and CLI examples. Next review the versioned transport recipe and batch expiry, then add separate
+fake-process lifecycle tests. Live capture/isolation/failure handling is still unimplemented.
 Design CI/merge delivers the proposal, not actual-call approval or benchmark freeze. Do not expand
 the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
 live-freeze false, risk/release decisions and all seven pending #84 checks remain unchanged.

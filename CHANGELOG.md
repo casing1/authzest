@@ -16,6 +16,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Implement the owned pure offline invocation codec in `scripts/evaluation_invocation.py`: preview
+  model-visible `0.2` candidates, validate strict outer responses plus unchanged inner `0.1` answers,
+  and exercise synthetic dry-runs without provider capture. Separate original/final message hashes
+  and schema hashes; retain bounded UTF-8 raw response text in returned memory, not a log import or
+  canonical-inner-as-original claim. Schema shaping is only a subset; the strict decoder remains
+  authoritative and pinned App Server support is unverified. Echoes/rewrapped answers prove no
+  provider freshness; provenance stays caller-supplied/unverified and runtime-observed false.
+  Preserve the original transport proposal as history with a current codec continuation. Next review
+  versioned transport recipes/batch expiry, then fake-process tests. No live transport, account/
+  network/process/reference access, scoring, live freeze, risk acceptance or release is added.
+  Existing `0.1` modules/product adapter/pinned `0.153.0`, v1/math/history, product `0.1.0a4` / report
+  schema `1.2` and all seven pending #84 checks stay unchanged. Verification/delivery is separate.
+
 - Propose the [evaluation provider-capture boundary](docs/development/EVALUATION_TRANSPORT_DESIGN.md)
   in English/Korean: candidate model-visible invocation/request-response `0.2` wraps unchanged inner
   `0.1` answers. Direct runtime capture, isolation and failure handling are proposals, not implemented

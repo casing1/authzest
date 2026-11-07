@@ -197,8 +197,14 @@ receipt batch를 검증하며 모든 모드/반복의 분모와 missing/invalid/
 제공자 transport/capture·실제 모델/context 확인·채점은 구현하지 않습니다.
 [제공자 capture 설계 제안](EVALUATION_TRANSPORT_DESIGN.md)은 모델에 보이는 invocation/요청·응답
 `0.2` 후보와 기존 내부 `0.1` 답을 구분합니다. 런타임 capture·격리·실패 정책은 여전히 제안이며 nonce
-echo도 신원 인증/제공자 응답 새로움이 아닙니다. 다음은 순수 오프라인 codec만 구현하고 이후 별도
-transport/가짜 프로세스 lifecycle 테스트를 진행하는 일입니다. 설계 CI/병합은 제안 전달이지 실제
+echo도 신원 인증/제공자 응답 새로움이 아닙니다. 이제 `scripts/evaluation_invocation.py`의 직접 관리
+순수 codec으로 후보 미리보기·엄격한 외부 `0.2` / 내부 `0.1` 검증·합성 dry-run만 제공합니다. 소유
+작업만 읽고 계정/네트워크/프로세스/정답 접근·채점은 없습니다. 원래/최종 메시지 해시·스키마 해시를
+구분하며 응답 원문은 반환값 메모리에만 보존합니다. 고정 App Server 스키마 지원이나 제공자 응답
+새로움/런타임 실행을 입증하지 않습니다. 필수 설정과 명령은
+[프로토콜](EVALUATION_PROTOCOL.md#오프라인-invocation-codec-후속-구현)을 참고합니다. 다음은 버전별
+transport recipe·batch 만료 검토, 이후 별도 가짜 프로세스 lifecycle 테스트입니다. 실제 수신/격리/
+실패 처리는 여전히 미구현이며 설계 CI/병합은 제안 전달이지 실제
 호출 승인·벤치마크 동결이 아닙니다. 제품 adapter와 고정 `0.153.0`을 확장하지 않으며 v1/수학/과거
 자료·제품 `0.1.0a4` / 리포트 스키마 `1.2`·실제 동결 false·위험/릴리스 결정·#84 미완료 체크 7개는
 그대로입니다.

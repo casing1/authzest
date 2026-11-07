@@ -8,6 +8,29 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
+## 현재 순수 codec 후속 구현 — 2026-11-07 KST
+
+`scripts/evaluation_invocation.py`는 직접 관리하는 오프라인 후보 factory·엄격한 외부 `0.2`/기존
+내부 `0.1` decoder·미리보기·합성 dry-run만 제공합니다. 명령은
+[현재 프로토콜](EVALUATION_PROTOCOL.md#오프라인-invocation-codec-후속-구현)을 참고하세요.
+원래/최종 메시지 해시·스키마 해시를 구분하고 제한된 UTF-8 원문은 반환값 메모리에 보존하며
+canonical 내부 JSON을 원문으로 표시하지 않습니다. 출력 스키마는 shaping 부분집합이고 strict
+decoder가 검증의 기준이며 고정 App Server 지원도 미확인입니다. 이전 내부 답에 현재 ID를 감싸도
+통과할 수 있으므로 검증 응답의 출처는 호출자 제공/미확인·`runtime_observed=false`이고 신원 인증/제공자 응답
+새로움이 아닙니다.
+
+계정/네트워크/프로세스/정답/채점/로그-import 접근·실제 AI/worker 호출은 추가하지 않습니다. 실제
+capture/격리/실패 처리는 여전히 제안입니다. 다음은 버전별 transport recipe/batch 만료 검토·이후
+별도 가짜 프로세스 테스트입니다. 제품 adapter/고정 `0.153.0`·v1/수학/과거 자료·제품 `0.1.0a4` /
+리포트 스키마 `1.2`·실제 동결 false·#84 미완료 체크 7개는 그대로이며 새 위험 수용·릴리스도 없습니다.
+Codec 전달은 실제 실행/동결 승인이 아닙니다.
+
+## 원래 제안 — 보존한 이력
+
+아래 원래 설계는 당시 소스/날짜로 보존합니다. Codec/API가 미구현이라는 표현은 당시 상태이지 위의
+현재 오프라인 후속 구현을 뜻하지 않습니다. 실제 transport는 지금도 미구현이며 제안 전달을 실행
+승인으로 해석하지 않습니다.
+
 ## 상태와 목적
 
 **제안이며 미구현 — 2026-11-07 KST.** 기준 main은
