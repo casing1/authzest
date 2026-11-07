@@ -190,16 +190,68 @@ python -m scripts.evaluation_comparison --dry-run --fault invalid
 ```
 
 모든 패킷과 mock 응답을 먼저 구성한 뒤 채점용 참고 정답을 읽습니다. Dry run의 모든 모드 슬롯은
-`static-only`까지 합성 null 답을 사용하며 실제 정적 답 query 매핑/adapter는 **미구현**입니다.
+`static-only`까지 합성 null 답을 사용하며 아래 별도로 제공하는 등록 정적 adapter를 쓰지 않습니다.
 정적 baseline이나 모델 품질을 측정하지 않습니다. 각 모드는 사례 7개·질문 21개·답할 수 있는 정답
 14개·필수 unknown 7개를 따로 유지합니다. Fault는 각 모드의 첫 사례에 적용합니다. 수학 경계에서
 누락 응답은 `None`, 무효 응답은 `[]`로 전달하며 실패 종류·분모를 유지합니다. 무효 사례에는
 unknown 점수를 주지 않으며 합성 질문 기회 63개를 AI 품질 점수로 합산하지 않습니다.
 `--fault`에는 `--dry-run`이 필요합니다.
 
-정적 답 adapter·독립 검토 증명·실제 프롬프트/모델/설정/반복 동결은 후속 작업입니다. 제공자 호출이나
+독립 검토 증명·실제 프롬프트/모델/설정/반복 동결은 후속 작업입니다. 제공자 호출이나
 실제 모델 시험은 구현하지 않습니다. v1/원본 참고 정답 바이트·고정 수학·과거 기록·제품 스키마/버전·
 위험 수용·릴리스는 바꾸지 않으며 #84는 체크 항목 7개 모두 미완료인 OPEN을 유지합니다.
+
+## 등록 정적 전용 소스 관찰
+
+별도 `scripts/evaluation_static.py` adapter는 작업 전용 digest에 연결한 명시적 선언 query registry를
+사용하며 예상 정답을 저장하거나 일반 자연어 질문을 해석하지 않습니다. 미등록 작업이나 변경된
+질문에는 답을 유보합니다. 기존 core 파서의 메모리 내 관찰에서 소스 HTTP decorator 선언을 세거나
+literal method/path의 직접 `Security` scope를 추출합니다. AST coverage와 파서 선언 위치를 대조하며
+진단·모호성·coverage 누락·모듈 간 조합 한계가 있으면 입증하지 못한 전체 값을 내지 않고 unknown으로
+둡니다. 이 adapter의 정책 의도와 런타임 보장은 항상 unknown입니다.
+
+이 매핑은 공개된 v1 작업과 정답을 이미 알 수 있는 개발 맥락에서 작성합니다. 답 생성 시 정답 파일을
+읽지 않아도 독립/블라인드/미노출 holdout이 되지는 않습니다. 고정 소스 작업의 기술적 정적 관찰로
+보고하며 일반 벤치마크 성능·모델 가치·독립 검토/채점 기준 완료로 해석하지 않습니다.
+
+같은 경로를 두 app이 쓰더라도 서로 다른 소스 선언은 각각 셉니다. Deferred factory 선언은 소스
+선언이지 호출/배포 증명이 아닙니다. 직접 scope query는 상속된 `Security`와 callable-provider
+그래프를 제외합니다. 일반 의존성이나 scope 선언도 접근통제 강제를 입증하지 않습니다. 등록 query는
+전체 Python 해석·일반 저장소 coverage·HTTP/런타임 정확성을 보장하지 않습니다.
+
+```bash
+python -m scripts.evaluation_comparison --static-only
+python -m scripts.evaluation_comparison --static-only --json
+```
+
+이 선택은 고정한 직접 관리 작업 7개 범위의 결정적 소스 전용 관찰이며 모델 비교가 아닙니다. 사례
+7개의 응답을 모두 완성한 뒤 채점용 참고 정답을 읽고 실패·유보도 분모에 유지합니다. 두 AI의 짝지은
+payload는 그대로이며 기본 명령은 여전히 계획만 준비합니다. `--dry-run`은 모든 모드에서 합성 null을 쓰며
+`--static-only`와 상호 배타적이고 `--fault`를 받는 유일한 모드입니다. 실제 정적 관찰에는 fault를
+삽입하지 않습니다. 모델 품질은 미측정·실제 시험 0회를 유지합니다. v1/원본 정답·고정 수학·과거 기록·
+제품 소스/스키마/버전은 그대로이며 독립 검토 증명·실제 설정/반복 동결·실제 모델 비교는 미완료입니다.
+AI/worker 실행·패치·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
+
+이번 단계의 고정 공개 개발셋 소스 전용 CLI 관찰은 질문 21개 중 답변 5개·유보 16개·무효 사례 0개를
+기록했습니다. 종류별 구분은 다음과 같습니다.
+
+| 종류        | 답변 | 유보 |
+| ----------- | ---- | ---- |
+| 선언        | 5/7  | 2/7  |
+| 정책 의도   | 0/7  | 7/7  |
+| 런타임 보장 | 0/7  | 7/7  |
+
+이미 노출된 직접 관리 작업의 기술적 관찰이지 독립/블라인드 holdout 성능·AI/모델 비교·독립 채점/
+검토 기준 수용 완료가 아닙니다. 런타임 unknown은 런타임 강제를 관찰했다는 뜻이 아니며 답한 일부
+항목을 일반 벤치마크 정확도로 제시하지 않습니다.
+
+관찰 JSON은 `kind: registered-static-source-observation`,
+`baseline_scope: fixed-seven-owned-source-tasks`,
+`response_origin: deterministic-registered-source-query`로 구분합니다.
+`static_baseline_measured: true`는 이 제한적 정적 관찰만 뜻하며 `model_quality_measured`는 false입니다.
+참고 정답 메타데이터에는 v1 후보/manifest 식별자와 false인 독립 검토 증명을 포함하며 자료의 새로움이나
+블라인드 평가를 입증하지 않습니다. Query registry의 assistant 작성과
+`evaluation_independence: not-established-public-developed-tasks`도 기록합니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

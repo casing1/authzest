@@ -203,18 +203,77 @@ python -m scripts.evaluation_comparison --dry-run --fault invalid
 ```
 
 All packets and mock responses are staged before evaluator references are loaded for scoring. Every
-mode slot uses synthetic null answers in a dry run, including `static-only`: the real static-answer
-query mapping/adapter is **not implemented**. This measures neither a static baseline nor model
-quality. Each mode separately retains seven cases/21 questions, 14 answerable references and seven
+mode slot uses synthetic null answers in a dry run, including `static-only`; the separately available
+registered static adapter below is not used by dry-run. This measures neither a static baseline nor
+model quality. Each mode separately retains seven cases/21 questions, 14 answerable references and seven
 required unknowns. A fault affects the first case in each mode; missing responses become `None` and
 invalid responses become `[]` at the math boundary, retaining their failure kinds and denominators.
 Invalid cases earn no unknown credit. Do not pool 63 synthetic opportunities into an AI-quality score.
 `--fault` requires `--dry-run`.
 
-The static-answer adapter, independent-review attestation and live prompt/model/configuration/repeat
-freeze remain future work. No provider call or actual model trial is implemented; v1/raw reference
+Independent-review attestation and live prompt/model/configuration/repeat freeze remain future work.
+No provider call or actual model trial is implemented; v1/raw reference
 bytes, pinned math, historical records, product schemas/versions, risk acceptance and releases are
 unchanged. #84 remains open with all seven checklist items pending.
+
+## Registered static-only source observation
+
+The separate `scripts/evaluation_static.py` adapter uses a task-only digest registry of explicit
+declaration queries, not stored expected answers or a general natural-language question interpreter.
+Unregistered tasks and changed questions abstain. It computes answers from existing in-memory core
+parser observations: count source HTTP decorator declarations, or extract direct `Security` scopes
+for a literal method/path. AST coverage is checked against parser declaration locations; diagnostics,
+ambiguity, missing coverage and cross-module composition limits produce unknown rather than an
+unestablished total. Policy intent and runtime assurance are always unknown in this adapter.
+
+These mappings are authored in a development context already exposed to the public v1 tasks and
+available references. Not reading reference files while generating answers does not make the tasks
+independent, blinded or unseen holdouts. Report a descriptive static observation on these fixed source
+tasks, not general benchmark performance, model value or completion of independent review/scoring
+criteria.
+
+Declaration counts retain distinct source declarations even when two apps use the same path.
+Deferred factory declarations are source declarations, not proof of invocation or deployment.
+Direct-scope queries exclude inherited `Security` and callable-provider graphs; an ordinary dependency
+or a scope declaration does not prove access-control enforcement. The registered queries do not
+establish complete Python interpretation, general repository coverage or HTTP/runtime correctness.
+
+```bash
+python -m scripts.evaluation_comparison --static-only
+python -m scripts.evaluation_comparison --static-only --json
+```
+
+This explicitly selects a deterministic source-only observation scoped to the fixed seven owned
+tasks, not a model comparison. All seven cases' responses are completed before references are loaded
+for scoring; failures and abstentions retain their denominators. The AI paired payloads are unchanged;
+the default command still prepares a plan. `--dry-run` remains synthetic null in every mode, is mutually exclusive with
+`--static-only`, and is the only mode that accepts `--fault`; no fault is inserted into real static
+observations. Model quality remains unmeasured and live trials zero. v1/raw references, pinned math,
+historical records and product source/schemas/versions are unchanged; independent-review attestation,
+live configuration/repeat freeze and actual model comparison remain pending. This adds no AI/worker
+execution, patch, risk acceptance, release or completed #84 checklist item.
+
+This slice's source-only CLI observation on the fixed public development set produced five answers
+out of 21 questions, 16 abstentions and zero invalid cases. The family breakdown is:
+
+| Family            | Answered | Abstained |
+| ----------------- | -------- | --------- |
+| Declaration       | 5/7      | 2/7       |
+| Policy intent     | 0/7      | 7/7       |
+| Runtime assurance | 0/7      | 7/7       |
+
+This is a descriptive observation of these exposed owned tasks, not independent/blinded holdout
+performance, an AI/model comparison or acceptance of independent scoring/review criteria. An unknown
+runtime answer is not observed runtime enforcement; the answered subset must not be presented as
+general benchmark accuracy.
+
+The JSON observation identifies `kind: registered-static-source-observation`,
+`baseline_scope: fixed-seven-owned-source-tasks` and
+`response_origin: deterministic-registered-source-query`. Its `static_baseline_measured: true` means
+only this bounded static observation; `model_quality_measured` remains false. The reference metadata
+includes the v1 candidate/manifest identities and false independent-review attestation, not proof of
+freshness or blind evaluation. It also records assistant query-registry authorship and
+`evaluation_independence: not-established-public-developed-tasks`.
 
 ## Candidate-independent offline mathematics
 

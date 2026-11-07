@@ -91,8 +91,16 @@ questions, answer formats and development-draft instructions; only partial singl
 and the derived request ID differ. No evaluator references, review metadata or case/split identifiers
 enter provider payloads, and the complete evaluator plan is not provider input. The current
 `python -m scripts.evaluation_comparison --dry-run` feeds synthetic unknowns to all three mode slots;
-it measures no static baseline or model quality. A real static-answer query adapter, independent
-review attestation and live prompt/model/configuration/repetition freeze are still missing. Do not
+it measures no static baseline or model quality. A separate registered static adapter is now available
+through `python -m scripts.evaluation_comparison --static-only` (`--json` optional). Task-only digest
+queries derive source declaration counts/direct scopes from existing parser observations without
+reading references; unknown coverage and all policy/runtime questions abstain. This is a bounded
+fixed-seven-owned-task source observation, not general question interpretation or model evaluation.
+Its mapping was developed in a context exposed to public v1 tasks/references. No-read-before-staging
+is not blind, independent or unseen-holdout evidence; descriptive observations cannot establish
+general benchmark performance, model value or completed independent scoring/review criteria.
+It leaves paired AI inputs and v1/raw/math/history unchanged. Independent-review attestation, live
+prompt/model/configuration/repetition freeze and actual model comparison are still missing. Do not
 aggregate the three synthetic modes into an AI score or interpret strict parsing as semantic quality.
 
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an

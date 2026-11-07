@@ -1,7 +1,8 @@
 """Prepare offline comparison inputs or run an explicitly synthetic three-mode check.
 
 Owned virtual sources are parsed in memory, never imported, materialized or executed.
-No provider transport, real static-answer adapter or live trial is implemented here.
+No provider transport or live trial is implemented here. An explicit --static-only
+mode records bounded registered source queries, separate from the synthetic dry-run.
 The draft common instructions are development data, not a frozen live prompt/config.
 """
 
@@ -124,7 +125,7 @@ def build_plan(root: Path) -> dict:
         "live_benchmark_ready": False,
         "provider_calls_by_this_tool": 0,
         "target_execution": "not-run",
-        "static_answer_adapter": "not-implemented",
+        "static_answer_adapter": "registered-source-query-v1",
         "tasks": tasks,
     }
 
@@ -199,6 +200,7 @@ def dry_run(root: Path, *, fault: str | None = None) -> dict:
         "kind": "synthetic-comparison-dry-run",
         "model_quality_measured": False,
         "static_baseline_measured": False,
+        "static_adapter_used": False,
         "citation_support_measured": False,
         "live_trials": 0,
         "fault": fault,
@@ -209,7 +211,11 @@ def dry_run(root: Path, *, fault: str | None = None) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit one evaluator plan/result object")
-    parser.add_argument("--dry-run", action="store_true", help="use synthetic null responses only")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", action="store_true", help="use synthetic null responses only")
+    mode.add_argument(
+        "--static-only", action="store_true", help="observe registered source queries, no AI"
+    )
     parser.add_argument(
         "--fault", choices=("missing", "invalid"), help="fault first case in each mode"
     )
@@ -217,7 +223,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.fault and not args.dry_run:
         parser.error("--fault requires --dry-run")
     try:
-        result = dry_run(ROOT, fault=args.fault) if args.dry_run else build_plan(ROOT)
+        if args.static_only:
+            from scripts.evaluation_static import static_observation
+
+            result = static_observation(ROOT)
+        else:
+            result = dry_run(ROOT, fault=args.fault) if args.dry_run else build_plan(ROOT)
     except reference.ReferenceError as error:
         failure = {
             "kind": "offline-comparison-error",
@@ -234,7 +245,7 @@ def main(argv: list[str] | None = None) -> int:
             f"{result['question_count']} questions per mode."
         )
         print("NO LIVE TRIALS. Partial in-memory declarations; live configuration is NOT FROZEN.")
-        print("Static answer adapter: NOT IMPLEMENTED. No provider calls or target execution.")
+        print("Static adapter: registered source queries. No provider calls or target execution.")
         if args.dry_run:
             print("SYNTHETIC null responses only, not a static baseline or model-quality result.")
             for mode, item in result["modes"].items():
@@ -244,6 +255,27 @@ def main(argv: list[str] | None = None) -> int:
                     f"{counts['invalid_responses']} invalid cases "
                     f"(including {counts['missing_responses']} missing)"
                 )
+        elif args.static_only:
+            overall = result["calculation"]["overall"]
+            counts = overall["counts"]
+            print(
+                "DETERMINISTIC OWNED-SOURCE OBSERVATION, not a model comparison or runtime proof."
+            )
+            print(
+                f"  Answered {counts['answered']}/{counts['questions']}; "
+                f"abstained {counts['abstentions']}; invalid cases {counts['invalid_responses']}."
+            )
+            for case in result["observations"]:
+                if case["status"] != "valid":
+                    print(f"  {case['case_id']}: invalid ({case['error']})")
+                    continue
+                for question in case["questions"]:
+                    answer = question["answer"]
+                    displayed = "unknown" if answer is None else json.dumps(answer)
+                    print(
+                        f"  {case['case_id']}/{question['question_id']}: "
+                        f"{displayed} ({question['reason']})"
+                    )
         else:
             print("Paired AI payloads differ only in declaration evidence and derived request IDs.")
     return 0
