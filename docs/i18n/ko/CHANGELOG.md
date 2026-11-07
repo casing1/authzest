@@ -16,6 +16,15 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- [평가 전용 transport recipe와 전체 batch 결정](development/EVALUATION_TRANSPORT_DESIGN.md)을
+  명세합니다. 로컬에서 생성한 `0.153.0` 일반/`--experimental` 프로토콜 스키마는 서버/계정/모델
+  RPC 없이 필드 구문만 검토하며 런타임 설정·도구 격리·중첩 `outputSchema`·제공자 호환성은
+  미확인입니다. 확인 TTL 300초·제한된 batch dispatch 시간창·순차 슬롯·첫 nonvalid에서 중단·
+  재시도/재개/연장 없음을 제안합니다. 실행 가능한 transport/결정 상태/API는 여전히 미구현이며
+  다음은 순수 오프라인 batch 결정/상태 테스트, 이후 별도 가짜 프로세스 transport 테스트입니다.
+  기존 codec/고정 버전/제품/v1/수학/과거 자료·실제 동결 false·#84 미완료 체크 7개는 그대로이며
+  실제 AI/worker 호출·위험 수용·릴리스는 없습니다. 설계 전달은 실제 실행 승인·벤치마크 동결이 아닙니다.
+
 - `scripts/evaluation_invocation.py`에 직접 관리하는 순수 오프라인 invocation codec을 구현합니다.
   모델-visible `0.2` 후보 미리보기·엄격한 외부 응답과 기존 내부 `0.1` 답 검증·제공자 capture 없는
   합성 dry-run만 제공합니다. 원래/최종 메시지 해시·스키마 해시를 구분하고 제한된 UTF-8 응답 원문은

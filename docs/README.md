@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-11-07 KST
+## Current work — 2026-11-08 KST
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -51,9 +51,13 @@ submission buffer; do not add optional GUI/adapters to the submission scope.
 The [evaluation invocation/capture design](development/EVALUATION_TRANSPORT_DESIGN.md) now records an
 owned pure offline codec for candidate preview, strict outer-`0.2`/inner-`0.1` validation and synthetic
 dry-run; the original proposal remains historical. Live capture/isolation/failure policies remain
-unimplemented, and nonce echo is not authentication/provider freshness. Next review versioned
-transport recipes/batch expiry, then separate fake-process tests. Codec CI/merge is not actual-call
-approval or benchmark freeze. The product adapter/pinned `0.153.0` and
+unimplemented, and nonce echo is not authentication/provider freshness. The evaluation-only recipe/
+whole-batch decision is now specified. Locally generated normal/`--experimental` `0.153.0` schemas
+review field syntax only, not runtime configuration, tool isolation, nested `outputSchema` support or
+provider compatibility. Next are pure offline batch-decision/state tests, then separate fake-process
+transport tests; executable transport/decision state/API is still absent. Design CI/merge is not
+actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
+time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and
 release/v1/math/history stay unchanged; #84 remains OPEN with seven pending checks and live freeze false.
 No actual call, risk acceptance or release is added.
 

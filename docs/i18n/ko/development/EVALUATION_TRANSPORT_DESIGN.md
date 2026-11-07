@@ -20,10 +20,167 @@ decoder가 검증의 기준이며 고정 App Server 지원도 미확인입니다
 새로움이 아닙니다.
 
 계정/네트워크/프로세스/정답/채점/로그-import 접근·실제 AI/worker 호출은 추가하지 않습니다. 실제
-capture/격리/실패 처리는 여전히 제안입니다. 다음은 버전별 transport recipe/batch 만료 검토·이후
-별도 가짜 프로세스 테스트입니다. 제품 adapter/고정 `0.153.0`·v1/수학/과거 자료·제품 `0.1.0a4` /
+capture/격리/실패 처리는 여전히 제안입니다. 아래 버전별 dispatch 제안 다음은 순수 오프라인 결정/
+상태 테스트와 별도 가짜 프로세스 테스트입니다. 제품 adapter/고정 `0.153.0`·v1/수학/과거 자료·제품 `0.1.0a4` /
 리포트 스키마 `1.2`·실제 동결 false·#84 미완료 체크 7개는 그대로이며 새 위험 수용·릴리스도 없습니다.
 Codec 전달은 실제 실행/동결 승인이 아닙니다.
+
+## 버전별 dispatch 제안 — 2026-11-08 KST
+
+**설계만 추가하며 기준 main은 `851d84cd4ab35bb35d262e2dbef23af7810dc5f3`입니다.** 제안 recipe 이름은
+`evaluation-stdio-0.153.0-v1`입니다. 이번 갱신은 dispatch API·결정 ledger·프레임 builder·프로세스
+transport·실제 설정 동결을 구현하지 않습니다. 다음은 순수 오프라인 recipe/프레임·batch 상태
+테스트이고 프로세스 생명주기 테스트는 해당 경계를 검토한 뒤입니다. 텀프 기능 확장이나 제품
+비공개 `_turn` 재사용 허가가 아닙니다.
+
+### 고정 버전 스키마 근거와 런타임 근거의 구분
+
+설치 CLI가 보고한 버전은 `0.153.0`입니다. 로컬 `app-server generate-json-schema` 하위 명령으로
+기본·`--experimental` 프로토콜 묶음을 생성했으며 서버 시작·계정/모델 RPC는 하지 않았습니다.
+`experimentalApi=true`에서는 실험 스키마가 필드 기준입니다. 기본 묶음에는
+`allowProviderModelFallback`·`environments`·`runtimeWorkspaceRoots` 등이 빠지므로 그 누락만 보고
+미지원이라고 판정하지 않습니다.
+
+해당 생성 결과 중 실험 스키마 원본 SHA-256은 아래와 같습니다. 공개 생성 프로토콜 문서의 식별자이지
+실행 파일·서명 릴리스·실제 wire 수집·설정의 증거가 아닙니다. 생성 묶음을 저장소에 넣거나 현재
+codec에서 import하지 않습니다.
+
+| 생성 문서                                   | SHA-256                                                            |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `v2/ThreadStartParams.json`                 | `25f490368ec6df52a2a3b82a5469d2413307eb93439121b309f415b5648eee7a` |
+| `v2/ThreadStartResponse.json`               | `a338467af5fc271ace917f9d1262405642c3df3b66116aa105343db86cc9a76d` |
+| `v2/TurnStartParams.json`                   | `b36fb37326b1cf69f75c8b306f1f886d53a57c4b1b985e08e298e2407ea2ad02` |
+| `v2/ThreadSettingsUpdatedNotification.json` | `f7865eabaa34c7895a1ae345e51c1ba181a63c649237d36583b80f9d759b0f53` |
+
+[공식 App Server 문서](https://learn.chatgpt.com/docs/app-server)는 버전별 스키마 생성과 RPC 생명주기를
+설명합니다. 이번에는 생성 파일을 읽고 로컬 제품 코드와 대조했으며 기존 가짜 fixture 전부를
+기계 검증하지 않았습니다. 기존 fake Model/Thread/item/usage에는 생성 스키마의 필수 필드 일부가
+없으므로 기존 테스트 통과가 전체 프로토콜 스키마 준수는 아닙니다. 프로토콜의 `outputSchema`는 임의
+JSON을 받을 뿐 codec의 중첩 shaping 스키마를 제공자가 지원한다는 증거가 아닙니다. Config도 추가
+키를 허용하므로 필드 존재만으로 실제 설정·기능 비활성화를 확인할 수 없습니다.
+
+### 제안 recipe와 wire 선택
+
+후속 소스 checkout 전용 POSIX transport는 가변 제품 설정을 import하지 않고 자체 recipe 값을
+소유해야 합니다. 위 기준점 제품 소스의 정확한 `CONFIG`·`DISABLED_FEATURES` 값을 시작 descriptor로
+삼되 fixture 전용 developer 지시는 codec의 정확한 공통 `INSTRUCTIONS`로 교체하고 모델·요청 effort·
+`approvals_reviewer="user"`를 명시합니다. 두 모드의 thread base/developer 지시와 collaboration
+developer 지시에는 같은 공통 지시 바이트를 사용합니다. 다음 오프라인 builder가 전체 값·선택 스키마·
+제한·시계/실패 규칙을 구체화하고 해시해야 하며 이 문서는 실행 가능한 recipe 해시가 아닙니다.
+알 수 없는 instruction/profile/provider/context 재정의를 조용히 상속하지 않습니다. Discovery 중
+ambient MCP 동작을 포함한 유효 설정은 프로세스 구현 전 검토 조건이지 이 descriptor의 보장이 아닙니다.
+
+| 단계               | 제안하는 정확한 선택과 필요한 관찰                                                                                                                                                  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 프로세스 경계      | 슬롯당 순차 프로세스 그룹 최대 2개: config 전용 discovery 후 generation. 새 빈 cwd·stdio JSONL·실행 파일/initialize user agent 버전 `0.153.0`. Shell launcher 없음.                 |
+| 초기화/설정        | `experimentalApi=true` 후 `initialized`, `includeLayers=false`의 `config/read`. 제한된 MCP 이름 최대 64개를 열거해 generation 재시작에서 각각 끄고 전체 recipe 값을 검증.           |
+| 환경               | `PATH`·`HOME`·`CODEX_HOME`·`TMPDIR`·`LANG`·`LC_ALL`·`USER`·`LOGNAME`만 상속 가능. 기존 인증 위치를 보존하고 자격증명 복사·API key/proxy/endpoint 재정의 전달 금지.                  |
+| 계정/목록          | 기존 ChatGPT 로그인만 허용, `refreshToken=false`의 `account/read`. `model/list`는 `limit=100`·`includeHidden=false`, 최대 10페이지/1,000개·중복 없는 진행 cursor.                   |
+| 모델/effort        | 요청 모델과 일치하는 표시 항목 정확히 1개·명시 effort와 일치하는 `supportedReasoningEfforts[].reasoningEffort` 정확히 1개. 기본값·대체·alias·fallback 없음.                         |
+| `thread/start`     | 정확한 모델/provider `openai`·`allowProviderModelFallback=false`·`ephemeral=true`, 빈 environments/tools/capability/workspace roots·read-only/on-request·reviewer `user`·고정 지시. |
+| 초기 effort 설정   | 프로세스 config와 `thread/start.config`의 `model_reasoning_effort`를 요청값으로 설정. 응답의 non-null `reasoningEffort` 일치가 필수이며 누락은 미확인이지 성공이 아님.              |
+| 초기 thread 근거   | 모델/provider/cwd/approval/reviewer/read-only no-network 일치·`thread.ephemeral=true`·빈 turns/지시 소스/roots·fork/parent context 없음. resume/fork/history import/steer 금지.     |
+| `turn/start`       | 정확한 thread ID/모델/effort·`Invocation.message_text`와 같은 text 입력 1개·정확한 `Invocation.output_schema`·빈 environments/roots·동일 sandbox/approval/reviewer/cwd.             |
+| Collaboration/tier | 명시적 `collaborationMode.mode="default"`·settings의 모델/`reasoning_effort`는 요청값·non-null 공통 `developer_instructions`, `serviceTierForTurn="default"`.                       |
+
+계정/목록/thread 생성 전에 `{}`로 `remoteControl/status/read`를 호출하고 `status="disabled"`를
+요구합니다. 누락·잘못된 형식·다른 상태면 batch를 거부하며 notification 부재를 비활성화의 근거로
+삼지 않습니다. `collaborationMode`가 최상위 모델/effort/developer 설정보다 우선하고 null developer
+지시는 mode의 내장 지시를 선택하므로 위의 명시적 일치/non-null 설정으로 조용한 대체를 막습니다.
+
+생성 `ReasoningEffort`는 nonempty string이지 제품 어댑터의 5개 호환 값 목록이 아닙니다. 제한된 모델
+목록의 지원값과 정확한 요청 label을 대조하고 default를 선택하지 않습니다. null/중복 모델 항목·cursor
+순환·페이지 초과·잘못된 설정·필수 보고 effort 누락은 batch를 거부합니다. 서버 보고 설정도 숨은
+제공자 연산의 telemetry는 아닙니다. 계정 식별자·설정 경로·모델 목록을 공개 근거에 노출하지 않습니다.
+
+제품 retry 정책 대신 닫힌 event 정책을 사용합니다. 예상 method는 `thread/started`·
+`thread/status/changed`·`thread/settings/updated`·`turn/started`·`turn/completed`·`item/started`·
+`item/completed`·`item/agentMessage/delta`·제품에 나열된 reasoning delta 3종·
+`thread/tokenUsage/updated`·`account/rateLimits/updated`·`model/verification`·
+`model/safetyBuffering/updated`·`turn/moderationMetadata` 및 disabled일 때만 허용하는
+`remoteControl/status/changed`입니다. 모든 필드/payload는 고정 스키마·의미 검증이 필요하며 method
+허용만으로 충분하지 않습니다. ack 전 notification은 제한 내 대기시킨 뒤 일치하는 RPC 응답 후
+연결을 검증하고 다른/중복 RPC ID·다른 thread/turn ID를 거부합니다.
+
+`willRetry=true`를 포함한 모든 `error`·`warning`·`configWarning`·`guardianWarning`·deprecation·
+auth recovery·model reroute·도구/승인 요청·예상 밖 item/context/settings·알 수 없는 event는 batch
+치명 오류입니다. 경고 문장을 설정/사용량/승인으로 읽지 않습니다. 비공개 warning/error 내용은
+버리고 제한된 닫힌 진단만 남깁니다. effort/collaboration effort·모델·developer 지시·reviewer·경계
+값이 null/다르면 거부하고 누락 메타데이터를 검증된 값으로 표시하지 않습니다. 제품의 retry 알림
+3개 허용을 재사용하지 않습니다. 완전하고 일치하는 settings 관찰이 없으면 설정은 미확인으로 두고
+최종 JSON·완료가 통과해도 검증된 런타임 관찰을 게시하지 않습니다. 이미 시작됐거나 숨은 Codex retry·사용량의 상한/부재는 여전히
+보장하지 못합니다.
+
+명시적 `phase="final_answer"`·고유 item ID·제한된 text를 가진 연결된 `item/completed` agent
+message와 그 뒤 동일 turn의 성공 `turn/completed`·null error를 요구합니다. 이 recipe에서 알 수
+없는 phase는 final이 아닙니다. delta나 turn snapshot만으로 최종 결과를 만들지 않습니다.
+Snapshot에 이미 완료된 같은 item이 다시 있다면 내용도 같아야 하며 다른/충돌 final을 추가하면
+안 됩니다. 이후 기존 strict codec을 호출하고 정리가 확인된 뒤에만 관찰 결과를 게시합니다.
+미보고 사용량은 null이며 마지막 turn 사용량은 전체 청구액이 아닙니다.
+
+기존 제안 제한을 유지합니다. 완전한 JSONL 프레임당 256 KiB, 슬롯의 두 프로세스를 합쳐 수신
+stream 2 MiB·event 4,096개, 대기 notification 최대 128개, startup/preflight/generation을 합쳐
+슬롯 예산 `T` 1–120초 한 번입니다. Discovery/event 뒤 `T`를 초기화하지 않습니다. 정리 대기는
+`T` 이후에도 이어질 수 있으나 생성 프로세스 그룹당 최대 5초이며 blocking 파일시스템 작업·전체
+wall time·토큰/비용 상한이 아닙니다. 메시지/스키마가 각각 codec 제한 이하여도 실제 인코딩한
+요청 프레임은 별도의 프레임 제한을 만족해야 합니다.
+
+### 전체 batch 결정과 고정 시계
+
+후속 전체 검토 1회에 선택한 모든 메시지/스키마·순서·정확한 설정/recipe·소스/계정 범위·최대
+`N`개 one-turn 시도·시간/사용량 한계를 포함합니다. 정상 슬롯마다 다시 확인을 요구하지 않습니다.
+새 실제 소스/계정/모델/turn/시간 허가와 미확보 검토/동결 근거는 별도 선행 조건이며 문서/CI 승인이
+그 허가는 아닙니다. 현재 내용 ID나 호출자 제공 결정은 사람의 신원을 인증하지 않습니다.
+
+저장하는 시각·차이는 모두 정수 나노초이며 아래 초 값을 각각 `1_000_000_000`배 변환합니다.
+특히 `dispatch_deadline_ns=m_accept_ns+W_seconds*1_000_000_000`이고 확인/불일치 한계는 각각
+`300*1_000_000_000`·`5*1_000_000_000`입니다. 아래 식의 초는 읽기 쉬운 축약이지
+`monotonic_ns()`에 변환 없이 더하는 산술이 아닙니다.
+
+후속 단일 소유 coordinator의 제안 규칙은 다음과 같습니다.
+
+1. 한 프로세스에서 preview 생성 `m0=monotonic_ns()`·wall-clock `w0`를 고정합니다.
+   `0 <= m-m0 < 300초`일 때 일치하는 batch 결정 정확히 1개만 수용합니다. 거절·잘못된/오래된
+   결정·만료는 최종 상태이며 prompt 자동 갱신·timestamp 교체·재시작·import·resume은 없습니다.
+2. 수용 시 `dispatch_deadline=m_accept+W`를 딱 한 번 정하며 `W=60+N*(T+10)초`입니다. `N`은 성공
+   수가 아닌 전체 14/28/42슬롯입니다. `T=120`에서 최대 구간은 1,880·3,700·5,520초입니다.
+   `+10`은 두 그룹의 명목 정리 대기 여유이지 완료 보장이 아닙니다.
+3. 원래 planner 순서·동시 슬롯 1개를 유지합니다. 예약 전·turn 쓰기 전 전체 후보/recipe를
+   재검증하고 두 지점 모두 시간을 검사합니다. 프로세스 시작 전 예약으로 슬롯을 소비합니다.
+   첫 write 가능 시점 직전 await 없이 `turn_send_state=attempted`로 바꾸며 불확실한 write/ack가
+   슬롯을 다시 채우지 않습니다.
+4. 새 예약/전송은 `m < dispatch_deadline`일 때만 가능합니다. 전송 전 만료면 해당 슬롯과 나머지
+   미전송 슬롯을 `skipped-expired`로 두고 attempted-send 상태를 따로 기록합니다. 만료 전 이미
+   보낸 슬롯은 원래 `T`/정리 제한으로 마무리해 결과를 보존하며 만료로 timer를 연장하거나 새
+   turn을 시작하지 않습니다.
+5. 각 checkpoint에서 monotonic 값은 감소하면 안 됩니다. **원래 preview 기준점**으로
+   `abs((wall_now-w0)-(mono_now-m0)) > 5초`면 clock-integrity 실패입니다. 수용/슬롯마다 기준점을
+   갱신하지 않습니다. 활성 슬롯을 취소·정리하고 미전송 슬롯은 별도의 시계 실패 사유로
+   건너뜁니다. 수용/예약/pre-write·관찰되는 async 진행 중 검사하고 wall time으로 권한을 늘리지
+   않습니다. 이는 관찰된 큰 시계/절전 불일치 일부를 찾는 것이지 모든 절전·실시간 초과 탐지가
+   아니며 5초 이하 불일치는 허용합니다.
+6. 활동·유효 응답·사용자 지연·일부 진행으로 어느 deadline도 늘리지 않습니다. Preview 메타데이터는
+   후보·recipe·전체 제한/순서/실패 정책·새 namespace 하나에 연결해야 합니다. 불변 오프라인 상태
+   snapshot만으로 one-use를 강제할 수 없습니다. 후속 coordinator가 메모리 ledger 하나를 직렬로
+   소유하고 과거 snapshot 재사용을 거부해야 합니다. 이 소스 전용 설계는 영속 저장/import나
+   적대적 프로세스 방어를 약속하지 않습니다.
+
+### 최종 결과와 구현 선행 조건
+
+**첫 nonvalid 관찰에서 중단**하도록 정합니다. missing·invalid·failed·interrupted·timeout 슬롯은
+정리 성공 여부와 무관하게 후속 전송을 중단하고 나머지는 `skipped-stopped`로 보존합니다.
+유효한 null/unknown 답은 유효 응답이므로 batch를 멈추지 않습니다. 무결성/시계 실패·미확인 정리는
+별도 치명 사유이며 주 실패·정리 결과를 독립 기록합니다. 예약했지만 전송하지 않은 것은 완료된
+제공자 시도가 아닙니다. 거절/만료/미전송 슬롯을 포함한 전체 분모와 사유를 유지합니다. 순서 의존적
+중도 중단 batch로 모드 우열을 비교하거나 실패 슬롯을 새 시도로 대체하지 않습니다. 채점은 별도입니다.
+
+다음 오프라인 테스트는 정확한 recipe/프레임 해시·생성 스키마 형식 fixture·모델 목록 페이지/명시
+effort·300초 경계/최대 `W`·시계 후퇴/전진/절전 예·기준점 재설정 금지·예약/송신 만료 경합·옛
+snapshot 재사용·전송한 슬롯의 만료·null 유효성·실패/정리/skipped 분모를 다룹니다. 시계/event는
+합성으로 표시하고 런타임 출처/제공자 새로움/실행 승인 flag는 false를 유지합니다. 프로세스 코드
+전에는 전체 유효 설정/MCP 시작 의미를 검토하고 스키마를 따르는 가짜 프로세스 payload를 고정해야
+합니다. 실제 중첩 스키마/제공자 지원·유효 harness context는 미확인입니다. 현재 codec·제품 adapter·
+v1 값/바이트·채점 수학/이력·릴리스 버전·#84 체크는 변경하지 않습니다.
 
 ## 원래 제안 — 보존한 이력
 

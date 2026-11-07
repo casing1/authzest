@@ -20,10 +20,177 @@ is not verified. Echoing current IDs around old inner answers can still pass: de
 caller-supplied/unverified provenance and `runtime_observed=false`, not authentication/provider freshness.
 
 No account/network/process/reference/scoring/log-import access or actual AI/worker call is added.
-Live capture/isolation/failure handling is still a proposal. Next review the versioned transport
-recipe/batch expiry, then separate fake-process tests. Product adapter/pinned `0.153.0`, v1/math/history,
+Live capture/isolation/failure handling is still a proposal. The version-specific dispatch proposal below
+precedes pure offline decision/state tests and separate fake-process tests. Product adapter/pinned `0.153.0`, v1/math/history,
 product `0.1.0a4` / report schema `1.2`, live-freeze false and #84's seven pending checks are unchanged;
 there is no new risk acceptance or release. Codec delivery does not approve live execution/freeze.
+
+## Version-specific dispatch proposal — 2026-11-08 KST
+
+**Design only, against main `851d84cd4ab35bb35d262e2dbef23af7810dc5f3`.** Proposed recipe name:
+`evaluation-stdio-0.153.0-v1`. No dispatch API, decision ledger, frame builder, process transport or live
+configuration freeze is implemented by this update. Next implement pure offline recipe/frame and
+batch-state tests; add process lifecycle tests only after that boundary is reviewed. These are not
+additional course features or permission to reuse the private product `_turn`.
+
+### Pinned schema evidence, not runtime evidence
+
+The installed CLI reported `0.153.0`. Its local `app-server generate-json-schema` subcommand generated
+both default and `--experimental` protocol bundles without starting a server or making account/model
+RPCs. The experimental bundle is the relevant field reference for `experimentalApi=true`: the default
+bundle omits fields such as `allowProviderModelFallback`, `environments` and `runtimeWorkspaceRoots`.
+Do not infer unsupported fields from that default omission.
+
+Selected raw experimental schema SHA-256 values from that generation are below. These identify public
+generated protocol documents, not the executable, a signed release, actual wire capture or config.
+The generated bundles are not vendored or imported by the current codec.
+
+| Generated document                          | SHA-256                                                            |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `v2/ThreadStartParams.json`                 | `25f490368ec6df52a2a3b82a5469d2413307eb93439121b309f415b5648eee7a` |
+| `v2/ThreadStartResponse.json`               | `a338467af5fc271ace917f9d1262405642c3df3b66116aa105343db86cc9a76d` |
+| `v2/TurnStartParams.json`                   | `b36fb37326b1cf69f75c8b306f1f886d53a57c4b1b985e08e298e2407ea2ad02` |
+| `v2/ThreadSettingsUpdatedNotification.json` | `f7865eabaa34c7895a1ae345e51c1ba181a63c649237d36583b80f9d759b0f53` |
+
+The [official App Server reference](https://learn.chatgpt.com/docs/app-server) explains version-specific
+schema generation and RPC lifecycle. Here the generated files were read and compared with local
+product code, not used to mechanically validate every existing fake fixture. In particular, existing
+fake Model/Thread/item/usage payloads omit some generated required fields; passing those tests is not
+full protocol-schema conformance. `outputSchema` accepts arbitrary JSON at the protocol layer, which
+does not establish provider support for the codec's nested shaping schema. Config also permits extra
+keys: field presence alone does not establish effective configuration or disabled capabilities.
+
+### Proposed recipe and wire choices
+
+The future source-checkout-only POSIX transport must own its recipe values rather than importing
+mutable product configuration. Use the exact `CONFIG` and `DISABLED_FEATURES` values from product
+source at the baseline above as the starting descriptor, **except** replace fixture-specific developer
+instructions with the codec's exact common `INSTRUCTIONS`, and explicitly set model, requested effort
+and `approvals_reviewer="user"`. Use the same common instruction bytes for thread base/developer
+instructions and collaboration developer instructions in both modes. The next offline builder must
+materialize and hash all values, schema selections, limits and clock/failure rules; this document is
+not an executable recipe digest. Unknown instruction/profile/provider/context overrides must not be
+silently inherited. Effective configuration, including ambient MCP behavior during discovery, remains
+a process-implementation gate, not a guarantee supplied by this descriptor.
+
+| Stage                   | Proposed exact choice and required observation                                                                                                                                                             |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Process boundary        | At most two sequential process groups per slot: config-only discovery, then generation. New empty cwd; stdio JSONL; version `0.153.0` from executable and initialize user agent. No shell launcher.        |
+| Initialization/config   | `experimentalApi=true`, then `initialized`; `config/read` with `includeLayers=false`. Enumerate at most 64 bounded MCP names and disable each on generation restart; verify all recipe values.             |
+| Environment             | Only `PATH`, `HOME`, `CODEX_HOME`, `TMPDIR`, `LANG`, `LC_ALL`, `USER`, `LOGNAME` may be inherited. Preserve existing auth location; never copy credentials or forward API keys/proxies/endpoint overrides. |
+| Account/catalog         | Existing ChatGPT login only; `account/read` with `refreshToken=false`. `model/list`: `limit=100`, `includeHidden=false`, bounded 10 pages/1,000 entries, unique progressing cursors.                       |
+| Model/effort            | Exactly one visible catalog entry matching the requested model and one advertised `supportedReasoningEfforts[].reasoningEffort` matching explicit effort. No default, substitute, alias or fallback.       |
+| `thread/start`          | Exact model/provider `openai`, `allowProviderModelFallback=false`, `ephemeral=true`; empty environments/tools/capability/workspace roots; read-only/on-request; reviewer `user`; fixed instructions.       |
+| Initial effort setting  | Set `model_reasoning_effort` in process config and `thread/start.config` to the requested effort. Require non-null matching response `reasoningEffort`; absence is unverified, not success.                |
+| Initial thread evidence | Match model/provider/cwd/approval/reviewer/read-only no-network; `thread.ephemeral=true`, empty turns/instruction sources/roots, no fork/parent context. No resume/fork/history import or steering.        |
+| `turn/start`            | Exact thread ID, model and effort; one text input equal to `Invocation.message_text`; exact `Invocation.output_schema`; empty environments/roots; same sandbox/approval/reviewer/cwd.                      |
+| Collaboration/tier      | Explicit `collaborationMode.mode="default"`, settings model/`reasoning_effort` equal requested values and non-null common `developer_instructions`; `serviceTierForTurn="default"`.                        |
+
+Before account/catalog/thread creation, call `remoteControl/status/read` with `{}` and require
+`status="disabled"`; missing, malformed or other status refuses the batch. Notification absence is
+not evidence that remote control is disabled. `collaborationMode` takes precedence over top-level
+model/effort/developer settings, and null developer instructions select built-in mode instructions;
+the explicit equal/non-null settings above prevent that silent substitution.
+
+Generated `ReasoningEffort` is a nonempty string, not the product adapter's five-value compatibility
+list. Validate the exact requested label against the bounded catalog, not its default. Null/duplicate
+model entries, cursor cycles, too many pages, malformed settings, or missing required reported effort
+refuse the batch. A server-reported setting is still not telemetry of hidden provider computation.
+Do not expose account identities, configuration paths or catalog contents in public evidence.
+
+Use a closed event policy, not the product retry policy. Expected methods are `thread/started`,
+`thread/status/changed`, `thread/settings/updated`, `turn/started`, `turn/completed`, `item/started`,
+`item/completed`, `item/agentMessage/delta`, the three product-listed reasoning delta methods,
+`thread/tokenUsage/updated`, `account/rateLimits/updated`, `model/verification`,
+`model/safetyBuffering/updated`, `turn/moderationMetadata`, and `remoteControl/status/changed` only
+when disabled. Every field/payload still needs pinned-schema and semantic validation; an allowlisted
+method alone is insufficient. Bound and correlate queued pre-ack notifications after the matching RPC
+acknowledgement. Reject foreign/duplicate RPC identities and foreign thread/turn identities.
+
+Every `error` including `willRetry=true`, `warning`, `configWarning`, `guardianWarning`, deprecation,
+auth recovery, model rerouting, tool/approval request, unexpected item/context/settings or unknown
+event is batch-fatal. Never parse warning prose as configuration, usage or an approval. Drop private
+warning/error text and retain only bounded closed diagnostics. Reject settings with null/different
+effort or collaboration effort, model, developer instructions, reviewer or boundary values; do not
+relabel missing metadata as verified. Do not reuse the product's allowance for three retry notices.
+Without a complete matching settings observation, keep settings unverified and do not publish a
+validated runtime observation, even if the final JSON and completion otherwise pass.
+Already initiated/hidden Codex retries and usage still cannot be capped or certified absent.
+
+Require a correlated `item/completed` agent message with explicit `phase="final_answer"`, unique
+item ID and bounded text, followed by matching successful `turn/completed` with null error. Unknown
+phase is not final in this recipe. Deltas or turn snapshots alone do not supply a final result. A
+snapshot may repeat the same completed item only with identical content; it must not introduce a
+second/conflicting final item. Then invoke the unchanged strict codec, and publish an observation
+only after confirmed cleanup. Missing usage remains null and last-turn usage is not total billing.
+
+Keep existing proposed limits: 256 KiB per complete JSONL frame, 2 MiB received stream bytes and
+4,096 events across both slot processes, at most 128 queued notifications, and a single slot budget
+`T` of 1–120 seconds for startup/preflight/generation. Do not reset `T` after discovery or events.
+Cleanup waits may extend beyond `T`, at most five seconds per created process group; this does not
+bound blocking filesystem work, total wall time, tokens or cost. The actual encoded request frame
+must fit its limit even when message/schema separately fit codec limits.
+
+### Whole-batch decision and fixed clocks
+
+One future complete review covers all selected messages/schemas, ordering, exact settings/recipe,
+source/account scope, up to `N` one-turn attempts and all disclosed time/usage limitations. Do not ask
+for another confirmation at each ordinary slot. Fresh live source/account/model/turn/time permission
+and missing review/freeze evidence remain separate prerequisites; document/CI approval is not that
+permission. No current content ID or caller-supplied decision authenticates a human.
+
+All stored clock values and differences use integer nanoseconds: convert each seconds value below
+by multiplying by `1_000_000_000`. In particular,
+`dispatch_deadline_ns=m_accept_ns+W_seconds*1_000_000_000`; the confirmation and discrepancy limits
+are `300*1_000_000_000` and `5*1_000_000_000` respectively. The following equations use seconds as
+readable shorthand, never unconverted arithmetic against `monotonic_ns()`.
+
+Proposed rules for a later single-owner coordinator are:
+
+1. Fix preview creation `m0=monotonic_ns()` and wall-clock `w0` in one process. Accept exactly one
+   matching batch decision only while `0 <= m-m0 < 300 seconds`. Decline, invalid/stale decision or
+   expiry is terminal. No automatic prompt renewal, timestamp refresh, restart, import or resume.
+2. At acceptance fix once `dispatch_deadline=m_accept+W`, where `W=60+N*(T+10)` seconds. `N` is the
+   complete 14/28/42-slot schedule, never a success count. Maximum windows at `T=120` are 1,880,
+   3,700 and 5,520 seconds. The `+10` allows nominal two-group cleanup waits, not a completion promise.
+3. Use the original planner order and one concurrent slot. Revalidate full candidate/recipe before
+   reservation and before turn write; check time at both points. Reserve consumes that slot before
+   any process starts. Mark `turn_send_state=attempted` immediately before the first possible write,
+   without an intervening await. Uncertain write/acknowledgement never replenishes the slot.
+4. New reservations/sends require `m < dispatch_deadline`. Expiry before send leaves that slot and
+   every unsent slot `skipped-expired`, with attempted-send state recorded separately. If already
+   sent before expiry, drain that slot under its original `T`/cleanup limits and retain its result;
+   expiry is not permission to extend its timer or start another turn.
+5. Every checkpoint uses nondecreasing monotonic time. Relative to the **original preview anchors**,
+   `abs((wall_now-w0)-(mono_now-m0)) > 5 seconds` is a clock-integrity failure. Never re-anchor this
+   check at acceptance or per slot. Cancel any active slot and clean up; skip unsent slots with a
+   distinct clock-failure reason. Check at acceptance/reservation/pre-write and during observed
+   async progress. Wall time never grants more authority. This detects some observed clock/suspend
+   anomalies, not all sleep or real-time overruns; at most five seconds discrepancy is tolerated.
+6. Activity, valid output, user delay or partial progress never extends either deadline. Preview
+   metadata must bind candidate, recipe, complete limits/order/failure policy and one fresh namespace.
+   Immutable offline transition snapshots alone cannot enforce one-use: the future coordinator must
+   serially own one in-memory ledger and reject stale snapshot reuse. No persistence/import or
+   adversarial-process protection is promised by this source-only design.
+
+### Terminal outcomes and implementation gate
+
+Freeze **stop-on-first-nonvalid observation**: missing, invalid, failed, interrupted or timed-out
+slots stop further dispatch even when cleanup succeeds; retain all others as `skipped-stopped`.
+Valid null/unknown answers are valid responses and do not stop the batch. Integrity/clock failures and
+unconfirmed cleanup are separately fatal; record primary failure and cleanup outcome independently.
+Reserve-without-send is not a completed provider attempt. Keep all planned denominators and reasons,
+including declined/expired/never-dispatched slots. Do not compare modes for superiority from an
+order-dependent truncated batch, or replace failed slots with fresh attempts. Scoring remains separate.
+
+Next offline tests must cover exact recipe/frame hashes and generated-schema-shaped fixtures;
+catalog pagination and explicit effort; 300-second boundary and maximum `W`; backward/forward/suspend
+clock examples; no re-anchoring; reserve/send expiry races; old snapshot reuse; sent-slot expiry;
+null validity; failure/cleanup/skipped denominators. Tests must label clocks/events as synthetic and
+leave runtime provenance/provider freshness/execution authorization false. Before process code,
+review complete effective config/MCP startup semantics and pin conforming fake-process payloads.
+Actual nested-schema/provider support and effective harness context remain unverified. No current
+codec, product adapter, v1 values/bytes, metrics/history, release version or #84 checklist is changed.
 
 ## Original proposal — preserved history
 

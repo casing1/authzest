@@ -212,8 +212,12 @@ data without account/network/process/reference/scoring access. Original/final me
 schema hashes stay separate, and raw response text is retained only in returned memory. This neither
 verifies pinned App Server schema support nor proves provider freshness/runtime execution. The
 [protocol](EVALUATION_PROTOCOL.md#offline-invocation-codec-continuation) documents required settings
-and CLI examples. Next review the versioned transport recipe and batch expiry, then add separate
-fake-process lifecycle tests. Live capture/isolation/failure handling is still unimplemented.
+and CLI examples. The transport recipe/whole-batch decision is now specified: locally generated normal/
+`--experimental` `0.153.0` schemas review field syntax only, not runtime configuration, tool isolation,
+nested `outputSchema` support or provider compatibility. Next implement pure offline batch-decision/
+state tests, then separate fake-process transport tests. Executable transport/decision state/API and
+live capture/isolation/failure handling remain unimplemented; actual trials still need explicit source/
+account/model/turn/time approval and the missing freeze/review evidence.
 Design CI/merge delivers the proposal, not actual-call approval or benchmark freeze. Do not expand
 the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
 live-freeze false, risk/release decisions and all seven pending #84 checks remain unchanged.

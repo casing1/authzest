@@ -398,9 +398,31 @@ seven cases/21 questions per mode/repetition. Missing/invalid/stale behavior is 
 not model-quality measurement. A current echo can still wrap old inner answers: provenance remains
 `caller-supplied-unverified`, `runtime_observed` and provider freshness remain false. The original
 `0.1` modules, product adapter, v1/math/history, product `0.1.0a4` / report schema `1.2` are unchanged.
-Next review the versioned transport recipe/batch expiry, then separate fake-process lifecycle tests;
-direct capture/isolation/failure handling is still unimplemented. No actual AI/worker call, live freeze,
+The proposed transport recipe/whole-batch policy is now specified below; next are pure offline
+batch-decision/state tests, then separate fake-process transport tests. Executable transport/decision
+state/API and direct capture/isolation/failure handling remain unimplemented. No actual AI/worker call, live freeze,
 risk acceptance, release or completed #84 checklist item is added.
+
+## Proposed evaluation-only dispatch policy
+
+The [transport design](EVALUATION_TRANSPORT_DESIGN.md) now specifies a versioned evaluation-only
+recipe and whole-batch decision. Normal and `--experimental` protocol schemas for pinned `0.153.0`
+were generated locally without server/account/model RPC. This reviews field syntax only: it does not
+verify runtime configuration, tool isolation, nested `outputSchema` support or provider compatibility.
+
+The proposed confirmation TTL is 300 seconds from preview creation; acceptance starts the dispatch
+window `W = 60 + N * (T + 10)` seconds for `N = 14/28/42` planned slots and per-slot timeout
+`T = 1..120` seconds. The recipe allows at most two sequential process groups per slot, with five
+seconds of cleanup each, one concurrent slot, and stops at the first nonvalid result without retry,
+resume or extension; valid null/unknown answers do not stop the batch. These are proposed host controls, not an
+implemented time/usage guarantee. Executable batch-decision/state/API and transport are not available;
+pure offline decision/state tests come before separately reviewed fake-process transport tests.
+
+Design CI/merge conveys a proposal, not live-execution approval or benchmark freeze. Actual trials
+still require an explicit source/account/model/turn/time decision and the missing freeze/review
+evidence. The existing codec, pinned `0.153.0`, product `0.1.0a4` / report schema `1.2`, v1/math/history
+are unchanged. #84 stays OPEN with all seven checks pending and live freeze false; no actual AI/worker
+call, risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 

@@ -16,6 +16,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Specify the [evaluation-only transport recipe and whole-batch decision](docs/development/EVALUATION_TRANSPORT_DESIGN.md).
+  Locally generated normal/`--experimental` `0.153.0` protocol schemas review field syntax only,
+  without server/account/model RPC; runtime configuration, tool isolation, nested `outputSchema`
+  and provider compatibility remain unverified. Propose a 300-second confirmation TTL, a bounded
+  batch dispatch window, sequential slots and stop-on-first-nonvalid without retry/resume/extension.
+  Executable transport/decision state/API remains unimplemented: next are pure offline batch-decision/
+  state tests, then separate fake-process transport tests. Existing codec/pin/product/v1/math/history,
+  live-freeze false and all seven pending #84 checks are unchanged; no actual AI/worker call,
+  risk acceptance or release is added. Design delivery is not live-execution approval or benchmark freeze.
+
 - Implement the owned pure offline invocation codec in `scripts/evaluation_invocation.py`: preview
   model-visible `0.2` candidates, validate strict outer responses plus unchanged inner `0.1` answers,
   and exercise synthetic dry-runs without provider capture. Separate original/final message hashes
