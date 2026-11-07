@@ -112,6 +112,15 @@ freshness across configuration/repeats. Fresh contexts/tool limits and live coll
 implemented; live prompt/configuration/repeat freeze remains false. Public-data exposure and the
 answer-only contract still prevent independence, citation-support/review-effort or model-value claims.
 
+Offline host-receipt validation now separates expected slots from caller-supplied batches, not real
+provider responses. Namespace/plan/configuration/trial/invocation bindings reject whole stale receipts
+and within-batch duplicates, but old inner JSON rewrapped in current metadata can remain valid.
+`provider_freshness_verified` stays false, provenance unverified, provider usage/latency/effective model
+null and scoring not run. Revalidation is allowed; this is not persistent one-use enforcement or
+authentication/consent. A later versioned provider-visible/capture boundary is still needed before live
+collection; unchanged answer-only payloads cannot prove execution/context, independent evaluation or
+model value. All seven #84 checks remain pending.
+
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
 attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and

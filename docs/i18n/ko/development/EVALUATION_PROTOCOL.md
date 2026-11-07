@@ -286,7 +286,8 @@ canonical 애플리케이션 메시지 텍스트·UTF-8 바이트 길이·SHA-25
 envelope나 Codex harness의 유효 전체 context가 아닙니다. 새 context·도구 제한은 후속 요구사항이며
 이 helper가 강제하지 않습니다. 설정·패킷 집합·계획·trial ID는 결정적 내용 메타데이터이지 동의나
 새 호출의 증명이 아닙니다. 설정/반복이 달라도 request ID는 같으므로 응답 스키마 `0.1`은 해당 설정·
-반복·새 호출에 응답을 연결할 수 없습니다. 수집/실행은 미구현입니다. `answer_contract_descriptor_id`는
+반복·새 호출에 응답을 연결할 수 없습니다. 제공자 capture/실제 수집·실행은 미구현이며 아래 별도
+호스트 batch 검증도 제공자 응답의 새로움을 입증하지 않습니다. `answer_contract_descriptor_id`는
 공개 descriptor를 연결할 뿐 전체 validator 구현의 해시가 아닙니다.
 
 작업 데이터만 읽으며 평가자 정답/참고 정답 채점·계정 조회·네트워크·자식 프로세스·대상 소스
@@ -295,6 +296,47 @@ Native 실행 파일 기능이나 제품 `authzest` 명령도 아닙니다. 프�
 권한·`live_benchmark_ready`는 모두 false입니다. 답 전용 응답으로는 인용의 의미상 뒷받침·설명·사람
 검토 노력을 측정할 수 없으며 공개 v1/정답 노출로 독립성도 주장할 수 없습니다. 모델 결과·v1/수학/
 과거 자료/제품 버전 변경·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
+
+## 제공자 capture가 아닌 오프라인 호스트 receipt batch
+
+소스 checkout helper `scripts/evaluation_collection.py`는 로컬 receipt 라우팅/검증을 추가하며 실제
+수집이나 native/제품 CLI 기능이 아닙니다.
+`new_collection`은 직접 관리하는 작업 전용 planner와 새 32바이트 무작위 nonce로 로컬 namespace의
+예상 슬롯을 만듭니다. 엄격한 호스트 receipt는 collection·plan·설정·패킷 집합·trial·invocation·순번·
+반복·모드·task·request·메시지 SHA-256에 연결하며 `response_raw`는 기존 엄격한 응답 스키마
+`0.1`을 그대로 사용합니다. 세션/receipt 메타데이터는 제공자 입력이 아닙니다. 모델에 보이는 envelope나
+실제 제공자 capture에는 후속 버전 경계가 필요합니다.
+
+```bash
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --json
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --fault duplicate
+```
+
+`--dry-run`과 planner 설정 네 개가 모두 필수입니다. CLI는 실제 모드나 receipt/log 파일 import를
+받지 않으며 모델/effort 유효성도 미확인입니다. 선택 fault는 `missing`, `invalid`, `duplicate`,
+`stale`, `unmatched`, `failed`, `interrupted`, `timeout`이며 첫 합성 슬롯에 적용합니다. 스키마가
+유효한 합성 receipt는 올바른 모델 답이 아니며 참고 정답을 읽거나 채점하지 않습니다.
+
+한 batch에서 같은 invocation으로 중복 제출하면 내용이 같아도 해당 슬롯을 무효로 합니다. 외부/
+라우팅 불가 key는 unmatched로 별도 보고하며 예상 슬롯을 채우지 않으므로 별도 제출이 없는 슬롯은
+missing으로 남습니다. 기회를 추가하거나 임의 슬롯에 귀속하지 않습니다. Receipt나 내부 응답 누락은 missing(`None`), 무효 응답은 `[]`로
+유지하며 호출자가 보고한 failed/interrupted/timeout도 별도 결과로 둡니다. 모드/반복마다 사례 7개·
+질문 기회 21개를 보존하고 반복 1/2/3회의 합계는 슬롯 14/28/42개·질문 기회 42/84/126개입니다.
+상한은 receipt당 256 KiB·batch의 receipt 텍스트 UTF-8 합계 4 MiB·제출 수는 계획 슬롯 수의 2배이며 잘못된 세션/
+batch 상한 입력에는 닫힌 입력 오류를 내고 유효한 관찰을 꾸며내지 않습니다.
+
+이전 receipt 전체는 namespace가 바뀌면 거부하지만 호출자가 이전 내부 JSON을 현재 메타데이터로
+다시 감싸면 유효하게 통과할 수 있습니다. 따라서 `provider_freshness_verified`는 false,
+`transport_provenance`는 `caller-supplied-unverified`이며 실제 모델 실행·유효 모델/설정/context·
+제공자 capture를 입증하지 않습니다. 같은 batch를 다시 검증할 수 있으므로 중복 검사는 영속적인
+일회용 ledger가 아닙니다. Nonce/ID는 신원 인증이나 공유/실행 동의가 아니며 기존 프롬프트/payload/
+request 스키마 `0.1`도 그대로입니다.
+
+제공자 호출·실제 시험은 0, 유효 모델·제공자 사용량·지연은 null이며 채점하지 않습니다. 런타임/정책/
+worker 실행·패치·실제 동결·위험 수용·릴리스는 제외합니다. 공개 작업/정답 노출·답 전용 한계는
+그대로이며 v1/수학/과거 자료/제품 버전도 바꾸지 않습니다. 독립성은 미확립이고 #84 체크 항목
+7개도 모두 미완료입니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

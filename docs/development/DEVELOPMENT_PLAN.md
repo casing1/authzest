@@ -190,12 +190,21 @@ release is added.
 An offline trial-candidate helper now makes proposed model/effort/repetition/timeout settings and
 paired application messages explicit: `python -m scripts.evaluation_trial_plan` requires all four
 arguments; see the [protocol](EVALUATION_PROTOCOL.md#offline-ai-trial-candidate-not-execution).
-It plans 14/28/42 slots for one/two/three repetitions but does not collect/run, query an account or
+It plans 14/28/42 slots for one/two/three repetitions but does not collect from/run a provider, query an account or
 freeze a live configuration. Message hashes/IDs do not grant consent or response freshness, and schema
 `0.1` still cannot bind configuration/repetition. Keep the separate static observation, public-data
 exposure, missing independent review and answer-only metric limits visible. Next review the candidate
 and design the missing live bindings/context/collection controls; live sharing/execution remain false.
 v1/math/history/product versions, risk decisions, releases and all seven pending #84 checks are unchanged.
+
+The separate `scripts/evaluation_collection.py --dry-run` helper now validates synthetic host-receipt
+batches with the four explicit planner settings, preserving every mode/repetition denominator and
+missing/invalid/reported-failure routing. Fresh local namespaces and strict batch bindings are not
+provider evidence: rewrapped old inner JSON can pass, caller-supplied provenance is unverified and
+duplicate rejection is one-batch-only. No receipt/log file import, provider transport/capture, actual
+model/context verification or scoring is implemented. Next design the versioned provider-visible/
+capture boundary without treating local IDs as freshness or consent. v1/math/history/product versions,
+live freeze, risk/release decisions and all seven pending #84 checks remain unchanged.
 
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
