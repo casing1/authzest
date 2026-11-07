@@ -366,6 +366,14 @@ release are excluded. Public-task/reference exposure and answer-only limitations
 history/product versions are unchanged, independence is unestablished and all seven #84 checks remain
 pending.
 
+The [provider-capture design proposal](EVALUATION_TRANSPORT_DESIGN.md) addresses the next boundary:
+candidate model-visible invocation/request-response `0.2` around existing inner `0.1` answers.
+Runtime capture, isolation and failure handling remain unimplemented proposals. Echoing a nonce is
+not authentication or provider freshness. Next is a pure offline codec, then separate transport/
+fake-lifecycle tests; design CI/merge is not actual execution approval or benchmark freeze. The
+product adapter/pinned `0.153.0`, v1/math/history, product `0.1.0a4` / report schema `1.2`, live-freeze
+false and all seven pending #84 checks stay unchanged. No actual call, risk acceptance or release.
+
 ## Candidate-independent offline mathematics
 
 The source-checkout-only module `scripts/evaluation_metrics.py` separates generic measurement

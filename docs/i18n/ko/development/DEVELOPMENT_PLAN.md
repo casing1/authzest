@@ -194,9 +194,14 @@ Dry-run은 합성 전용을 유지하고 `--static-only`와 결합하거나 실�
 receipt batch를 검증하며 모든 모드/반복의 분모와 missing/invalid/보고된 실패 라우팅을 보존합니다.
 새 로컬 namespace·엄격한 batch 연결은 제공자 근거가 아닙니다. 이전 내부 JSON을 다시 감싸면 통과할
 수 있고 호출자 제공 출처는 미확인이며 중복 거절도 한 batch에만 적용합니다. Receipt/log 파일 import·
-제공자 transport/capture·실제 모델/context 확인·채점은 구현하지 않습니다. 다음은 로컬 ID를 새로움이나
-동의로 해석하지 않는 버전 있는 제공자 노출/capture 경계의 설계입니다. v1/수학/과거 자료/제품 버전·
-실제 동결·위험/릴리스 결정·#84 미완료 체크 항목 7개는 그대로입니다.
+제공자 transport/capture·실제 모델/context 확인·채점은 구현하지 않습니다.
+[제공자 capture 설계 제안](EVALUATION_TRANSPORT_DESIGN.md)은 모델에 보이는 invocation/요청·응답
+`0.2` 후보와 기존 내부 `0.1` 답을 구분합니다. 런타임 capture·격리·실패 정책은 여전히 제안이며 nonce
+echo도 신원 인증/제공자 응답 새로움이 아닙니다. 다음은 순수 오프라인 codec만 구현하고 이후 별도
+transport/가짜 프로세스 lifecycle 테스트를 진행하는 일입니다. 설계 CI/병합은 제안 전달이지 실제
+호출 승인·벤치마크 동결이 아닙니다. 제품 adapter와 고정 `0.153.0`을 확장하지 않으며 v1/수학/과거
+자료·제품 `0.1.0a4` / 리포트 스키마 `1.2`·실제 동결 false·위험/릴리스 결정·#84 미완료 체크 7개는
+그대로입니다.
 
 과거 기록은 [변경 이력](../CHANGELOG.md), 연결된 이슈/PR과 [릴리즈 기록](../releases/RELEASING.md)에
 보존합니다. 이 문서는 과거 테스트 수의 반복이 아닌 현재 우선순위를 기록합니다.

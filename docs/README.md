@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-11-05 KST
+## Current work — 2026-11-07 KST
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -47,6 +47,14 @@ Next: [#84 independent evaluation](https://github.com/casing1/authzest/issues/84
 [#85 reproducible course demo/evidence](https://github.com/casing1/authzest/issues/85). Use the
 [development plan](development/DEVELOPMENT_PLAN.md) for conditional release targets and the remaining
 submission buffer; do not add optional GUI/adapters to the submission scope.
+
+The [evaluation provider-capture design](development/EVALUATION_TRANSPORT_DESIGN.md) proposes a
+model-visible invocation/request-response `0.2` candidate with existing inner `0.1` answers. Capture,
+isolation and failure policies are not implemented; nonce echo is not authentication/provider freshness.
+Next is a pure offline codec, then separate transport/fake-lifecycle tests. Design CI/merge is proposal
+delivery, not actual-call approval or benchmark freeze. The product adapter/pinned `0.153.0` and
+release/v1/math/history stay unchanged; #84 remains OPEN with seven pending checks and live freeze false.
+No actual call, risk acceptance or release is added.
 
 <details>
 <summary>Historical delivery and preflight notes — not the current release receipt</summary>
@@ -249,6 +257,7 @@ docs/
 | Replaceable models and measurable value                                 | [Model strategy](development/MODEL_STRATEGY.md)                            | [모델 전략](i18n/ko/development/MODEL_STRATEGY.md)                                  |
 | Historical evaluation artifact integrity                                | [Evaluation inventory](development/EVALUATION_INVENTORY.md)                | [평가 자료 목록](i18n/ko/development/EVALUATION_INVENTORY.md)                       |
 | Fixed reference values, archived draft and comparison protocol          | [Evaluation protocol](development/EVALUATION_PROTOCOL.md)                  | [평가 프로토콜](i18n/ko/development/EVALUATION_PROTOCOL.md)                         |
+| Proposed evaluation invocation and provider-capture boundary            | [Evaluation transport design](development/EVALUATION_TRANSPORT_DESIGN.md)  | [평가 transport 설계](i18n/ko/development/EVALUATION_TRANSPORT_DESIGN.md)           |
 | Versioned diagnostics and registration evidence                         | [Report contract](reference/REPORT_CONTRACT.md)                            | [리포트 계약](i18n/ko/reference/REPORT_CONTRACT.md)                                 |
 | Offline evidence-linked expected outcomes                               | [Expectation contract](reference/EXPECTATION_CONTRACT.md)                  | [예상 결과 계약](i18n/ko/reference/EXPECTATION_CONTRACT.md)                         |
 | Contributions and commit conventions                                    | [Contributing](../CONTRIBUTING.md)                                         | [기여 안내](i18n/ko/CONTRIBUTING.md)                                                |

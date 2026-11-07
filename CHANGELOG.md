@@ -16,6 +16,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Propose the [evaluation provider-capture boundary](docs/development/EVALUATION_TRANSPORT_DESIGN.md)
+  in English/Korean: candidate model-visible invocation/request-response `0.2` wraps unchanged inner
+  `0.1` answers. Direct runtime capture, isolation and failure handling are proposals, not implemented
+  transport. A nonce echo is not authentication or provider freshness; design CI/merge is proposal
+  delivery, not execution approval or benchmark freeze. Next is a pure offline codec, followed by
+  separate transport/fake-lifecycle tests. Keep the product adapter/pinned `0.153.0`, v1/math/history,
+  product `0.1.0a4` / report schema `1.2`, live-freeze false and all seven pending #84 checks unchanged.
+  No actual call, risk acceptance or release is added.
+
 - Add offline synthetic host-receipt batch validation in `scripts/evaluation_collection.py` with
   required dry-run/planner settings, fresh local namespaces and strict expected-slot/inner-`0.1`
   bindings. Preserve missing/invalid/reported failures, reject even identical invocation duplicates,
