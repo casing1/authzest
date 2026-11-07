@@ -103,6 +103,15 @@ It leaves paired AI inputs and v1/raw/math/history unchanged. Independent-review
 prompt/model/configuration/repetition freeze and actual model comparison are still missing. Do not
 aggregate the three synthetic modes into an AI score or interpret strict parsing as semantic quality.
 
+`scripts/evaluation_trial_plan.py` adds only an offline candidate: explicit syntax-only model/effort
+labels, one to three planned repeats, proposed adapter timeouts and hashed application messages.
+No catalog/account availability is verified. Deterministic alternating order is not randomized;
+seven case pairs leave a first-mode imbalance for odd repeats. Nominal timeout sums are not wall/
+usage caps. Message/configuration/trial hashes neither authorize sharing nor bind response-`0.1`
+freshness across configuration/repeats. Fresh contexts/tool limits and live collection are not
+implemented; live prompt/configuration/repeat freeze remains false. Public-data exposure and the
+answer-only contract still prevent independence, citation-support/review-effort or model-value claims.
+
 Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
 external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
 attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and

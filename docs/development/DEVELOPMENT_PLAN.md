@@ -187,6 +187,16 @@ configuration/repeat freeze and actual model comparison remain next steps. v1/ra
 versions and all seven #84 checks stay unchanged; no AI/worker execution, patch, risk acceptance or
 release is added.
 
+An offline trial-candidate helper now makes proposed model/effort/repetition/timeout settings and
+paired application messages explicit: `python -m scripts.evaluation_trial_plan` requires all four
+arguments; see the [protocol](EVALUATION_PROTOCOL.md#offline-ai-trial-candidate-not-execution).
+It plans 14/28/42 slots for one/two/three repetitions but does not collect/run, query an account or
+freeze a live configuration. Message hashes/IDs do not grant consent or response freshness, and schema
+`0.1` still cannot bind configuration/repetition. Keep the separate static observation, public-data
+exposure, missing independent review and answer-only metric limits visible. Next review the candidate
+and design the missing live bindings/context/collection controls; live sharing/execution remain false.
+v1/math/history/product versions, risk decisions, releases and all seven pending #84 checks are unchanged.
+
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
 
