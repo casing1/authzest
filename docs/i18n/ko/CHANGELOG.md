@@ -16,6 +16,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 영한 [평가 제공자 capture 경계 설계](development/EVALUATION_TRANSPORT_DESIGN.md)를 제안합니다.
+  모델에 보이는 invocation/요청·응답 `0.2` 후보가 기존 내부 `0.1` 답을 감싸며 직접 런타임 capture·
+  격리·실패 처리는 제안이지 구현된 transport가 아닙니다. Nonce echo는 신원 인증/제공자 응답 새로움이
+  아니고 설계 CI/병합도 제안 전달이지 실행 승인·벤치마크 동결이 아닙니다. 다음은 순수 오프라인 codec,
+  이후 별도 transport/가짜 프로세스 lifecycle 테스트입니다. 제품 adapter/고정 `0.153.0`·v1/수학/과거
+  자료·제품 `0.1.0a4` / 리포트 스키마 `1.2`·실제 동결 false·#84 미완료 체크 7개는 그대로이며 실제
+  호출·위험 수용·릴리스를 추가하지 않습니다.
+
 - `scripts/evaluation_collection.py`에 필수 dry-run/planner 설정·새 로컬 namespace·엄격한 예상
   슬롯/내부 `0.1` 연결을 사용하는 합성 호스트 receipt batch 검증을 추가합니다. Missing/invalid/보고된
   실패를 보존하고 내용이 같은 invocation 중복도 거부하며 unmatched 라우팅을 분모 변경 없이 별도

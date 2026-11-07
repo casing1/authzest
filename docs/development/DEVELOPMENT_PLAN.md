@@ -202,9 +202,14 @@ batches with the four explicit planner settings, preserving every mode/repetitio
 missing/invalid/reported-failure routing. Fresh local namespaces and strict batch bindings are not
 provider evidence: rewrapped old inner JSON can pass, caller-supplied provenance is unverified and
 duplicate rejection is one-batch-only. No receipt/log file import, provider transport/capture, actual
-model/context verification or scoring is implemented. Next design the versioned provider-visible/
-capture boundary without treating local IDs as freshness or consent. v1/math/history/product versions,
-live freeze, risk/release decisions and all seven pending #84 checks remain unchanged.
+model/context verification or scoring is implemented. The
+[proposed provider-capture design](EVALUATION_TRANSPORT_DESIGN.md) now separates a model-visible
+invocation/request-response `0.2` candidate from unchanged inner `0.1` answers. Runtime capture,
+isolation and failure policies are still proposals; nonce echo is neither authentication nor provider
+freshness. Next implement only a pure offline codec, then separate transport/fake-lifecycle tests.
+Design CI/merge delivers the proposal, not actual-call approval or benchmark freeze. Do not expand
+the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
+live-freeze false, risk/release decisions and all seven pending #84 checks remain unchanged.
 
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
 [release record](../releases/RELEASING.md); this plan records current priorities, not every past test count.
