@@ -16,6 +16,15 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- `scripts/evaluation_collection.py`에 필수 dry-run/planner 설정·새 로컬 namespace·엄격한 예상
+  슬롯/내부 `0.1` 연결을 사용하는 합성 호스트 receipt batch 검증을 추가합니다. Missing/invalid/보고된
+  실패를 보존하고 내용이 같은 invocation 중복도 거부하며 unmatched 라우팅을 분모 변경 없이 별도
+  보고합니다. Receipt/batch 바이트·제출 수를 제한합니다. 이전 receipt 전체는 거부하지만 이전 내부
+  JSON을 다시 감싸면 통과할 수 있으므로 호출자 제공 출처는 미확인·제공자 응답 새로움은 false입니다.
+  영속적 일회용 강제나 신원 인증/동의가 아닙니다. 제공자 capture/모델 확인·실제 수집·정답 채점·
+  receipt/log 파일 import·실제 동결·실행·위험 수용·릴리스를 추가하지 않습니다. 기존 payload/응답 계약·v1/수학/과거
+  자료/제품 버전과 #84 미완료 체크 항목 7개는 그대로이며 검증·정상 전달은 별도입니다.
+
 - 소스 checkout 전용 `scripts/evaluation_trial_plan.py`로 명시적 모델/effort/반복/timeout 후보와
   내용 해시·바이트 길이가 있는 두 모드 canonical 애플리케이션 메시지를 준비합니다. 설정 네 개가 모두
   필수이며 label 구문만 확인하고 모델 목록/계정은 조회하지 않습니다. 사례 7개/AI 모드 2개에서 반복

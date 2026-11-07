@@ -16,6 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add offline synthetic host-receipt batch validation in `scripts/evaluation_collection.py` with
+  required dry-run/planner settings, fresh local namespaces and strict expected-slot/inner-`0.1`
+  bindings. Preserve missing/invalid/reported failures, reject even identical invocation duplicates,
+  and report unmatched routing separately without changing denominators. Bound receipt/batch bytes
+  and submission count. Old whole receipts fail, but rewrapped old inner JSON can pass: provenance
+  remains caller-supplied/unverified and provider freshness false. This is neither persistent one-use
+  enforcement nor authentication/consent. No provider capture/model verification, live collection,
+  reference scoring, receipt/log import, live freeze, execution, risk acceptance or release is added.
+  Existing payloads/response contract, v1/math/history/product versions and all seven pending #84
+  checks are unchanged. Verification and normal delivery are separate.
+
 - Add source-checkout-only `scripts/evaluation_trial_plan.py` to prepare explicit model/effort/
   repetition/timeout candidates and canonical paired application messages with content hashes and
   byte lengths. All four settings are required; labels are syntax-only, not catalog/account checks.

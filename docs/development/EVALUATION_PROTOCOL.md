@@ -309,8 +309,9 @@ and SHA-256 values. These candidates are not actual RPC wire envelopes or the ef
 context. Fresh contexts and tool restrictions are future requirements, not enforced by this helper.
 Configuration, packet-set, plan and trial IDs are deterministic content metadata, not consent or
 invocation-freshness proof. Request IDs remain the same across configurations/repetitions; response
-schema `0.1` cannot bind a response to those settings, repeats or a fresh invocation. Collection/run
-support is not implemented. `answer_contract_descriptor_id` binds the public descriptor, not the full
+schema `0.1` cannot bind a response to those settings, repeats or a fresh invocation. Provider capture/
+live collection/run support is not implemented; the separate host-batch validation below proves no
+provider freshness. `answer_contract_descriptor_id` binds the public descriptor, not the full
 validator implementation.
 
 Only task data is read: no evaluator labels/reference scoring, account lookup, network, child process,
@@ -320,6 +321,50 @@ repeat freeze, sharing and execution authorization, and `live_benchmark_ready` a
 Answer-only responses cannot measure semantic citation support, explanations or human review effort;
 public v1/reference exposure still prevents an independence claim. No model result, v1/math/history/
 product-version change, risk acceptance, release or completed #84 checklist item is added.
+
+## Offline host-receipt batches, not provider capture
+
+The source-checkout helper `scripts/evaluation_collection.py` adds local receipt routing/validation,
+not live collection or a native/product CLI feature.
+`new_collection` builds expected slots from the owned task-only planner and a fresh 32-byte random
+nonce for a local namespace. A strict host receipt binds collection, plan, configuration, packet set,
+trial, invocation, ordinal, repetition, mode, task, request and message SHA-256; its `response_raw`
+still uses the unchanged strict response schema `0.1`. Session/receipt metadata is never provider
+input. A model-visible envelope or actual provider capture needs a later versioned boundary.
+
+```bash
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --json
+python -m scripts.evaluation_collection --dry-run --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --fault duplicate
+```
+
+`--dry-run` and all four planner settings are required. The CLI accepts no live mode or receipt/log
+file import; model/effort availability remains unverified. Optional faults are `missing`, `invalid`,
+`duplicate`, `stale`, `unmatched`, `failed`, `interrupted` and `timeout`, affecting the first synthetic
+slot. Schema-valid synthetic receipts are not correct model answers; no references are read or scored.
+
+Within one batch, duplicate submissions for an invocation invalidate its slot even when identical.
+Foreign/unrouteable keys are reported separately as unmatched and do not fill an expected slot;
+otherwise absent slots remain missing. They never add opportunities or attach to an arbitrary slot.
+Absent receipts or absent inner responses
+remain missing (`None`); invalid responses use `[]`. Caller-reported failed/interrupted/timeout
+outcomes stay separate. Every mode/repetition retains seven cases/21 question opportunities:
+14/28/42 slots and 42/84/126 opportunities across one/two/three repeats. Limits are 256 KiB per
+receipt, 4 MiB aggregate UTF-8 receipt text per batch and at most twice the planned-slot count in submissions;
+invalid session/batch limits produce closed input errors, not fabricated valid observations.
+
+Old whole receipts fail across namespaces, but a caller can rewrap old inner JSON with current
+metadata and obtain a valid result. Therefore `provider_freshness_verified` is false and
+`transport_provenance` is `caller-supplied-unverified`: this proves no actual model execution,
+effective model/configuration/context or provider capture. Revalidating the same batch is allowed;
+duplicate detection is not a persistent one-use ledger. Nonces and IDs are neither authentication
+nor sharing/execution consent. Existing prompt/payload/request schema `0.1` remains unchanged.
+
+Provider calls and live trials stay zero; effective model, provider usage and latency remain null,
+and scoring is not run. Runtime/policy/worker execution, patches, live freeze, risk acceptance and
+release are excluded. Public-task/reference exposure and answer-only limitations remain; v1/math/
+history/product versions are unchanged, independence is unestablished and all seven #84 checks remain
+pending.
 
 ## Candidate-independent offline mathematics
 
