@@ -253,6 +253,49 @@ AI/worker 실행·패치·위험 수용·릴리스·#84 체크 항목 완료를 
 블라인드 평가를 입증하지 않습니다. Query registry의 assistant 작성과
 `evaluation_independence: not-established-public-developed-tasks`도 기록합니다.
 
+## 실행하지 않는 오프라인 AI 시험 후보
+
+소스 checkout helper `scripts/evaluation_trial_plan.py`는 응답 수집이나 시험 실행 없이 명시적
+모델/effort label·반복·adapter timeout을 제안합니다. 인자 네 개가 모두 필수이며 반복은 `1..3`,
+timeout 초는 `1..120`입니다. Label 구문만 확인하고 계정이나 모델 목록에서 유효성을 조회하지 않습니다.
+아래 `offline-example-model`은 사용 가능 여부를 확인한 모델명이 아닌 예시 placeholder입니다. 출력 옵션
+`--show-messages`와 `--json`은 상호 배타적입니다.
+
+```bash
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --show-messages
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --json
+```
+
+사례 7개·AI 모드 2개에 대해 다음 기회를 계획할 뿐 실제 호출하지 않습니다.
+
+| 반복 | 계획 슬롯 | 계획 질문 기회 | timeout 120초일 때 명목 adapter timeout 합계 |
+| ---- | --------- | -------------- | -------------------------------------------- |
+| 1    | 14        | 42             | 1,680초                                      |
+| 2    | 28        | 84             | 3,360초                                      |
+| 3    | 42        | 126            | 5,040초                                      |
+
+Timeout 합계는 실제 경과 시간·token·credit 상한이 아닙니다. 정리 시간이나 Codex 내부 재시도/사용량의
+상한은 여기서 확립하지 않습니다. 슬롯당 1회·AuthZest 재시도/대체 모델 없음이라는 목표 정책도 후보
+메타데이터이지 구현된 실행기의 보장이 아닙니다. Task ID를 정렬하고 사례/반복별로 첫 모드를 바꿉니다.
+한 반복의 사례 쌍 7개는 첫 모드가 4대3으로 나뉘어 홀수 반복 수에서는 불균형이 남습니다. 결정적 순서이며
+무작위 배치나 완전한 순서 균형을 주장하지 않습니다.
+
+기존 두 모드 payload·공통 초안 지시·응답 스키마 `0.1`은 유지합니다. Task/request 연결을 확인하고
+canonical 애플리케이션 메시지 텍스트·UTF-8 바이트 길이·SHA-256을 표시하지만 실제 RPC wire
+envelope나 Codex harness의 유효 전체 context가 아닙니다. 새 context·도구 제한은 후속 요구사항이며
+이 helper가 강제하지 않습니다. 설정·패킷 집합·계획·trial ID는 결정적 내용 메타데이터이지 동의나
+새 호출의 증명이 아닙니다. 설정/반복이 달라도 request ID는 같으므로 응답 스키마 `0.1`은 해당 설정·
+반복·새 호출에 응답을 연결할 수 없습니다. 수집/실행은 미구현입니다. `answer_contract_descriptor_id`는
+공개 descriptor를 연결할 뿐 전체 validator 구현의 해시가 아닙니다.
+
+작업 데이터만 읽으며 평가자 정답/참고 정답 채점·계정 조회·네트워크·자식 프로세스·대상 소스
+import/실행·AI/worker 호출이 없습니다. 전체 계획은 평가자 메타데이터이며 제공자 입력이 아닙니다.
+Native 실행 파일 기능이나 제품 `authzest` 명령도 아닙니다. 프롬프트/모델/설정/반복 동결·공유/실행
+권한·`live_benchmark_ready`는 모두 false입니다. 답 전용 응답으로는 인용의 의미상 뒷받침·설명·사람
+검토 노력을 측정할 수 없으며 공개 v1/정답 노출로 독립성도 주장할 수 없습니다. 모델 결과·v1/수학/
+과거 자료/제품 버전 변경·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
+
 ## 후보와 독립적인 오프라인 측정 수학
 
 소스 checkout 전용 모듈 `scripts/evaluation_metrics.py`는 일반적인 측정 수학을 후보 읽기·평가와

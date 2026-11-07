@@ -16,6 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add source-checkout-only `scripts/evaluation_trial_plan.py` to prepare explicit model/effort/
+  repetition/timeout candidates and canonical paired application messages with content hashes and
+  byte lengths. All four settings are required; labels are syntax-only, not catalog/account checks.
+  Seven cases/two AI modes describe 14/28/42 slots for one/two/three repeats, not executed calls.
+  Deterministic order is not randomized or fully counterbalanced; nominal timeout sums are not hard
+  time/usage caps. IDs are metadata, not consent or schema-`0.1` configuration/repetition freshness.
+  No transport/collection, fresh-context/tool enforcement, effective wire-context verification, live
+  configuration/prompt/repeat freeze, sharing/execution, independent evaluation or model result is
+  added. Existing payloads/contracts, v1/math/history/product versions, risk/release decisions and
+  all seven pending #84 checks remain unchanged. Verification and normal delivery are separate.
+
 - Add a source-only registered static-answer adapter for the fixed seven owned evaluation tasks.
   A task-only digest registry stores explicit declaration queries, not expected answers; derive
   source counts/direct `Security` scopes from existing in-memory parser observations and abstain on

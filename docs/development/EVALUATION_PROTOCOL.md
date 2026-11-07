@@ -275,6 +275,52 @@ includes the v1 candidate/manifest identities and false independent-review attes
 freshness or blind evaluation. It also records assistant query-registry authorship and
 `evaluation_independence: not-established-public-developed-tasks`.
 
+## Offline AI trial candidate, not execution
+
+The source-checkout helper `scripts/evaluation_trial_plan.py` proposes explicit model/effort labels,
+repetitions and an adapter timeout without collecting responses or running a trial. All four arguments
+are required; repetitions are `1..3`, timeout seconds `1..120`. Labels are syntax-checked only, not
+checked against an account or model catalog. `offline-example-model` below is a placeholder, not a
+verified available model. `--show-messages` and `--json` are mutually exclusive output options.
+
+```bash
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --show-messages
+python -m scripts.evaluation_trial_plan --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --json
+```
+
+For seven cases and two AI modes, the candidate describes these opportunities, not executed calls:
+
+| Repetitions | Planned slots | Planned question opportunities | Nominal adapter timeout sum at 120 seconds |
+| ----------- | ------------- | ------------------------------ | ------------------------------------------ |
+| 1           | 14            | 42                             | 1,680 seconds                              |
+| 2           | 28            | 84                             | 3,360 seconds                              |
+| 3           | 42            | 126                            | 5,040 seconds                              |
+
+The timeout sum is not a wall-clock, token or credit cap. Cleanup time and Codex internal retries/
+usage have no bound established here. A desired one-attempt/no-AuthZest-retry-or-fallback policy is
+candidate metadata, not an implemented executor guarantee. Task IDs are sorted and the first mode
+flips by case/repetition. Seven pairs give a 4-versus-3 first-mode split in one repetition; odd repeat
+counts leave an imbalance. This order is deterministic, not randomized or fully counterbalanced.
+
+The planner keeps the existing paired payloads, common draft instructions and response schema `0.1`.
+It verifies task/request bindings and reports canonical application-message text, UTF-8 byte lengths
+and SHA-256 values. These candidates are not actual RPC wire envelopes or the effective Codex harness
+context. Fresh contexts and tool restrictions are future requirements, not enforced by this helper.
+Configuration, packet-set, plan and trial IDs are deterministic content metadata, not consent or
+invocation-freshness proof. Request IDs remain the same across configurations/repetitions; response
+schema `0.1` cannot bind a response to those settings, repeats or a fresh invocation. Collection/run
+support is not implemented. `answer_contract_descriptor_id` binds the public descriptor, not the full
+validator implementation.
+
+Only task data is read: no evaluator labels/reference scoring, account lookup, network, child process,
+target-source import/execution, AI or worker call. The full plan is evaluator metadata, never provider
+input. It is not a native executable feature or `authzest` product command. Prompt/model/configuration/
+repeat freeze, sharing and execution authorization, and `live_benchmark_ready` all remain false.
+Answer-only responses cannot measure semantic citation support, explanations or human review effort;
+public v1/reference exposure still prevents an independence claim. No model result, v1/math/history/
+product-version change, risk acceptance, release or completed #84 checklist item is added.
+
 ## Candidate-independent offline mathematics
 
 The source-checkout-only module `scripts/evaluation_metrics.py` separates generic measurement
