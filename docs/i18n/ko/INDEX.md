@@ -48,10 +48,11 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 조건부 릴리스 목표·남은 제출 여유는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 따르고
 선택적인 GUI·adapter를 제출 범위에 추가하지 않습니다.
 
-[평가 제공자 capture 설계](development/EVALUATION_TRANSPORT_DESIGN.md)는 모델에 보이는 invocation/
-요청·응답 `0.2` 후보와 기존 내부 `0.1` 답을 제안합니다. Capture·격리·실패 정책은 미구현이며 nonce
-echo도 신원 인증/제공자 응답 새로움이 아닙니다. 다음은 순수 오프라인 codec, 이후 별도 transport/
-가짜 프로세스 lifecycle 테스트입니다. 설계 CI/병합은 제안 전달이지 실제 호출 승인·벤치마크 동결이
+[평가 invocation/capture 설계](development/EVALUATION_TRANSPORT_DESIGN.md)에 직접 관리하는 순수
+오프라인 codec의 후보 미리보기·엄격한 외부 `0.2`/내부 `0.1` 검증·합성 dry-run을 연결하고 원래
+제안은 역사로 보존합니다. 실제 capture/격리/실패 정책은 미구현이며 nonce echo도 신원 인증/제공자
+응답 새로움이 아닙니다. 다음은 버전별 transport recipe/batch 만료 검토·이후 별도 가짜 프로세스
+테스트입니다. Codec CI/병합은 실제 호출 승인·벤치마크 동결이
 아닙니다. 제품 adapter/고정 `0.153.0`·릴리스/v1/수학/과거 자료는 그대로이며 #84는 체크 7개가
 미완료인 OPEN·실제 동결 false를 유지합니다. 실제 호출·위험 수용·릴리스를 추가하지 않습니다.
 
@@ -243,7 +244,7 @@ docs/
 | 교체 가능한 모델과 측정할 가치                   | [Model strategy](../../development/MODEL_STRATEGY.md)                            | [모델 전략](development/MODEL_STRATEGY.md)                                  |
 | 과거 평가 자료의 무결성                          | [Evaluation inventory](../../development/EVALUATION_INVENTORY.md)                | [평가 자료 목록](development/EVALUATION_INVENTORY.md)                       |
 | 확정 정답·보존 초안·비교 기준                    | [Evaluation protocol](../../development/EVALUATION_PROTOCOL.md)                  | [평가 프로토콜](development/EVALUATION_PROTOCOL.md)                         |
-| 제안한 평가 invocation·제공자 capture 경계       | [Evaluation transport design](../../development/EVALUATION_TRANSPORT_DESIGN.md)  | [평가 transport 설계](development/EVALUATION_TRANSPORT_DESIGN.md)           |
+| 평가 invocation codec·제안 제공자 capture 경계   | [Evaluation transport design](../../development/EVALUATION_TRANSPORT_DESIGN.md)  | [평가 transport 설계](development/EVALUATION_TRANSPORT_DESIGN.md)           |
 | 버전이 있는 진단과 등록 근거                     | [Report contract](../../reference/REPORT_CONTRACT.md)                            | [리포트 계약](reference/REPORT_CONTRACT.md)                                 |
 | 오프라인 근거 연결 예상 결과                     | [Expectation contract](../../reference/EXPECTATION_CONTRACT.md)                  | [예상 결과 계약](reference/EXPECTATION_CONTRACT.md)                         |
 | 기여와 커밋 규칙                                 | [Contributing](../../../CONTRIBUTING.md)                                         | [기여 안내](CONTRIBUTING.md)                                                |

@@ -366,13 +366,41 @@ release are excluded. Public-task/reference exposure and answer-only limitations
 history/product versions are unchanged, independence is unestablished and all seven #84 checks remain
 pending.
 
-The [provider-capture design proposal](EVALUATION_TRANSPORT_DESIGN.md) addresses the next boundary:
-candidate model-visible invocation/request-response `0.2` around existing inner `0.1` answers.
-Runtime capture, isolation and failure handling remain unimplemented proposals. Echoing a nonce is
-not authentication or provider freshness. Next is a pure offline codec, then separate transport/
-fake-lifecycle tests; design CI/merge is not actual execution approval or benchmark freeze. The
-product adapter/pinned `0.153.0`, v1/math/history, product `0.1.0a4` / report schema `1.2`, live-freeze
-false and all seven pending #84 checks stay unchanged. No actual call, risk acceptance or release.
+## Offline invocation codec continuation
+
+The [transport design and its preserved original proposal](EVALUATION_TRANSPORT_DESIGN.md) now have
+a pure-codec continuation in `scripts/evaluation_invocation.py`. Its owned factory reads task-only
+data to preview model-visible `0.2` invocation candidates, validate strict outer `0.2` responses before
+the unchanged inner `0.1` decoder, or run synthetic dry-runs. It does not access accounts, networks,
+processes, evaluator references/scoring or imported file logs. All four settings are required;
+`--json` and `--show-messages` are mutually exclusive, and `--fault missing|invalid|stale` requires
+`--dry-run`. Model/effort remain unverified and the timeout is proposed, not enforced here.
+
+```bash
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --json
+python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --fault stale
+```
+
+The common `0.2` framing, new opaque invocation ID and original task form a prompt candidate, not a
+live-frozen prompt. Original `0.1` message SHA-256, final `0.2` message SHA-256 and schema SHA-256
+are distinct. The original/final application messages are each limited to 128 KiB and the schema to
+64 KiB; response text is bounded to 64 KiB of UTF-8 and JSON depth 16. Schema shaping is a
+subset, not the final validator: canonical formats, printability and duplicate-question checks are enforced
+by the strict decoder. This is not verified support for that schema in pinned App Server `0.153.0`.
+The returned in-memory `raw_received_text` preserves bounded valid-UTF-8 text, including malformed
+JSON; wrong-type, oversized or invalid-UTF-8 input leaves it null. `inner_canonical_json` is a
+serialization, not that original text or a persistent capture/log. Canonical inner text is also retained
+only within 64 KiB of UTF-8; oversized serialization leaves `inner_canonical_json` null.
+
+All 14/28/42 slots and 42/84/126 question opportunities remain for one/two/three repeats, with
+seven cases/21 questions per mode/repetition. Missing/invalid/stale behavior is synthetic validation,
+not model-quality measurement. A current echo can still wrap old inner answers: provenance remains
+`caller-supplied-unverified`, `runtime_observed` and provider freshness remain false. The original
+`0.1` modules, product adapter, v1/math/history, product `0.1.0a4` / report schema `1.2` are unchanged.
+Next review the versioned transport recipe/batch expiry, then separate fake-process lifecycle tests;
+direct capture/isolation/failure handling is still unimplemented. No actual AI/worker call, live freeze,
+risk acceptance, release or completed #84 checklist item is added.
 
 ## Candidate-independent offline mathematics
 
