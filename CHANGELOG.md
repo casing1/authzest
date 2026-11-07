@@ -16,6 +16,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add a source-only registered static-answer adapter for the fixed seven owned evaluation tasks.
+  A task-only digest registry stores explicit declaration queries, not expected answers; derive
+  source counts/direct `Security` scopes from existing in-memory parser observations and abstain on
+  coverage/diagnostic/composition uncertainty, unregistered tasks and all policy/runtime questions.
+  Exclude inherited scopes/provider graphs and keep distinct source declarations, including deferred
+  factories, separate from runtime claims. Add `python -m scripts.evaluation_comparison --static-only`
+  and `--static-only --json`; stage all responses before loading references. The default command still
+  prepares a plan; paired AI inputs and synthetic-only dry-run behavior remain unchanged. Static-only
+  excludes dry-run/fault injection.
+  Mappings were developed with public v1 task/reference exposure, not independent/blinded/unseen
+  holdouts; answer staging before reference reads does not remove that limitation. No measured
+  outcome is recorded in this entry. No model-quality claim, live comparison, independent-review attestation, live freeze,
+  AI/worker execution, patch, risk acceptance, release or completed #84 criterion is added here.
+  v1/raw references/math/history/product source/schemas/versions stay unchanged; verification/delivery
+  is recorded separately.
+
 - Add an offline evaluation response contract (`scripts/evaluation_response.py`, schema `0.1`) and
   paired comparison plans via `python -m scripts.evaluation_comparison`. Bind strict whole-case JSON
   responses to task-only task IDs and mode/payload-derived request IDs; preserve canonical empty
@@ -24,9 +40,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   to evidence-assisted; keep evaluator references/metadata out of provider payloads. The evaluator
   plan is not provider input. `--dry-run` stages all three modes' synthetic-null responses before
   references load; optional missing/invalid faults affect one case per mode without dropping
-  denominators or crediting invalid unknowns. No real static-answer adapter, model-quality result,
-  live configuration/repeat freeze, independent-review attestation, provider call or source execution
-  is added. v1/raw references/math/history/product schemas/versions and all seven #84 checks remain
+  denominators or crediting invalid unknowns. That [PR #137](https://github.com/casing1/authzest/pull/137)
+  slice added no real static-answer adapter, model-quality result, live configuration/repeat freeze,
+  independent-review attestation, provider call or source execution.
+  v1/raw references/math/history/product schemas/versions and all seven #84 checks remained
   unchanged; no risk acceptance or release. Verification and normal PR delivery are separate.
 
 - Record the November 6 direct user confirmation of the current exact 21 reference values and add

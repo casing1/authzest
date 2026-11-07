@@ -74,7 +74,7 @@ def test_plan_reads_tasks_only_without_target_io_or_execution(fixed, monkeypatch
     assert plan["case_count"] == 7
     assert plan["question_count"] == 21
     assert len(plan["tasks"]) * len(plan["modes"]) == 21
-    assert plan["static_answer_adapter"] == "not-implemented"
+    assert plan["static_answer_adapter"] == "registered-source-query-v1"
     assert plan["provider_calls_by_this_tool"] == 0
     assert plan["target_execution"] == "not-run"
     assert plan["live_configuration_frozen"] is False
@@ -204,7 +204,8 @@ def test_dry_run_stages_every_packet_and_response_before_any_reference_read(fixe
     assert result["live_trials"] == 0
     assert result["model_quality_measured"] is False
     assert result["static_baseline_measured"] is False
-    assert result["static_answer_adapter"] == "not-implemented"
+    assert result["static_answer_adapter"] == "registered-source-query-v1"
+    assert result["static_adapter_used"] is False
     assert set(result["modes"]) == set(comparison.MODES)
     assert "overall" not in result
     for mode in result["modes"].values():
@@ -268,12 +269,14 @@ def test_cli_single_json_and_no_model_claims(fixed, monkeypatch, capsys, args):
 
 
 @pytest.mark.parametrize("args", [[], ["--dry-run"]])
-def test_cli_human_explains_missing_static_adapter(fixed, monkeypatch, capsys, args):
+def test_cli_human_distinguishes_registered_adapter_from_synthetic_dry_run(
+    fixed, monkeypatch, capsys, args
+):
     monkeypatch.setattr(comparison, "ROOT", fixed)
     assert comparison.main(args) == 0
     output = capsys.readouterr().out
     assert "NO LIVE TRIALS" in output
-    assert "Static answer adapter: NOT IMPLEMENTED" in output
+    assert "Static adapter: registered source queries" in output
     if args:
         assert "not a static baseline or model-quality result" in output
 
