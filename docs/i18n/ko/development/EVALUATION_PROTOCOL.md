@@ -407,10 +407,40 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 ```
 
 계정/설정 RPC·제공자/프로세스 실행·실제 timer/취소/정리 강제·채점은 없고 런타임/새로움/승인/실제
-동결 flag는 false입니다. 다음은 유효 설정과 discovery 시작 의미 검토, 이후 별도 가짜 프로세스
-transport 작업이며 실제 시험에는 명시적 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가
+동결 flag는 false입니다. 아래 별도 순수 설정 검사기는 discovery 시작의 안전성을 입증하지 않으며
+별도 가짜 JSONL/파서/생명주기 작업 전에 이 경계를 명시해야 합니다. 실제 시험에는 명시적
+소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가
 필요합니다. 기존 codec·고정 버전·제품 `0.1.0a4` / 리포트 `1.2`·v1/수학/과거 자료는 그대로입니다.
 #84는 체크 7개가 모두 미완료인 OPEN이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
+
+## 순수 오프라인 설정 preflight — 시작 동작의 증거 아님
+
+`scripts/evaluation_preflight.py`의 `check_config(result, configuration, *, phase)`·
+`compare_configs(discovery_result, generation_result, configuration)`는 호출자가 제공한
+discovery/generation 결과를 검사합니다. 이미 decode한 JSON 트리를 compact UTF-8 256 KiB·깊이
+16·노드 4,096개로 제한하지만 앞선 parser가 버린 중복 key는 복원하지 못합니다. `config`/`origins`
+map은 필수,
+`layers`는 생략/null로 두며 소유 recipe 경로/형식/값을 정확히 대조합니다. 최소한의 알려진 비활성
+항목만 생략/null을 허용하며 검토한 optional root 필드 21개에 non-null 값을 허용하지 않습니다.
+알 수 없는 추가 경로는 미지원이지 프로토콜 무효의 증거가 아닙니다.
+MCP 설정은 최대 64개·각 이름 최대 128자의 안전한 명칭을 가진 명시적 map이어야 하며 generation은
+`enabled=false`, 두 결과 비교는 정확히 같은 이름 집합을 요구합니다. Origins/MCP 내용은 제한된
+opaque JSON이지 전체 스키마 검증·출처 근거가 아닙니다. 결과는 제공된 이름/경로/설정 내용 없이
+식별정보 없는 개수·닫힌 진단만 담습니다.
+
+순수 API이지 CLI·launcher·설정 RPC·계정/모델 조회·timer·worker·로그 importer가 아닙니다.
+`Batch`와 연결하지 않고 기존 recipe descriptor도 변경하지 않습니다. 제공된 설정 검사로 시작
+동작·유효 런타임 격리·준비 완료를 증명하지 않으며 런타임/준비/실행/실제 동결은 모두 false입니다.
+합성 전용 테스트 명령은 다음과 같습니다.
+
+```bash
+python -m pytest tests/test_evaluation_preflight.py
+```
+
+[날짜를 명시한 소스 검토와 시작 경계](EVALUATION_TRANSPORT_DESIGN.md)는 별도입니다. 이 경계를
+명시한 뒤에만 별도 가짜 JSONL/파서/생명주기 단계를 진행하며 실제 제공자 transport·누락한 검토/
+동결 근거·실제 실행 승인은 후속 조건입니다. 제품 `0.1.0a4` / 리포트 `1.2`·고정 버전·v1/수학/과거
+자료·#84 미완료 체크 7개는 그대로이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

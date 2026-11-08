@@ -210,8 +210,13 @@ recipe/프레임 builder와 직렬 오프라인 `Batch` ledger를 `scripts/evalu
 직접 관리하는 생성 스키마 일부 projection은 후보 요청 형식만 검사하며 전체 프로토콜/제공자
 호환성 검증이 아닙니다. `remoteControl/status/read`는 `{}`가 아닌 `null`을 사용합니다.
 [Dispatch 프로토콜](EVALUATION_PROTOCOL.md#오프라인-dispatch-recipe와-상태-시뮬레이션)을 참고하세요.
-다음은 유효 설정/discovery 시작 의미 검토, 이후 별도 가짜 프로세스 transport 경계입니다. 실제
-설정/계정 RPC·프로세스/수신/격리/timer/취소/정리 강제는 미구현이며 실제 시험에는 명시적
+별도 `scripts/evaluation_preflight.py` 순수 API는 호출자가 제공한 설정 결과를 좁은 소유 정책과
+대조하고 discovery/generation의 MCP 이름을 식별정보 없는 개수로 비교합니다. CLI/RPC·Batch 연결을
+추가하지 않고 recipe descriptor도 바꾸지 않습니다. [소스/시작 검토](EVALUATION_TRANSPORT_DESIGN.md)는
+병합 설정과 런타임 목록/출처를 구분합니다. 비활성화 시 plugin warmup은 guard로 건너뛰지만 다른
+시작 네트워크 효과는 가능하므로 실행 안전/격리 판정이 아닙니다. 다음은 이 시작 경계를 명시한
+별도 가짜 JSONL/파서/생명주기 단계입니다. 실제 설정/계정 RPC·프로세스/수신/격리/timer/취소/정리
+강제는 미구현이며 실제 시험에는 명시적
 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가 필요합니다. 오프라인 전달은 실제 호출 승인·
 벤치마크 동결이 아닙니다. 제품 adapter와 고정 `0.153.0`을 확장하지 않으며 v1/수학/과거
 자료·제품 `0.1.0a4` / 리포트 스키마 `1.2`·실제 동결 false·위험/릴리스 결정·#84 미완료 체크 7개는

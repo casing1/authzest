@@ -16,6 +16,15 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- `scripts/evaluation_preflight.py`에 제한된 JSON 입력·정확한 소유 recipe 값·닫힌 지원 경로·명시적
+  제한 MCP map·식별정보 없는 개수를 사용하는 순수 오프라인 설정 검사와 discovery/generation 비교를
+  추가합니다. 알 수 없는 추가 값은 미지원이지 프로토콜 무효 판정이 아니며 opaque origins/MCP 내용은
+  전체 스키마·런타임 출처를 입증하지 않습니다. CLI·실행/RPC/계정/모델/timer/worker 접근·로그 import·
+  Batch 연결을 추가하지 않고 기존 recipe descriptor도 변경하지 않습니다. 시작 동작/소스 검토는
+  제공된 설정 검사와 구분하며 별도 가짜 JSONL/파서/생명주기 작업에서도 이 경계를 명시해야 합니다.
+  제품/고정 버전/v1/수학/과거 자료·실제 동결 false·#84 미완료 체크 7개는 그대로이며 실제 AI/worker
+  호출·위험 수용·준비 완료 승인·릴리스는 없습니다.
+
 - 순수 오프라인 `evaluation_dispatch_recipe` descriptor/프레임 후보와 새 미리보기·revision ticket·
   명시적 reserve/send/ack/finish 전이·실패/skipped 분모를 보존하는 `evaluation_dispatch` 직렬
   시뮬레이션 ledger를 추가합니다. 호출자가 제공한 정수 나노초 시계로 확인 TTL 300초·고정 dispatch

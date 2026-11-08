@@ -8,7 +8,53 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 오프라인 dispatch 후속 구현 — 2026-11-08 KST
+## 현재 오프라인 설정 preflight와 시작 검토 — 2026-11-08 KST
+
+`scripts/evaluation_preflight.py`는 제한된 호출자 제공 설정 후보를 검사하고 식별정보 없는 요약을
+반환하는 순수 `check_config` / `compare_configs`를 추가합니다. 좁은 정책은 정확한 recipe 값·
+알려진 비활성 생략/null·명시적 제한 MCP map·두 이름 집합의 일치를 요구하며 generation은 모든
+서버에 `enabled=false`를 요구합니다. 알 수 없는 추가 값은 미지원이지 반드시 프로토콜 무효는
+아닙니다. Origins/MCP 내용은 opaque JSON으로 전체 스키마/출처 검증이 아닙니다. CLI·RPC·프로세스·
+timer·계정/모델 조회·worker·로그 import를 추가하지 않고 `Batch`에도 연결하지 않습니다. 기존
+recipe descriptor/ID는 그대로입니다.
+[API 한계와 합성 테스트 명령](EVALUATION_PROTOCOL.md#순수-오프라인-설정-preflight--시작-동작의-증거-아님)을 참고하세요.
+
+기록한 생성 `ConfigReadResponse` SHA-256은
+`96a04a3f7fff2dc7fafc9f831e8bcd422e021d697dd2c14c801f098a9f21396d`이며 문서 식별자이지 실행
+파일/런타임 근거나 전체 스키마 검사기가 아닙니다.
+
+읽기 전용 소스 검토는 Codex annotated tag `rust-v0.153.0`, tag 객체
+`6bc50f104dcc0192e696cdeae721dfc19b507391`에서 가리키는 commit
+`41e22fee981a63b3698df7ed36bad393cda24715`를 사용했습니다. 서명 없는 tag이며 실행 파일 증명이나
+사용자 시작 동작의 관찰이 아닙니다. 소스에서 도출한 결론은 다음과 같습니다.
+
+- [`config/read`](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/config_manager_service.rs#L114-L174)는
+  CLI 재정의를 적용하고 계층 config/requirements·일부 실제 feature 조정을 반환할 뿐 전체 런타임
+  MCP 목록이나 증명은 아닙니다. cwd 생략 시 프로젝트 계층을 생략합니다.
+  [재귀 설정 병합](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/config/src/merge.rs#L95-L133) 때문에
+  `mcp_servers={}`로 상속 항목을 지우지 못합니다.
+- 유효 `plugins_enabled=false`이면
+  [guard에 따라 plugin warmup을 건너뜁니다](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/core-plugins/src/manager.rs#L2735-L2859).
+  하지만 시작 효과가 전혀 없다는 뜻은 아닙니다.
+  [시작 processor](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/message_processor.rs#L316-L375)는
+  [online 모델 갱신 경로](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/models_refresh_worker.rs#L38-L64)가
+  있는 worker를 시작합니다. 실제 네트워크 요청이 발생했다는 증거는 아닙니다.
+- 검토한 initialize/config-read 경로는 MCP 연결을 만들지 않지만 threadless
+  [`mcpServerStatus/list`는 eager connection set을 생성합니다](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/codex-mcp/src/mcp/mod.rs#L468-L526).
+  이를 수동적 preflight로 추가하지 않습니다. Manager 생성 자체와 연결 생성은 다릅니다.
+
+이는 호환성/시작 검토 조건이지 제품 취약점 판정이나 실제 격리 증거가 아닙니다. 유효 설정 읽기를
+설명하는 [App Server 안내](https://learn.chatgpt.com/docs/app-server)와
+[MCP `enabled=false` 옵션](https://learn.chatgpt.com/docs/config-file/config-reference)도 초기화 전
+동작을 증명하지 않습니다. 다음은 이 시작 경계를 명시한 별도 가짜 JSONL/파서/생명주기 단계이지 실제
+transport 준비 완료가 아닙니다. 런타임/준비/실행/실제 동결 flag는 false이며 제품 `0.1.0a4` / 리포트
+`1.2`·고정 버전·v1/수학/과거 자료·#84 미완료 체크 7개는 그대로입니다. 실제 AI/worker 호출·위험
+수용·릴리스는 없습니다.
+
+## 오프라인 dispatch 후속 구현 기록 — 2026-11-08 KST
+
+아래 단계는 위 설정 검사기/소스 검토 이전의 기록이며 검토 대기 표현은 당시 상태입니다. 과거
+recipe/설계 주장을 현재 런타임 근거로 승격하지 않습니다.
 
 `scripts/evaluation_dispatch_recipe.py`는 직접 관리하는 descriptor/recipe ID와 해시·바이트 제한이
 있는 canonical JSONL 프레임 후보를 구체화합니다. 요청 모델/effort·공통 codec 지시를 명시하며
