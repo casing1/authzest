@@ -45,6 +45,9 @@ jobs:
           tests/test_codex_owner_file_cli.py
           tests/test_release_smoke.py
           tests/test_evaluation_jsonl.py
+          tests/test_evaluation_semantics.py
+          tests/test_evaluation_session_semantics.py
+          tests/test_evaluation_turn_semantics.py
 
   frontend:
     runs-on: ubuntu-latest

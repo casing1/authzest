@@ -218,8 +218,11 @@ recipe/프레임 builder와 직렬 오프라인 `Batch` ledger를 `scripts/evalu
 고정 소유 가짜 서버의 stdio/종료/timeout/정리 테스트로 이 경계를 유지하며 notification payload
 의미는 아직 검증하지 않습니다.
 [JSONL/가짜 pipe 경계](EVALUATION_PROTOCOL.md#순수-jsonlrpc-검사와-소유-가짜-pipe)를 참고하세요.
-다음은 의미 수준 preflight/모델/목록/thread/turn 검증·coordinator 생명주기이지 실제 transport나
-공개 launcher가 아닙니다. 실제 설정/계정 RPC·운영 프로세스/수신/격리/timer/취소/정리
+별도 순수 helper는 제한된 detached 경계·선택한 합성 session/목록/thread/settings/final-answer
+후보를 검사하지만 전체 프로토콜/recipe 검증이나 실제 계정/모델 사용 권한이 아닙니다.
+[선택 의미 검사 범위](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사--trial-아님)를 참고하세요.
+다음은 coordinator 생명주기·남은 미지원 recipe 경로이지 실제 transport·공개 launcher가 아닙니다.
+실제 설정/계정 RPC·운영 프로세스/수신/격리/timer/취소/정리
 강제는 미구현이며 실제 시험에는 명시적
 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가 필요합니다. 오프라인 전달은 실제 호출 승인·
 벤치마크 동결이 아닙니다. 제품 adapter와 고정 `0.153.0`을 확장하지 않으며 v1/수학/과거

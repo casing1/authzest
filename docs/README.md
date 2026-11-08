@@ -62,8 +62,10 @@ review distinguishes supplied merged config from actual startup: disabled plugin
 but other startup network effects remain possible. No launch/isolation readiness is established.
 Pure JSONL/RPC checks and fixed owned fake-server stdio/exit/timeout/cleanup tests now preserve that
 boundary; allowed notification payload semantics are still unvalidated. This is not an implemented
-provider transport or public launcher. Next are semantic config/model/catalog/thread/turn checks and
-coordinator lifecycle; account/configuration RPC and production capture/cancellation/cleanup remain
+provider transport or public launcher. Separate pure helpers now check bounded caller-declared
+boundaries and selected synthetic session/catalog/thread/settings/final-answer shapes, not complete
+recipe coverage, actual authentication/entitlement or an accepted trial. Next are coordinator
+lifecycle and unsupported recipe paths; account/configuration RPC and production capture/cancellation/cleanup remain
 unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
 time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and

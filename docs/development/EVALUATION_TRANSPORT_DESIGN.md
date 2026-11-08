@@ -8,7 +8,28 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current pure JSONL and fake-pipe boundary — 2026-11-08 KST
+## Current selected synthetic semantics — 2026-11-08 KST
+
+The pure `evaluation_semantics`, `evaluation_session_semantics` and `evaluation_turn_semantics`
+modules now separate bounded detached candidates/declared boundaries, selected session/catalog/
+thread/settings checks, and one correlated synthetic final-answer sequence using the unchanged
+codec. Unsupported variants are outside this narrow policy, not necessarily protocol-invalid;
+this does not implement the broader recipe or integrate JSONL/preflight/`Batch` into a coordinator.
+See the [current scope and three pure test commands](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics--not-a-trial).
+
+[App Server protocol guidance](https://learn.chatgpt.com/docs/app-server) informs selected shapes,
+not runtime attestation. Matching ChatGPT-shaped account/model-list candidates do not establish
+[identity or model entitlement](https://developers.openai.com/siwc/token-sharing-open-source/codex-app-server).
+All records remain caller supplied; no provider/process/I/O/CLI, authenticated freshness, actual
+evaluation/result, accepted trial, readiness or live freeze is added. Next are coordinator lifecycle
+and unsupported recipe paths before any separately approved live execution. Product/pin/recipe/
+codec/preflight/data/v1/math/history and product `0.1.0a4` / report `1.2` are unchanged; #84 stays
+OPEN with seven pending checks. No actual call, risk acceptance or release is added.
+
+## Pure JSONL and fake-pipe checkpoint — 2026-11-08 KST
+
+The following stage preceded the separate selected semantic helpers above. Its envelope-only and
+pending-semantic wording records that checkpoint; the JSONL module itself remains envelope-only.
 
 `scripts/evaluation_jsonl.py` now adds pure incremental byte framing and a serial RPC inbox with
 bounded shared budgets and closed envelope/correlation checks. Allowlisted notification payloads
