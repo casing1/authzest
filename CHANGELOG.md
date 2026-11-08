@@ -16,6 +16,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add pure offline `evaluation_dispatch_recipe` descriptor/frame candidates and an
+  `evaluation_dispatch` serial simulation ledger with fresh previews, revision tickets, explicit
+  reserve/send/ack/finish transitions and retained failure/skipped denominators. Caller-supplied
+  integer-nanosecond clocks exercise the 300-second confirmation TTL, fixed dispatch window,
+  original preview anchors and never-reset slot budget; synthetic decisions/cleanup are not runtime
+  evidence or authenticated approval. Selected owned generated-schema projections correct
+  `remoteControl/status/read` params from `{}` to `null`; `initialized` has no params. They do not
+  prove complete protocol/provider conformance. No account/RPC/process/timer/cancellation/cleanup
+  enforcement, persistent cross-process gate, scoring or live freeze is added. Next review effective
+  configuration/discovery semantics before separate fake-process transport work. Product/pin/v1/math/
+  history and all seven pending #84 checks remain unchanged; no AI/worker call, risk acceptance or release.
+
 - Specify the [evaluation-only transport recipe and whole-batch decision](docs/development/EVALUATION_TRANSPORT_DESIGN.md).
   Locally generated normal/`--experimental` `0.153.0` protocol schemas review field syntax only,
   without server/account/model RPC; runtime configuration, tool isolation, nested `outputSchema`

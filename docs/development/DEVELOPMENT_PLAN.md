@@ -212,13 +212,18 @@ data without account/network/process/reference/scoring access. Original/final me
 schema hashes stay separate, and raw response text is retained only in returned memory. This neither
 verifies pinned App Server schema support nor proves provider freshness/runtime execution. The
 [protocol](EVALUATION_PROTOCOL.md#offline-invocation-codec-continuation) documents required settings
-and CLI examples. The transport recipe/whole-batch decision is now specified: locally generated normal/
-`--experimental` `0.153.0` schemas review field syntax only, not runtime configuration, tool isolation,
-nested `outputSchema` support or provider compatibility. Next implement pure offline batch-decision/
-state tests, then separate fake-process transport tests. Executable transport/decision state/API and
-live capture/isolation/failure handling remain unimplemented; actual trials still need explicit source/
-account/model/turn/time approval and the missing freeze/review evidence.
-Design CI/merge delivers the proposal, not actual-call approval or benchmark freeze. Do not expand
+and CLI examples. Owned recipe/frame builders and a serial offline `Batch` ledger are now available
+through `scripts/evaluation_dispatch_recipe.py` and `scripts/evaluation_dispatch.py`. Fresh preview
+namespaces/revision tickets and caller-supplied integer-nanosecond clocks model fixed TTL/window,
+reserve/send/ack/finish and explicit cleanup assertions while retaining all denominators; they are
+not authenticated approval, process observations, real timers or a persistent cross-process gate.
+Selected owned generated-schema projections check candidate request shapes, not full protocol/
+provider conformance; `remoteControl/status/read` uses `null`, not `{}`. See the
+[dispatch protocol](EVALUATION_PROTOCOL.md#offline-dispatch-recipe-and-state-simulation).
+Next review effective configuration/discovery startup semantics before a separate fake-process
+transport boundary. Actual config/account RPC, process/capture/isolation/timer/cancellation/cleanup
+enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time
+approval and missing freeze/review evidence. Offline delivery is not actual-call approval or benchmark freeze. Do not expand
 the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
 live-freeze false, risk/release decisions and all seven pending #84 checks remain unchanged.
 

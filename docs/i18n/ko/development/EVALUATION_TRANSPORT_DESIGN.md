@@ -8,7 +8,33 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 순수 codec 후속 구현 — 2026-11-07 KST
+## 현재 오프라인 dispatch 후속 구현 — 2026-11-08 KST
+
+`scripts/evaluation_dispatch_recipe.py`는 직접 관리하는 descriptor/recipe ID와 해시·바이트 제한이
+있는 canonical JSONL 프레임 후보를 구체화합니다. 요청 모델/effort·공통 codec 지시를 명시하며
+가변 제품 설정을 import하거나 변경하지 않습니다. 생성 실험 스키마의 직접 관리하는 일부
+projection은 요청 형식만 검사하며 전체 묶음·중첩 스키마 제공자 지원·유효 설정·도구 격리를
+확인하지 않습니다. `remoteControl/status/read`는 `params=null`을, `initialized`는 params 생략을
+사용하며 아래에 정정 날짜를 기록합니다.
+
+`scripts/evaluation_dispatch.py`는 새 preview namespace·과거 전이를 거부하는 revision ticket·
+명시적 decide/reserve/send/ack/checkpoint/finish 상태를 갖는 순수 직렬 `Batch` 시뮬레이션입니다.
+호출자가 제공하는 정수 나노초 `Clock`으로 확인 TTL 300초·수용 시 고정하는 `W`·원래 기준점 차이
+5초·초기화하지 않는 슬롯 예산을 모형화합니다. 합성 null 답은 유효하며 첫 nonvalid나 미확인 정리에서
+후속 슬롯을 중단하고 모든 예정 분모를 보존합니다. 결정·ack·정리는 호출자 주장이지 인증된 승인·
+프로세스 검사·런타임 근거가 아닙니다.
+[현재 API/CLI 경계](EVALUATION_PROTOCOL.md#오프라인-dispatch-recipe와-상태-시뮬레이션)를 참고하세요.
+
+계정/설정 RPC·제공자/프로세스 실행·timer/취소/정리 강제·로그 import·영속적 프로세스 간 ledger·
+채점은 미구현입니다. 다음은 유효 설정/discovery 시작 의미 검토, 이후 별도 가짜 프로세스 transport
+경계입니다. 실제 수신/generation에는 새 소스/계정/모델/turn/시간 승인과 누락한 검토/동결 근거가
+필요합니다. 기존 codec/고정 버전/제품 `0.1.0a4` / 리포트 `1.2`/v1/수학/과거 자료는 그대로이며
+#84는 체크 7개 미완료인 OPEN·실제 동결 false를 유지합니다. 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
+
+## 순수 codec 단계 기록 — 2026-11-07 KST
+
+시간 순서를 보존한 이전 기록입니다. 아래 다음 단계 표현은 위 오프라인 dispatch 후속 구현 전
+상태이며 현재 recipe/상태 helper가 없다는 뜻이 아닙니다.
 
 `scripts/evaluation_invocation.py`는 직접 관리하는 오프라인 후보 factory·엄격한 외부 `0.2`/기존
 내부 `0.1` decoder·미리보기·합성 dry-run만 제공합니다. 명령은
@@ -26,6 +52,10 @@ capture/격리/실패 처리는 여전히 제안입니다. 아래 버전별 disp
 Codec 전달은 실제 실행/동결 승인이 아닙니다.
 
 ## 버전별 dispatch 제안 — 2026-11-08 KST
+
+과거 설계 전용 단계 기록입니다. 아래 미구현/다음 단계 표현은 당시 제안이며 현재 오프라인 builder/
+ledger가 없다는 뜻이 아닙니다. Params 정정 날짜는 본문에 표시하고 실제 프로세스/설정/수신 의미는
+여전히 미구현으로 둡니다.
 
 **설계만 추가하며 기준 main은 `851d84cd4ab35bb35d262e2dbef23af7810dc5f3`입니다.** 제안 recipe 이름은
 `evaluation-stdio-0.153.0-v1`입니다. 이번 갱신은 dispatch API·결정 ledger·프레임 builder·프로세스
@@ -83,7 +113,11 @@ ambient MCP 동작을 포함한 유효 설정은 프로세스 구현 전 검토 
 | `turn/start`       | 정확한 thread ID/모델/effort·`Invocation.message_text`와 같은 text 입력 1개·정확한 `Invocation.output_schema`·빈 environments/roots·동일 sandbox/approval/reviewer/cwd.             |
 | Collaboration/tier | 명시적 `collaborationMode.mode="default"`·settings의 모델/`reasoning_effort`는 요청값·non-null 공통 `developer_instructions`, `serviceTierForTurn="default"`.                       |
 
-계정/목록/thread 생성 전에 `{}`로 `remoteControl/status/read`를 호출하고 `status="disabled"`를
+**2026-11-08 스키마 정정:** 생성 실험 `ClientRequest`에서 `remoteControl/status/read` params는
+선택적/null이며 `{}`가 아닙니다. 오프라인 프레임 후보는 `null`을 선택합니다. 일부 형식 대조일 뿐
+제품 adapter 변경이나 런타임/제공자 호환성 결과가 아닙니다.
+
+계정/목록/thread 생성 전에 `null`로 `remoteControl/status/read`를 호출하고 `status="disabled"`를
 요구합니다. 누락·잘못된 형식·다른 상태면 batch를 거부하며 notification 부재를 비활성화의 근거로
 삼지 않습니다. `collaborationMode`가 최상위 모델/effort/developer 설정보다 우선하고 null developer
 지시는 mode의 내장 지시를 선택하므로 위의 명시적 일치/non-null 설정으로 조용한 대체를 막습니다.
