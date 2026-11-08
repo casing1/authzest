@@ -16,6 +16,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add pure selected response-semantic helpers: bounded detached candidates/declared boundaries,
+  narrow session/account/catalog/thread/settings checks, and a correlated synthetic final-answer
+  sequence followed by the unchanged invocation decoder. Unsupported variants are not claims of
+  protocol invalidity or complete recipe coverage. Include the three pure test files in existing
+  Windows CI configuration, not a recorded CI result. No provider/process/I/O/coordinator/CLI/Batch
+  integration, actual evaluation, authentication/freshness/entitlement/readiness or accepted trial
+  is added. Product/pin/recipe/codec/preflight/data/v1/math/history/versions and all seven pending #84
+  checks stay unchanged; live freeze remains false, with no actual call, risk acceptance or release.
+
 - Add pure incremental JSONL framing and a serial RPC inbox in `scripts/evaluation_jsonl.py`,
   with bounded shared input/notification budgets and closed envelope/correlation checks. Allowed
   notification payload semantics remain unvalidated. Add tests using only an owned fixed Python

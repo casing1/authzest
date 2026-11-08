@@ -16,6 +16,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 제한된 detached 후보/선언 경계·좁은 session/계정/목록/thread/settings 검사·서로 연결된 합성
+  final-answer 순서와 기존 invocation decoder를 사용하는 순수 선택 응답 의미 helper를 추가합니다.
+  미지원 변형은 프로토콜 무효나 전체 recipe 검증 완료의 주장이 아닙니다. 기존 Windows CI 설정에
+  순수 테스트 파일 3개를 포함하며 CI 통과 기록은 아닙니다. 제공자/프로세스/I/O/coordinator/CLI/
+  Batch 연결·실제 평가·신원 인증/새로움/사용 권한/준비 완료·수용한 trial은 추가하지 않습니다.
+  제품/고정 버전/recipe/codec/preflight/데이터/v1/수학/과거 자료/버전·#84 미완료 체크 7개는 그대로며
+  실제 동결은 false이고 실제 호출·위험 수용·릴리스는 없습니다.
+
 - `scripts/evaluation_jsonl.py`에 공유 입력/notification 예산을 제한하고 닫힌 envelope/연결을
   검사하는 순수 점진적 JSONL framer·직렬 RPC inbox를 추가합니다. 허용 notification의 payload
   의미는 아직 검증하지 않습니다. 소유한 고정 Python 가짜 서버만 stdio로 사용하는 종료/timeout/

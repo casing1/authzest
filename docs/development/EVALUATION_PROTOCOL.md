@@ -513,8 +513,42 @@ There is no CLI, log import, real provider/App Server/account/model call, new po
 or scoring, and no integration with `Batch`/preflight. Existing recipe/codec/preflight/ledger and
 product `0.1.0a4` / report `1.2`, pin, v1/math/data/history remain unchanged. Runtime/readiness/
 authorization/live-freeze flags stay false and #84 remains OPEN with all seven checks pending.
-Next implement semantic preflight/model/catalog/thread/turn verification and coordinator lifecycle
-before any separately approved live path; no actual AI call, risk acceptance or release is added.
+The selected semantic helpers below are separate from this envelope-only layer; coordinator lifecycle
+and broader recipe coverage still precede any separately approved live path. No actual AI call,
+risk acceptance or release is added.
+
+## Selected synthetic response semantics — not a trial
+
+`scripts/evaluation_semantics.py` bounds and deep-detaches caller-supplied JSON via `checked`;
+`Boundary` holds declared configuration/cwd/thread expectations, not authenticated execution scope.
+Limits are 256 KiB per candidate, 2 MiB for aggregate inputs, depth 32, 65,536 decoded nodes and
+4,096-bit integers; earlier parsers' discarded duplicate keys cannot be recovered.
+`scripts/evaluation_session_semantics.py` checks selected initialize, explicitly disabled remote
+control, ChatGPT-shaped account, model catalog, thread-start and settings candidates.
+The catalog supports at most ten pages, 100 entries/page and 1,000 entries total; checks of returned
+cursor uniqueness and terminal null do not establish the actual requested pagination chain.
+`scripts/evaluation_turn_semantics.py` checks one narrow synthetic settings → turn-started →
+agent final-started/completed → turn-completed sequence with correlated identities, then uses the
+unchanged invocation codec. These are selected supported shapes, not all valid protocol variants or
+complete recipe semantics; unsupported does not mean protocol-invalid. This selected turn subset
+rejects reasoning/status/usage/user/tool/unknown events rather than supporting the broader recipe.
+
+All inputs remain caller-supplied records, not captured RPCs or authenticated session/order/timing/
+provider evidence. A matching catalog/account shape proves no model entitlement. Results are
+redacted summaries with authentication/freshness/readiness/authorization/accepted-trial/live-freeze
+claims false. There is no provider/process/I/O/coordinator/CLI/Batch integration, actual evaluation
+or scoring. The existing Windows CI command includes the three pure paths, not a claim of CI success:
+
+```bash
+python -m pytest tests/test_evaluation_semantics.py
+python -m pytest tests/test_evaluation_session_semantics.py
+python -m pytest tests/test_evaluation_turn_semantics.py
+```
+
+See the [dated semantic continuation and remaining boundary](EVALUATION_TRANSPORT_DESIGN.md).
+Coordinator lifecycle and unsupported recipe paths remain separate work before any live approval;
+product/pin/recipe/codec/preflight/data/v1/math/history, product `0.1.0a4` / report `1.2` and all seven
+pending #84 checks are unchanged. No actual call, risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 

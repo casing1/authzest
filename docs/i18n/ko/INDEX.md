@@ -60,8 +60,10 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 제공된 병합 설정과 실제 시작 동작을 구분합니다. 비활성화 plugin warmup은 guard로 건너뛰지만
 다른 시작 네트워크 효과는 가능하며 실행/격리 준비 완료를 입증하지 않습니다. 이제 순수 JSONL/RPC
 검사·고정 소유 가짜 서버의 stdio/종료/timeout/정리 테스트로 이 경계를 유지하지만 허용 notification
-payload 의미는 미검증입니다. 구현된 제공자 transport·공개 launcher가 아닙니다. 다음은 설정/모델/
-목록/thread/turn 의미 검사·coordinator 생명주기이며 계정/설정 RPC·운영 수신/취소/정리는
+payload 의미는 미검증입니다. 구현된 제공자 transport·공개 launcher가 아닙니다. 별도 순수 helper는
+제한된 호출자 선언 경계·선택한 합성 session/목록/thread/settings/final-answer 형식을 검사하지만
+전체 recipe 검증·실제 신원 인증/사용 권한·수용한 trial이 아닙니다. 다음은 coordinator 생명주기·
+미지원 recipe 경로이며 계정/설정 RPC·운영 수신/취소/정리는
 미구현입니다. 오프라인 전달은 실제 호출
 승인·벤치마크 동결이 아니고 실제 시험에는 명시적인 소스/계정/모델/turn/
 시간 승인과 누락한 동결/검토 근거가 필요합니다. 제품 adapter/고정 `0.153.0`·릴리스/v1/수학/과거

@@ -8,7 +8,27 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 순수 JSONL·가짜 pipe 경계 — 2026-11-08 KST
+## 현재 선택 합성 의미 검사 — 2026-11-08 KST
+
+순수 `evaluation_semantics`·`evaluation_session_semantics`·`evaluation_turn_semantics` 모듈은
+제한된 detached 후보/선언 경계·선택한 session/목록/thread/settings 검사·기존 codec을 사용하는
+연결된 합성 final-answer 순서 하나를 구분합니다. 미지원 변형은 이 좁은 정책의 범위 밖이지 반드시
+프로토콜 무효는 아닙니다. 더 넓은 recipe 구현이나 JSONL/preflight/`Batch`의 coordinator 연결이
+아닙니다. [현재 범위와 순수 테스트 명령 3개](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사--trial-아님)를 참고하세요.
+
+[App Server 프로토콜 안내](https://learn.chatgpt.com/docs/app-server)는 선택 형식의 근거이지 런타임
+증거가 아닙니다. 일치하는 ChatGPT 형태 계정/모델 목록 후보도
+[신원·모델 사용 권한](https://developers.openai.com/siwc/token-sharing-open-source/codex-app-server)을
+입증하지 않습니다. 모든 기록은 호출자 제공이며 제공자/프로세스/I/O/CLI·인증된 새로움·실제 평가/
+결과·trial 수용·준비 완료·실제 동결을 추가하지 않습니다. 다음은 coordinator 생명주기·미지원 recipe
+경로이며 실제 실행에는 별도 승인이 필요합니다. 제품/고정 버전/recipe/codec/preflight/데이터/v1/수학/
+과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로이며 #84는 체크 7개 미완료인 OPEN입니다. 실제
+호출·위험 수용·릴리스는 없습니다.
+
+## 순수 JSONL·가짜 pipe 단계 기록 — 2026-11-08 KST
+
+아래 단계는 위 별도 선택 의미 helper 이전의 기록입니다. Envelope 전용/의미 검증 대기 표현은 당시
+상태이며 JSONL 모듈 자체는 여전히 envelope만 다룹니다.
 
 `scripts/evaluation_jsonl.py`는 공유 예산을 제한하고 닫힌 envelope/연결을 검사하는 순수 점진적
 바이트 framer·직렬 RPC inbox를 추가합니다. 허용 notification payload의 의미는 아직 미검증이며

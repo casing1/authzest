@@ -476,8 +476,41 @@ python -m pytest tests/test_evaluation_jsonl_process.py
 CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책 worker·평가 결과/채점·`Batch`/preflight 연결은
 없습니다. 기존 recipe/codec/preflight/ledger·제품 `0.1.0a4` / 리포트 `1.2`·고정 버전·v1/수학/데이터/
 과거 자료는 그대로입니다. 런타임/준비/승인/실제 동결 flag는 false이며 #84는 체크 7개가 모두
-미완료인 OPEN입니다. 다음은 의미 수준 preflight/모델/목록/thread/turn 검증·coordinator 생명주기이며
-실제 경로는 별도 승인이 필요합니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
+미완료인 OPEN입니다. 아래 선택 의미 helper는 이 envelope 전용 계층과 별도이며 coordinator 생명주기·
+더 넓은 recipe 검증은 실제 경로의 별도 승인 전 후속 조건입니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
+
+## 선택한 합성 응답 의미 검사 — trial 아님
+
+`scripts/evaluation_semantics.py`의 `checked`는 호출자 제공 JSON을 제한하고 deep-detach하며
+`Boundary`는 선언한 설정/cwd/thread 기대값이지 인증된 실행 범위가 아닙니다.
+제한은 후보당 256 KiB·합산 입력 2 MiB·깊이 32·decode 노드 65,536개·정수 4,096비트이며 앞선
+parser가 버린 중복 key를 복원하지 못합니다.
+`scripts/evaluation_session_semantics.py`는 선택한 initialize·명시적 비활성 remote control·
+ChatGPT 형태 계정·모델 목록·thread-start·settings 후보를 검사합니다.
+목록은 최대 10페이지·페이지당 100개·총 1,000개이며 반환 cursor의 중복 방지와 마지막 null 검사가
+실제 요청한 페이지 연결을 입증하지 않습니다.
+`scripts/evaluation_turn_semantics.py`는 settings → turn-started → agent final-started/completed →
+turn-completed의 좁은 합성 순서와 ID 연결을 검사한 뒤 기존 invocation codec을 사용합니다. 지원하는
+일부 형식이지 유효한 프로토콜 변형 전체나 recipe 의미 전체가 아니며 미지원은 프로토콜 무효가 아닙니다.
+선택 turn 부분집합은 더 넓은 recipe를 지원하는 대신 reasoning/status/usage/user/tool/unknown event를
+거부합니다.
+
+입력은 계속 호출자 제공 기록이지 수집한 RPC·인증된 session/순서/시각/제공자 근거가 아닙니다.
+일치하는 목록/계정 형태로 모델 사용 권한을 입증하지 않습니다. 결과는 식별정보 없는 요약이며
+신원 인증/새로움/준비/승인/trial 수용/실제 동결은 false입니다. 제공자/프로세스/I/O/coordinator/
+CLI/Batch 연결·실제 평가/채점은 없습니다. 기존 Windows CI 명령에 순수 경로 3개를 포함하며
+CI 통과를 뜻하지 않습니다.
+
+```bash
+python -m pytest tests/test_evaluation_semantics.py
+python -m pytest tests/test_evaluation_session_semantics.py
+python -m pytest tests/test_evaluation_turn_semantics.py
+```
+
+[날짜를 명시한 의미 검사 단계와 남은 경계](EVALUATION_TRANSPORT_DESIGN.md)를 참고하세요.
+Coordinator 생명주기·미지원 recipe 경로는 실제 승인 전 별도 작업입니다. 제품/고정 버전/recipe/
+codec/preflight/데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개는
+그대로이며 실제 호출·위험 수용·릴리스는 없습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 
