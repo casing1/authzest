@@ -8,7 +8,35 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current pure-codec continuation — 2026-11-07 KST
+## Current offline dispatch continuation — 2026-11-08 KST
+
+`scripts/evaluation_dispatch_recipe.py` now materializes owned descriptors/recipe IDs and canonical
+JSONL frame candidates with hashes and byte limits. Requested model/effort and common codec
+instructions are explicit; mutable product configuration is neither imported nor changed. Selected
+owned projections of generated experimental schemas check request shapes, not the full bundle,
+nested-provider schema support, effective configuration or tool isolation. `remoteControl/status/read`
+uses `params=null`, while `initialized` omits params; see the dated correction below.
+
+`scripts/evaluation_dispatch.py` adds a pure serial `Batch` simulation: fresh preview namespaces,
+revision tickets rejecting old transitions, and explicit decide/reserve/send/ack/checkpoint/finish
+states. Caller-supplied integer-nanosecond `Clock` samples model the 300-second confirmation TTL,
+acceptance-fixed `W`, five-second original-anchor discrepancy and never-reset slot budget. Synthetic
+null responses remain valid; the first nonvalid or unconfirmed cleanup stops later slots, preserving
+every planned denominator. Decisions, acknowledgements and cleanup are caller assertions, not
+authenticated approval, process inspection or runtime evidence. See the
+[current API/CLI scope](EVALUATION_PROTOCOL.md#offline-dispatch-recipe-and-state-simulation).
+
+No account/configuration RPC, provider/process execution, timer/cancellation/cleanup enforcement,
+log import, persistent cross-process ledger or scoring is implemented. Next review effective
+configuration/discovery startup semantics, then a separate fake-process transport boundary. Live
+capture/generation still needs new source/account/model/turn/time approval and missing review/freeze
+evidence. Existing codec/pin/product `0.1.0a4` / report `1.2`/v1/math/history are unchanged; #84 stays
+OPEN with seven pending checks and live freeze false. No actual AI/worker call, risk acceptance or release.
+
+## Pure-codec checkpoint — 2026-11-07 KST
+
+This earlier checkpoint is retained for chronology; its next-step wording preceded the offline
+dispatch continuation above, not an account of unavailable current recipe/state helpers.
 
 `scripts/evaluation_invocation.py` now provides only an owned offline candidate factory, strict
 outer-`0.2`/unchanged-inner-`0.1` decoder, preview and synthetic dry-run. See the
@@ -26,6 +54,10 @@ product `0.1.0a4` / report schema `1.2`, live-freeze false and #84's seven pendi
 there is no new risk acceptance or release. Codec delivery does not approve live execution/freeze.
 
 ## Version-specific dispatch proposal — 2026-11-08 KST
+
+Historical design-only checkpoint: the original unimplemented/next-step wording below records that
+proposal, not the current offline builder/ledger. The dated params correction is identified inline;
+actual process/configuration/capture semantics remain unimplemented.
 
 **Design only, against main `851d84cd4ab35bb35d262e2dbef23af7810dc5f3`.** Proposed recipe name:
 `evaluation-stdio-0.153.0-v1`. No dispatch API, decision ledger, frame builder, process transport or live
@@ -86,7 +118,11 @@ a process-implementation gate, not a guarantee supplied by this descriptor.
 | `turn/start`            | Exact thread ID, model and effort; one text input equal to `Invocation.message_text`; exact `Invocation.output_schema`; empty environments/roots; same sandbox/approval/reviewer/cwd.                      |
 | Collaboration/tier      | Explicit `collaborationMode.mode="default"`, settings model/`reasoning_effort` equal requested values and non-null common `developer_instructions`; `serviceTierForTurn="default"`.                        |
 
-Before account/catalog/thread creation, call `remoteControl/status/read` with `{}` and require
+**2026-11-08 schema correction:** the generated experimental `ClientRequest` permits optional/null
+params for `remoteControl/status/read`, not `{}`; offline frame candidates choose `null`. This is a
+selected shape check, not a product adapter change or runtime/provider compatibility result.
+
+Before account/catalog/thread creation, call `remoteControl/status/read` with `null` and require
 `status="disabled"`; missing, malformed or other status refuses the batch. Notification absence is
 not evidence that remote control is disabled. `collaborationMode` takes precedence over top-level
 model/effort/developer settings, and null developer instructions select built-in mode instructions;

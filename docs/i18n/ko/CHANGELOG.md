@@ -16,6 +16,17 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 순수 오프라인 `evaluation_dispatch_recipe` descriptor/프레임 후보와 새 미리보기·revision ticket·
+  명시적 reserve/send/ack/finish 전이·실패/skipped 분모를 보존하는 `evaluation_dispatch` 직렬
+  시뮬레이션 ledger를 추가합니다. 호출자가 제공한 정수 나노초 시계로 확인 TTL 300초·고정 dispatch
+  시간창·원래 preview 기준점·초기화하지 않는 슬롯 예산을 검증하며 합성 결정/정리는 런타임 근거나
+  인증된 승인이 아닙니다. 직접 관리하는 생성 스키마 projection 대조로 `remoteControl/status/read`
+  params를 `{}`에서 `null`로 정정하고 `initialized`에는 params를 두지 않습니다. 전체 프로토콜/
+  제공자 호환성의 증거는 아닙니다. 계정/RPC/프로세스/timer/취소/정리 강제·영속적 프로세스 간
+  승인 경계·채점·실제 동결은 추가하지 않습니다. 다음은 유효 설정/discovery 의미 검토, 이후 별도
+  가짜 프로세스 transport 작업입니다. 제품/고정 버전/v1/수학/과거 자료·#84 미완료 체크 7개는
+  그대로이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
+
 - [평가 전용 transport recipe와 전체 batch 결정](development/EVALUATION_TRANSPORT_DESIGN.md)을
   명세합니다. 로컬에서 생성한 `0.153.0` 일반/`--experimental` 프로토콜 스키마는 서버/계정/모델
   RPC 없이 필드 구문만 검토하며 런타임 설정·도구 격리·중첩 `outputSchema`·제공자 호환성은

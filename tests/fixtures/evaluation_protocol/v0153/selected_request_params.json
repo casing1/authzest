@@ -1,0 +1,114 @@
+{
+  "kind": "self-authored-selected-request-parameter-projection",
+  "codex_version": "0.153.0",
+  "experimental": true,
+  "generation_command": "codex app-server generate-json-schema --experimental --out <owned-dir>",
+  "scope": "Used request fields/types only; not complete generated schemas, provider compatibility or runtime evidence.",
+  "projection_policy": "Descriptions and unused fields/union variants are excluded. Extra fields are rejected by this narrower projection. Generated optional/null behavior is preserved for used fields.",
+  "source_documents": {
+    "v1/InitializeParams.json": "6f0094be9a65242ec779a40794cbd4fdfa32fca1e45084a16adfb50501d33ea2",
+    "v2/ConfigReadParams.json": "257c54a423b47c1d209ff1076765a1564d82322fd5161670fd489a2874de1bac",
+    "v2/GetAccountParams.json": "30b545275f60975b55bd6fbaafd70f15505801d14168ee82d3931b6e93c78aab",
+    "v2/ModelListParams.json": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+    "v2/ThreadStartParams.json": "25f490368ec6df52a2a3b82a5469d2413307eb93439121b309f415b5648eee7a",
+    "v2/TurnStartParams.json": "b36fb37326b1cf69f75c8b306f1f886d53a57c4b1b985e08e298e2407ea2ad02",
+    "ClientRequest.json": "05c82ead1a820c765c23d3a1d262e4ae54889785276ee1acf7c494141fd94d70",
+    "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a"
+  },
+  "$defs": {
+    "nullableString": {"type": ["string", "null"]},
+    "reasoningEffort": {"type": "string", "minLength": 1},
+    "nullableEffort": {"anyOf": [{"$ref": "#/$defs/reasoningEffort"}, {"type": "null"}]},
+    "emptySelectedArray": {"type": ["array", "null"], "maxItems": 0},
+    "workspaceRoots": {"type": ["array", "null"], "items": {"type": "string"}},
+    "readOnlySandbox": {
+      "type": "object", "required": ["type"], "additionalProperties": false,
+      "properties": {"type": {"enum": ["readOnly"]}, "networkAccess": {"type": "boolean"}}
+    },
+    "collaborationMode": {
+      "type": "object", "required": ["mode", "settings"], "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["default"]},
+        "settings": {
+          "type": "object", "required": ["model"], "additionalProperties": false,
+          "properties": {
+            "model": {"type": "string"},
+            "reasoning_effort": {"$ref": "#/$defs/nullableEffort"},
+            "developer_instructions": {"$ref": "#/$defs/nullableString"}
+          }
+        }
+      }
+    },
+    "textInput": {
+      "type": "object", "required": ["type", "text"], "additionalProperties": false,
+      "properties": {
+        "type": {"enum": ["text"]}, "text": {"type": "string"}
+      }
+    }
+  },
+  "schemas": {
+    "initialize": {
+      "type": "object", "required": ["clientInfo"], "additionalProperties": false,
+      "properties": {
+        "clientInfo": {
+          "type": "object", "required": ["name", "version"], "additionalProperties": false,
+          "properties": {"name": {"type": "string"}, "version": {"type": "string"}, "title": {"$ref": "#/$defs/nullableString"}}
+        },
+        "capabilities": {
+          "anyOf": [
+            {"type": "object", "additionalProperties": false, "properties": {"experimentalApi": {"type": "boolean"}}},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "config/read": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"includeLayers": {"type": "boolean"}, "cwd": {"$ref": "#/$defs/nullableString"}}
+    },
+    "remoteControl/status/read": {"type": "null"},
+    "account/read": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"refreshToken": {"type": "boolean"}}
+    },
+    "model/list": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "limit": {"type": ["integer", "null"], "minimum": 0},
+        "includeHidden": {"type": ["boolean", "null"]},
+        "cursor": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "thread/start": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "model": {"$ref": "#/$defs/nullableString"}, "modelProvider": {"$ref": "#/$defs/nullableString"},
+        "allowProviderModelFallback": {"type": "boolean"}, "ephemeral": {"type": ["boolean", "null"]},
+        "cwd": {"$ref": "#/$defs/nullableString"}, "sandbox": {"enum": ["read-only", null]},
+        "approvalPolicy": {"enum": ["on-request", null]}, "approvalsReviewer": {"enum": ["user", null]},
+        "environments": {"$ref": "#/$defs/emptySelectedArray"},
+        "dynamicTools": {"$ref": "#/$defs/emptySelectedArray"},
+        "selectedCapabilityRoots": {"$ref": "#/$defs/emptySelectedArray"},
+        "runtimeWorkspaceRoots": {"$ref": "#/$defs/workspaceRoots"},
+        "baseInstructions": {"$ref": "#/$defs/nullableString"},
+        "developerInstructions": {"$ref": "#/$defs/nullableString"},
+        "config": {"type": ["object", "null"], "additionalProperties": true},
+        "experimentalRawEvents": {"type": "boolean"}
+      }
+    },
+    "turn/start": {
+      "type": "object", "required": ["input", "threadId"], "additionalProperties": false,
+      "properties": {
+        "threadId": {"type": "string"}, "model": {"$ref": "#/$defs/nullableString"},
+        "effort": {"$ref": "#/$defs/nullableEffort"}, "cwd": {"$ref": "#/$defs/nullableString"},
+        "input": {"type": "array", "items": {"$ref": "#/$defs/textInput"}},
+        "outputSchema": {}, "environments": {"$ref": "#/$defs/emptySelectedArray"},
+        "runtimeWorkspaceRoots": {"$ref": "#/$defs/workspaceRoots"},
+        "sandboxPolicy": {"anyOf": [{"$ref": "#/$defs/readOnlySandbox"}, {"type": "null"}]},
+        "approvalPolicy": {"enum": ["on-request", null]}, "approvalsReviewer": {"enum": ["user", null]},
+        "collaborationMode": {"anyOf": [{"$ref": "#/$defs/collaborationMode"}, {"type": "null"}]},
+        "serviceTierForTurn": {"$ref": "#/$defs/nullableString"}
+      }
+    }
+  }
+}

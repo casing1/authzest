@@ -398,31 +398,53 @@ seven cases/21 questions per mode/repetition. Missing/invalid/stale behavior is 
 not model-quality measurement. A current echo can still wrap old inner answers: provenance remains
 `caller-supplied-unverified`, `runtime_observed` and provider freshness remain false. The original
 `0.1` modules, product adapter, v1/math/history, product `0.1.0a4` / report schema `1.2` are unchanged.
-The proposed transport recipe/whole-batch policy is now specified below; next are pure offline
-batch-decision/state tests, then separate fake-process transport tests. Executable transport/decision
-state/API and direct capture/isolation/failure handling remain unimplemented. No actual AI/worker call, live freeze,
+The recipe/frame candidates and serial offline batch-state simulation are now available below;
+next review effective-configuration/discovery semantics, then a separate fake-process transport
+boundary. Actual process transport and direct capture/isolation/failure handling remain unimplemented.
+No actual AI/worker call, live freeze,
 risk acceptance, release or completed #84 checklist item is added.
 
-## Proposed evaluation-only dispatch policy
+## Offline dispatch recipe and state simulation
 
-The [transport design](EVALUATION_TRANSPORT_DESIGN.md) now specifies a versioned evaluation-only
-recipe and whole-batch decision. Normal and `--experimental` protocol schemas for pinned `0.153.0`
-were generated locally without server/account/model RPC. This reviews field syntax only: it does not
-verify runtime configuration, tool isolation, nested `outputSchema` support or provider compatibility.
+`scripts/evaluation_dispatch_recipe.py` now provides owned `descriptor`, `recipe_id` and `frames`
+APIs; frame text/hashes are candidates, not sent RPCs. Explicit requested model/effort and common
+codec instructions do not establish effective settings. Selected owned projections of locally
+generated experimental `0.153.0` schemas check request shapes, not the full bundle, runtime
+configuration, tool isolation, nested `outputSchema` or provider compatibility. This check corrects
+`remoteControl/status/read` params from `{}` to `null`; `initialized` has no params. See the
+[dated correction and preserved design checkpoints](EVALUATION_TRANSPORT_DESIGN.md).
 
-The proposed confirmation TTL is 300 seconds from preview creation; acceptance starts the dispatch
-window `W = 60 + N * (T + 10)` seconds for `N = 14/28/42` planned slots and per-slot timeout
-`T = 1..120` seconds. The recipe allows at most two sequential process groups per slot, with five
-seconds of cleanup each, one concurrent slot, and stops at the first nonvalid result without retry,
-resume or extension; valid null/unknown answers do not stop the batch. These are proposed host controls, not an
-implemented time/usage guarantee. Executable batch-decision/state/API and transport are not available;
-pure offline decision/state tests come before separately reviewed fake-process transport tests.
+`scripts/evaluation_dispatch.py` exposes `prepare` and a serial, single-object `Batch` simulation with
+fresh preview namespaces and revision tickets. `decide`, `reserve`, `mark_send`, `acknowledge`,
+`checkpoint` and `finish` reject old revisions and retain all slots. Caller-supplied `Clock` integer
+nanoseconds exercise confirmation within 300 seconds, acceptance-fixed `W = 60 + N * (T + 10)`
+seconds (`N = 14/28/42`, `T = 1..120`), nondecreasing monotonic time and at most five seconds of
+wall/monotonic discrepancy from the original preview anchors. The original slot budget never resets.
+`finish` takes `clock` as synthetic generation completion and optional `cleanup_clock` as cleanup
+completion: `T` is checked at generation completion, not cleanup completion; cleanup still checks
+clock integrity. Per-process cleanup waits are not modeled. First nonvalid/cleanup failure stops
+later slots; valid null/unknown answers continue. Cleanup is an explicit caller assertion, not
+process inspection. No retry/resume/extension or persistent,
+cross-process/concurrent authenticated approval gate is implemented.
 
-Design CI/merge conveys a proposal, not live-execution approval or benchmark freeze. Actual trials
-still require an explicit source/account/model/turn/time decision and the missing freeze/review
-evidence. The existing codec, pinned `0.153.0`, product `0.1.0a4` / report schema `1.2`, v1/math/history
-are unchanged. #84 stays OPEN with all seven checks pending and live freeze false; no actual AI/worker
-call, risk acceptance or release is added.
+All four settings are required; `--fault` requires `--dry-run` and accepts `decline`, `stale-decision`,
+`confirm-expired`, `dispatch-expired`, `clock`, `missing`, `invalid`, `failed`, `interrupted`, `timeout`
+or `cleanup`. The default is an offline preview; dry-run supplies synthetic decisions/clocks/null
+answers. There are no log-import or live options. Each mode/repetition retains seven cases/21
+questions, for 14/28/42 slots and 42/84/126 total question opportunities.
+
+```bash
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --json
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --fault cleanup
+```
+
+There is no account/configuration RPC, provider/process execution, actual timer/cancellation/cleanup
+enforcement or scoring. Runtime/freshness/authorization/live-freeze flags remain false. Next review
+effective configuration and discovery startup semantics before separate fake-process transport work;
+actual trials still need explicit source/account/model/turn/time approval and missing freeze/review
+evidence. Existing codec, pin, product `0.1.0a4` / report `1.2`, v1/math/history are unchanged. #84
+remains OPEN with all seven checks pending; no AI/worker call, risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 

@@ -51,11 +51,13 @@ submission buffer; do not add optional GUI/adapters to the submission scope.
 The [evaluation invocation/capture design](development/EVALUATION_TRANSPORT_DESIGN.md) now records an
 owned pure offline codec for candidate preview, strict outer-`0.2`/inner-`0.1` validation and synthetic
 dry-run; the original proposal remains historical. Live capture/isolation/failure policies remain
-unimplemented, and nonce echo is not authentication/provider freshness. The evaluation-only recipe/
-whole-batch decision is now specified. Locally generated normal/`--experimental` `0.153.0` schemas
-review field syntax only, not runtime configuration, tool isolation, nested `outputSchema` support or
-provider compatibility. Next are pure offline batch-decision/state tests, then separate fake-process
-transport tests; executable transport/decision state/API is still absent. Design CI/merge is not
+unimplemented, and nonce echo is not authentication/provider freshness. Owned offline recipe/frame
+candidates and a serial revision-ticketed batch-state simulation are now available through
+`scripts/evaluation_dispatch_recipe.py` / `scripts/evaluation_dispatch.py`; clocks, decisions, null
+answers and cleanup assertions are synthetic, not authenticated runtime evidence or real timers.
+Selected owned generated-schema projections check request shapes, not full protocol/provider support.
+Next review effective configuration/discovery semantics before separate fake-process transport work;
+account/configuration RPC, real process/capture/cancellation/cleanup remain unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
 time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and
 release/v1/math/history stay unchanged; #84 remains OPEN with seven pending checks and live freeze false.

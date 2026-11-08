@@ -368,30 +368,49 @@ UTF-8 64 KiB 이내만 보존하고 직렬화가 이를 넘으면 `inner_canonic
 Missing/invalid/stale 동작은 합성 검증이지 모델 품질 측정이 아닙니다. 현재 echo로 이전 내부 답을
 감싸도 통과할 수 있으므로 출처는 `caller-supplied-unverified`, `runtime_observed`와 제공자 응답
 새로움은 false입니다. 기존 `0.1` 모듈·제품 adapter·v1/수학/과거 자료·제품 `0.1.0a4` / 리포트
-스키마 `1.2`도 그대로입니다. 제안 transport recipe/전체 batch 정책은 아래에 명세하며 다음은 순수
-오프라인 batch 결정/상태 테스트, 이후 별도 가짜 프로세스 transport 테스트입니다. 실행 가능한
-transport/결정 상태/API·직접 capture/격리/실패 처리는 여전히 미구현입니다. 실제 AI/worker 호출·실제
+스키마 `1.2`도 그대로입니다. Recipe/프레임 후보와 직렬 오프라인 batch 상태 시뮬레이션은 아래에
+제공하며 다음은 유효 설정/discovery 의미 검토, 이후 별도 가짜 프로세스 transport 경계입니다.
+실제 프로세스 transport·직접 capture/격리/실패 처리는 여전히 미구현입니다. 실제 AI/worker 호출·실제
 동결·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
 
-## 평가 전용 dispatch 정책 제안
+## 오프라인 dispatch recipe와 상태 시뮬레이션
 
-[Transport 설계](EVALUATION_TRANSPORT_DESIGN.md)에 버전별 평가 전용 recipe와 전체 batch 결정을
-명세합니다. 고정 `0.153.0`의 일반/`--experimental` 프로토콜 스키마는 서버/계정/모델 RPC 없이
-로컬에서 생성했습니다. 이는 필드 구문만 검토하며 런타임 설정·도구 격리·중첩 `outputSchema` 지원·
-제공자 호환성을 검증하지 않습니다.
+`scripts/evaluation_dispatch_recipe.py`는 직접 관리하는 `descriptor`·`recipe_id`·`frames` API를
+제공하며 프레임 원문/해시는 후보이지 송신한 RPC가 아닙니다. 명시적 요청 모델/effort·공통 codec
+지시는 실제 설정을 입증하지 않습니다. 로컬에서 생성한 실험 `0.153.0` 스키마의 직접 관리하는 일부
+projection으로 요청 형식을 검사할 뿐 전체 묶음·런타임 설정·도구 격리·중첩 `outputSchema`·제공자
+호환성을 검증하지 않습니다. 이 대조로 `remoteControl/status/read` params를 `{}`에서 `null`로
+정정하며 `initialized`에는 params를 두지 않습니다.
+[정정 날짜와 보존한 설계 단계](EVALUATION_TRANSPORT_DESIGN.md)를 참고하세요.
 
-제안 확인 TTL은 미리보기 생성부터 300초이며 수용 시점에 dispatch 시간창을 시작합니다. 예정 슬롯
-`N = 14/28/42`개와 슬롯별 timeout `T = 1..120`초에 대해 시간창은 `W = 60 + N * (T + 10)`초입니다.
-Recipe는 슬롯마다 최대 순차 프로세스 그룹 두 개·그룹별 정리 5초·동시 슬롯 한 개를 허용하고 첫
-nonvalid 결과에서 재시도·재개·연장 없이 중단하되 유효한 null/unknown 답은 중단 사유가 아닙니다.
-이는 제안한 호스트 통제이지 구현된 시간/사용량 보장이 아닙니다. 실행 가능한 batch 결정/상태/API와
-transport는 아직 없으며 순수 오프라인 결정/상태 테스트 후 별도 검토한 가짜 프로세스 transport
-테스트를 진행합니다.
+`scripts/evaluation_dispatch.py`의 `prepare`와 직렬 단일 객체 `Batch` 시뮬레이션은 새 preview
+namespace·revision ticket을 사용합니다. `decide`·`reserve`·`mark_send`·`acknowledge`·`checkpoint`·
+`finish`는 과거 revision을 거부하고 모든 슬롯을 보존합니다. 호출자가 제공하는 정수 나노초 `Clock`으로
+300초 이내 확인·수용 시 고정하는 `W = 60 + N * (T + 10)`초(`N = 14/28/42`, `T = 1..120`)·
+감소하지 않는 monotonic 시각·원래 preview 기준점 대비 wall/monotonic 차이 최대 5초를 검증합니다.
+원래 슬롯 예산은 초기화하지 않습니다. `finish`의 `clock`은 합성 generation 완료 시각이며 선택적
+`cleanup_clock`은 정리 완료 시각입니다. `T`는 정리가 아닌 generation 완료 시 검사하고 정리 중에도
+시계 무결성을 확인하되 프로세스별 정리 대기 자체는 모형화하지 않습니다. 첫 nonvalid/정리 실패는
+후속 슬롯을 중단하며 유효한 null/unknown 답은 계속합니다. 정리는 명시적 호출자 주장이지 프로세스 검사가 아닙니다. 재시도/
+재개/연장이나 영속적·프로세스 간/동시·인증된 승인 경계를 구현하지 않습니다.
 
-설계 CI/병합은 제안 전달이지 실제 실행 승인·벤치마크 동결이 아닙니다. 실제 시험에는 명시적인
-소스/계정/모델/turn/시간 결정과 누락한 동결/검토 근거가 여전히 필요합니다. 기존 codec·고정
-`0.153.0`·제품 `0.1.0a4` / 리포트 스키마 `1.2`·v1/수학/과거 자료는 그대로입니다. #84는 체크
-7개가 모두 미완료인 OPEN·실제 동결 false를 유지하며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
+설정 네 개가 모두 필수이며 `--fault`는 `--dry-run`과 함께 `decline`·`stale-decision`·
+`confirm-expired`·`dispatch-expired`·`clock`·`missing`·`invalid`·`failed`·`interrupted`·`timeout`·
+`cleanup` 중 하나를 받습니다. 기본은 오프라인 미리보기이며 dry-run은 합성 결정/시계/null 답을
+공급합니다. 로그 import·실제 실행 옵션은 없습니다. 모드/반복당 사례 7개·질문 21개와 전체 슬롯
+14/28/42개·질문 기회 42/84/126개를 보존합니다.
+
+```bash
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --json
+python -m scripts.evaluation_dispatch --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --fault cleanup
+```
+
+계정/설정 RPC·제공자/프로세스 실행·실제 timer/취소/정리 강제·채점은 없고 런타임/새로움/승인/실제
+동결 flag는 false입니다. 다음은 유효 설정과 discovery 시작 의미 검토, 이후 별도 가짜 프로세스
+transport 작업이며 실제 시험에는 명시적 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가
+필요합니다. 기존 codec·고정 버전·제품 `0.1.0a4` / 리포트 `1.2`·v1/수학/과거 자료는 그대로입니다.
+#84는 체크 7개가 모두 미완료인 OPEN이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 
