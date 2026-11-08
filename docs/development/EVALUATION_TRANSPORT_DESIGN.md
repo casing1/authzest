@@ -8,7 +8,28 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current offline config preflight and startup review — 2026-11-08 KST
+## Current pure JSONL and fake-pipe boundary — 2026-11-08 KST
+
+`scripts/evaluation_jsonl.py` now adds pure incremental byte framing and a serial RPC inbox with
+bounded shared budgets and closed envelope/correlation checks. Allowlisted notification payloads
+still lack semantic verification; framing/acknowledgement alone establishes no configuration,
+catalog, thread/turn completion or evaluation result. This is not an async provider transport,
+public launcher, CLI, log importer or integration with `Batch`/preflight.
+
+Only tests launch the fixed owned Python fake JSONL fixture over stdio in an empty temporary cwd,
+with minimal environment and bounded test waits/cleanup. They launch no Codex/App Server, account,
+model or new policy worker, and prove neither OS sandboxing nor production timeout enforcement.
+See the [pure versus POSIX fake-pipe test commands and limits](EVALUATION_PROTOCOL.md#pure-jsonlrpc-checks-and-owned-fake-pipes).
+Next are semantic preflight/model/catalog/thread/turn verification and coordinator lifecycle before
+any separately approved live path. Startup source review below stays a source audit, not a runtime
+observation. Product/pin/recipe/codec/preflight/ledger/v1/math/data/history and product `0.1.0a4` /
+report `1.2` are unchanged. All runtime/readiness/authorization/live-freeze flags remain false;
+#84 stays OPEN with seven pending checks. No actual AI call, risk acceptance or release is added.
+
+## Offline config preflight and startup review checkpoint — 2026-11-08 KST
+
+The following checkpoint preceded the pure JSONL/fake-pipe continuation above. Its next-step wording
+records that stage; the source-derived startup limitations remain applicable.
 
 `scripts/evaluation_preflight.py` adds pure `check_config` / `compare_configs` for bounded,
 caller-supplied configuration candidates and redacted summaries. The narrow policy requires exact

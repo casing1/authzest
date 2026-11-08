@@ -16,6 +16,17 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- `scripts/evaluation_jsonl.py`에 공유 입력/notification 예산을 제한하고 닫힌 envelope/연결을
+  검사하는 순수 점진적 JSONL framer·직렬 RPC inbox를 추가합니다. 허용 notification의 payload
+  의미는 아직 검증하지 않습니다. 소유한 고정 Python 가짜 서버만 stdio로 사용하는 종료/timeout/
+  정리 테스트를 추가하며 제공자 launcher·운영 transport·OS sandbox·평가 슬롯 예산 강제가 아닙니다.
+  기존 Windows CI 명령에는 순수 테스트 파일만 포함하며 POSIX 프로세스 테스트나 CI 통과 기록은
+  추가하지 않습니다.
+  CLI/로그 import·Batch/preflight 연결·실제 계정/모델/서버/정책 worker·채점·런타임 근거는
+  추가하지 않습니다. 다음은 설정/목록/thread/turn 의미 검증과 coordinator 생명주기입니다.
+  제품/고정 버전/recipe/codec/v1/수학/과거 자료/버전·#84 미완료 체크 7개는 그대로이며 실제/
+  준비/승인/동결 flag는 false이고 위험 수용·릴리스도 없습니다.
+
 - `scripts/evaluation_preflight.py`에 제한된 JSON 입력·정확한 소유 recipe 값·닫힌 지원 경로·명시적
   제한 MCP map·식별정보 없는 개수를 사용하는 순수 오프라인 설정 검사와 discovery/generation 비교를
   추가합니다. 알 수 없는 추가 값은 미지원이지 프로토콜 무효 판정이 아니며 opaque origins/MCP 내용은

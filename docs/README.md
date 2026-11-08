@@ -60,8 +60,11 @@ A separate `scripts/evaluation_preflight.py` pure API now checks supplied config
 and paired MCP names with redacted summaries; no CLI/RPC or Batch integration is added. Source
 review distinguishes supplied merged config from actual startup: disabled plugin warmup is guarded,
 but other startup network effects remain possible. No launch/isolation readiness is established.
-Next is separate fake-JSONL/parser/lifecycle work with that boundary explicit; account/configuration
-RPC, real process/capture/cancellation/cleanup remain unimplemented. Offline delivery is not
+Pure JSONL/RPC checks and fixed owned fake-server stdio/exit/timeout/cleanup tests now preserve that
+boundary; allowed notification payload semantics are still unvalidated. This is not an implemented
+provider transport or public launcher. Next are semantic config/model/catalog/thread/turn checks and
+coordinator lifecycle; account/configuration RPC and production capture/cancellation/cleanup remain
+unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
 time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and
 release/v1/math/history stay unchanged; #84 remains OPEN with seven pending checks and live freeze false.

@@ -368,9 +368,9 @@ UTF-8 64 KiB 이내만 보존하고 직렬화가 이를 넘으면 `inner_canonic
 Missing/invalid/stale 동작은 합성 검증이지 모델 품질 측정이 아닙니다. 현재 echo로 이전 내부 답을
 감싸도 통과할 수 있으므로 출처는 `caller-supplied-unverified`, `runtime_observed`와 제공자 응답
 새로움은 false입니다. 기존 `0.1` 모듈·제품 adapter·v1/수학/과거 자료·제품 `0.1.0a4` / 리포트
-스키마 `1.2`도 그대로입니다. Recipe/프레임 후보와 직렬 오프라인 batch 상태 시뮬레이션은 아래에
-제공하며 다음은 유효 설정/discovery 의미 검토, 이후 별도 가짜 프로세스 transport 경계입니다.
-실제 프로세스 transport·직접 capture/격리/실패 처리는 여전히 미구현입니다. 실제 AI/worker 호출·실제
+스키마 `1.2`도 그대로입니다. 아래에 recipe/프레임 후보·직렬 오프라인 batch 상태 시뮬레이션과
+순수 JSONL/소유 가짜 pipe 후속 구현을 제공합니다. 다음은 의미 검증·coordinator 생명주기이며 실제
+프로세스 transport·직접 capture/격리/실패 처리는 미구현입니다. 실제 AI/worker 호출·실제
 동결·위험 수용·릴리스·#84 체크 항목 완료를 추가하지 않습니다.
 
 ## 오프라인 dispatch recipe와 상태 시뮬레이션
@@ -408,7 +408,7 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 
 계정/설정 RPC·제공자/프로세스 실행·실제 timer/취소/정리 강제·채점은 없고 런타임/새로움/승인/실제
 동결 flag는 false입니다. 아래 별도 순수 설정 검사기는 discovery 시작의 안전성을 입증하지 않으며
-별도 가짜 JSONL/파서/생명주기 작업 전에 이 경계를 명시해야 합니다. 실제 시험에는 명시적
+아래 소유 가짜 JSONL/파서/생명주기 테스트에서도 이 경계를 유지합니다. 실제 시험에는 명시적
 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가
 필요합니다. 기존 codec·고정 버전·제품 `0.1.0a4` / 리포트 `1.2`·v1/수학/과거 자료는 그대로입니다.
 #84는 체크 7개가 모두 미완료인 OPEN이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
@@ -437,10 +437,47 @@ opaque JSON이지 전체 스키마 검증·출처 근거가 아닙니다. 결과
 python -m pytest tests/test_evaluation_preflight.py
 ```
 
-[날짜를 명시한 소스 검토와 시작 경계](EVALUATION_TRANSPORT_DESIGN.md)는 별도입니다. 이 경계를
-명시한 뒤에만 별도 가짜 JSONL/파서/생명주기 단계를 진행하며 실제 제공자 transport·누락한 검토/
+[날짜를 명시한 소스 검토와 시작 경계](EVALUATION_TRANSPORT_DESIGN.md)는 별도입니다. 아래 순수
+JSONL/가짜 pipe 후속 구현은 이 경계를 유지하며 의미 검증·coordinator 생명주기는 별도 작업입니다.
+실제 제공자 transport·누락한 검토/
 동결 근거·실제 실행 승인은 후속 조건입니다. 제품 `0.1.0a4` / 리포트 `1.2`·고정 버전·v1/수학/과거
 자료·#84 미완료 체크 7개는 그대로이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
+
+## 순수 JSONL/RPC 검사와 소유 가짜 pipe
+
+`scripts/evaluation_jsonl.py`는 `JsonlDecoder.feed`/`finish`와 직렬 `RpcInbox.arm`/`feed`/`finish`/
+`take_result`/`drain_notifications`를 제공하며 비동기 런타임 adapter가 아닙니다. 메모리 `Budget`
+하나가 인스턴스 간 수신 바이트/프레임/대기 notification을 합산하고 수신 실패 시 공유 객체 모두를
+중단하지만 영속성/인증·공유 RPC ID namespace는 없습니다. 제한은 원본 프레임당 LF 포함 256 KiB·
+총 2 MiB/4,096프레임·대기 notification 128개·깊이 32·decode 노드 65,536개·정수 4,096비트입니다.
+엄격한 decode/envelope 검사로 중복 key·비유한 숫자·잘못된 UTF-8·잘못되거나 재사용한 RPC ID·서버
+요청·RPC 오류·경고/오류/알 수 없는 method를 거부합니다. 증가하는 양의 정수 ID·dict result는 좁은
+평가 정책이지 문자열 ID/임의 result를 허용하는 고정 JSON-RPC 전체 형식이 아닙니다.
+
+허용 notification 이름과 dict params도 envelope만 검사하므로 다른 thread·실패 turn payload가
+통과할 수 있으며 `notification_semantics_verified`/`accepted_trial`은 false입니다. Initialized
+handshake/session 단계 validator·송신 요청/write API·설정/모델/목록/thread/turn 완료의 의미 검사는
+없습니다. 고정 버전의 일부 envelope 형식 대조이지 전체 생성 스키마 준수는 아닙니다. Payload는
+비공개 메모리에 두며 snapshot은 제공된 ID/해시 없이 개수·닫힌 진단만 노출합니다.
+
+기존 Windows CI 명령에 이식 가능한 순수 테스트 파일을 포함하며 CI 통과가 아닌 검사 설정 기록입니다.
+POSIX 프로세스 테스트는
+`tests/fixtures/evaluation_protocol/fake_jsonl_server.py`만 고정 절대 `sys.executable`·`-I -S`·
+닫힌 고정 모드·빈 임시 cwd·`HOME`/`CODEX_HOME`/key 없는 최소 환경으로 실행합니다. stderr는 버리고
+새 프로세스 그룹을 사용합니다. 실제 소유 가짜 pipe의 종료/timeout/정리 테스트이지 공개 launcher·
+OS sandbox·운영 `T` 강제가 아닙니다. Windows는 프로세스 테스트를 건너뛰며 제한된 테스트 대기로
+제공자 취소/정리를 입증하지 않습니다.
+
+```bash
+python -m pytest tests/test_evaluation_jsonl.py
+python -m pytest tests/test_evaluation_jsonl_process.py
+```
+
+CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책 worker·평가 결과/채점·`Batch`/preflight 연결은
+없습니다. 기존 recipe/codec/preflight/ledger·제품 `0.1.0a4` / 리포트 `1.2`·고정 버전·v1/수학/데이터/
+과거 자료는 그대로입니다. 런타임/준비/승인/실제 동결 flag는 false이며 #84는 체크 7개가 모두
+미완료인 OPEN입니다. 다음은 의미 수준 preflight/모델/목록/thread/turn 검증·coordinator 생명주기이며
+실제 경로는 별도 승인이 필요합니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학
 

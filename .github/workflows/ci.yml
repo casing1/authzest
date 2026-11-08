@@ -44,6 +44,7 @@ jobs:
           tests/test_codex_owner_repair_cli.py
           tests/test_codex_owner_file_cli.py
           tests/test_release_smoke.py
+          tests/test_evaluation_jsonl.py
 
   frontend:
     runs-on: ubuntu-latest

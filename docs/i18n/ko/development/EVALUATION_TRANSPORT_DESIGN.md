@@ -8,7 +8,27 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 오프라인 설정 preflight와 시작 검토 — 2026-11-08 KST
+## 현재 순수 JSONL·가짜 pipe 경계 — 2026-11-08 KST
+
+`scripts/evaluation_jsonl.py`는 공유 예산을 제한하고 닫힌 envelope/연결을 검사하는 순수 점진적
+바이트 framer·직렬 RPC inbox를 추가합니다. 허용 notification payload의 의미는 아직 미검증이며
+framing/ack만으로 설정·목록·thread/turn 완료·평가 결과를 확인하지 않습니다. 비동기 제공자
+transport·공개 launcher·CLI·로그 importer·`Batch`/preflight 연결이 아닙니다.
+
+테스트만 고정 소유 Python 가짜 JSONL fixture를 빈 임시 cwd·최소 환경·제한된 테스트 대기/정리로
+stdio 실행합니다. Codex/App Server·계정·모델·새 정책 worker를 실행하지 않으며 OS sandbox나 운영
+timeout 강제를 입증하지 않습니다.
+[순수/POSIX 가짜 pipe 테스트 명령과 제한](EVALUATION_PROTOCOL.md#순수-jsonlrpc-검사와-소유-가짜-pipe)을 참고하세요.
+다음은 의미 수준 preflight/모델/목록/thread/turn 검증·coordinator 생명주기이며 실제 경로는 별도
+승인이 필요합니다. 아래 시작 소스 검토는 런타임 관찰이 아닌 소스 감사로 유지합니다. 제품/고정 버전/
+recipe/codec/preflight/ledger/v1/수학/데이터/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로입니다.
+런타임/준비/승인/실제 동결 flag는 false이고 #84는 체크 7개 미완료인 OPEN이며 실제 AI 호출·위험
+수용·릴리스는 없습니다.
+
+## 오프라인 설정 preflight·시작 검토 기록 — 2026-11-08 KST
+
+아래 단계는 위 순수 JSONL/가짜 pipe 후속 구현 전 기록입니다. 다음 단계 표현은 당시 상태이며
+소스에서 도출한 시작 한계는 그대로 유효합니다.
 
 `scripts/evaluation_preflight.py`는 제한된 호출자 제공 설정 후보를 검사하고 식별정보 없는 요약을
 반환하는 순수 `check_config` / `compare_configs`를 추가합니다. 좁은 정책은 정확한 recipe 값·

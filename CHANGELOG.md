@@ -16,6 +16,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add pure incremental JSONL framing and a serial RPC inbox in `scripts/evaluation_jsonl.py`,
+  with bounded shared input/notification budgets and closed envelope/correlation checks. Allowed
+  notification payload semantics remain unvalidated. Add tests using only an owned fixed Python
+  fake server over stdio, including exit/timeout/cleanup paths; this is not a provider launcher,
+  production transport, OS sandbox or enforcement of the evaluation slot budget. Include the pure
+  test file in the existing Windows CI command, not the POSIX process tests or a recorded CI result.
+  No CLI/log import,
+  Batch/preflight integration, real account/model/server/policy worker, scoring or runtime evidence
+  is added. Semantic config/catalog/thread/turn verification and coordinator lifecycle remain next.
+  Product/pin/recipe/codec/v1/math/history/versions and all seven pending #84 checks stay unchanged;
+  live/readiness/authorization/freeze flags remain false, with no risk acceptance or release.
+
 - Add pure offline `scripts/evaluation_preflight.py` configuration checks and discovery/generation
   comparison with bounded JSON input, exact owned recipe values, closed supported paths, explicit
   bounded MCP maps and redacted counts. Unknown extras are unsupported, not a claim of protocol

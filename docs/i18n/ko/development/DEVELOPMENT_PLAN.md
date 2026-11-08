@@ -214,8 +214,12 @@ recipe/프레임 builder와 직렬 오프라인 `Batch` ledger를 `scripts/evalu
 대조하고 discovery/generation의 MCP 이름을 식별정보 없는 개수로 비교합니다. CLI/RPC·Batch 연결을
 추가하지 않고 recipe descriptor도 바꾸지 않습니다. [소스/시작 검토](EVALUATION_TRANSPORT_DESIGN.md)는
 병합 설정과 런타임 목록/출처를 구분합니다. 비활성화 시 plugin warmup은 guard로 건너뛰지만 다른
-시작 네트워크 효과는 가능하므로 실행 안전/격리 판정이 아닙니다. 다음은 이 시작 경계를 명시한
-별도 가짜 JSONL/파서/생명주기 단계입니다. 실제 설정/계정 RPC·프로세스/수신/격리/timer/취소/정리
+시작 네트워크 효과는 가능하므로 실행 안전/격리 판정이 아닙니다. 이제 순수 점진적 JSONL/RPC 검사와
+고정 소유 가짜 서버의 stdio/종료/timeout/정리 테스트로 이 경계를 유지하며 notification payload
+의미는 아직 검증하지 않습니다.
+[JSONL/가짜 pipe 경계](EVALUATION_PROTOCOL.md#순수-jsonlrpc-검사와-소유-가짜-pipe)를 참고하세요.
+다음은 의미 수준 preflight/모델/목록/thread/turn 검증·coordinator 생명주기이지 실제 transport나
+공개 launcher가 아닙니다. 실제 설정/계정 RPC·운영 프로세스/수신/격리/timer/취소/정리
 강제는 미구현이며 실제 시험에는 명시적
 소스/계정/모델/turn/시간 승인과 누락한 동결/검토 근거가 필요합니다. 오프라인 전달은 실제 호출 승인·
 벤치마크 동결이 아닙니다. 제품 adapter와 고정 `0.153.0`을 확장하지 않으며 v1/수학/과거
