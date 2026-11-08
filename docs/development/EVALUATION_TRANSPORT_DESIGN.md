@@ -8,7 +8,54 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current offline dispatch continuation — 2026-11-08 KST
+## Current offline config preflight and startup review — 2026-11-08 KST
+
+`scripts/evaluation_preflight.py` adds pure `check_config` / `compare_configs` for bounded,
+caller-supplied configuration candidates and redacted summaries. The narrow policy requires exact
+recipe values, known inactive omissions/nulls, explicit bounded MCP maps and identical paired names;
+generation requires every server's `enabled=false`. Unknown extras are unsupported, not necessarily
+protocol-invalid. Origins/MCP bodies remain opaque JSON; this is not full-schema/provenance validation.
+It adds no CLI, RPC, process, timer, account/model lookup, worker or log import and is not wired to
+`Batch`; the existing recipe descriptor/IDs are unchanged. See the
+[API limits and synthetic test command](EVALUATION_PROTOCOL.md#pure-offline-configuration-preflight--not-startup-proof).
+
+The recorded generated `ConfigReadResponse` SHA-256 is
+`96a04a3f7fff2dc7fafc9f831e8bcd422e021d697dd2c14c801f098a9f21396d`: document identity, not
+executable/runtime evidence or a complete-schema validator.
+
+Read-only source review used Codex annotated tag `rust-v0.153.0`, tag object
+`6bc50f104dcc0192e696cdeae721dfc19b507391`, resolving to commit
+`41e22fee981a63b3698df7ed36bad393cda24715`. The tag is unsigned; this is neither binary attestation
+nor an observation of a user's startup. Source-derived conclusions are:
+
+- [`config/read`](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/config_manager_service.rs#L114-L174)
+  applies CLI overrides and returns layered config/requirements plus some live feature adjustments,
+  not the complete runtime MCP catalog or attestation. Omitting cwd omits project layers.
+  [Recursive config merging](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/config/src/merge.rs#L95-L133)
+  means `mcp_servers={}` does not clear inherited entries.
+- Effective `plugins_enabled=false`
+  [guards and skips plugin warmup](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/core-plugins/src/manager.rs#L2735-L2859).
+  That does not prove no startup effects: the
+  [startup processor](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/message_processor.rs#L316-L375)
+  spawns a worker with an
+  [online model-refresh path](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/app-server/src/models_refresh_worker.rs#L38-L64).
+  This does not establish that a network request actually occurred.
+- The inspected initialize/config-read path creates no MCP connections, but threadless
+  [`mcpServerStatus/list` creates an eager connection set](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/codex-mcp/src/mcp/mod.rs#L468-L526);
+  do not add it as passive preflight. Manager creation alone is not connection creation.
+
+These observations are a compatibility/startup gate, not a product vulnerability finding or proof
+of live isolation. [App Server guidance](https://learn.chatgpt.com/docs/app-server) on effective config
+reads and the [MCP `enabled=false` option](https://learn.chatgpt.com/docs/config-file/config-reference)
+do not attest pre-initialization behavior. Next is a separate fake-JSONL/parser/lifecycle slice with
+this startup boundary explicit, not real transport readiness. Runtime/readiness/execution/live-freeze
+flags remain false; product `0.1.0a4` / report `1.2`, pin, v1/math/history and #84's seven pending checks
+are unchanged. No actual AI/worker call, risk acceptance or release is added.
+
+## Offline dispatch continuation checkpoint — 2026-11-08 KST
+
+The following checkpoint preceded the config checker/source review above. Its pending review wording
+records that stage; no old recipe/design claim is promoted to current runtime evidence.
 
 `scripts/evaluation_dispatch_recipe.py` now materializes owned descriptors/recipe IDs and canonical
 JSONL frame candidates with hashes and byte limits. Requested model/effort and common codec

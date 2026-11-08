@@ -16,6 +16,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add pure offline `scripts/evaluation_preflight.py` configuration checks and discovery/generation
+  comparison with bounded JSON input, exact owned recipe values, closed supported paths, explicit
+  bounded MCP maps and redacted counts. Unknown extras are unsupported, not a claim of protocol
+  invalidity; opaque origins/MCP bodies prove no complete schema or runtime provenance. This adds
+  no CLI, launch/RPC/account/model/timer/worker access, log import or Batch integration and changes
+  no existing recipe descriptor. Startup/source review remains distinct from supplied config checks;
+  separate fake-JSONL/parser/lifecycle work must retain that explicit boundary. Product/pin/v1/math/
+  history, live-freeze false and all seven pending #84 checks remain unchanged; no actual AI/worker
+  call, risk acceptance, readiness approval or release is added.
+
 - Add pure offline `evaluation_dispatch_recipe` descriptor/frame candidates and an
   `evaluation_dispatch` serial simulation ledger with fresh previews, revision tickets, explicit
   reserve/send/ack/finish transitions and retained failure/skipped denominators. Caller-supplied

@@ -56,8 +56,12 @@ candidates and a serial revision-ticketed batch-state simulation are now availab
 `scripts/evaluation_dispatch_recipe.py` / `scripts/evaluation_dispatch.py`; clocks, decisions, null
 answers and cleanup assertions are synthetic, not authenticated runtime evidence or real timers.
 Selected owned generated-schema projections check request shapes, not full protocol/provider support.
-Next review effective configuration/discovery semantics before separate fake-process transport work;
-account/configuration RPC, real process/capture/cancellation/cleanup remain unimplemented. Offline delivery is not
+A separate `scripts/evaluation_preflight.py` pure API now checks supplied configuration candidates
+and paired MCP names with redacted summaries; no CLI/RPC or Batch integration is added. Source
+review distinguishes supplied merged config from actual startup: disabled plugin warmup is guarded,
+but other startup network effects remain possible. No launch/isolation readiness is established.
+Next is separate fake-JSONL/parser/lifecycle work with that boundary explicit; account/configuration
+RPC, real process/capture/cancellation/cleanup remain unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
 time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and
 release/v1/math/history stay unchanged; #84 remains OPEN with seven pending checks and live freeze false.

@@ -440,11 +440,42 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 ```
 
 There is no account/configuration RPC, provider/process execution, actual timer/cancellation/cleanup
-enforcement or scoring. Runtime/freshness/authorization/live-freeze flags remain false. Next review
-effective configuration and discovery startup semantics before separate fake-process transport work;
-actual trials still need explicit source/account/model/turn/time approval and missing freeze/review
+enforcement or scoring. Runtime/freshness/authorization/live-freeze flags remain false. The separate
+pure configuration checker below does not establish discovery startup safety; that boundary remains
+explicit before separate fake-JSONL/parser/lifecycle work.
+Actual trials still need explicit source/account/model/turn/time approval and missing freeze/review
 evidence. Existing codec, pin, product `0.1.0a4` / report `1.2`, v1/math/history are unchanged. #84
 remains OPEN with all seven checks pending; no AI/worker call, risk acceptance or release is added.
+
+## Pure offline configuration preflight — not startup proof
+
+`scripts/evaluation_preflight.py` provides `check_config(result, configuration, *, phase)` and
+`compare_configs(discovery_result, generation_result, configuration)` for caller-supplied
+discovery/generation results. It bounds the already-decoded JSON tree to 256 KiB compact UTF-8,
+depth 16 and 4,096 nodes; it cannot recover duplicate keys discarded by an earlier parser.
+It requires `config`/`origins` maps with `layers` absent
+or null, and checks exact owned recipe paths/types/values. Only a minimum known-inactive set may be
+absent/null; its 21 reviewed optional root fields allow no non-null value. Unknown additional paths
+are unsupported, not evidence of protocol-invalid output.
+MCP configuration must be an explicit map of at most 64 safe names, each at most 128 characters;
+generation requires `enabled=false` and comparison requires identical names. Origins and MCP
+bodies remain opaque bounded JSON, not complete-schema validation or provenance evidence. Results
+contain redacted counts/closed diagnostics, not supplied names, paths or configuration content.
+
+This is a pure API, not a CLI, launcher, configuration RPC, account/model lookup, timer, worker or
+log importer. It is not connected to `Batch` and changes no existing recipe descriptor. Its supplied
+configuration checks cannot attest startup behavior, effective runtime isolation or readiness.
+All runtime/readiness/execution/live-freeze claims remain false. For synthetic-only tests:
+
+```bash
+python -m pytest tests/test_evaluation_preflight.py
+```
+
+The [dated source review and startup boundary](EVALUATION_TRANSPORT_DESIGN.md) remain separate.
+Only after that boundary is explicit should a separate fake-JSONL/parser/lifecycle slice proceed;
+actual provider transport, missing review/freeze evidence and live-execution approval remain future
+gates. Product `0.1.0a4` / report `1.2`, pin, v1/math/history and all seven pending #84 checks are
+unchanged. No actual AI/worker call, risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 
