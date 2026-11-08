@@ -398,9 +398,9 @@ seven cases/21 questions per mode/repetition. Missing/invalid/stale behavior is 
 not model-quality measurement. A current echo can still wrap old inner answers: provenance remains
 `caller-supplied-unverified`, `runtime_observed` and provider freshness remain false. The original
 `0.1` modules, product adapter, v1/math/history, product `0.1.0a4` / report schema `1.2` are unchanged.
-The recipe/frame candidates and serial offline batch-state simulation are now available below;
-next review effective-configuration/discovery semantics, then a separate fake-process transport
-boundary. Actual process transport and direct capture/isolation/failure handling remain unimplemented.
+The recipe/frame candidates and serial offline batch-state simulation are available below alongside
+the pure JSONL/owned fake-pipe continuation. Semantic verification and coordinator lifecycle remain
+next; actual process transport and direct capture/isolation/failure handling are unimplemented.
 No actual AI/worker call, live freeze,
 risk acceptance, release or completed #84 checklist item is added.
 
@@ -442,7 +442,7 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 There is no account/configuration RPC, provider/process execution, actual timer/cancellation/cleanup
 enforcement or scoring. Runtime/freshness/authorization/live-freeze flags remain false. The separate
 pure configuration checker below does not establish discovery startup safety; that boundary remains
-explicit before separate fake-JSONL/parser/lifecycle work.
+explicit in the owned fake-JSONL/parser/lifecycle tests below.
 Actual trials still need explicit source/account/model/turn/time approval and missing freeze/review
 evidence. Existing codec, pin, product `0.1.0a4` / report `1.2`, v1/math/history are unchanged. #84
 remains OPEN with all seven checks pending; no AI/worker call, risk acceptance or release is added.
@@ -472,10 +472,49 @@ python -m pytest tests/test_evaluation_preflight.py
 ```
 
 The [dated source review and startup boundary](EVALUATION_TRANSPORT_DESIGN.md) remain separate.
-Only after that boundary is explicit should a separate fake-JSONL/parser/lifecycle slice proceed;
-actual provider transport, missing review/freeze evidence and live-execution approval remain future
+The pure JSONL/fake-pipe continuation below preserves that boundary; semantic verification and
+coordinator lifecycle are still separate work. Actual provider transport, missing review/freeze evidence and live-execution approval remain future
 gates. Product `0.1.0a4` / report `1.2`, pin, v1/math/history and all seven pending #84 checks are
 unchanged. No actual AI/worker call, risk acceptance or release is added.
+
+## Pure JSONL/RPC checks and owned fake pipes
+
+`scripts/evaluation_jsonl.py` adds `JsonlDecoder.feed`/`finish` and serial `RpcInbox.arm`/`feed`/
+`finish`/`take_result`/`drain_notifications`, not an async runtime adapter. One in-memory `Budget`
+shares received bytes/frames/queued notifications across instances; receive failure poisons its
+sharers, without persistence/authentication or a shared RPC-ID namespace. Limits are 256 KiB per raw
+frame including LF, 2 MiB/4,096 frames total, 128 queued notifications, depth 32, 65,536 decoded
+nodes and 4,096-bit integers. Strict decoding/envelopes reject duplicate keys, nonfinite numbers,
+invalid UTF-8, bad/replayed RPC IDs, server requests, RPC errors and warning/error/unknown methods.
+Positive increasing integer IDs and dict results are this narrow evaluation policy, not all pinned
+JSON-RPC shapes, which permit string IDs/arbitrary results.
+
+Allowlisted notification names with dict params receive envelope checks only: foreign-thread or
+failed-turn payloads can pass while `notification_semantics_verified`/`accepted_trial` remain false.
+There is no initialized-handshake/session-phase validator, outbound request/write API or semantic
+config/model/catalog/thread/turn completion check. Selected pinned envelope shapes are not full
+generated-schema conformance. Payloads stay private in memory; snapshots expose counts/closed codes,
+not supplied identities or hashes.
+
+The existing Windows CI command now includes the portable pure test file; this records coverage
+configuration, not a passed CI result. POSIX process tests use only
+`tests/fixtures/evaluation_protocol/fake_jsonl_server.py`, launched by fixed absolute `sys.executable`
+with `-I -S`, fixed closed modes, empty temporary cwd and minimal environment without `HOME`,
+`CODEX_HOME` or keys; stderr is discarded and a new process group is used. Real owned fake-pipe
+exit/timeout/cleanup tests are not a public launcher, OS sandbox or enforcement of production `T`.
+Process tests skip Windows; bounded test waits do not establish provider cancellation/cleanup.
+
+```bash
+python -m pytest tests/test_evaluation_jsonl.py
+python -m pytest tests/test_evaluation_jsonl_process.py
+```
+
+There is no CLI, log import, real provider/App Server/account/model call, new policy worker, evaluation result
+or scoring, and no integration with `Batch`/preflight. Existing recipe/codec/preflight/ledger and
+product `0.1.0a4` / report `1.2`, pin, v1/math/data/history remain unchanged. Runtime/readiness/
+authorization/live-freeze flags stay false and #84 remains OPEN with all seven checks pending.
+Next implement semantic preflight/model/catalog/thread/turn verification and coordinator lifecycle
+before any separately approved live path; no actual AI call, risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 

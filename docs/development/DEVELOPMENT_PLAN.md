@@ -225,8 +225,12 @@ against the narrow owned policy and compares discovery/generation MCP names with
 It adds no CLI/RPC or Batch integration and changes no recipe descriptor. The
 [source/startup review](EVALUATION_TRANSPORT_DESIGN.md) distinguishes merged config from runtime
 catalog/provenance: plugin warmup is guarded when disabled, but other startup network effects remain
-possible. No safe-launch or isolation verdict follows. Next is a separate fake-JSONL/parser/lifecycle
-slice only with that startup boundary explicit. Actual config/account RPC, process/capture/isolation/timer/cancellation/cleanup
+possible. No safe-launch or isolation verdict follows. Pure incremental JSONL/RPC checks and fixed
+owned fake-server stdio/exit/timeout/cleanup tests now preserve that startup boundary; notification
+payload semantics remain unvalidated. See the
+[JSONL/fake-pipe scope](EVALUATION_PROTOCOL.md#pure-jsonlrpc-checks-and-owned-fake-pipes).
+Next are semantic preflight/model/catalog/thread/turn verification and coordinator lifecycle, not a
+live transport or public launcher. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
 enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time
 approval and missing freeze/review evidence. Offline delivery is not actual-call approval or benchmark freeze. Do not expand
 the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
