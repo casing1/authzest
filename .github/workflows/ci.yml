@@ -40,6 +40,8 @@ jobs:
           tests/test_owner_schema_conformance.py
           tests/test_generated_repair_scenario.py
           tests/test_generated_repair.py
+          tests/test_generated_repair_controls.py
+          tests/test_generated_repair_verification.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py
