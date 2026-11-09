@@ -560,6 +560,11 @@ initialize/initialized, compares the config pair, checks disabled remote control
 account, bounded catalog pagination, thread and final-answer sequence, then requires EOF/zero-exit/
 cleanup. Caller-supplied bytes/exit/cleanup data are not observed process or provider evidence.
 
+Each bounded LF portion is inspected in order through the same inbox and shared budget. A validated
+correlated turn acknowledgement is retained even if a later envelope in the same supplied chunk is
+malformed; any fatal tail still prevents a successful final outcome. Counters describe the inspected
+prefix, not the size of an uninspected tail or a transport-level receive guarantee.
+
 `scripts/evaluation_batch_coordinator.py` adds `BatchCoordinator` over dispatch `Batch` and slot
 state. `Batch` now exposes `fail(revision, clock, *, failure)` to latch the first observed failure
 pending cleanup. The bridge propagates slot failure at the current `Clock` immediately, so late

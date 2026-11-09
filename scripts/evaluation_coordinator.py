@@ -278,21 +278,27 @@ class SlotCoordinator:
         _require(type(chunk) is bytes, "invalid-bytes")
         if self._emitted == 0:
             self._fail("receive-before-request")
-        if chunk and (self._awaiting_close or self._awaiting is None and not self._turn_sent):
-            self._fail("receive-outside-request")
         try:
-            self._inbox.feed(chunk)
-            notifications = self._inbox.drain_notifications()
-            if notifications and not self._turn_sent:
-                self._fail("premature-or-trailing-event")
-            result = self._inbox.take_result()
-            if result is not None:
-                self._result(result)
-                if not self._turn_sent and not chunk.endswith(b"\n"):
-                    self._fail("premature-response-fragment")
-            self._notifications(notifications)
-            if self._awaiting_close and chunk and not notifications and result is None:
-                common.require(False, "trailing-data")
+            start = 0
+            while start < len(chunk):
+                if self._awaiting_close or self._awaiting is None and not self._turn_sent:
+                    self._fail("receive-outside-request")
+                # Commit each complete envelope before inspecting a later one.
+                # A failing coalesced tail must not erase an already matched ack.
+                # Limit both the search and slice even for a huge caller chunk;
+                # the existing decoder also accounts for its partial-frame bytes.
+                limit = min(len(chunk), start + wire.MAX_FRAME_BYTES + 1)
+                newline = chunk.find(b"\n", start, limit)
+                end = limit if newline < 0 else newline + 1
+                self._inbox.feed(chunk[start:end])
+                notifications = self._inbox.drain_notifications()
+                if notifications and not self._turn_sent:
+                    self._fail("premature-or-trailing-event")
+                result = self._inbox.take_result()
+                if result is not None:
+                    self._result(result)
+                self._notifications(notifications)
+                start = end
         except wire.JsonlError:
             self._fail("wire-rejected")
         except (common.SemanticError, preflight.PreflightError):

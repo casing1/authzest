@@ -400,6 +400,56 @@ def test_real_correlated_ack_is_preserved_when_later_final_in_same_chunk_fails(f
     assert result["slots"][0]["primary_failure"] == "integrity"
 
 
+@pytest.mark.parametrize("coalesced", [True, False])
+def test_real_ack_before_malformed_wire_preserves_batch_send_state(coalesced):
+    candidate = codec.prepare_candidate(codec.ROOT, TrialConfig("synthetic-model", "high", 1, 30))
+    coordinator = bridge.BatchCoordinator(candidate, clock())
+    approve(coordinator)
+    boundary = common.Boundary(
+        candidate.session.configuration, "/synthetic/empty", "synthetic-thread"
+    )
+    coordinator.reserve(coordinator.revision, clock(), boundary)
+    for phase in ("discovery", "generation"):
+        for step in selected_steps(candidate.invocations[0], boundary, phase):
+            assert (
+                json.loads(coordinator.next_frame(coordinator.revision, clock())) == step["request"]
+            )
+            if step["request"]["method"] == "turn/start":
+                ack = json.dumps(step["replies"][0]).encode() + b"\n"
+                malformed = b"{invalid}\n"
+                if not coalesced:
+                    coordinator.feed(coordinator.revision, clock(1), ack)
+                with pytest.raises(bridge.BatchCoordinatorError, match="protocol-input-rejected"):
+                    coordinator.feed(
+                        coordinator.revision,
+                        clock(1),
+                        ack + malformed if coalesced else malformed,
+                    )
+                snapshot = coordinator.snapshot()
+                assert snapshot["slots"][0]["send_state"] == "acknowledged"
+                assert snapshot["slots"][0]["primary_failure"] == "integrity"
+                assert snapshot["protocol"]["turn_acknowledged"] is True
+                assert coordinator.next_frame(coordinator.revision, clock(1)) is None
+            elif step["replies"]:
+                coordinator.feed(
+                    coordinator.revision,
+                    clock(),
+                    b"".join(json.dumps(reply).encode() + b"\n" for reply in step["replies"]),
+                )
+        coordinator.finish_phase(
+            coordinator.revision,
+            clock(30 if phase == "generation" else 0),
+            exit_code=0,
+            cleanup_confirmed=True,
+        )
+    result = coordinator.snapshot()
+    assert result["phase"] == "stopped"
+    assert result["slots"][0]["status"] == "failed"
+    assert result["slots"][0]["primary_failure"] == "integrity"
+    assert result["planned_slots"] == 14 and result["question_opportunities"] == 42
+    assert all(slot["status"].startswith("skipped-") for slot in result["slots"][1:])
+
+
 def test_turn_ack_does_not_restart_original_reserved_slot_timeout(prepared):
     candidate, coordinator = prepared
     approve(coordinator)

@@ -18,6 +18,7 @@ MODES = frozenset(
         "fragmented",
         "nonzero",
         "malformed",
+        "ack-malformed",
         "truncated",
         "eof",
         "stall",
@@ -83,6 +84,12 @@ def main() -> int:
             output(raw, mode)
             wait_for_signal()
         if index == len(steps) - 1:
+            if mode == "ack-malformed":
+                payload = frame(replies[0]) + b"{invalid}\n"
+                if len(payload) > 4096:
+                    return 65
+                # One bounded write; pipe readers may still observe fragments.
+                return 0 if os.write(1, payload) == len(payload) else 68
             if mode == "malformed":
                 output(b"{invalid-json\n", mode)
                 return 0

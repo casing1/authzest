@@ -36,6 +36,7 @@ MODES = frozenset(
         "fragmented",
         "nonzero",
         "malformed",
+        "ack-malformed",
         "truncated",
         "eof",
         "stall",
@@ -491,6 +492,23 @@ def test_owned_generation_transport_end_is_not_semantic_success(
     slot = _discovered(invocation, boundary, tmp_path)
     _drive(slot, _steps(invocation, boundary, "generation"), tmp_path, mode=mode)
     assert slot.take_outcome() == {"raw": None, "failure": expected}
+
+
+def test_owned_turn_ack_survives_following_malformed_jsonl(owned_candidate, tmp_path):
+    invocation, boundary = owned_candidate
+    slot = _discovered(invocation, boundary, tmp_path)
+    _, peer = _drive(
+        slot, _steps(invocation, boundary, "generation"), tmp_path, mode="ack-malformed"
+    )
+    # This tests the actual pipe path, not an atomic-read assumption. Exact
+    # one-chunk versus two-chunk prefix equivalence belongs to the pure tests.
+    snapshot = slot.snapshot()
+    assert snapshot["failed"] is True
+    assert snapshot["turn_acknowledged"] is True
+    assert slot.take_outcome() == {"raw": None, "failure": "integrity"}
+    assert peer.process.returncode is not None
+    with pytest.raises(ChildProcessError):
+        os.waitpid(peer.process.pid, os.WNOHANG)
 
 
 @pytest.mark.parametrize(

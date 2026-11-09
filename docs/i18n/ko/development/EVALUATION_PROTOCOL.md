@@ -522,6 +522,10 @@ session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initia
 검사한 뒤 EOF/정상 종료/정리를 요구합니다. 호출자가 제공한 바이트/종료/정리는 프로세스·제공자를
 관찰한 근거가 아닙니다.
 
+제한된 LF 부분을 같은 inbox·공유 예산으로 순서대로 검사합니다. 검증된 상관 turn ack는 같은 입력
+묶음의 뒤 envelope가 잘못되더라도 보존하지만, 치명적 후행 오류가 있으면 최종 성공 결과는 거부합니다.
+카운터는 검사한 prefix만 설명하며 미검사 tail의 크기나 transport 수신 보장을 뜻하지 않습니다.
+
 `scripts/evaluation_batch_coordinator.py`의 `BatchCoordinator`는 dispatch `Batch`와 slot 상태를
 연결합니다. `Batch`에 `fail(revision, clock, *, failure)`를 추가하여 첫 관찰 실패를 정리 전까지
 고정합니다. Bridge는 현재 `Clock`에서 slot 실패를 즉시 전달하여 늦은 finish의 timeout이 원인을

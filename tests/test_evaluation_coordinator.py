@@ -346,7 +346,7 @@ def test_partial_future_response_cannot_be_buffered_between_owned_requests(slot,
 def test_partial_future_response_in_ack_chunk_cannot_be_reused_after_arm(slot, owned):
     message = json.loads(slot.next_frame())
     raw = frame({"id": message["id"], "result": reply_for("initialize", *owned)}) + b'{"id":2,'
-    with pytest.raises(protocol.CoordinatorError, match="premature-response-fragment"):
+    with pytest.raises(protocol.CoordinatorError, match="receive-outside-request"):
         slot.feed(raw)
     close_failure(slot)
 
@@ -427,7 +427,8 @@ def test_final_semantics_and_invocation_binding_are_required(slot, owned, fault)
         events[-1]["params"]["turn"]["items"][0]["text"] = "private-invalid"
     else:
         events.append(copy.deepcopy(events[-1]))
-    with pytest.raises(protocol.CoordinatorError, match="semantic-rejected"):
+    expected = "receive-outside-request" if fault == "trailing" else "semantic-rejected"
+    with pytest.raises(protocol.CoordinatorError, match=expected):
         slot.feed(
             frame({"id": request["id"], "result": ack}) + b"".join(frame(event) for event in events)
         )
@@ -438,6 +439,68 @@ def test_trailing_bytes_after_matched_turn_fail_before_outcome(slot, owned):
     complete_turn(slot, owned)
     with pytest.raises(protocol.CoordinatorError, match="receive-outside-request"):
         slot.feed(b"{")
+    close_failure(slot)
+
+
+@pytest.mark.parametrize(
+    "fault", ["malformed", "duplicate", "unknown", "error", "oversized", "unsupported-event"]
+)
+def test_ack_then_failure_is_independent_of_caller_read_partition(owned, fault):
+    observed = []
+    for partition in ("coalesced", "split", "fragmented"):
+        slot = protocol.SlotCoordinator(*owned)
+        drive_until(slot, owned)
+        request = json.loads(slot.next_frame())
+        ack = frame({"id": request["id"], "result": turn_events(*owned)[0]})
+        tails = {
+            "malformed": b"{private-invalid-json\n",
+            "duplicate": ack,
+            "unknown": frame({"method": "warning", "params": {"message": "private"}}),
+            "error": frame({"id": request["id"], "error": {"message": "private"}}),
+            "oversized": b'{"private":"' + b"x" * protocol.wire.MAX_FRAME_BYTES + b'"}\n',
+            "unsupported-event": frame({"method": "thread/status/changed", "params": {}}),
+        }
+        tail = tails[fault]
+        chunks = (ack + tail,) if partition == "coalesced" else (ack, tail)
+        if partition == "fragmented":
+            chunks = (ack[:9], ack[9:], tail[:5], tail[5:])
+        with pytest.raises(protocol.CoordinatorError):
+            for chunk in chunks:
+                slot.feed(chunk)
+        snapshot = slot.snapshot()
+        assert snapshot["turn_acknowledged"] is True
+        assert snapshot["stream_bytes"] <= protocol.wire.MAX_STREAM_BYTES
+        assert snapshot["received_events"] <= protocol.wire.MAX_EVENTS
+        slot.finish_phase(exit_code=0, cleanup_confirmed=True)
+        outcome = slot.take_outcome()
+        assert outcome == {"raw": None, "failure": "integrity"}
+        observed.append(
+            (snapshot["turn_acknowledged"], snapshot["failure"], snapshot["failure_code"], outcome)
+        )
+    assert observed[0] == observed[1] == observed[2]
+
+
+def test_huge_coalesced_caller_tail_uses_bounded_segments_and_stops_at_first_failure(
+    owned, monkeypatch
+):
+    slot = protocol.SlotCoordinator(*owned)
+    drive_until(slot, owned)
+    request = json.loads(slot.next_frame())
+    ack = frame({"id": request["id"], "result": turn_events(*owned)[0]})
+    original = protocol.wire.RpcInbox.feed
+    sizes = []
+
+    def bounded_feed(inbox, chunk):
+        sizes.append(len(chunk))
+        assert len(chunk) <= protocol.wire.MAX_FRAME_BYTES + 1
+        return original(inbox, chunk)
+
+    monkeypatch.setattr(protocol.wire.RpcInbox, "feed", bounded_feed)
+    huge = b"x" * (protocol.wire.MAX_FRAME_BYTES * 8)
+    with pytest.raises(protocol.CoordinatorError, match="wire-rejected"):
+        slot.feed(ack + huge + ack)
+    assert sizes == [len(ack), protocol.wire.MAX_FRAME_BYTES + 1]
+    assert slot.snapshot()["turn_acknowledged"] is True
     close_failure(slot)
 
 
