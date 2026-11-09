@@ -7,9 +7,18 @@
 
 AuthZest is an installable, CLI-first FastAPI source-analysis project. Start with the project README
 for installation, then use the parser scope to understand what a scan does and does not establish.
-The local dashboard is optional and does not require website deployment.
+The current local dashboard shows static inventory and does not require website deployment.
 
 ## Current work — 2026-11-09 KST
+
+**Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
+stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
+→ [#152 approved-copy before/after and recovery](https://github.com/casing1/authzest/issues/152)
+→ [#153 local read-only results UI](https://github.com/casing1/authzest/issues/153)
+→ [#85 installation/docs/demo](https://github.com/casing1/authzest/issues/85). These are pending
+deliverables, not current capabilities. The registered-template acceptance below is not genuine
+generation completion. CLI remains the decision/execution path; UI work adds no cloud deployment
+or browser patch authority. The [development plan](development/DEVELOPMENT_PLAN.md) defines the scope.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -43,12 +52,14 @@ with strict completed-record validation and deterministic regression cases. This
 reliability work, not a production Codex fix or new live-AI acceptance; verification and delivery are
 tracked in that issue. Published alpha.4 bytes and its historical failed first attempt remain unchanged.
 
-Next: [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
-[#85 reproducible course demo/evidence](https://github.com/casing1/authzest/issues/85). Use the
-[development plan](development/DEVELOPMENT_PLAN.md) for conditional release targets and the remaining
-submission buffer; do not add optional GUI/adapters to the submission scope.
+[#84 independent evaluation](https://github.com/casing1/authzest/issues/84) stays open with its seven
+pending criteria and honest unavailable-evidence limits. Broader comparison/executor expansion now
+follows core delivery, rather than displacing it. The local results UI is a release requirement;
+general repositories, extra adapters and hosted deployment remain outside this course slice.
 
-The [evaluation invocation/capture design](development/EVALUATION_TRANSPORT_DESIGN.md) now records an
+### Supporting offline evaluation foundation
+
+The [evaluation invocation/capture design](development/EVALUATION_TRANSPORT_DESIGN.md) records an
 owned pure offline codec for candidate preview, strict outer-`0.2`/inner-`0.1` validation and synthetic
 dry-run; the original proposal remains historical. Live capture/isolation/failure policies remain
 unimplemented, and nonce echo is not authentication/provider freshness. Owned offline recipe/frame
@@ -364,8 +375,11 @@ three-platform artifacts, and validation limits. Compare the changelog and commi
 [#33](https://github.com/casing1/authzest/issues/33) is implemented in source, and
 [#35](https://github.com/casing1/authzest/issues/35) is complete for the accepted bounded core.
 Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
-Next are [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) and
+Next is [#150 course-complete stable](https://github.com/casing1/authzest/issues/150): genuine
+generation #151 → approved-copy verification/recovery #152 → local results UI #153 →
 [#85 course-demo evidence](https://github.com/casing1/authzest/issues/85).
+[#84 independent evaluation](https://github.com/casing1/authzest/issues/84) remains separately open;
+its missing comparative evidence must be explicit, not invented or silently completed.
 
 Current scans provide schema 1.2, structured diagnostics, distinct source registration evidence, and
 route-local plus inherited dependency declarations. They do not classify endpoints

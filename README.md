@@ -19,7 +19,19 @@ record. New PoC generation and model-generated repair source for general FastAPI
 implemented. Alpha.3 includes the opt-in owned-fixture path;
 one live source-CLI draft/apply/runtime-check/restore check has passed. Static scans remain offline.
 
-The React dashboard is an optional local interface. Using AuthZest does not require deploying a website.
+The current React dashboard displays static-scan results. A local results viewer is part of the planned
+course-complete release below; the CLI initially retains approval and execution. No website deployment is required.
+
+> [!NOTE]
+> **Course-complete `0.1.0`: planned, not released.** Alpha.4 currently uses Codex to select a registered
+> repair template; it does **not** generate new PoC/test code or model-authored repair source.
+> The stable target is one maintained, owned FastAPI object-ownership scenario: one application file,
+> a new generated test, and an explicit in-memory policy. The intended demo is genuine Codex-generated
+> PoC/test and repair patch → user-approved fresh copy → approved before/after checks → recovery,
+> with a local results UI. Working, documented installation and an end-to-end demo are release gates,
+> not current capabilities or a promise of general-repository repair.
+> Track [the course-complete release (#150)](https://github.com/casing1/authzest/issues/150) and the
+> [development plan](docs/development/DEVELOPMENT_PLAN.md).
 
 > [!IMPORTANT]
 > **Latest published release:**
@@ -36,7 +48,8 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
 > **Scope, not a general repair engine:** alpha.4 includes readable CLI results and the bounded
 > owner-policy recommendation workflow. Active `codex-owner-repair --file-workflow` requires a POSIX
 > non-frozen Python source installation; native binaries support static scan/offline previews, not
-> that active file workflow. Independent evaluation (#84) and course-demo freeze (#85) remain ahead.
+> that active file workflow. The course-complete scope (#150) takes priority. Independent evaluation
+> (#84) stays separately open; course-demo freeze (#85) requires results or explicit missing-evidence limits.
 > The post-alpha.4 source change tracked in #130 atomically publishes complete fake-server test logs;
 > it is a test-harness reliability change, not a production Codex fix or new live-AI acceptance.
 > The published alpha.4 tag/assets are unchanged. Tag attempt 1 failed one JSONL test-harness read race
@@ -144,7 +157,7 @@ The React dashboard is an optional local interface. Using AuthZest does not requ
   treating ordinary dependency injection as authentication or authorization.
 - Carries supported application, router, and `include_router` dependency declarations into each
   registration's effective evidence, preserving the separate route-local list and original source positions.
-- Provides optional local API/dashboard, diagnostics, and standalone binary packaging.
+- Provides a local static-scan API/dashboard, diagnostics, and standalone binary packaging.
 - Provides the [Codex fixture command](docs/guides/CODEX_FIXTURE.md) in source and POSIX binaries: explicit sharing, a pinned
   App Server, and exact-diff approval for a fresh copy only. One fixture live check passed.
 - Keeps separately approved, source-configuration verification as the default; this AST check does not execute fixture source.
@@ -257,6 +270,8 @@ Node.js/npm are needed for frontend work, documentation checks, or builds that b
 CI uses Node.js 22.
 
 ## Optional local dashboard
+
+These commands start the current static-scan UI, not the planned generated-PoC/repair results viewer.
 
 After the editable development setup, build and run the dashboard from the repository root:
 
@@ -384,7 +399,7 @@ src/authzest/
 ├── api/        # Optional FastAPI transport
 └── models.py   # Core report data
 tests/          # Regression tests
-frontend/       # Optional React/Vite/TypeScript dashboard
+frontend/       # Current React/Vite/TypeScript static-scan dashboard
 docs/           # Guides, translations, and assets
 scripts/        # Release helpers
 .github/        # CI/release workflows and contribution templates
@@ -419,12 +434,15 @@ Current source and next step:
    on 2026-11-02 KST, not a new live run or general repository repair. Final status documentation was
    normally merged through PR #123 (`ee49f5a`), and #82 → #81 → #35 are now closed for that scope.
 4. Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
-   Next: [#84 independent evaluation](https://github.com/casing1/authzest/issues/84), then
+   Next: [#150 course-complete stable](https://github.com/casing1/authzest/issues/150): genuine
+   generation #151 → approved-copy verification/recovery #152 → local results UI #153 →
    [#85 reproducible demo and course evidence](https://github.com/casing1/authzest/issues/85).
+   [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) stays separately open;
+   report missing comparative evidence rather than expanding its executor ahead of core delivery.
    Keep [#83's exact release/public-asset receipt](https://github.com/casing1/authzest/issues/83) separate.
    #89 stays open at `needs_review` / medium with alpha.4-only risk acceptance, not a fix or stable-release
-   waiver. A scoped `0.1.0` stable release depends on evaluation, demo, regression/install and renewed
-   relevant-risk gates; the current alpha does not promise general repository repair.
+   waiver. A scoped `0.1.0` stable release requires that genuine-generation workflow, UI, demo,
+   regression/install and renewed relevant-risk gates; the current alpha does not implement them.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not

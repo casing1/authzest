@@ -31,7 +31,32 @@ and inherited application/router/include context. It does not yet resolve nested
 correctness, or run AI as part of a scan. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
-## Current delivery priorities — 2026-11-05 KST
+## Release-first priorities — 2026-11-09 KST
+
+The course-complete stable target is [#150](https://github.com/casing1/authzest/issues/150), not
+another comparison-transport milestone. Deliver [#151 genuine PoC/test and repair-source generation](https://github.com/casing1/authzest/issues/151),
+then [#152 approved-copy verification and recovery](https://github.com/casing1/authzest/issues/152),
+and [#153 local results UI](https://github.com/casing1/authzest/issues/153), followed by
+[#85 installation/documentation/demo freeze](https://github.com/casing1/authzest/issues/85).
+Scope one maintained, owned FastAPI object-ownership scenario, explicit policy, in-memory data and
+one application source file plus a generated test. This is a planned release slice, not implemented
+generation support. Do not send the registered after solution as a repair choice.
+
+The model must author a new defensive PoC/test and repair source; selecting a known template does
+not satisfy this goal. Validate bounded artifacts offline first. Review the new execution boundary
+before enabling generated code: a timeout is not an OS sandbox, and the existing registered worker's
+allowlist must not be relaxed as a shortcut. Verify the before defect and repaired actual bytes with
+maintained independent controls, not only the generated test's assertions. Preserve exact-diff
+approve/decline, new-copy-only changes, stale/user-edit refusal and recovery.
+
+CLI remains the decision/execution path. The local React UI must show actual evidence, generated
+tests, diff, before/after and recovery; it initially adds no browser execution/patch authority or
+website deployment. Keep #84's seven criteria and reference history pending, but put broader model
+comparison/executor expansion after the product core. Unavailable independent evidence must stay
+visible; a limited stable release cannot claim model superiority. This direction does not authorize
+new sharing, AI/generated-code execution, patching, risk acceptance or publication.
+
+### Delivered foundation and evaluation history
 
 The read-only owner review, #77 exact-case review, #79 readable output and
 [#80 fixed-policy API](../reference/OWNER_POLICY_CHECK.md) are delivered. #80's final-head CI/reviews
@@ -56,14 +81,15 @@ deterministic regressions; verification and delivery are tracked in the issue. T
 reliability work, not a production Codex fix, new live-AI acceptance or independent model evaluation.
 The published alpha.4 tag/assets are unchanged.
 
-Next, collect the missing independent-reference review attestation and fix the separate live-trial
-configuration before prompt iteration or measuring the three-mode hypothesis under
+For a later independent comparison, collect the missing independent-reference review attestation
+and fix the separate live-trial configuration before prompt iteration or measuring the three-mode hypothesis under
 [#84](https://github.com/casing1/authzest/issues/84). Historical model
 inputs and development cases cannot become fresh holdouts. Use
 [#85](https://github.com/casing1/authzest/issues/85) to freeze a reproducible owned-scenario demo,
 installation instructions, limitations and OSS contribution evidence. If a measurement is unavailable,
 report that gap rather than manufacturing a model-quality claim. Complete the bounded course scope
-before adding models, another transport, a complete Python interpreter or AI GUI.
+before adding models, another transport, a complete Python interpreter or browser-side execution.
+The local results UI above is now a release deliverable, not an optional post-course expansion.
 
 The separate [evaluation protocol](EVALUATION_PROTOCOL.md) records November 6 direct user acceptance
 of the current 21 reference values in seven assistant-authored scenarios. v1 fixes source, questions,
@@ -121,8 +147,10 @@ authentication/consent. A later versioned provider-visible/capture boundary is s
 collection; unchanged answer-only payloads cannot prove execution/context, independent evaluation or
 model value. All seven #84 checks remain pending.
 
-Defensive PoC means owned synthetic regression-case **data**, not AI-generated Python/shell or an
-external exploit. A correct-policy no-change or unknown result is valid; policy observations do not
+The historical registered workflow's defensive PoC is owned synthetic regression-case **data**,
+not generated executable code. The new #151/#152 slice instead requires a newly generated defensive
+test under its separately reviewed execution boundary; neither scope permits external exploits.
+A correct-policy no-change or unknown result is valid; policy observations do not
 attest HTTP authentication/authorization. Actual sharing, case labels, exact-diff application and
 execution retain separate bound decisions. This planning update grants no live call or execution.
 The alpha.4-only #89 decision is not stable-release clearance: reassess the current shipped bytes,
@@ -131,14 +159,14 @@ for the conditional RC/stable target, submission buffer and existing inclusive s
 
 ## Stable contracts, replaceable models
 
-| Layer                    | Responsibility                                                                                         | Must not imply                                                    |
-| ------------------------ | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| Parser and analyzer      | Deterministic declarations, original locations, supported registration context                         | Complete understanding of arbitrary Python                        |
-| Policy and report        | Separate observed facts, user-specified expectations, unresolved evidence, and eventual checks         | A dependency declaration proves authentication or authorization   |
-| Codex adapter            | Review a permitted evidence payload and propose defensive tests/changes; validate shape and references | A model's unsupported assertion becomes a confirmed finding       |
-| Approval and application | Bind the user's decision to an exact diff and source identity; apply only that validated proposal      | Codex tool permission or earlier consent authorizes another patch |
-| Isolated verification    | Run a separately approved, bounded owned-fixture plan; record results and recovery information         | A passing test proves general authorization correctness           |
-| CLI and optional API/UI  | Present the same core report and honest failure/partial states                                         | Successful execution or zero routes is a security pass            |
+| Layer                    | Responsibility                                                                                          | Must not imply                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Parser and analyzer      | Deterministic declarations, original locations, supported registration context                          | Complete understanding of arbitrary Python                        |
+| Policy and report        | Separate observed facts, user-specified expectations, unresolved evidence, and eventual checks          | A dependency declaration proves authentication or authorization   |
+| Codex adapter            | Review a permitted evidence payload and propose defensive tests/changes; validate shape and references  | A model's unsupported assertion becomes a confirmed finding       |
+| Approval and application | Bind the user's decision to an exact diff and source identity; apply only that validated proposal       | Codex tool permission or earlier consent authorizes another patch |
+| Isolated verification    | Run a separately approved, bounded owned-fixture plan; record results and recovery information          | A passing test proves general authorization correctness           |
+| CLI and local results UI | Present the same core artifacts and honest failure/partial states; decisions/execution remain CLI-first | Successful execution or zero routes is a security pass            |
 
 Do not expand the parser into a general Python interpreter. Add syntax support only when a documented
 use case and maintained fixtures justify it. Repeated mounts need distinct registration identity and
