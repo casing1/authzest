@@ -3,15 +3,15 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_CONTRACT.md">한국어</a>
 </p>
 
-# Offline generated repair contract
+# Generated repair contract and opt-in Codex request
 
 [Documentation index](../README.md)
 
 ## Status — 2026-11-09 KST
 
-This is the first offline contract slice of [#151](https://github.com/casing1/authzest/issues/151), under the [course-release scope](https://github.com/casing1/authzest/issues/150). It prepares and validates in-memory requests and untrusted proposals; it does **not** deliver actual AI generation, generated-test execution, file application, or a results UI. #151 remains open. Existing registered-template acceptance is not acceptance of a newly authored repair.
+[#151](https://github.com/casing1/authzest/issues/151), under the [course-release scope](https://github.com/casing1/authzest/issues/150), now connects the offline request/proposal contract to an opt-in `codex-generate` adapter workflow. This change is verified with offline/mocked tests only: no actual account, Codex process, or model was used for generation acceptance. Real provider/schema compatibility and genuine-generation acceptance remain unverified, so #151 stays open. Existing registered-template acceptance is not acceptance of a newly authored repair.
 
-The contract does not start Codex, read credentials or arbitrary repositories, create a copy, write files, run a test, or grant execution consent. Existing product/report versions and the Codex pin/model configuration are unchanged.
+The pure contract and preview-only paths do not start Codex. The active workflow can make one separately approved request for this fixed scenario; it does not accept an arbitrary repository, create a source copy, apply a patch, execute generated code, or restore files. #152/#153 verification/UI work is not implemented here. Existing product/report versions and the Codex pin are unchanged; the new command requires an explicit model.
 
 ## Offline input preview
 
@@ -23,6 +23,23 @@ authzest generation-preview --json
 ```
 
 The default output displays the full prompt and response schema with an explicit no-generation notice. JSON mode prints one `generated-repair-request-preview` document with `status: "preview-only"`, `model_invoked: false`, `applied: false`, and `execution_status: "not-run"`. There are no model, repository-path, or execution options. This is an input preview, not a generated proposal or a live-generation workflow.
+
+## Opt-in request workflow
+
+`codex-generate` requires `--model`; optional `--timeout-seconds` defaults to 120 and must be greater than zero and at most 120. These portable examples display the complete offline sharing preview only; replace `EXPLICIT_MODEL` with the intended exact identifier when reviewing a real request:
+
+```bash
+authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-only
+authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-only --json
+```
+
+Without `--preview-only`, the active POSIX path first displays the exact maintained source/policy/declarations, host prompt and output schema, then requires a fresh request-specific sharing confirmation. Declining, cancelling, or an invalid confirmation does not approve sharing. Previewing is not consent. The workflow uses a trusted local Codex `0.153.0` installation and its existing ChatGPT login; Codex adds its own harness context.
+
+An approved request makes one adapter attempt, without AuthZest retry or model fallback. Its requested timeout is at most 120 seconds, with cleanup handled separately; this is not a full end-to-end wall-clock guarantee or a hard cap on Codex-internal retries, tokens, or spending. Do not interpret missing usage as zero.
+
+The default output is human-readable, with model-controlled text terminal-escaped. `--json` emits exactly one final result or offline preview on stdout; full interactive sharing previews and prompts go to stderr. A valid `proposed-change` yields complete proposed source/test text and host-derived diffs/hashes, not an applied or tested repair. `no-change`, `unknown`, and `refused` remain distinct. Transport metadata is host-bound context, not independent attestation of model authorship; mock responses are not proof of actual generation.
+
+Final JSON uses `kind: "codex-generated-repair-workflow"`. Outer `status` describes the workflow (`generation-ready`, `not-shared`, `preview-changed`, or `generation-failed`), while `proposal_status` separately describes the proposal. `generation-ready` means a validated response, not a successful repair. `generation` retains the transport envelope and `proposal_preview` the inert host-composed preview. `execution_status`, `patch_application`, and `restoration_status` remain `not-run`, and `applied` remains false. `application_turn_attempts` counts local adapter calls, not accepted or billed provider turns.
 
 ## Maintained scenario
 
@@ -60,4 +77,4 @@ The object-root output schema is a shaping candidate, not the authoritative vali
 
 [#153](https://github.com/casing1/authzest/issues/153) will present actual scan, PoC/test, diff, check, and recovery results in a read-only local React UI. Initial action and approval controls stay in the CLI; cloud deployment is not required. These integrations remain future work.
 
-The [official Codex App Server documentation](https://learn.chatgpt.com/docs/app-server) is the future integration reference for structured output such as `outputSchema`. This link and the offline schema are **not** compatibility evidence for the existing pinned Codex version `0.153.0`; that integration still needs its own checks and consent.
+The adapter uses the current-turn `outputSchema` direction described by the [official Codex App Server documentation](https://learn.chatgpt.com/docs/app-server). The source connection, offline schema and mocked tests are **not** actual provider compatibility evidence for the unchanged pinned Codex version `0.153.0`; a real request still needs separate consent and acceptance evidence.

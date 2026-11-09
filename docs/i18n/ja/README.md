@@ -84,9 +84,12 @@ AuthZest は、FastAPI アプリケーションのソースコードに基づい
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
 - オフラインの [`authzest generation-preview`](../../development/GENERATED_REPAIR_CONTRACT.md)
-  （`--json` は任意）で、今後の新規 PoC・テストと修正ソース生成向けの固定入力・出力スキーマ候補を
-  確認できます。モデル呼び出し・生成応答・実行・ファイル変更はなく、提案ポリシーは管理者レビュー待ちです。
-  #151 の連携完了ではありません。
+  （`--json` は任意）は固定入力だけを表示します。ソースの `codex-generate --model EXPLICIT_MODEL` は
+  各プラットフォームで使える `--preview-only`、または新しい正確なリクエストへの共有同意後に POSIX で
+  アダプターを 1 回試行する経路を提供します。読みやすい出力/`--json` に検証した提案とホスト計算の
+  ソース・テスト diff を表示し、コピー・適用・生成コードの実行・復元は行いません。ポリシーはレビュー待ちで、
+  `X-Demo-Actor` は認証ではありません。この接続はオフライン/mock 検査のみで、実際の生成・提供者互換性は
+  未検証です。#151 は未完了で、#152/#153 は未実装です。
 - alpha.4 では `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
   表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
   出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。

@@ -266,7 +266,7 @@ docs/
 | 전용 수정 정책 고정 검사 (과거 설계)             | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) |
 | 테스트 전용 소유 정책 수정 쌍 (제안)             | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)  |
 | 소유 정책 개선 설계 (제안)                       | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       |
-| 오프라인 생성 PoC/테스트·수정 계약               | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)       |
+| 생성 PoC/테스트 계약과 선택형 Codex 요청         | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)       |
 | 패키지에 포함한 오프라인 fixture 시연            | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                             |
 | opt-in 소유 fixture Codex 초안                   | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                    |
 | 별도 승인하는 고정 fixture 런타임 검사           | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                               |

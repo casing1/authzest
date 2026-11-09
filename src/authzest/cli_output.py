@@ -34,6 +34,8 @@ _SECTIONS = {
     "draft": "Untrusted draft",
     "recommendation": "Untrusted recommendation / transport metadata",
     "recommendation_preview": "Locally composed recommendation preview (not applied)",
+    "generation": "Untrusted generated proposal / transport metadata",
+    "proposal_preview": "Locally composed generated-source diff (not applied or executed)",
     "cases": "Cases / observations (see explicit status)",
     "case_drafts": "Case drafts (unreviewed; not executed)",
     "application": "Application result",
@@ -292,6 +294,7 @@ class WorkflowOutput:
         elif isinstance(value, dict) and value.get("kind") in (
             "codex-owner-review-sharing-preview",
             "codex-owner-repair-sharing-preview",
+            "codex-generated-repair-sharing-preview",
             "codex-fixture-sharing-preview",
         ):
             typer.echo(format_sharing_preview(value))

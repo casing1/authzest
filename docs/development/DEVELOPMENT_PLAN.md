@@ -38,7 +38,8 @@ historical receipts. The accepted registered-template flow is a foundation, not 
 
 These are pending implementation and acceptance requirements, not authority to run generated code.
 The new execution boundary, isolation, permitted operations, limits and failure handling must be designed
-under #152 before any separately approved model/source sharing or active test/apply/restore operation.
+under #152 before any active generated-code test/apply/restore operation; model/source sharing also
+requires fresh exact-request consent.
 Previous fixture approvals cannot authorize the new scenario. Arbitrary repositories, general code
 execution and multi-file repair remain outside this first delivery.
 
@@ -48,11 +49,13 @@ must distinguish actual observations from mocks and missing measurements; disclo
 independent comparison evidence rather than inventing scores or claiming an AI advantage.
 No package/version/tag change, stable publication or new execution is authorized by this plan.
 
-The first [#151 offline contract slice](GENERATED_REPAIR_CONTRACT.md) now prepares a fixed synthetic
-request and validates caller-supplied source/test drafts with host-derived diff previews.
-`authzest generation-preview` (`--json` optional) displays input only: it calls no model and executes
-or applies nothing. The new scenario policy remains assistant-authored/pending maintainer review;
-actual provider integration, genuine-generation acceptance and #152/#153 remain unfinished.
+The [#151 contract and adapter connection](GENERATED_REPAIR_CONTRACT.md) prepares the fixed synthetic
+request and validates source/test proposals with host-derived diffs. `authzest generation-preview`
+(`--json` optional) remains input-only. Source `codex-generate --model EXPLICIT_MODEL` adds portable
+`--preview-only` and a POSIX one-attempt adapter path after fresh exact-request sharing consent;
+it creates no copy and does not apply, execute, or restore generated code. This change has only
+offline/mocked verification, not actual model/provider/schema acceptance. The policy remains
+assistant-authored/pending maintainer review; #151 stays open and #152/#153 remain unimplemented.
 
 ## Current baseline — 2026-11-05 KST
 
@@ -314,9 +317,10 @@ Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PR
 | Owned-file CLI (#82 / PR #120)                  | POSIX non-frozen source only; installed happy path at `c868152` on one macOS/Python 3.12.7 host: before 6/8, exact diff/apply, actual applied-after 8/8, restored before / generation 3; bounded acceptance delivered through PR #123 |
 
 The accepted historical core uses one registered synthetic policy pair, eight reviewed cases and Codex
-template selection. New FastAPI PoC/test generation and model-authored repair source are **not implemented**;
-the maintained single-scenario version is now required by #151/#152, while general repositories remain
-out of scope. The historical acceptance is not independent evaluation or HTTP/authentication/DB enforcement.
+template selection. The new single-scenario generation contract/adapter has offline/mocked coverage,
+not actual-generation acceptance; generated-code verification remains unimplemented under #152.
+General repositories remain out of scope. The historical acceptance is not independent evaluation
+or HTTP/authentication/DB enforcement.
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate

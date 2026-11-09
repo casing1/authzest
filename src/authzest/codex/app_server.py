@@ -36,6 +36,12 @@ from authzest.codex.fixture_draft import (
     fixture_prompt,
     validate_fixture_draft,
 )
+from authzest.codex.generated_repair_transport import (
+    GeneratedRepairTransportRequest,
+    GeneratedRepairTransportResult,
+    prepare_generated_repair_transport_result,
+    validate_generated_repair_transport_request,
+)
 from authzest.codex.owner_policy_repair_transport import (
     OwnerPolicyRepairTransportRequest,
     OwnerPolicyRepairTransportResult,
@@ -774,8 +780,36 @@ class CodexAppServerAdapter:
             ),
         )
 
+    async def generate_repair(
+        self, request: GeneratedRepairTransportRequest
+    ) -> GeneratedRepairTransportResult:
+        """Return untrusted new source/test data; never execute or apply the proposal."""
+        self._begin_request(detailed_validation=True)
+        try:
+            if type(request) is not GeneratedRepairTransportRequest:
+                raise ContractError("Unexpected generated transport type", code="validation-shape")
+            checked = validate_generated_repair_transport_request(
+                getattr(request, "payload_json", None)
+            )
+            self._check_sharing(checked)
+            payload = checked.to_dict()
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
+        return await self._turn(
+            checked,
+            payload["prompt"],
+            payload["output_schema"],
+            lambda raw, usage: prepare_generated_repair_transport_result(raw, checked, usage=usage),
+        )
+
     def _check_sharing(
-        self, request: CodexAnalysisRequest | OwnerPolicyRepairTransportRequest
+        self,
+        request: (
+            CodexAnalysisRequest
+            | OwnerPolicyRepairTransportRequest
+            | GeneratedRepairTransportRequest
+        ),
     ) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
             raise AppServerError(
@@ -784,7 +818,11 @@ class CodexAppServerAdapter:
 
     async def _turn(
         self,
-        request: CodexAnalysisRequest | OwnerPolicyRepairTransportRequest,
+        request: (
+            CodexAnalysisRequest
+            | OwnerPolicyRepairTransportRequest
+            | GeneratedRepairTransportRequest
+        ),
         prompt: str,
         schema: dict[str, Any],
         validate: Callable[[str, dict | None], _ReviewT],
