@@ -225,6 +225,9 @@ recipe/프레임 builder와 직렬 오프라인 `Batch` ledger를 `scripts/evalu
 원래 dispatch 시계/예산으로 기존 검사를 조합합니다. `turn/start`에서만 모델 송신을 표시하고 정확한
 RPC ack/생명주기 확인 후 finish하며 실패/skipped 분모를 유지합니다.
 [순수 coordinator 범위](EVALUATION_PROTOCOL.md#순수-slotbatch-조합--실제-transport-아님)를 참고하세요.
+Dispatch ledger에는 `Batch.fail`을 추가하여 bridge가 현재 시각에 관찰한 slot 실패를 즉시 고정하고
+정리 전까지 첫 원인을 보존하며 늦은 timeout으로 대체하지 않습니다. 정리·2차 clock 결과는 별도로
+두고 기존 clock/TTL/`T`/시간창/finish 계약을 유지합니다.
 실제 transport·공개 launcher·인증된 승인·전체 recipe 검증이 아니며 실제 생명주기/호환성은 후속 조건입니다.
 실제 설정/계정 RPC·운영 프로세스/수신/격리/timer/취소/정리
 강제는 미구현이며 실제 시험에는 명시적

@@ -474,8 +474,8 @@ python -m pytest tests/test_evaluation_jsonl_process.py
 ```
 
 CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책 worker·평가 결과/채점·`Batch`/preflight 연결은
-없습니다. 기존 recipe/codec/preflight/ledger·제품 `0.1.0a4` / 리포트 `1.2`·고정 버전·v1/수학/데이터/
-과거 자료는 그대로입니다. 런타임/준비/승인/실제 동결 flag는 false이며 #84는 체크 7개가 모두
+없습니다. 해당 envelope 전용 단계에서는 기존 recipe/codec/preflight/ledger·제품 `0.1.0a4` / 리포트
+`1.2`·고정 버전·v1/수학/데이터/과거 자료가 그대로였습니다. 런타임/준비/승인/실제 동결 flag는 false이며 #84는 체크 7개가 모두
 미완료인 OPEN입니다. 아래 선택 의미 helper는 이 envelope 전용 계층과 별도이며 coordinator 생명주기·
 더 넓은 recipe 검증은 실제 경로의 별도 승인 전 후속 조건입니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
 
@@ -522,15 +522,18 @@ session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initia
 검사한 뒤 EOF/정상 종료/정리를 요구합니다. 호출자가 제공한 바이트/종료/정리는 프로세스·제공자를
 관찰한 근거가 아닙니다.
 
-`scripts/evaluation_batch_coordinator.py`의 `BatchCoordinator`는 기존 dispatch `Batch`와 slot 상태를
-연결합니다. 원래 `Clock` 기준점·확인 TTL·`T`·dispatch 시간창을 초기화 없이 유지하고 모델 송신은
+`scripts/evaluation_batch_coordinator.py`의 `BatchCoordinator`는 dispatch `Batch`와 slot 상태를
+연결합니다. `Batch`에 `fail(revision, clock, *, failure)`를 추가하여 첫 관찰 실패를 정리 전까지
+고정합니다. Bridge는 현재 `Clock`에서 slot 실패를 즉시 전달하여 늦은 finish의 timeout이 원인을
+덮지 못하게 하고 정리·2차 clock 실패는 별도로 둡니다. 원래 `Clock` 기준점·확인 TTL·`T`·dispatch
+시간창·finish 계약을 초기화 없이 유지하고 모델 송신은
 `turn/start`에서만 표시하며 정확한 RPC ack를 연결하고 생명주기 확인 후 finish합니다.
 송신 시도 표시는 후보 프레임 바이트를 반환하기 전에 설정하며 실제 write의 증거가 아닙니다. 첫 nonvalid는
 후속 슬롯을 중단하되 예정 슬롯 14/28/42개·질문 기회 42/84/126개를 모두 보존합니다. 순수 연결이지
 I/O·launcher·실제 timer/취소/정리 강제·인증된 승인이 아닙니다. 선택 turn 부분집합은 더 넓은 유효
 프로토콜 변형을 계속 거부하며 조합도 전체 recipe 검증이 아닙니다.
 
-기존 Windows CI 설정에 순수 테스트 경로 2개를 포함하며 CI 통과를 뜻하지 않습니다. POSIX 프로세스
+기존 Windows CI 설정에 순수 테스트 경로 3개를 포함하며 CI 통과를 뜻하지 않습니다. POSIX 프로세스
 테스트는 고정 소유 가짜 자식만 두 단계에서 사용하고 자식별 테스트 watchdog 5초·제한된 TERM/KILL 정리를
 사용하며 부모가 사라지는 경우에 대비한 자식 alarm 7초도 둡니다. Windows는 건너뛰며
 OS sandbox·운영 시간 강제의 증거가 아닙니다. 소스 checkout에서:
@@ -538,12 +541,13 @@ OS sandbox·운영 시간 강제의 증거가 아닙니다. 소스 checkout에�
 ```bash
 python -m pytest tests/test_evaluation_coordinator.py
 python -m pytest tests/test_evaluation_batch_coordinator.py
+python -m pytest tests/test_evaluation_dispatch_failure.py
 python -m pytest tests/test_evaluation_coordinator_process.py
 ```
 
 실제 Codex/계정/모델/정책 worker/네트워크 호출·평가/채점은 없으며 신원 인증/새로움/준비/승인/
 trial 수용/실제 동결은 false입니다. 실제 생명주기/호환성 조건·별도 실행 승인은 충족하지 않았습니다.
-제품/고정 버전/recipe/codec/preflight/JSONL/semantics/dispatch/데이터/v1/수학/과거 자료·제품
+제품/고정 버전/recipe/codec/preflight/JSONL/semantics/데이터/v1/수학/과거 자료·제품
 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개는 그대로이며 위험 수용·릴리스는 없습니다.
 
 ## 후보와 독립적인 오프라인 측정 수학

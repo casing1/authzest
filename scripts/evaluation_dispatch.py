@@ -303,6 +303,21 @@ class Batch:
         self._revision += 1
         return self.snapshot()
 
+    def fail(self, revision: Revision, clock: Clock, *, failure: str) -> dict:
+        """Retain an active slot's first failure before its separate cleanup phase."""
+        self._begin(revision, clock)
+        _require(self._active is not None, "no-active-slot")
+        _require(type(failure) is str and failure in FAILURES, "invalid-failure")
+        self._tick(clock)
+        if self._slots[self._active].pending_terminal is None:
+            self._stop(
+                "integrity" if failure == "integrity" else "stopped",
+                active_status="failed" if failure == "integrity" else failure,
+                primary=failure,
+            )
+        self._revision += 1
+        return self.snapshot()
+
     def finish(
         self,
         revision: Revision,

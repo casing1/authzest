@@ -90,6 +90,19 @@ class BatchCoordinator:
             self._slot.abort(reason)
         return slot
 
+    def _latch_slot_failure(self, clock: dispatch.Clock) -> None:
+        """Retain a fatal observation now, not after a later lifecycle wait."""
+        observed = self._slot.snapshot()
+        if not observed["failed"]:
+            return  # Caller ordering misuse is not a received protocol failure.
+        ledger = self._batch.snapshot()
+        active = ledger["slots"][ledger["active_ordinal"] - 1]
+        if active["pending_terminal"] is None:
+            failure = observed["failure"]
+            if type(failure) is not str or failure not in dispatch.FAILURES:
+                failure = "integrity"
+            self._batch.fail(self.revision, clock, failure=failure)
+
     def next_frame(self, revision, clock) -> bytes | None:
         """Prepare private bytes; attempted turn send is marked before returning them."""
         state = self._checkpoint(revision, clock)
@@ -99,6 +112,7 @@ class BatchCoordinator:
         try:
             frame = self._slot.next_frame()
         except protocol.CoordinatorError:
+            self._latch_slot_failure(clock)
             raise BatchCoordinatorError("invalid-frame-transition") from None
         if method == "turn/start":
             # Frame construction is pure. Nothing can transmit these bytes until
@@ -107,10 +121,12 @@ class BatchCoordinator:
                 current = self._batch.mark_send(self.revision, clock)
             except (ValueError, AttributeError, TypeError, KeyError):
                 self._slot.abort("integrity")
+                self._latch_slot_failure(clock)
                 raise BatchCoordinatorError("invalid-send-transition") from None
             sent = current["slots"][current["active_ordinal"] - 1]
             if sent["send_state"] != "attempted" or sent["pending_terminal"] is not None:
                 self._slot.abort("integrity")
+                self._latch_slot_failure(clock)
                 return None
         return frame
 
@@ -122,8 +138,10 @@ class BatchCoordinator:
             self._slot.feed(chunk)
         except protocol.CoordinatorError:
             self._acknowledge_if_reported(state, clock)
+            self._latch_slot_failure(clock)
             raise BatchCoordinatorError("protocol-input-rejected") from None
         self._acknowledge_if_reported(state, clock)
+        self._latch_slot_failure(clock)
         return self.snapshot()
 
     def _acknowledge_if_reported(self, state: dict, clock: dispatch.Clock) -> None:
@@ -134,6 +152,7 @@ class BatchCoordinator:
                 self._batch.acknowledge(self.revision, clock)
             except (ValueError, AttributeError, TypeError, KeyError):
                 self._slot.abort("integrity")
+                self._latch_slot_failure(clock)
                 raise BatchCoordinatorError("invalid-ack-transition") from None
 
     def abort(self, revision, clock, reason: str) -> dict:
@@ -142,7 +161,9 @@ class BatchCoordinator:
         try:
             self._slot.abort(reason)
         except protocol.CoordinatorError:
+            self._latch_slot_failure(clock)
             raise BatchCoordinatorError("invalid-abort-transition") from None
+        self._latch_slot_failure(clock)
         return self.snapshot()
 
     def finish_phase(
@@ -170,10 +191,15 @@ class BatchCoordinator:
             # A rejected EOF/exit may latch a failure and still establish that
             # lifecycle assertions were supplied. Never salvage its former text.
             if not self._slot.snapshot()["outcome_ready"]:
+                self._latch_slot_failure(clock)
                 raise BatchCoordinatorError("invalid-phase-finish") from None
+        self._latch_slot_failure(clock)
         current = self._slot.snapshot()
         if current["outcome_ready"]:
             outcome = self._slot.take_outcome()
+            # take_outcome revalidates the candidate and may return a newly
+            # latched integrity failure instead of throwing. Preserve it too.
+            self._latch_slot_failure(clock)
             self._last_protocol = self._slot.snapshot()
             self._batch.finish(
                 self.revision,

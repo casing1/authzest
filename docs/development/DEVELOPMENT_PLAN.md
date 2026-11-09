@@ -238,6 +238,10 @@ discovery/generation byte/EOF/exit/cleanup records and the original dispatch clo
 Only `turn/start` marks model-send; exact RPC ack/lifecycle confirmation precedes finishing while
 failure/skipped denominators remain. See the
 [pure coordinator scope](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination--not-live-transport).
+The dispatch ledger is extended with `Batch.fail`: the bridge immediately latches an observed slot
+failure at the current clock, preserving its first cause until cleanup instead of replacing it with
+a later timeout; cleanup and secondary clock outcomes stay separate. Existing clock/TTL/`T`/window/
+finish contracts are retained.
 This is not live transport, a public launcher, authenticated approval or full recipe coverage; live
 lifecycle/compatibility remain gates. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
 enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time

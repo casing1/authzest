@@ -66,7 +66,9 @@ provider transport or public launcher. Separate pure helpers now check bounded c
 boundaries and selected synthetic session/catalog/thread/settings/final-answer shapes, not complete
 recipe coverage, actual authentication/entitlement or an accepted trial. New pure slot/batch
 coordinators compose those unchanged checks with supplied lifecycle records and original clocks,
-not process I/O, a launcher or runtime/authenticated evidence. Only fixed owned fake children are
+not process I/O, a launcher or runtime/authenticated evidence. The dispatch ledger now adds
+`Batch.fail` to latch the first slot failure immediately pending cleanup, separately from cleanup/
+secondary clock failures; later timeout does not replace that cause. Only fixed owned fake children are
 used in process tests; live compatibility/lifecycle gates remain. Account/configuration RPC and production capture/cancellation/cleanup remain
 unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/

@@ -15,12 +15,15 @@
 `scripts/evaluation_batch_coordinator.BatchCoordinator`는 원래 시계/예산을 초기화하지 않고 기존
 dispatch ledger와 slot 상태를 연결합니다. `turn/start`에서만 모델 송신을 표시하며 정확한 RPC ack·
 생명주기 확인 뒤 finish하고 첫 nonvalid에서 후속 슬롯을 멈추되 전체 예정 분모를 보존합니다.
+Ledger에 `Batch.fail`을 추가하여 현재 시각의 slot 실패를 정리 전까지 즉시 고정합니다. 늦은
+timeout으로 첫 원인을 덮지 않고 정리·2차 clock 실패를 별도로 두며 기존 clock/TTL/`T`/시간창/
+finish 계약은 유지합니다.
 [현재 제한과 순수/POSIX 테스트 명령](EVALUATION_PROTOCOL.md#순수-slotbatch-조합--실제-transport-아님)을 참고하세요.
 
 호출자가 제공하는 바이트/종료/정리/시각 상태이지 I/O·launcher·실제 timer 강제·제공자 신원 인증·
 실제 평가가 아닙니다. 프로세스 테스트에는 고정 소유 가짜 자식만 사용하며 선택 turn 부분집합은
 더 넓은 유효 프로토콜 변형을 계속 거부하고 전체 recipe 검증이 아닙니다. 실제 생명주기/호환성 조건·
-별도 실행 허가는 남아 있습니다. 제품/고정 버전/recipe/codec/preflight/JSONL/semantics/dispatch/
+별도 실행 허가는 남아 있습니다. 제품/고정 버전/recipe/codec/preflight/JSONL/semantics/
 데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로입니다. 신원 인증/새로움/준비/승인/
 trial 수용/실제 동결은 false이며 #84는 체크 7개 미완료인 OPEN입니다. 실제 Codex/계정/모델/정책
 worker/네트워크 호출·위험 수용·릴리스는 없습니다.

@@ -17,7 +17,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 ### Added
 
 - Add pure `SlotCoordinator` and `BatchCoordinator` state composition over the unchanged recipe,
-  JSONL/preflight/session/turn validators and dispatch ledger. Join discovery and generation supplied
+  JSONL/preflight/session/turn validators and an extended dispatch ledger. New `Batch.fail` latches
+  the first observed slot failure immediately until cleanup, preventing late timeout from replacing
+  its cause; cleanup and secondary clock failures remain separate. Join discovery and generation supplied
   byte/EOF/exit/cleanup sequences; mark model-send only at `turn/start`, correlate its RPC ack and
   retain the original clocks/budgets and all planned failure/skipped denominators. Test only fixed
   owned fake children on POSIX; include the two portable pure test files in existing Windows CI

@@ -85,6 +85,7 @@ class MockSlot:
             "failed": self.failed,
             "outcome_ready": self.ready,
             "failure_code": self.failure,
+            "failure": self.failure,
             "terminal": self.ready,
             **common.limitations(),
         }
@@ -387,7 +388,12 @@ def test_real_correlated_ack_is_preserved_when_later_final_in_same_chunk_fails(f
                 assert coordinator.snapshot()["slots"][0]["send_state"] == "acknowledged"
             elif raw:
                 coordinator.feed(coordinator.revision, clock(), raw)
-        coordinator.finish_phase(coordinator.revision, clock(), exit_code=0, cleanup_confirmed=True)
+        # A real selected-slot failure is already latched before a later
+        # lifecycle report reaches the original T=30 boundary.
+        finished = clock(30 if phase == "generation" else 0)
+        coordinator.finish_phase(
+            coordinator.revision, finished, exit_code=0, cleanup_confirmed=True
+        )
     result = coordinator.snapshot()
     assert result["phase"] == "stopped"
     assert result["slots"][0]["status"] == "failed"
@@ -404,3 +410,33 @@ def test_turn_ack_does_not_restart_original_reserved_slot_timeout(prepared):
     assert result["phase"] == "stopped"
     assert result["slots"][0]["status"] == "timeout"
     assert result["slots"][0]["send_state"] == "acknowledged"
+
+
+@pytest.mark.parametrize("source,primary", [("abort", "interrupted"), ("protocol", "integrity")])
+@pytest.mark.parametrize("cleanup", [True, False])
+@pytest.mark.parametrize("drift", [False, True])
+def test_first_failure_survives_late_lifecycle_timeout_and_secondary_cleanup(
+    prepared, source, primary, cleanup, drift
+):
+    candidate, coordinator = prepared
+    approve(coordinator)
+    reserve(candidate, coordinator)
+    if source == "abort":
+        coordinator.abort(coordinator.revision, clock(1), primary)
+    else:
+        coordinator.next_frame(coordinator.revision, clock())
+        with pytest.raises(bridge.BatchCoordinatorError, match="protocol-input-rejected"):
+            coordinator.feed(coordinator.revision, clock(1), b"invalid-private-text")
+    coordinator.finish_phase(
+        coordinator.revision,
+        clock(30),
+        exit_code=0,
+        cleanup_confirmed=cleanup,
+        cleanup_clock=clock(31, wall_offset=6 if drift else 0),
+    )
+    result = coordinator.snapshot()
+    assert result["slots"][0]["primary_failure"] == primary
+    assert result["slots"][0]["clock_failure"] is drift
+    assert result["protocol"]["failure"] == primary
+    assert result["phase"] == "stopped"
+    assert all(s["status"].startswith("skipped-") for s in result["slots"][1:])
