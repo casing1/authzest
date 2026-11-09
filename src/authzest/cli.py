@@ -362,6 +362,13 @@ def codex_generate(
         bool,
         typer.Option("--json", help="One final/preview JSON on stdout; interaction on stderr."),
     ] = False,
+    details: Annotated[
+        bool,
+        typer.Option(
+            "--details",
+            help="Include complete final result metadata; sharing preview stays full.",
+        ),
+    ] = False,
 ) -> None:
     """Request a new owned-scenario test and repair proposal; never execute or apply it."""
     from authzest.codex.diagnostics import sanitize_failure
@@ -371,7 +378,7 @@ def codex_generate(
         run_codex_generated_repair,
     )
 
-    output = WorkflowOutput(as_json)
+    output = WorkflowOutput(as_json, details=details)
     try:
         if preview_only:
             result = build_generated_repair_sharing_preview(model, timeout_seconds=timeout_seconds)

@@ -37,9 +37,21 @@ Without `--preview-only`, the active POSIX path first displays the exact maintai
 
 An approved request makes one adapter attempt, without AuthZest retry or model fallback. Its requested timeout is at most 120 seconds, with cleanup handled separately; this is not a full end-to-end wall-clock guarantee or a hard cap on Codex-internal retries, tokens, or spending. Do not interpret missing usage as zero.
 
-The default output is human-readable, with model-controlled text terminal-escaped. `--json` emits exactly one final result or offline preview on stdout; full interactive sharing previews and prompts go to stderr. A valid `proposed-change` yields complete proposed source/test text and host-derived diffs/hashes, not an applied or tested repair. `no-change`, `unknown`, and `refused` remain distinct. Transport metadata is host-bound context, not independent attestation of model authorship; mock responses are not proof of actual generation.
+The default final output starts with a compact result summary instead of repeating the full transport envelope. A valid `proposed-change` yields complete proposed source/test text and host-derived diffs/hashes, not an applied or tested repair. `no-change`, `unknown`, and `refused` remain distinct. Transport metadata is host-bound context, not independent attestation of model authorship; mock responses are not proof of actual generation.
 
 Final JSON uses `kind: "codex-generated-repair-workflow"`. Outer `status` describes the workflow (`generation-ready`, `not-shared`, `preview-changed`, or `generation-failed`), while `proposal_status` separately describes the proposal. `generation-ready` means a validated response, not a successful repair. `generation` retains the transport envelope and `proposal_preview` the inert host-composed preview. `execution_status`, `patch_application`, and `restoration_status` remain `not-run`, and `applied` remains false. `application_turn_attempts` counts local adapter calls, not accepted or billed provider turns.
+
+### Reading the result
+
+The final human-readable view shows workflow/proposal status and explicit application, execution, patch, restoration, and authorization states first. Missing state is reported as unknown, not inferred to be successful or not run. It then lists changed files, rationale, assumptions, uncertainties, and limitations, followed by the complete proposed source, test, and diffs once each. Long identifiers, hashes, and the redundant transport envelope are omitted from this default view, not from the complete JSON result.
+
+Generated text and code remain untrusted. Each displayed line is prefixed and ASCII-escaped so terminal controls, bidirectional characters, and non-ASCII text cannot silently change the presentation. There is no raw or unescaped display option.
+
+- `--details` appends the complete final JSON after the human-readable result without making another request.
+- `--json` emits exactly one complete final result or offline preview on stdout; interactive sharing previews and prompts go to stderr. Combining `--details` with `--json` leaves the JSON unchanged.
+- Sharing consent is not abbreviated: the full authoritative sharing preview, including `--preview-only`, remains complete and unchanged by `--details`. Read it before entering a fresh sharing confirmation.
+
+These are presentation options only. They do not approve sharing, execute generated code, apply a patch, restore files, or establish generation or repair acceptance.
 
 ## Maintained scenario
 

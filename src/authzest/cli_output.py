@@ -92,6 +92,161 @@ def format_record(value: dict, *, title: str = "Workflow result") -> str:
     return "\n\n".join(parts)
 
 
+def _terminal_line(text: str) -> str:
+    """Readable ASCII quotes, escaped backslashes/controls/Unicode; no terminal codes.
+
+    This is a display, not copyable source or a JSON string literal. The complete
+    JSON retains exact source bytes as text; every displayed payload line is marked.
+    """
+    return "".join(
+        char if " " <= char <= "~" and char != "\\" else quoted(char)[1:-1] for char in text
+    )
+
+
+def _display_value(value: Any) -> str:
+    if value is None:
+        return "unknown (not reported)"
+    return _terminal_line(value) if isinstance(value, str) else quoted(value)
+
+
+def _payload_block(title: str, value: Any, *, show_ending: bool = False) -> str:
+    if not isinstance(value, str):
+        return title + "\n  | " + _display_value(value)
+    # Only LF separates payload lines. CR, U+2028 and all other controls stay
+    # visibly escaped; a trailing empty line preserves a terminal LF.
+    lines = ["  | " + _terminal_line(line) for line in value.split("\n")]
+    if show_ending and not value.endswith("\n"):
+        lines.append("  [No terminal LF in this text]")
+    return title + "\n" + "\n".join(lines)
+
+
+def _explanation_block(title: str, value: Any) -> str:
+    if not isinstance(value, list):
+        return _payload_block(title, value)
+    if not value:
+        return title + "\n  None reported."
+    return (
+        title
+        + "\n"
+        + "\n".join(
+            "  | " + _display_value(item)
+            if not isinstance(item, str)
+            else "\n".join("  | " + _terminal_line(line) for line in item.split("\n"))
+            for item in value
+        )
+    )
+
+
+def format_generated_repair_result(value: dict, *, details: bool = False) -> str:
+    """Summarize generated proposals without duplicating transport/source data.
+
+    Missing observations remain unknown. This presentation never validates a
+    proposal or supplies permission; JSON is the complete machine-readable record.
+    """
+    generation = value.get("generation")
+    generation = generation if isinstance(generation, dict) else {}
+    proposal = generation.get("proposal")
+    proposal = proposal if isinstance(proposal, dict) else {}
+    preview = value.get("proposal_preview")
+    preview = preview if isinstance(preview, dict) else {}
+    change = proposal.get("proposal")
+    change = change if isinstance(change, dict) else {}
+    parts = [
+        "Generated repair result",
+        "Untrusted proposal, not a verified repair or an authorization/security pass.",
+        "Summary\n"
+        + "\n".join(
+            "  " + label + ": " + _display_value(value.get(key))
+            for label, key in (
+                ("Workflow", "status"),
+                ("Proposal", "proposal_status"),
+                ("Sharing decision", "sharing_decision"),
+                ("Applied", "applied"),
+                ("Execution", "execution_status"),
+                ("Patch application", "patch_application"),
+                ("Restoration", "restoration_status"),
+                ("Authorization", "authorization_status"),
+                (
+                    "Adapter attempts (local calls, not accepted/billed provider turns)",
+                    "application_turn_attempts",
+                ),
+            )
+        ),
+        "Validation limits\n"
+        + "\n".join(
+            "  " + label + ": " + _display_value(preview.get(key))
+            for label, key in (
+                ("Trust", "trust"),
+                ("Python validation", "python_validation"),
+                ("Code safety", "code_safety"),
+                ("Policy correctness", "policy_correctness"),
+                ("Policy review", "policy_review"),
+            )
+        ),
+    ]
+    changes = preview.get("changes")
+    files = [
+        "Changed files (proposed only)",
+        "Planned proposals only; no filesystem observation or change implied.",
+    ]
+    if isinstance(changes, list):
+        if not changes:
+            files.append("  No planned changes reported.")
+        for index, item in enumerate(changes, 1):
+            item = item if isinstance(item, dict) else {}
+            files.append(f"  | {index}. " + _display_value(item.get("path")))
+    else:
+        files.append("  Planned changes: unknown (not reported)")
+    parts.append("\n".join(files))
+    if proposal:
+        parts.extend(
+            [
+                _payload_block("Model rationale (untrusted)", proposal.get("rationale")),
+                _explanation_block("Assumptions (untrusted)", proposal.get("assumptions")),
+                _explanation_block("Uncertainties (untrusted)", proposal.get("uncertainties")),
+                _explanation_block("Limitations (untrusted)", proposal.get("limitations")),
+            ]
+        )
+    failure = value.get("failure")
+    if failure is not None:
+        parts.append(section("Redacted failure diagnostic", failure))
+    if change:
+        parts.extend(
+            [
+                "Text display: each untrusted line starts with '  | '. Controls, Unicode and "
+                "backslashes are escaped; text is not executable/copyable source. "
+                "LF separates lines, including a final empty line for terminal LF. "
+                "Use --json for exact artifact text, not as execution approval.",
+                _payload_block(
+                    "Generated source (untrusted; not executed)",
+                    change.get("after_text"),
+                    show_ending=True,
+                ),
+                _payload_block(
+                    "Generated test (untrusted; not executed)",
+                    change.get("test_text"),
+                    show_ending=True,
+                ),
+            ]
+        )
+    if isinstance(changes, list) and changes:
+        parts.append("Exact proposed diff (untrusted; not applied)")
+        for item in changes:
+            item = item if isinstance(item, dict) else {}
+            parts.append(
+                _payload_block(
+                    "Diff for " + quoted(item.get("path")), item.get("diff"), show_ending=True
+                )
+            )
+    parts.append(
+        "--details includes complete result metadata; --json returns the full result only. "
+        "Display options never authorize another request, execution or file application."
+    )
+    if details:
+        parts.append("Complete result (authoritative JSON)\n" + json_output(value))
+    return "\n\n".join(parts)
+
+
 def format_sharing_preview(value: dict) -> str:
     scope = {
         key: value[key]
@@ -286,6 +441,7 @@ class WorkflowOutput:
     """Separate interactive I/O from the single machine-readable final result."""
 
     as_json: bool = False
+    details: bool = False
 
     def emit(self, text: str) -> None:
         value = json.loads(text)
@@ -330,5 +486,7 @@ class WorkflowOutput:
             typer.echo(format_sharing_preview(value))
         elif value.get("kind") == "codex-owner-file-workflow":
             typer.echo(format_file_workflow_result(value))
+        elif value.get("kind") == "codex-generated-repair-workflow":
+            typer.echo(format_generated_repair_result(value, details=self.details))
         else:
             typer.echo(format_record(value), err=error)
