@@ -25,7 +25,11 @@ from authzest.runner.generated_repair_controls import build_generated_repair_con
 
 
 @pytest.fixture(autouse=True)
-def no_external_effects(monkeypatch):
+def no_external_effects(monkeypatch, request):
+    # pytest exports this ID via PYTEST_CURRENT_TEST; Windows caps environment
+    # values at 32,767 characters. Large test inputs must never become IDs.
+    assert len(request.node.nodeid) < 512
+
     def forbidden(*args, **kwargs):
         pytest.fail("Offline verification must not access files, providers or runtime")
 
@@ -270,6 +274,7 @@ def test_nested_changes_are_rebuilt_not_accepted_after_rehash(context, path, val
         '{"x":' + "[" * 40 + "0" + "]" * 40 + "}",
         " " * 262_145,
     ],
+    ids=["non-text", "array", "null", "incomplete", "duplicate", "nonfinite", "deep", "oversize"],
 )
 def test_preview_json_shape_and_budgets(context, raw):
     with pytest.raises(ContractError):

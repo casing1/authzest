@@ -310,6 +310,26 @@ def test_status_must_be_a_bounded_strict_integer(status):
         [["x-name", "a" * 4096]],
         [["x-name", "é" * 2046]],
     ],
+    ids=[
+        "none",
+        "object",
+        "not-pair",
+        "missing-value",
+        "extra-value",
+        "numeric-name",
+        "boolean-value",
+        "empty-name",
+        "colon-name",
+        "space-name",
+        "non-ascii-name",
+        "crlf-value",
+        "nul-value",
+        "del-value",
+        "c1-value",
+        "too-many-headers",
+        "oversized-ascii-value",
+        "oversized-utf8-value",
+    ],
 )
 def test_headers_are_closed_bounded_pairs_without_injection(headers):
     data = _scripted_facts()
@@ -356,7 +376,20 @@ def test_header_budget_counts_utf8_bytes_not_only_character_count():
 
 
 @pytest.mark.parametrize(
-    "body", [None, True, [], "!", "Zg=", "Zh==", "Zg==\n", "Zg===", "é", "A" * 10925]
+    "body",
+    [None, True, [], "!", "Zg=", "Zh==", "Zg==\n", "Zg===", "é", "A" * 10925],
+    ids=[
+        "none",
+        "boolean",
+        "list",
+        "invalid-alphabet",
+        "missing-padding",
+        "noncanonical-padding-bits",
+        "trailing-newline",
+        "extra-padding",
+        "non-ascii",
+        "oversized-base64",
+    ],
 )
 def test_body_encoding_is_canonical_strict_base64_and_bounded_before_decode(body):
     data = _scripted_facts()
@@ -387,6 +420,18 @@ def test_decoded_body_limit_is_8192_not_base64_length_only():
         "{" * 17,
         " " * 262145,
         '{"x":"\\ud800"}',
+    ],
+    ids=[
+        "none",
+        "boolean",
+        "empty",
+        "array-root",
+        "duplicate-key",
+        "nonfinite-constant",
+        "nonfinite-exponent",
+        "excessive-depth",
+        "oversized-json",
+        "lone-surrogate",
     ],
 )
 def test_malformed_duplicate_deep_oversized_nonfinite_json_is_rejected(raw):
@@ -442,6 +487,16 @@ def test_before_requires_disclosed_target_payload_not_wrong_document():
         b"[" * 17 + b"0" + b"]" * 17,
         b"__import__('os').system('false')",
     ],
+    ids=[
+        "empty",
+        "invalid-utf8",
+        "array",
+        "null",
+        "duplicate-key",
+        "nonfinite-constant",
+        "excessive-depth",
+        "inert-python-text",
+    ],
 )
 def test_invalid_body_is_data_mismatch_not_execution_or_fabricated_denial(body):
     data = _scripted_facts()
@@ -473,6 +528,15 @@ def test_equivalent_json_whitespace_order_is_allowed_but_extra_keys_are_not():
         ("bob", "value"),
         ("Bob's synthetic document", "value"),
         ("BOB", "value"),
+    ],
+    ids=[
+        "document-id-name",
+        "owner-name",
+        "uppercase-owner-name",
+        "document-id-value",
+        "owner-value",
+        "document-body-value",
+        "uppercase-owner-value",
     ],
 )
 def test_nonowner_denial_disallows_protected_plaintext_in_headers(marker, location):
@@ -512,3 +576,12 @@ def test_untrusted_fact_strings_stay_inert_and_do_not_appear_in_summary():
     assert comparison["comparison_status"] == "profile-mismatch"
     assert "never execute" not in canonical(comparison)
     assert "body_base64" not in canonical(comparison)
+
+
+def test_collected_node_ids_are_bounded_without_embedding_raw_inputs(request):
+    # Pytest places node IDs in PYTEST_CURRENT_TEST. Oversized auto-generated
+    # parameter IDs can exceed Windows' per-environment-variable size limit.
+    # Inspect the existing collection only; do not launch another pytest process.
+    own_items = [item for item in request.session.items if item.path == request.node.path]
+    assert own_items
+    assert all(len(item.nodeid.encode("utf-8")) <= 512 for item in own_items)
