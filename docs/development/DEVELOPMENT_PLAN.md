@@ -233,8 +233,13 @@ Separate pure helpers now check bounded detached boundaries and selected synthet
 thread/settings/final-answer candidates; they are not complete protocol/recipe coverage or actual
 account/model entitlement. See the
 [selected semantics scope](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics--not-a-trial).
-Next are coordinator lifecycle and remaining unsupported recipe paths, not a live transport or
-public launcher. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
+Pure `SlotCoordinator` / `BatchCoordinator` now compose those unchanged checks with supplied
+discovery/generation byte/EOF/exit/cleanup records and the original dispatch clocks/budgets.
+Only `turn/start` marks model-send; exact RPC ack/lifecycle confirmation precedes finishing while
+failure/skipped denominators remain. See the
+[pure coordinator scope](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination--not-live-transport).
+This is not live transport, a public launcher, authenticated approval or full recipe coverage; live
+lifecycle/compatibility remain gates. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
 enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time
 approval and missing freeze/review evidence. Offline delivery is not actual-call approval or benchmark freeze. Do not expand
 the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,

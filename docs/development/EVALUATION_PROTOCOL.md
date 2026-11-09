@@ -536,8 +536,9 @@ rejects reasoning/status/usage/user/tool/unknown events rather than supporting t
 All inputs remain caller-supplied records, not captured RPCs or authenticated session/order/timing/
 provider evidence. A matching catalog/account shape proves no model entitlement. Results are
 redacted summaries with authentication/freshness/readiness/authorization/accepted-trial/live-freeze
-claims false. There is no provider/process/I/O/coordinator/CLI/Batch integration, actual evaluation
-or scoring. The existing Windows CI command includes the three pure paths, not a claim of CI success:
+claims false. These helpers remain pure; the separate coordinator below composes them without
+provider/process/I/O/CLI access, actual evaluation or scoring. The existing Windows CI command
+includes the three pure paths, not a claim of CI success:
 
 ```bash
 python -m pytest tests/test_evaluation_semantics.py
@@ -546,9 +547,44 @@ python -m pytest tests/test_evaluation_turn_semantics.py
 ```
 
 See the [dated semantic continuation and remaining boundary](EVALUATION_TRANSPORT_DESIGN.md).
-Coordinator lifecycle and unsupported recipe paths remain separate work before any live approval;
+The pure coordinator continuation below does not establish live lifecycle or full recipe coverage;
 product/pin/recipe/codec/preflight/data/v1/math/history, product `0.1.0a4` / report `1.2` and all seven
 pending #84 checks are unchanged. No actual call, risk acceptance or release is added.
+
+## Pure slot and batch coordination — not live transport
+
+`scripts/evaluation_coordinator.py` adds `SlotCoordinator`, composing the unchanged recipe,
+JSONL, preflight and selected session/turn checks. Successful discovery requires initialize/initialized/config,
+then supplied EOF, zero exit and cleanup confirmation before generation. Generation repeats
+initialize/initialized, compares the config pair, checks disabled remote control, ChatGPT-shaped
+account, bounded catalog pagination, thread and final-answer sequence, then requires EOF/zero-exit/
+cleanup. Caller-supplied bytes/exit/cleanup data are not observed process or provider evidence.
+
+`scripts/evaluation_batch_coordinator.py` adds `BatchCoordinator` over the unchanged dispatch
+`Batch` and slot state. It retains original `Clock` anchors, confirmation TTL, `T` and dispatch
+window without reset; model-send is marked only at `turn/start`, its exact RPC acknowledgement is
+correlated, and finishing follows lifecycle confirmation. The attempted-send marker precedes returning
+candidate frame bytes; it is not evidence of an actual write. First nonvalid stops later slots while all
+14/28/42 planned slots and 42/84/126 question opportunities remain. This is a pure bridge, not I/O,
+a launcher, real timer/cancellation/cleanup enforcement or authenticated approval. The selected turn
+subset still refuses broader protocol-valid variants; composition is not full recipe coverage.
+
+The two pure test paths are included in existing Windows CI configuration, not a CI success claim.
+POSIX process tests use only fixed owned fake children for two phases, with a per-child five-second test
+watchdog, bounded TERM/KILL cleanup and a seven-second child alarm as an orphan backstop; they
+skip Windows and prove neither OS sandboxing nor production timing. From the source checkout:
+
+```bash
+python -m pytest tests/test_evaluation_coordinator.py
+python -m pytest tests/test_evaluation_batch_coordinator.py
+python -m pytest tests/test_evaluation_coordinator_process.py
+```
+
+No actual Codex/account/model/policy-worker/network call, evaluation or scoring is added. All
+authentication/freshness/readiness/authorization/accepted-trial/live-freeze claims stay false.
+Remaining live lifecycle/compatibility gates and separate execution approval are not satisfied;
+product/pin/recipe/codec/preflight/JSONL/semantics/dispatch/data/v1/math/history, product `0.1.0a4` /
+report `1.2` and all seven pending #84 checks are unchanged. No risk acceptance or release is added.
 
 ## Candidate-independent offline mathematics
 
