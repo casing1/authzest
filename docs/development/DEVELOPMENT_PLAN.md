@@ -48,6 +48,12 @@ must distinguish actual observations from mocks and missing measurements; disclo
 independent comparison evidence rather than inventing scores or claiming an AI advantage.
 No package/version/tag change, stable publication or new execution is authorized by this plan.
 
+The first [#151 offline contract slice](GENERATED_REPAIR_CONTRACT.md) now prepares a fixed synthetic
+request and validates caller-supplied source/test drafts with host-derived diff previews.
+`authzest generation-preview` (`--json` optional) displays input only: it calls no model and executes
+or applies nothing. The new scenario policy remains assistant-authored/pending maintainer review;
+actual provider integration, genuine-generation acceptance and #152/#153 remain unfinished.
+
 ## Current baseline — 2026-11-05 KST
 
 Release source: `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`, scan schema `1.2`,
