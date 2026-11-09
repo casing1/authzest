@@ -48,6 +48,9 @@ jobs:
           tests/test_evaluation_semantics.py
           tests/test_evaluation_session_semantics.py
           tests/test_evaluation_turn_semantics.py
+          tests/test_evaluation_coordinator.py
+          tests/test_evaluation_batch_coordinator.py
+          tests/test_evaluation_dispatch_failure.py
 
   frontend:
     runs-on: ubuntu-latest

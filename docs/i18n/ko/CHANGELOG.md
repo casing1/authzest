@@ -16,6 +16,17 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 기존 recipe·JSONL/preflight/session/turn validator를 변경하지 않고 확장한 dispatch ledger와 조합하는
+  순수 `SlotCoordinator`·`BatchCoordinator` 상태 계층을 추가합니다. 새 `Batch.fail`은 관찰한 첫 slot
+  실패를 정리 전까지 즉시 고정하여 늦은 timeout이 원인을 덮지 못하게 하고 정리·2차 clock 실패는
+  별도로 유지합니다. 제공된 바이트/EOF/종료/정리로
+  discovery·generation 순서를 연결하고 `turn/start`에서만 모델 송신을 표시하며 정확한 RPC ack·
+  원래 시계/예산·실패/skipped 전체 분모를 유지합니다. POSIX에서 고정 소유 가짜 자식만 테스트하고
+  기존 Windows CI 설정에는 이식 가능한 순수 테스트 2개를 포함하며 CI 통과 기록은 아닙니다.
+  Launcher/I/O/실제 timer/제공자 신원 인증·실제 평가/준비/trial 수용/동결은 추가하지 않습니다.
+  제품/고정 버전/데이터/v1/수학/과거 자료/버전·#84 미완료 체크 7개는 그대로이며 실제 Codex/계정/
+  모델/정책 worker/네트워크 호출·위험 수용·릴리스는 없습니다.
+
 - 제한된 detached 후보/선언 경계·좁은 session/계정/목록/thread/settings 검사·서로 연결된 합성
   final-answer 순서와 기존 invocation decoder를 사용하는 순수 선택 응답 의미 helper를 추가합니다.
   미지원 변형은 프로토콜 무효나 전체 recipe 검증 완료의 주장이 아닙니다. 기존 Windows CI 설정에

@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-11-08 KST
+## 현재 작업 — 2026-11-09 KST
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -62,8 +62,12 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 검사·고정 소유 가짜 서버의 stdio/종료/timeout/정리 테스트로 이 경계를 유지하지만 허용 notification
 payload 의미는 미검증입니다. 구현된 제공자 transport·공개 launcher가 아닙니다. 별도 순수 helper는
 제한된 호출자 선언 경계·선택한 합성 session/목록/thread/settings/final-answer 형식을 검사하지만
-전체 recipe 검증·실제 신원 인증/사용 권한·수용한 trial이 아닙니다. 다음은 coordinator 생명주기·
-미지원 recipe 경로이며 계정/설정 RPC·운영 수신/취소/정리는
+전체 recipe 검증·실제 신원 인증/사용 권한·수용한 trial이 아닙니다. 새 순수 slot/batch coordinator는
+제공된 생명주기 기록·원래 시계로 기존 검사를 조합하며 프로세스 I/O·launcher·런타임/인증 근거가
+아닙니다. Dispatch ledger에는 `Batch.fail`을 추가하여 첫 slot 실패를 정리 전까지 즉시 고정하고
+정리/2차 clock 실패는 별도로 두며 늦은 timeout으로 원인을 바꾸지 않습니다. 프로세스 테스트에는
+고정 소유 가짜 자식만 사용하며 실제 호환성/생명주기는 후속 조건입니다.
+계정/설정 RPC·운영 수신/취소/정리는
 미구현입니다. 오프라인 전달은 실제 호출
 승인·벤치마크 동결이 아니고 실제 시험에는 명시적인 소스/계정/모델/turn/
 시간 승인과 누락한 동결/검토 근거가 필요합니다. 제품 adapter/고정 `0.153.0`·릴리스/v1/수학/과거

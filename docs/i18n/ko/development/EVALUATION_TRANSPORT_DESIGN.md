@@ -8,7 +8,30 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 선택 합성 의미 검사 — 2026-11-08 KST
+## 현재 순수 slot/batch 조합 — 2026-11-09 KST
+
+`scripts/evaluation_coordinator.SlotCoordinator`는 기존 recipe/JSONL/preflight/session/turn 검사를
+제공된 discovery 후 generation 순서로 조합하고 각 단계에 EOF·정상 종료·정리 확인을 요구합니다.
+`scripts/evaluation_batch_coordinator.BatchCoordinator`는 원래 시계/예산을 초기화하지 않고 기존
+dispatch ledger와 slot 상태를 연결합니다. `turn/start`에서만 모델 송신을 표시하며 정확한 RPC ack·
+생명주기 확인 뒤 finish하고 첫 nonvalid에서 후속 슬롯을 멈추되 전체 예정 분모를 보존합니다.
+Ledger에 `Batch.fail`을 추가하여 현재 시각의 slot 실패를 정리 전까지 즉시 고정합니다. 늦은
+timeout으로 첫 원인을 덮지 않고 정리·2차 clock 실패를 별도로 두며 기존 clock/TTL/`T`/시간창/
+finish 계약은 유지합니다.
+[현재 제한과 순수/POSIX 테스트 명령](EVALUATION_PROTOCOL.md#순수-slotbatch-조합--실제-transport-아님)을 참고하세요.
+
+호출자가 제공하는 바이트/종료/정리/시각 상태이지 I/O·launcher·실제 timer 강제·제공자 신원 인증·
+실제 평가가 아닙니다. 프로세스 테스트에는 고정 소유 가짜 자식만 사용하며 선택 turn 부분집합은
+더 넓은 유효 프로토콜 변형을 계속 거부하고 전체 recipe 검증이 아닙니다. 실제 생명주기/호환성 조건·
+별도 실행 허가는 남아 있습니다. 제품/고정 버전/recipe/codec/preflight/JSONL/semantics/
+데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로입니다. 신원 인증/새로움/준비/승인/
+trial 수용/실제 동결은 false이며 #84는 체크 7개 미완료인 OPEN입니다. 실제 Codex/계정/모델/정책
+worker/네트워크 호출·위험 수용·릴리스는 없습니다.
+
+## 선택 합성 의미 검사 단계 기록 — 2026-11-08 KST
+
+아래 단계는 위 순수 coordinator 조합 이전의 기록입니다. Coordinator 없음/다음 단계 표현은 당시
+상태이며 개별 의미 validator는 계속 순수하고 변경하지 않았습니다.
 
 순수 `evaluation_semantics`·`evaluation_session_semantics`·`evaluation_turn_semantics` 모듈은
 제한된 detached 후보/선언 경계·선택한 session/목록/thread/settings 검사·기존 codec을 사용하는

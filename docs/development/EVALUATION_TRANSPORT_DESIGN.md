@@ -8,7 +8,32 @@
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current selected synthetic semantics — 2026-11-08 KST
+## Current pure slot/batch coordination — 2026-11-09 KST
+
+`scripts/evaluation_coordinator.SlotCoordinator` now composes unchanged recipe/JSONL/preflight/
+session/turn checks across supplied discovery then generation sequences, each requiring EOF,
+zero exit and cleanup confirmation. `scripts/evaluation_batch_coordinator.BatchCoordinator`
+bridges the dispatch ledger to that slot state without resetting original clocks/budgets;
+only `turn/start` marks model-send, with exact RPC ack and lifecycle confirmation before finish.
+The ledger now adds `Batch.fail` to latch slot failures immediately at the current clock until
+cleanup. The first cause is retained rather than replaced by late timeout, with cleanup and secondary
+clock failures separate; existing clock/TTL/`T`/window/finish contracts remain.
+First nonvalid stops later slots and preserves all planned denominators. See the
+[current limits and pure/POSIX test commands](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination--not-live-transport).
+
+This is caller-supplied byte/exit/cleanup/time state, not I/O, a launcher, actual timer enforcement,
+provider authentication or a live evaluation. Process tests use only fixed owned fake children;
+the selected turn subset still rejects broader protocol-valid variants and is not full recipe
+coverage. Live lifecycle/compatibility gates and separate execution permission remain. Product/pin/
+recipe/codec/preflight/JSONL/semantics/data/v1/math/history and product `0.1.0a4` / report
+`1.2` are unchanged. All authentication/freshness/readiness/authorization/accepted-trial/live-freeze
+claims stay false; #84 remains OPEN with seven pending checks. No actual Codex/account/model/
+policy-worker/network call, risk acceptance or release is added.
+
+## Selected synthetic semantics checkpoint — 2026-11-08 KST
+
+The following stage preceded the pure coordinator composition above. Its no-coordinator/next-step
+wording records that checkpoint; the individual semantic validators remain pure and unchanged.
 
 The pure `evaluation_semantics`, `evaluation_session_semantics` and `evaluation_turn_semantics`
 modules now separate bounded detached candidates/declared boundaries, selected session/catalog/

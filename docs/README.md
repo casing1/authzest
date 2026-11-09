@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The local dashboard is optional and does not require website deployment.
 
-## Current work — 2026-11-08 KST
+## Current work — 2026-11-09 KST
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -64,8 +64,12 @@ Pure JSONL/RPC checks and fixed owned fake-server stdio/exit/timeout/cleanup tes
 boundary; allowed notification payload semantics are still unvalidated. This is not an implemented
 provider transport or public launcher. Separate pure helpers now check bounded caller-declared
 boundaries and selected synthetic session/catalog/thread/settings/final-answer shapes, not complete
-recipe coverage, actual authentication/entitlement or an accepted trial. Next are coordinator
-lifecycle and unsupported recipe paths; account/configuration RPC and production capture/cancellation/cleanup remain
+recipe coverage, actual authentication/entitlement or an accepted trial. New pure slot/batch
+coordinators compose those unchanged checks with supplied lifecycle records and original clocks,
+not process I/O, a launcher or runtime/authenticated evidence. The dispatch ledger now adds
+`Batch.fail` to latch the first slot failure immediately pending cleanup, separately from cleanup/
+secondary clock failures; later timeout does not replace that cause. Only fixed owned fake children are
+used in process tests; live compatibility/lifecycle gates remain. Account/configuration RPC and production capture/cancellation/cleanup remain
 unimplemented. Offline delivery is not
 actual-call approval or benchmark freeze; live trials still need explicit source/account/model/turn/
 time approval and missing freeze/review evidence. The product adapter/pinned `0.153.0` and
