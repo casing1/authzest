@@ -85,9 +85,12 @@ course-complete release below; the CLI initially retains approval and execution.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
 - Includes offline [`authzest generation-preview`](docs/development/GENERATED_REPAIR_CONTRACT.md)
-  (`--json` optional): inspect the fixed synthetic input and candidate output schema for future new
-  PoC/test and repair-source generation. No model call, generated response, execution or file change;
-  the proposed policy is pending maintainer review. This is not completed #151 integration.
+  (`--json` optional) for fixed input only, plus source `codex-generate --model EXPLICIT_MODEL`:
+  portable `--preview-only`, or one POSIX adapter attempt after fresh exact-request sharing consent.
+  Human-readable output/`--json` shows a validated proposal and host-derived source/test diff;
+  no copy, apply, generated-code execution or restore. Policy review is pending and `X-Demo-Actor`
+  is not authentication. This connection has offline/mocked coverage only; actual generation/provider
+  compatibility remains unverified, #151 stays open, and #152/#153 are not implemented.
 - Alpha.4 makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
   Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly
