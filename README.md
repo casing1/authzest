@@ -84,6 +84,10 @@ course-complete release below; the CLI initially retains approval and execution.
 - Discovers literal HTTP route declarations and composes supported router and registration prefixes.
 - Connects repository-local absolute/relative router imports, retaining original file and line evidence.
 - Produces human-readable or JSON reports through the `scan` command.
+- Includes offline [`authzest generation-preview`](docs/development/GENERATED_REPAIR_CONTRACT.md)
+  (`--json` optional): inspect the fixed synthetic input and candidate output schema for future new
+  PoC/test and repair-source generation. No model call, generated response, execution or file change;
+  the proposed policy is pending maintainer review. This is not completed #151 integration.
 - Alpha.4 makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
   Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly

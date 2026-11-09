@@ -83,6 +83,9 @@ alpha.3에는 opt-in 소유 fixture 흐름이 포함되며 실제 소스 CLI의 
 - 문자열 리터럴 HTTP 라우트 탐색 및 지원 범위 내 라우터·등록 prefix 합성
 - 저장소 내부 절대·상대 라우터 import 연결과 원본 파일·줄 위치 보존
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
+- 오프라인 [`authzest generation-preview`](development/GENERATED_REPAIR_CONTRACT.md)
+  (`--json` 선택)로 향후 새 PoC/테스트·수정 소스 생성을 위한 고정 합성 입력·출력 스키마 후보를 확인합니다.
+  모델 호출·생성 응답·실행·파일 변경은 없으며 제안 정책은 관리자 검토 대기입니다. #151 연동 완료가 아닙니다.
 - alpha.4의 `codex-owner-review`·`codex-owner-repair`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
   기본으로 사용합니다. `--json`은 stdout에 최종 결과 하나만 출력하고 완전한 동의 미리보기·질문은
   stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 또는 수정 추천 미리보기 하나를

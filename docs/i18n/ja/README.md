@@ -83,6 +83,10 @@ AuthZest は、FastAPI アプリケーションのソースコードに基づい
 - 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
 - リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
 - `scan` コマンドによる読みやすい形式または JSON のレポート
+- オフラインの [`authzest generation-preview`](../../development/GENERATED_REPAIR_CONTRACT.md)
+  （`--json` は任意）で、今後の新規 PoC・テストと修正ソース生成向けの固定入力・出力スキーマ候補を
+  確認できます。モデル呼び出し・生成応答・実行・ファイル変更はなく、提案ポリシーは管理者レビュー待ちです。
+  #151 の連携完了ではありません。
 - alpha.4 では `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
   表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
   出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。

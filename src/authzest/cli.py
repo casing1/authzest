@@ -144,6 +144,59 @@ def doctor(
         raise typer.Exit(code=1)
 
 
+@app.command("generation-preview")
+def generation_preview_command(
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Print one complete offline input-preview JSON.")
+    ] = False,
+) -> None:
+    """Preview the owned generation request; no Codex call, execution or file changes."""
+    from authzest.codex.contracts import ContractError
+    from authzest.codex.generated_repair import (
+        build_generated_repair_request,
+        generated_repair_output_schema,
+        generated_repair_prompt,
+    )
+
+    try:
+        request = build_generated_repair_request()
+        context = request.to_dict()
+        prompt = generated_repair_prompt(request)
+        schema = generated_repair_output_schema(request)
+    except ContractError:
+        typer.echo("Error: maintained generation input validation failed.", err=True)
+        raise typer.Exit(code=2) from None
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {
+                    "kind": "generated-repair-request-preview",
+                    "status": "preview-only",
+                    "request_id": request.request_id,
+                    "request": context,
+                    "prompt": prompt,
+                    "output_schema": schema,
+                    "model_invoked": False,
+                    "applied": False,
+                    "execution_status": "not-run",
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return
+    typer.echo("OFFLINE INPUT PREVIEW - NO GENERATION")
+    typer.echo(f"Request: {request.request_id}")
+    typer.echo("One maintained synthetic FastAPI scenario; not an arbitrary repository.")
+    typer.echo("Policy: assistant-authored, pending maintainer review.")
+    typer.echo("X-Demo-Actor is caller-controlled test data, NOT authentication.")
+    typer.echo("No model call, approval, files changed or test execution.")
+    typer.echo("Future exact request text:")
+    typer.echo(prompt)
+    typer.echo("Future response schema (not provider compatibility evidence):")
+    typer.echo(json.dumps(schema, ensure_ascii=False, indent=2))
+
+
 @app.command("codex-fixture")
 def codex_fixture(
     model: Annotated[
