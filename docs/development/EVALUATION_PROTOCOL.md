@@ -580,13 +580,23 @@ subset still refuses broader protocol-valid variants; composition is not full re
 The three pure test paths are included in existing Windows CI configuration, not a CI success claim.
 POSIX process tests use only fixed owned fake children for two phases, with a per-child five-second test
 watchdog, bounded TERM/KILL cleanup and a seven-second child alarm as an orphan backstop; they
-skip Windows and prove neither OS sandboxing nor production timing. From the source checkout:
+skip Windows and prove neither OS sandboxing nor production timing.
+
+The 2026-11-09 test-only batch-pipe extension reuses those fixed peers with `BatchCoordinator`.
+It checks reservation before child creation, attempted-send before turn writes, separate ack/completion,
+original-budget expiry using supplied synthetic clocks, first-failure/cleanup handling and retained
+planned denominators. Pipes must be closed and the owned child reaped before `finish_phase`.
+The five-second per-child watchdog, 0.15-second stall wait, bounded TERM/KILL cleanup and seven-second
+child alarm are fixture controls; they do not enforce production `T` or prove process-tree cleanup.
+No production scripts or fixtures change, and no public launcher or real-provider path is introduced.
+Run the additional test from the source checkout alongside the earlier checks:
 
 ```bash
 python -m pytest tests/test_evaluation_coordinator.py
 python -m pytest tests/test_evaluation_batch_coordinator.py
 python -m pytest tests/test_evaluation_dispatch_failure.py
 python -m pytest tests/test_evaluation_coordinator_process.py
+python -m pytest tests/test_evaluation_batch_coordinator_process.py
 ```
 
 No actual Codex/account/model/policy-worker/network call, evaluation or scoring is added. All

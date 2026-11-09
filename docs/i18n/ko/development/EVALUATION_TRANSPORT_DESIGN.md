@@ -28,6 +28,17 @@ finish 계약은 유지합니다.
 trial 수용/실제 동결은 false이며 #84는 체크 7개 미완료인 OPEN입니다. 실제 Codex/계정/모델/정책
 worker/네트워크 호출·위험 수용·릴리스는 없습니다.
 
+### 테스트 전용 batch-pipe 확장 — 2026-11-09 KST
+
+`tests/test_evaluation_batch_coordinator_process.py`는 기존 고정 소유 가짜 peer를
+`BatchCoordinator`에 연결합니다. 예약/송신/ack 순서·합성 원래 예산 만료·실패/취소·정리 거부와
+예정 분모 보존을 검사하며 phase finish 전에 pipe 닫힘·자식 회수를 요구합니다. 제공된 `Clock`은
+계속 합성이며 watchdog 5초·stall 대기 0.15초·제한된 TERM/KILL 정리·자식 alarm 7초는 테스트
+제어일 뿐입니다. 운영 시간 강제나 OS sandbox·프로세스 트리 정리를 입증하지 않습니다.
+운영 script/recipe/schema/fixture/고정 버전/데이터/과거 자료는 바뀌지 않습니다. CLI/제공자
+launcher·실제 AI/계정/모델/네트워크/정책 worker 호출·실제 동결·채점·trial 수용·위험 수용·릴리스는
+추가하지 않으며 제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개도 유지합니다.
+
 ## 선택 합성 의미 검사 단계 기록 — 2026-11-08 KST
 
 아래 단계는 위 순수 coordinator 조합 이전의 기록입니다. Coordinator 없음/다음 단계 표현은 당시

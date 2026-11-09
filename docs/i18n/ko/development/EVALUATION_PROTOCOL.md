@@ -540,13 +540,22 @@ I/O·launcher·실제 timer/취소/정리 강제·인증된 승인이 아닙니�
 기존 Windows CI 설정에 순수 테스트 경로 3개를 포함하며 CI 통과를 뜻하지 않습니다. POSIX 프로세스
 테스트는 고정 소유 가짜 자식만 두 단계에서 사용하고 자식별 테스트 watchdog 5초·제한된 TERM/KILL 정리를
 사용하며 부모가 사라지는 경우에 대비한 자식 alarm 7초도 둡니다. Windows는 건너뛰며
-OS sandbox·운영 시간 강제의 증거가 아닙니다. 소스 checkout에서:
+OS sandbox·운영 시간 강제의 증거가 아닙니다.
+
+2026-11-09 테스트 전용 batch-pipe 확장은 같은 고정 peer를 `BatchCoordinator`에 연결합니다.
+자식 생성 전 예약·turn write 전 송신 시도 표시·별도 ack/완료·제공된 합성 시계의 원래 예산 만료·
+첫 실패/정리 처리·예정 분모 보존을 검사합니다. `finish_phase` 전에 pipe를 닫고 소유 자식을
+회수해야 합니다. 자식별 watchdog 5초·stall 대기 0.15초·제한된 TERM/KILL 정리·자식 alarm
+7초는 fixture 제어이지 운영 `T` 강제나 프로세스 트리 정리 증명이 아닙니다. 운영 script나 fixture를
+변경하지 않고 공개 launcher·실제 제공자 경로도 추가하지 않습니다. 소스 checkout에서 기존 검사와
+함께 추가 테스트를 실행합니다.
 
 ```bash
 python -m pytest tests/test_evaluation_coordinator.py
 python -m pytest tests/test_evaluation_batch_coordinator.py
 python -m pytest tests/test_evaluation_dispatch_failure.py
 python -m pytest tests/test_evaluation_coordinator_process.py
+python -m pytest tests/test_evaluation_batch_coordinator_process.py
 ```
 
 실제 Codex/계정/모델/정책 worker/네트워크 호출·평가/채점은 없으며 신원 인증/새로움/준비/승인/

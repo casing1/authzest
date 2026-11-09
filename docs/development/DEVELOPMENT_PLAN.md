@@ -242,6 +242,10 @@ The dispatch ledger is extended with `Batch.fail`: the bridge immediately latche
 failure at the current clock, preserving its first cause until cleanup instead of replacing it with
 a later timeout; cleanup and secondary clock outcomes stay separate. Existing clock/TTL/`T`/window/
 finish contracts are retained.
+The 2026-11-09 test-only batch-pipe extension connects that bridge to the existing fixed fake peers,
+checking send/ack/finish ordering, synthetic original-budget expiry, failure/cleanup and planned
+denominators. It requires pipe closure and child reaping before finish; caller-controlled clocks
+and fixture watchdogs remain test controls, not production timing or a live transport.
 This is not live transport, a public launcher, authenticated approval or full recipe coverage; live
 lifecycle/compatibility remain gates. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
 enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time

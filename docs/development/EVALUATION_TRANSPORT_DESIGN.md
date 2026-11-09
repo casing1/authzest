@@ -30,6 +30,18 @@ recipe/codec/preflight/JSONL/semantics/data/v1/math/history and product `0.1.0a4
 claims stay false; #84 remains OPEN with seven pending checks. No actual Codex/account/model/
 policy-worker/network call, risk acceptance or release is added.
 
+### Test-only batch-pipe extension — 2026-11-09 KST
+
+`tests/test_evaluation_batch_coordinator_process.py` connects `BatchCoordinator` to the existing
+fixed owned fake peers. It checks reserve/send/ack ordering, synthetic original-budget expiry,
+failure/cancellation and cleanup refusal while retaining planned denominators; closed pipes and
+reaped children are required before phase finish. The supplied `Clock` remains synthetic, while
+the five-second watchdog, 0.15-second stall wait, bounded TERM/KILL cleanup and seven-second child
+alarm are test controls only. They do not prove production timing enforcement, OS sandboxing or
+process-tree cleanup. Production scripts/recipe/schema/fixtures/pin/data/history are unchanged. This adds no
+CLI/provider launcher, actual AI/account/model/network/policy-worker call, live freeze, score, accepted
+trial, risk acceptance or release; product `0.1.0a4` / report `1.2` and all seven #84 checks remain unchanged.
+
 ## Selected synthetic semantics checkpoint — 2026-11-08 KST
 
 The following stage preceded the pure coordinator composition above. Its no-coordinator/next-step
