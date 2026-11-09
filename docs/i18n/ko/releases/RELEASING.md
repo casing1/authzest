@@ -5,6 +5,34 @@
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
+## 정식 0.1.0 목표 — 2026-11-09 KST
+
+[#150](https://github.com/casing1/authzest/issues/150)에서 과제 완성형 정식판을 추적합니다.
+새 정식판 조건은 모두 미완료이며 현재 패키지/최신 공개판은 `0.1.0a4`/`v0.1.0-alpha.4` 그대로입니다.
+이 프리릴리스를 이름만 정식판으로 바꾸거나 과거 템플릿 수용을 실제 PoC/수정 생성으로 간주하지 않습니다.
+이 조건 중심 계획이 이전 11월 12–13일 추정을 대체하며 대략 11월 18일 제출도 완료 보장이 아닙니다.
+
+- [#151](https://github.com/casing1/authzest/issues/151): 소유 FastAPI 사례 하나에서 새 방어적
+  PoC/테스트와 모델 작성 수정 소스를 생성합니다. 등록 after 템플릿 선택이 아닙니다.
+- [#152](https://github.com/casing1/authzest/issues/152): 생성 코드 실행 경계 검토, 설치형 before 재현,
+  승인한 정확한 diff를 새 복사본에만 적용, 독립 after 대조, 거절/사용자 편집 보호와 정확한 복구가
+  필요합니다. 새 실행/공유 결정은 계속 별도입니다.
+- [#153](https://github.com/casing1/authzest/issues/153): 실제 CLI 생성물과 미지원/미실행/불명/실패
+  상태를 로컬 읽기 전용 UI로 표시합니다. 클라우드 배포나 브라우저 패치 API는 추가하지 않습니다.
+- [#85](https://github.com/casing1/authzest/issues/85): 사용 가능한 소스 설치/UI 자산, 재현 시연,
+  영한 문서·4개 언어 README와 정확한 버전/플랫폼 한계를 맞춥니다.
+- 정확한 정식 후보의 테스트·필수 CI/리뷰·UI·설치/교체/패키지 검사와
+  [#89](https://github.com/casing1/authzest/issues/89)의 새 판단 후 버전/변경 이력·불변 태그/빌드·공개
+  다운로드/checksum을 확인합니다. alpha.4 한정 위험 결정은 전용하지 않습니다. 이 계획 갱신으로 새
+  정식판을 발행하지 않습니다.
+
+[#84](https://github.com/casing1/authzest/issues/84)의 비교 기준이 미충족이면 계속 열어 두고 독립/모델
+품질 근거 부재를 밝힙니다. 비교 실행기 확대를 핵심 완성의 선행조건으로 삼거나 미측정 효과를 주장하지
+않습니다. 아래 alpha.4 근거는 보존합니다. 인프라 실패나 분석 생략은 보안 통과가 아닙니다. 현재
+`7aebf9e`의 일반 main CI는 통과했지만 CodeQL Python은 bundle 다운로드 HTTP 504로 초기화에 실패해
+분석하지 못했습니다([실행 42566232674](https://github.com/casing1/authzest/actions/runs/42566232674)).
+이는 코드 지적이나 이후 정식 후보의 보안 확인을 뜻하지 않습니다.
+
 ## Alpha.4 이후 테스트 harness 안정화 — 2026-11-05 KST
 
 [#130](https://github.com/casing1/authzest/issues/130)의 소스 전용 후속 수정은 오프라인 가짜 서버의

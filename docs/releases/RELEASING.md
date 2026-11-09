@@ -5,6 +5,36 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
+## Stable 0.1.0 target — 2026-11-09 KST
+
+[#150](https://github.com/casing1/authzest/issues/150) tracks the course-complete stable release.
+All new stable gates remain pending; the current package and latest public release remain `0.1.0a4`
+and `v0.1.0-alpha.4`. Do not rename that prerelease as stable or treat historical template acceptance
+as genuine PoC/repair generation. The prior November 12–13 estimate is superseded by this gate-based
+plan; the approximate November 18 submission date is not a delivery promise.
+
+- [#151](https://github.com/casing1/authzest/issues/151): one owned FastAPI scenario with a newly
+  generated defensive PoC/test and model-authored repair source, not registered after-template selection.
+- [#152](https://github.com/casing1/authzest/issues/152): reviewed generated-code execution boundary,
+  installed before reproduction, approved new-copy-only diff application, independent after controls,
+  refusal/user-edit safety and verified restoration. New runtime/sharing decisions remain separate.
+- [#153](https://github.com/casing1/authzest/issues/153): local read-only UI for actual CLI workflow
+  artifacts and honest unsupported/not-run/unknown/failure states; no cloud deployment or browser patch API.
+- [#85](https://github.com/casing1/authzest/issues/85): usable source installation plus UI assets,
+  reproducible demo, English/Korean docs, four README languages and exact platform/version limits.
+- Exact stable-candidate tests, required CI/reviews, UI and install/replacement/package checks, fresh
+  [#89](https://github.com/casing1/authzest/issues/89) assessment/disposition, then version/changelog,
+  immutable tag/build and public download/checksum verification. The alpha.4-only risk decision does
+  not transfer. No new stable publication is performed by this planning update.
+
+Keep [#84](https://github.com/casing1/authzest/issues/84) open if its comparative criteria remain
+unmet. Report unavailable independent/model-quality evidence without blocking core delivery on more
+benchmark-executor expansion or claiming unmeasured benefits. Preserve the alpha.4 receipts below.
+Infrastructure failure or skipped analysis is not a security pass: on the current `7aebf9e` baseline,
+ordinary main CI passed, but CodeQL Python initialization failed downloading its bundle with HTTP
+504 and analysis did not run ([run 42566232674](https://github.com/casing1/authzest/actions/runs/42566232674)).
+This is not a reported code finding or clearance of a future stable candidate.
+
 ## Post-alpha.4 test-harness stabilization — 2026-11-05 KST
 
 The source-only follow-up in [#130](https://github.com/casing1/authzest/issues/130) replaces the

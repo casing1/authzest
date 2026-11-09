@@ -7,9 +7,18 @@
 
 AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. 설치는 프로젝트 README에서 시작하고,
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
-로컬 대시보드는 선택 사항이며 웹사이트 배포가 필요하지 않습니다.
+현재 로컬 대시보드는 정적 목록을 표시하며 웹사이트 배포가 필요하지 않습니다.
 
 ## 현재 작업 — 2026-11-09 KST
+
+**정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
+정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
+→ [#152 승인형 복사본 before/after·복구](https://github.com/casing1/authzest/issues/152)
+→ [#153 읽기 전용 로컬 결과 UI](https://github.com/casing1/authzest/issues/153)
+→ [#85 설치/문서/시연](https://github.com/casing1/authzest/issues/85) 순서입니다. 모두 미완료 목표이며
+현재 기능 주장이 아닙니다. 아래 등록 템플릿 수용은 실제 생성 완료가 아닙니다. CLI가 결정/실행을
+담당하고 UI가 클라우드 배포나 브라우저 패치 권한을 추가하지 않습니다.
+범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)에 명시합니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -43,10 +52,11 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 테스트 harness 안정성 작업이며 검증·전달은 해당 이슈에서 추적합니다. 공개 alpha.4 바이트와
 과거 첫 실행 실패 기록은 그대로입니다.
 
-다음은 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)와
-[#85 재현 가능한 제출 시연·증빙](https://github.com/casing1/authzest/issues/85)입니다.
-조건부 릴리스 목표·남은 제출 여유는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 따르고
-선택적인 GUI·adapter를 제출 범위에 추가하지 않습니다.
+[#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 7개 미완료 기준과 미확보 근거를
+보존하며 계속 열어 둡니다. 비교/실행기 확대가 핵심을 밀어내지 않도록 제품 완성 뒤로 옮깁니다.
+로컬 결과 UI는 출시 필수이며 범용 저장소·추가 adapter·호스팅 배포는 이번 과제 범위 밖입니다.
+
+### 보조 오프라인 평가 기반
 
 [평가 invocation/capture 설계](development/EVALUATION_TRANSPORT_DESIGN.md)에 직접 관리하는 순수
 오프라인 codec의 후보 미리보기·엄격한 외부 `0.2`/내부 `0.1` 검증·합성 dry-run을 연결하고 원래
@@ -348,8 +358,11 @@ Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 
 [#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐고
 [#35](https://github.com/casing1/authzest/issues/35)는 수용한 제한 범위 핵심을 완료했습니다.
 소스 테스트 harness 안정화 전달은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다.
-다음 작업은 [#84 독립 평가](https://github.com/casing1/authzest/issues/84),
+다음은 [#150 과제 완성형 정식판](https://github.com/casing1/authzest/issues/150)의 실제 생성 #151 →
+승인형 복사본 검사/복구 #152 → 로컬 결과 UI #153 →
 [#85 제출 시연 근거](https://github.com/casing1/authzest/issues/85)입니다.
+[#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 별도로 열어 두며 미확보 비교 근거를
+명시합니다. 결과를 꾸미거나 조용히 완료 처리하지 않습니다.
 
 현재 스캔은 스키마 1.2, 구조화된 진단, 구별되는 소스 등록 근거와 라우트 직접·상속 의존성 선언을 제공합니다.
 endpoint의 안전한 인가 여부 분류,

@@ -9,17 +9,44 @@
 
 ## Product direction
 
-Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The core deliverable is
-one bounded, owned access-control scenario: source evidence → reviewed defensive reproduction/case plan
-→ Codex recommendation or valid no-change → exact-diff approve/decline → approved new-copy application
-→ separately approved observations → inspectable recovery records. Codex is a core goal, not an optional
-explanation add-on. Keep deterministic scan useful without an AI account.
+Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The course-release
+deliverable is one maintained, owned access-control scenario: source evidence → newly generated
+defensive PoC/regression test → AI-authored repair or valid no-change/unknown → exact-diff approve/decline
+→ approved new-copy application → separately approved before/after checks → inspectable recovery.
+Codex is a core goal, not an optional explanation add-on. Keep deterministic scan useful without an AI account.
 
 Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The existing
-local API/React dashboard is optional and shows static inventory; it does not yet present Codex decisions.
-Improve CLI usability before adding an AI GUI, deployment or a second adapter. Model improvements do
+local API/React dashboard currently shows static inventory; presenting actual workflow results is now
+a required release deliverable. Initially keep execution and approval in the CLI, with the local UI
+reading results rather than adding a second execution/consent surface. Cloud deployment is unnecessary.
+Model improvements do
 not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
 value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
+
+## Course-release priorities — 2026-11-09 KST
+
+[#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. This order
+supersedes earlier benchmark-first, optional-UI and template-only completion targets; it does not alter
+historical receipts. The accepted registered-template flow is a foundation, not completion of this target.
+
+| Priority                                                          | Required delivery                                                                                                                                                                                                                                                                                                                                                                            |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — [#151](https://github.com/casing1/authzest/issues/151)        | One maintained FastAPI object-ownership scenario with explicit policy and in-memory data; generate a new defensive test and an AI-authored patch to one application source file. Do not offer the registered after-template as a repair choice or relabel template selection as generation.                                                                                                  |
+| 2 — [#152](https://github.com/casing1/authzest/issues/152)        | Design and implement separately approved, isolated before/after checks of the reviewed generated test and independent owner/non-owner/anonymous/normal-use controls appropriate to the scenario. Apply only the reviewed exact diff to a new copy, refuse stale or user-edited input, and retain refusal, failure and restore evidence. A model-authored test alone does not prove a repair. |
+| 3 — [#153](https://github.com/casing1/authzest/issues/153)        | Use the local React UI to display actual scan, PoC/test, diff, before/after and recovery results, including failed/not-run/unknown states. Keep initial execution and approvals in the CLI; no cloud deployment is required.                                                                                                                                                                 |
+| 4 — [#85](https://github.com/casing1/authzest/issues/85) and #150 | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
+
+These are pending implementation and acceptance requirements, not authority to run generated code.
+The new execution boundary, isolation, permitted operations, limits and failure handling must be designed
+under #152 before any separately approved model/source sharing or active test/apply/restore operation.
+Previous fixture approvals cannot authorize the new scenario. Arbitrary repositories, general code
+execution and multi-file repair remain outside this first delivery.
+
+Broader [#84](https://github.com/casing1/authzest/issues/84) benchmark/transport work is secondary to
+this usable end-to-end release. Preserve its work and all seven unchecked criteria. Release evidence
+must distinguish actual observations from mocks and missing measurements; disclose unavailable
+independent comparison evidence rather than inventing scores or claiming an AI advantage.
+No package/version/tag change, stable publication or new execution is authorized by this plan.
 
 ## Current baseline — 2026-11-05 KST
 
@@ -40,11 +67,11 @@ The earlier exact-source nonpublishing run passed seven jobs with publication sk
 installation and genuine alpha.3 replacement each passed 13/13 offline checks on one macOS/Python 3.12
 host. These are not new live Codex or active owner-file observations.
 
-The bounded source core is complete; independent evaluation and course delivery remain under #84/#85.
+The previous registered-template source scope is accepted; the new #150 course-release scope is not complete.
 Native downloads are experimental scan/preview distributions, not verified consumer installers or
-cross-platform active-file support. Plan a conditional `0.1.0` course release for November 12–13 only
-after the scope, evaluation/demo records and final release checks below are satisfied. A course-complete
-bounded tool need not implement general FastAPI PoC or model-authored repair-source generation.
+cross-platform active-file support. The earlier November 12–13 stable target is superseded by the
+readiness gates below, not a delivery promise. New PoC/test and model-authored repair generation for
+the single maintained scenario are required; general-repository support is not.
 
 ### Delivery history and preflight observations
 
@@ -148,6 +175,12 @@ The [historical evaluation inventory](EVALUATION_INVENTORY.md) completed
 [#108](https://github.com/casing1/authzest/issues/108) through PR #109. It checks existing artifact
 bytes and preserves their distinct provenance; it does not select or freeze a new benchmark.
 #84's independent-review attestation and measured comparison remain open.
+
+### Supporting evaluation work — secondary to the course-release priorities
+
+The following inventory preserves #84's delivered preparation and remaining conditions. Its local
+next-step descriptions are not the overall release priority and do not replace #151–#153 or #85.
+
 The [evaluation protocol](EVALUATION_PROTOCOL.md) now records the user's November 6 direct acceptance
 of the current exact 21 reference values across seven assistant-authored scenarios. The v1 snapshot
 at `tests/fixtures/evaluation_reference/v1/` fixes source, questions, splits, reference values and
@@ -249,8 +282,8 @@ and fixture watchdogs remain test controls, not production timing or a live tran
 This is not live transport, a public launcher, authenticated approval or full recipe coverage; live
 lifecycle/compatibility remain gates. Actual config/account RPC, production process/capture/isolation/timer/cancellation/cleanup
 enforcement remain unimplemented; live trials still need explicit source/account/model/turn/time
-approval and missing freeze/review evidence. Offline delivery is not actual-call approval or benchmark freeze. Do not expand
-the product adapter or pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
+approval and missing freeze/review evidence. Offline delivery is not actual-call approval or benchmark freeze.
+This evaluation preparation does not expand the product adapter or change pinned `0.153.0`; v1/math/history, product `0.1.0a4` / report schema `1.2`,
 live-freeze false, risk/release decisions and all seven pending #84 checks remain unchanged.
 
 Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PRs and
@@ -274,9 +307,10 @@ Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PR
 | Owned-file repair API (PR #118 source)          | Separately approved captured-before check, diff acceptance, apply, captured-after check and restore observed at `fb90c46`: 6/8 before, 8/8 after; restored copy and records retained; historical API, not installed CLI acceptance    |
 | Owned-file CLI (#82 / PR #120)                  | POSIX non-frozen source only; installed happy path at `c868152` on one macOS/Python 3.12.7 host: before 6/8, exact diff/apply, actual applied-after 8/8, restored before / generation 3; bounded acceptance delivered through PR #123 |
 
-The accepted core uses one registered synthetic policy pair, eight reviewed cases and Codex template
-selection. General FastAPI repository PoC generation and model-authored repair source are **not implemented**.
-The acceptance of this bounded flow is not independent evaluation or HTTP/authentication/DB enforcement.
+The accepted historical core uses one registered synthetic policy pair, eight reviewed cases and Codex
+template selection. New FastAPI PoC/test generation and model-authored repair source are **not implemented**;
+the maintained single-scenario version is now required by #151/#152, while general repositories remain
+out of scope. The historical acceptance is not independent evaluation or HTTP/authentication/DB enforcement.
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate
@@ -448,16 +482,20 @@ The guides document the default-output migration rather than claiming unchanged 
 The source core's bounded #35 completion does not satisfy #83 automatically. Keep the implemented
 scope and source/native limitations explicit; a documentation merge or passing mock is not a release gate.
 
-After alpha.4's public readback and normal documentation follow-up, prioritize #84's independent
-reference/evaluation record and #85's reproducible course demo, not expansion of the accepted core.
+After alpha.4, prioritize #150's genuine generation, approved verification and local result presentation
+(#151–#153), alongside #85's reproducible course demo. Broader #84 benchmarking is secondary, not a
+reason to postpone the usable workflow; missing independent evidence must stay explicit.
 Keep the earlier `b5f3eb8` preflight, exact `090002d` release checks and `c868152` live observation
 separate. Neither release packaging nor historical development cases constitute fresh held-out model
-evaluation. Cut optional scope rather than broaden native support or add a GUI/provider adapter to
-meet a date. A stable candidate needs its own final checks and a fresh #89 assessment/disposition;
+evaluation. Limit work to the maintained scenario and local results UI rather than broad native support,
+cloud deployment or additional adapters. A stable candidate needs its own final checks and a fresh #89 assessment/disposition;
 the alpha.4-only risk decision must not carry forward. Retain #130's deterministic test-log
 regressions in the source candidate; repeated release retries are not a replacement for a repair.
 
 ## Core acceptance and defensive PoC
+
+The checked items below retain the earlier registered-template acceptance. They do not complete the
+new generation/verification/UI requirements, which remain separately unchecked.
 
 - [x] Exact ten-case label review recorded separately on 2026-10-09 KST (#77); offline contracts exist, but plans remain non-executable and execution consent is separate.
 - [x] Readable CLI results, retained records and documented text/JSON streams accepted (#79 / PR #90).
@@ -467,13 +505,18 @@ regressions in the source candidate; repeated release retries are not a replacem
 - [x] Reviewed bounded defensive reproduction and evidence-linked registered remediation/no-change accepted on 2026-11-02 KST (#81); not general repository PoC or repair-source generation.
 - [x] Final bounded installed-flow/walkthrough, bilingual limitations and existing offline failure/refusal/user-edit/recovery/no-change evidence mapping accepted on 2026-11-02 KST (#82); not new live execution.
 - [x] PR #123 acceptance-status documentation passed exact-head checks and separately approved automatic reviews, merged normally at `ee49f5a`, and completed #82 → #81 → #35 in order on 2026-11-02 KST. This covers bounded source acceptance only.
+- [ ] Newly generated defensive PoC/test and AI-authored one-file repair for the maintained FastAPI scenario accepted (#151); not a registered-template choice.
+- [ ] New isolated execution design and separately approved before/after controls, exact-diff refusal/application, stale-edit protection and recovery accepted (#152).
+- [ ] Actual scan/PoC/diff/check/recovery results available in the local React UI, with execution and consent initially kept in the CLI (#153).
 - [ ] Frozen independent reference review and measured evaluation, or explicit unavailable evidence, recorded (#84).
-- [ ] Exact distribution claims, reproducible demo and course evidence freeze accepted (#83/#85).
+- [ ] Exact stable distribution claims, reproducible installed demo, multilingual README and minimum course evidence accepted (#150/#85), with a fresh candidate-specific #89 disposition.
 
-“PoC” means local synthetic **defensive regression reproduction** for an explicitly owned pure policy,
-not an internet exploit or executing AI-written Python/shell. Model-authored cases are data consumed by
-a fixed reviewed decoder/harness. Pure-policy observations do not test HTTP authentication, dependencies,
-DB or real endpoint enforcement. A child process is not an OS/network sandbox.
+In the historical #77–#82 workflow, “PoC” meant local synthetic **defensive regression reproduction**
+for an owned pure policy: model-authored cases were data consumed by a fixed reviewed harness, not
+AI-written Python/shell execution. Those observations do not test HTTP authentication, dependencies,
+DB or real endpoint enforcement. The new #151 scope instead requires a newly authored defensive test
+for the maintained FastAPI scenario; running it needs the new #152 design and separate exact-plan
+approval. Neither an old approval nor a child process alone supplies OS/network isolation.
 
 The current correct policy must allow a no-change/unknown result. The exact clearly labelled,
 intentionally incorrect test-only pair and eight labels were reviewed on 2026-10-19 KST; that review
@@ -485,33 +528,37 @@ are separate bound decisions. Changes to relevant source/cases/plan require fres
 approval, tool permission or an earlier live run cannot authorize them. Record applied/checked/restored/
 failed/not-run/unknown distinctly and preserve originals and later user edits.
 
-## Schedule: keep the existing seven-week budget
+## Schedule: readiness gates within the remaining submission buffer
 
 The seven **development** weeks agreed on 2026-09-10 include work already done; this audit does not
 start a fresh seven-week plan. The original remaining-calendar estimate is historical, not a current
 submission date. The maintainer estimates submission around **2026-11-18**, not a confirmed fixed
-deadline. The missed November 4 alpha.4 target is historical; the current release receipt above
-governs status. Use these remaining calendar targets conditionally, retaining the submission buffer:
+deadline. The missed November 4 alpha.4 target and earlier November 12–13 stable target are historical,
+not current promises. The published alpha.4 receipt remains unchanged. Work in this gate order and
+retain time before submission for exams, fixes, recording/report preparation and rehearsal:
 
-| Target (KST)   | Work / gate                                                                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| November 5–9   | Freeze independently reviewed #84 tasks/labels and record the measured comparison or explicitly unavailable evidence; prepare #85's reproducible demo/OSS evidence; preserve completed alpha.4 release receipts     |
-| November 10–11 | Prepare an RC only after frozen bounded scope, reviewable #84/#85 records and normal regression/install/artifact checks including #130's deterministic cases; reassess #89 for the exact new candidate              |
-| November 12–13 | Target stable `v0.1.0` only after RC findings, bilingual user guidance, demo/cleanup and release/public-download gates pass; removing the prerelease suffix adds no security or general-repository capability claim |
-| November 14–17 | Keep for exams, fixes, recording/report preparation and submission rehearsal; do not fill with new optional features                                                                                                |
+| Order       | Work / gate                                                                                                                                                                                                             |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First       | Freeze the one-scenario generation contract and new execution design (#151/#152), then implement without assuming permission for real model calls or generated-code execution.                                          |
+| Next        | Obtain separately approved observations of the generated PoC/repair workflow and independent controls; deliver the local result UI (#153) and reproducible instructions in parallel where contracts are stable.         |
+| Candidate   | Complete #85's demo/minimum evidence and README translations, exact-source regressions/install/artifact checks including #130, and fresh #89 stable-candidate disposition. State unavailable #84 measurements honestly. |
+| Publication | Select a stable version/tag and publish only after candidate findings, demonstrated required scope and release/public-download gates pass. There is no automatic date-based promotion of alpha.4.                       |
 
 Foundation/evidence/contracts and recorded live integration already consumed the early development
-budget. A stable course release means the declared bounded scope is complete and demonstrable, not
-every original ambition or a production security guarantee. If a mandatory gate fails, fix or narrow
-the claim and record the remaining gap; do not manufacture evaluation results or stable readiness.
+budget. A stable course release means the newly declared single-scenario generation, approved
+verification and local presentation are complete and demonstrable, not general repository support or
+a production security guarantee. If a mandatory gate fails, report the gap and revise the plan with the
+maintainer; do not silently redefine template selection as generation or manufacture stable readiness.
 Additional live model use, source sharing and active file stages still require their own bound decisions.
 
 ## Deliberately deferred
 
 General nested dependency/callable interpretation, broad authentication/security classification,
-multi-file/existing-checkout transactions, arbitrary repositories/apps/generated code execution,
-additional adapters, AI dashboard/deployment and signing/notarization are not prerequisites for the
-bounded course core. Open a separately justified issue before reconsidering one. The static parser
+multi-file/existing-checkout repair transactions, arbitrary repositories/apps/unrestricted generated-code
+execution, additional adapters, cloud deployment, GUI execution/approval controls and signing/notarization
+remain deferred. This does not defer #151's one-file patch plus generated test, #152's specifically
+approved isolated execution, or #153's local results UI. Open a separately justified issue before
+expanding that scope. The static parser
 still needs maintained regressions, but finishing a complete deterministic vulnerability engine is
 not a dependency of the Codex improvement demo.
 
