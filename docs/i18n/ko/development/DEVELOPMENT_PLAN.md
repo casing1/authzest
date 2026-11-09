@@ -228,6 +228,10 @@ RPC ack/생명주기 확인 후 finish하며 실패/skipped 분모를 유지합�
 Dispatch ledger에는 `Batch.fail`을 추가하여 bridge가 현재 시각에 관찰한 slot 실패를 즉시 고정하고
 정리 전까지 첫 원인을 보존하며 늦은 timeout으로 대체하지 않습니다. 정리·2차 clock 결과는 별도로
 두고 기존 clock/TTL/`T`/시간창/finish 계약을 유지합니다.
+2026-11-09 테스트 전용 batch-pipe 확장은 이 bridge를 기존 고정 가짜 peer에 연결하여 송신/ack/
+finish 순서·합성 원래 예산 만료·실패/정리·예정 분모를 검사합니다. Finish 전에 pipe 닫힘·자식
+회수를 요구하지만 호출자가 정한 시계와 fixture watchdog은 테스트 제어이며 운영 시간 강제나
+실제 transport가 아닙니다.
 실제 transport·공개 launcher·인증된 승인·전체 recipe 검증이 아니며 실제 생명주기/호환성은 후속 조건입니다.
 실제 설정/계정 RPC·운영 프로세스/수신/격리/timer/취소/정리
 강제는 미구현이며 실제 시험에는 명시적

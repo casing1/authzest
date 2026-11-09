@@ -16,6 +16,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Add test-only `BatchCoordinator` integration with the existing fixed owned fake-process peers.
+  Exercise reservation/send/ack ordering, synthetic original-budget expiry, failure/cancellation,
+  cleanup refusal and retained planned denominators; require closed pipes and reaped children before
+  phase finish. Synthetic `Clock` values and fixture watchdogs are not production timing enforcement.
+  No production scripts/recipe/schema/fixtures/pin/data/history change, new CLI/provider launcher,
+  actual AI/account/model/network/policy-worker call, scoring, accepted trial or live freeze is added.
+  Product `0.1.0a4` / report `1.2` and all seven pending #84 checks remain unchanged; no risk acceptance
+  or release is added.
+
 - Add pure `SlotCoordinator` and `BatchCoordinator` state composition over the unchanged recipe,
   JSONL/preflight/session/turn validators and an extended dispatch ledger. New `Batch.fail` latches
   the first observed slot failure immediately until cleanup, preventing late timeout from replacing

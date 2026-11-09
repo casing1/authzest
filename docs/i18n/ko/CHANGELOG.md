@@ -16,6 +16,13 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 기존 고정 소유 가짜 프로세스 peer에 `BatchCoordinator`를 연결하는 테스트 전용 통합을 추가합니다.
+  예약/송신/ack 순서·합성 원래 예산 만료·실패/취소·정리 거부·예정 분모 보존을 검사하고 phase
+  finish 전에 pipe 닫힘과 자식 회수를 요구합니다. 합성 `Clock` 값과 fixture watchdog은 운영 시간
+  강제가 아닙니다. 운영 script/recipe/schema/fixture/고정 버전/데이터/과거 자료 변경·새 CLI/제공자
+  launcher·실제 AI/계정/모델/네트워크/정책 worker 호출·채점·trial 수용·실제 동결은 없습니다.
+  제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개를 유지하며 위험 수용·릴리스도 없습니다.
+
 - 기존 recipe·JSONL/preflight/session/turn validator를 변경하지 않고 확장한 dispatch ledger와 조합하는
   순수 `SlotCoordinator`·`BatchCoordinator` 상태 계층을 추가합니다. 새 `Batch.fail`은 관찰한 첫 slot
   실패를 정리 전까지 즉시 고정하여 늦은 timeout이 원인을 덮지 못하게 하고 정리·2차 clock 실패는
