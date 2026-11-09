@@ -37,9 +37,21 @@ authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-o
 
 승인한 요청은 AuthZest 재시도나 모델 대체 없이 어댑터 1회만 시도합니다. 요청 제한 시간은 최대 120초이고 정리는 별도로 처리하므로 전체 흐름의 절대 시간 보장이나 Codex 내부 재시도·토큰·비용의 상한이 아닙니다. 사용량 누락을 0으로 해석하지 마세요.
 
-기본 출력은 사람이 읽는 형식이며 모델이 제어하는 텍스트는 터미널 이스케이프 처리합니다. `--json`은 최종 결과 또는 오프라인 미리보기 하나만 stdout에 내보내고 완전한 대화형 공유 미리보기·질문은 stderr에 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 적용·검사된 수정안이 아닙니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이지 모델 작성 사실의 독립 증명이 아니며 mock 응답도 실제 생성의 증거가 아닙니다.
+기본 최종 출력은 전체 전송 envelope를 반복하는 대신 간결한 결과 요약부터 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 적용·검사된 수정안이 아닙니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이지 모델 작성 사실의 독립 증명이 아니며 mock 응답도 실제 생성의 증거가 아닙니다.
 
 최종 JSON의 `kind`는 `codex-generated-repair-workflow`입니다. 바깥 `status`는 흐름(`generation-ready`, `not-shared`, `preview-changed`, `generation-failed`)을 설명하고 `proposal_status`는 제안 상태를 별도로 설명합니다. `generation-ready`는 검증한 응답이지 수정 성공이 아닙니다. `generation`은 전송 envelope를, `proposal_preview`는 실행 기능이 없는 호스트 계산 미리보기를 보존합니다. `execution_status`, `patch_application`, `restoration_status`는 `not-run`이고 `applied`는 false입니다. `application_turn_attempts`는 로컬 어댑터 호출 수이지 제공자가 수락하거나 과금한 turn 수가 아닙니다.
+
+### 결과 읽기
+
+사람용 최종 화면은 흐름·제안 상태와 함께 적용 여부, 실행·패치·복구·승인 상태를 먼저 명시합니다. 빠진 상태는 성공이나 미실행으로 추정하지 않고 unknown으로 표시합니다. 이어서 변경 파일, 근거, 가정, 불확실성, 한계를 보여 주고 전체 제안 소스·테스트·diff를 각각 한 번씩 표시합니다. 긴 식별자·해시·중복 전송 envelope는 이 기본 화면에서만 생략하며 결과 데이터에서는 제거하지 않습니다.
+
+생성한 텍스트와 코드는 계속 신뢰하지 않는 데이터입니다. 표시하는 각 줄에 접두사를 붙이고 ASCII 이스케이프 처리하므로 터미널 제어 문자·양방향 문자·비ASCII 텍스트가 표시 방식을 몰래 바꾸지 못합니다. 원문을 이스케이프 없이 표시하는 옵션은 없습니다.
+
+- `--details`는 사람이 읽는 결과 뒤에 전체 최종 JSON을 추가하며 요청을 다시 보내지 않습니다.
+- `--json`은 전체 최종 결과 또는 오프라인 미리보기 하나만 stdout에 내보내고 대화형 공유 미리보기·질문은 stderr에 표시합니다. `--details`를 함께 지정해도 JSON은 바뀌지 않습니다.
+- 공유 동의 화면은 축약하지 않습니다. `--preview-only`를 포함한 전체 공유 미리보기 원문은 `--details`와 관계없이 그대로 유지합니다. 새 공유 확인 문구를 입력하기 전에 이를 읽어야 합니다.
+
+이는 출력 형식 옵션일 뿐 공유 승인, 생성 코드 실행, 패치 적용, 파일 복구, 생성·수정 수용을 뜻하지 않습니다.
 
 ## 유지하는 시나리오
 

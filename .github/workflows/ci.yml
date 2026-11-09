@@ -43,6 +43,7 @@ jobs:
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py
+          tests/test_generated_repair_output.py
           tests/test_cli_output.py
           tests/test_owner_case_plan.py
           tests/test_owner_policy_recommendation.py

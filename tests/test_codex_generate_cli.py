@@ -306,7 +306,7 @@ def test_cli_help_documents_explicit_model_and_preview_without_approval_flags(co
     result = runner.invoke(app, ["codex-generate", "--help"], color=color)
     text = unstyle(result.stdout)
     assert result.exit_code == 0
-    for flag in ("--model", "--timeout-seconds", "--preview-only", "--json"):
+    for flag in ("--model", "--timeout-seconds", "--preview-only", "--json", "--details"):
         assert flag in text
     assert "--apply" not in text and "--yes" not in text
 
@@ -329,8 +329,9 @@ def test_cli_decline_json_stdout_is_one_result_with_full_preview_and_prompt_on_s
 
 
 @pytest.mark.parametrize("as_json", [False, True])
+@pytest.mark.parametrize("details", [False, True])
 def test_cli_mock_generation_escapes_model_source_test_rationale_and_keeps_one_json(
-    monkeypatch, as_json
+    monkeypatch, as_json, details
 ):
     async def scripted(model, **kwargs):
         class Adapter:
@@ -345,6 +346,8 @@ def test_cli_mock_generation_escapes_model_source_test_rationale_and_keeps_one_j
     original = workflow.run_codex_generated_repair
     monkeypatch.setattr(workflow, "run_codex_generated_repair", scripted)
     args = ["codex-generate", "--model", MODEL] + (["--json"] if as_json else [])
+    if details:
+        args.append("--details")
     result = runner.invoke(app, args)
     assert result.exit_code == 0
     assert (
@@ -358,9 +361,40 @@ def test_cli_mock_generation_escapes_model_source_test_rationale_and_keeps_one_j
         assert value["status"] == "generation-ready"
         assert "REQUEST_JSON" in result.stderr
     else:
-        assert "Locally composed generated-source diff" in result.stdout
-        assert "Exact diff (each line is quoted)" in result.stdout
-        assert "ast-parse-only" in result.stdout and "not-assessed" in result.stdout
+        final = result.stdout.rsplit("Generated repair result\n", 1)[1]
+        assert "Exact proposed diff (untrusted; not applied)" in final
+        assert "Generated source (untrusted; not executed)" in final
+        assert "Generated test (untrusted; not executed)" in final
+        assert "ast-parse-only" in final and "not-assessed" in final
+        heading = "Complete result (authoritative JSON)\n"
+        assert (heading in final) is details
+        if details:
+            value = json.loads(final.split(heading, 1)[1])
+            assert value["status"] == "generation-ready"
+            assert value["generation"]["proposal"]["rationale"].endswith("\u202e")
+        else:
+            assert "generated-repair-transport-" not in final
+            assert "invocation_nonce" not in final
+
+
+@pytest.mark.parametrize("as_json", [False, True])
+def test_cli_details_preview_remains_complete_without_sharing(monkeypatch, as_json):
+    args = ["codex-generate", "--model", MODEL, "--preview-only", "--details"]
+    if as_json:
+        args.append("--json")
+    result = runner.invoke(app, args)
+    assert result.exit_code == 0 and not result.stderr
+    if as_json:
+        value = json.loads(result.stdout)
+    else:
+        heading = (
+            "Complete sharing envelope (authoritative JSON; review every field before consent)\n"
+        )
+        value = json.loads(result.stdout.split(heading, 1)[1])
+        assert "Complete result (authoritative JSON)" not in result.stdout
+    assert value["kind"] == "codex-generated-repair-sharing-preview"
+    assert value["transport_request"]["config"]["model"] == MODEL
+    assert "REQUEST_JSON" in value["prompt"]
 
 
 @pytest.mark.parametrize("case", ["input", "unexpected", "cancelled"])
