@@ -5,6 +5,8 @@ import socket
 import subprocess
 from pathlib import Path
 
+import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from authzest.cli import app
@@ -12,11 +14,13 @@ from authzest.cli import app
 runner = CliRunner()
 
 
-def test_generation_preview_help_is_explicitly_offline():
-    result = runner.invoke(app, ["generation-preview", "--help"])
+@pytest.mark.parametrize("color", [False, True])
+def test_generation_preview_help_is_explicitly_offline(color):
+    result = runner.invoke(app, ["generation-preview", "--help"], color=color)
     assert result.exit_code == 0
-    assert "no Codex call" in result.stdout
-    assert "--json" in result.stdout
+    text = unstyle(result.stdout)
+    assert "no Codex call" in text
+    assert "--json" in text
 
 
 def test_generation_preview_default_is_complete_readable_input_not_model_output():
