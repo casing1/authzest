@@ -180,9 +180,75 @@ def test_module_remains_private_and_has_no_destination_or_execution_api():
     import inspect
 
     parameters = inspect.signature(workspace.GeneratedRepairWorkspace).parameters
-    assert set(parameters) == {"preview", "_parent"}
+    assert set(parameters) == {"preview", "_parent", "_before_create"}
     assert not any(
         hasattr(workspace.GeneratedRepairWorkspace, name)
         for name in ("execute", "resume", "write_record", "approve", "run")
     )
     assert not issubclass(workspace.GeneratedRepairWorkspace, Path)
+
+
+def test_copy_guard_runs_after_context_validation_and_before_allocation(monkeypatch, tmp_path):
+    preview = _preview()
+    checked = workspace._checked_preview
+    order = []
+
+    def check_current(value):
+        result = checked(value)
+        order.append("context-checked")
+        return result
+
+    def refuse():
+        assert order == ["context-checked"]
+        assert list(tmp_path.iterdir()) == []
+        order.append("guard-refused")
+        raise ValueError("Maintained pre-allocation refusal")
+
+    monkeypatch.setattr(workspace, "_checked_preview", check_current)
+    with pytest.raises(ValueError, match="pre-allocation"):
+        workspace.GeneratedRepairWorkspace(preview, _parent=tmp_path, _before_create=refuse)
+    assert order == ["context-checked", "guard-refused"]
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize(
+    "value", [False, True, "approved", 0], ids=["false", "true", "text", "zero"]
+)
+def test_copy_guard_must_return_exact_none_before_any_allocation(tmp_path, value):
+    with pytest.raises(workspace.WorkspaceError, match="return None"):
+        workspace.GeneratedRepairWorkspace(
+            _preview(), _parent=tmp_path, _before_create=lambda: value
+        )
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_async_copy_guards_are_refused_and_returned_coroutines_closed(tmp_path):
+    import inspect
+
+    async def asynchronous():
+        pytest.fail("A copy guard must never run a coroutine")
+
+    with pytest.raises(workspace.WorkspaceError, match="synchronous"):
+        workspace.GeneratedRepairWorkspace(
+            _preview(), _parent=tmp_path, _before_create=asynchronous
+        )
+    coroutine = asynchronous()
+    with pytest.raises(workspace.WorkspaceError, match="return None"):
+        workspace.GeneratedRepairWorkspace(
+            _preview(), _parent=tmp_path, _before_create=lambda: coroutine
+        )
+    assert inspect.getcoroutinestate(coroutine) == inspect.CORO_CLOSED
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_copy_guard_runs_once_on_confirmed_fresh_allocation(tmp_path):
+    calls = []
+    copy = workspace.GeneratedRepairWorkspace(
+        _preview(), _parent=tmp_path, _before_create=lambda: calls.append("copy-dispatch")
+    )
+    try:
+        assert calls == ["copy-dispatch"]
+        assert copy.state == "ready-before"
+        assert copy.read_source().data == (copy.path / "before.txt").read_bytes()
+    finally:
+        copy.close()

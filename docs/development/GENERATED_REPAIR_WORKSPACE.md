@@ -45,6 +45,11 @@ an existing workspace, import a journal as a session, replace an existing checko
 interrupted operation. A private `_parent` seam exists for trusted temporary-file tests, not an
 artifact-controlled destination or a supported end-user option.
 
+The optional private `_before_create` hook lets a trusted session recheck its current copy decision
+after this helper's own validation and immediately before directory allocation. It must return
+`None` synchronously. Refusal, non-`None` and asynchronous callbacks create no directory. It is not
+an authenticated decision, a universal filesystem deadline or the later source-commit expiry hook.
+
 The managed files are:
 
 ```text
@@ -128,3 +133,7 @@ executor is still disabled, and the private file helper is not an alternate exec
 Generated pytest reports remain untrusted auxiliary data; independent controls, actual after-file
 observations, refusal/recovery paths and exact installed-candidate acceptance are still required.
 Local read-only UI and release work remain separate gates.
+
+The separate [offline copy session](GENERATED_REPAIR_SESSION.md) now covers fresh-copy decisions
+and disabled before preparation only. It calls no source apply/restore method and accepts no runtime
+baseline. This does not complete the operational coordinator or its final source-commit expiry hook.

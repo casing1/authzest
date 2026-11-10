@@ -105,7 +105,13 @@ class GeneratedRepairWorkspace:
     A guard is trusted synchronous coordination, not authenticated authority.
     """
 
-    def __init__(self, preview, *, _parent: Path | None = None):
+    def __init__(
+        self,
+        preview,
+        *,
+        _parent: Path | None = None,
+        _before_create: Callable[[], None] | None = None,
+    ):
         # Rebuild the current source, policy, proposal, controls and exact diff
         # before even checking the platform or allocating a directory.
         checked = _checked_preview(preview)
@@ -128,6 +134,17 @@ class GeneratedRepairWorkspace:
         self._directories: dict[str, tuple[int, ...]] = {}
         self._tracked: dict[str, FileState] = {}
         self._partial = dict.fromkeys(_FILES, "not-created")
+        # A trusted coordinator must recheck its decision after this helper's
+        # own validation, immediately before the first allocation. This is not
+        # an authentication boundary or a source-replacement expiry hook.
+        if _before_create is not None:
+            if not callable(_before_create) or inspect.iscoroutinefunction(_before_create):
+                raise WorkspaceError("Copy allocation guard must be synchronous")
+            decision = _before_create()
+            if decision is not None:
+                if inspect.iscoroutine(decision):
+                    decision.close()
+                raise WorkspaceError("Copy allocation guard must synchronously return None")
         self.path = Path(tempfile.mkdtemp(prefix="authzest-generated-repair-", dir=_parent))
         stage = "open-root"
         try:
