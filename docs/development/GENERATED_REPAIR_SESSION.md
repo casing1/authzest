@@ -64,6 +64,9 @@ The monotonic clock must be finite, nonnegative and nondecreasing, and the reque
 be representable within the fixed bound. Boolean, NaN, infinity, backward and unrepresentable values
 are not valid times. Context/file checks take time, so the session rechecks time after validation
 and immediately before copy allocation. Filesystem operations still have no universal deadline.
+The copy deadline bounds allocation dispatch, not completion of all filesystem work. A confirmed
+copy returned after that deadline is still a retained effect, not zero writes or permission for
+the next stage; before preparation requires its own separate current plan and decision.
 
 ## One attempt and accurate effects
 
