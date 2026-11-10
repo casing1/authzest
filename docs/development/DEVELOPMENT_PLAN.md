@@ -57,8 +57,11 @@ it creates no copy and does not apply, execute, or restore generated code. This 
 offline/mocked verification, not actual model/provider/schema acceptance. The policy remains
 assistant-authored/pending maintainer review; #151 stays open. #152 now has an
 [offline verification foundation](GENERATED_REPAIR_VERIFICATION.md): maintained data controls,
-an inert content-bound preview and disabled executor preparation. Actual file sessions, isolated
-execution, application and restoration remain unimplemented; #153 UI integration is still pending.
+an inert content-bound preview and disabled executor preparation. A separate
+[private file-I/O foundation](GENERATED_REPAIR_WORKSPACE.md) adds fresh-copy byte management and
+guarded exact source apply/restore for offline filesystem tests only. No active decision/session
+coordinator, generated runtime execution or connected apply/restore workflow is implemented;
+#152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
 

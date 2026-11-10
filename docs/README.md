@@ -26,6 +26,11 @@ and a disabled executor. Its 17 cases / 21 requests and Docker budgets are defin
 not observed checks. It adds no copy, generated execution, apply/recovery, CLI option or runtime
 image/engine; #152 remains open.
 
+The separate [private workspace foundation](development/GENERATED_REPAIR_WORKSPACE.md) now
+provides fresh-copy byte I/O, guarded exact source replacement/restoration and retained host
+bookkeeping for offline filesystem tests. It is private machinery, not a connected CLI/session
+workflow, execution approval or observed generated-code check. The runtime executor stays disabled.
+
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
 report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
@@ -290,6 +295,7 @@ docs/
 | Owned policy improvement design (proposed)                              | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
+| Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |

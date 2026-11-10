@@ -25,6 +25,11 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 17개 사례 / 21개 요청과 Docker 예산은 정의·제안이지 관찰한 검사가 아닙니다. 복사·생성 실행·
 적용·복구, CLI 옵션, 런타임 이미지·엔진은 추가하지 않으며 #152는 열린 상태입니다.
 
+별도의 [비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)은 오프라인 파일시스템
+테스트용 새 복사본 바이트 I/O, 정확한 소스 적용·복구와 호스트 기록 보존을 제공합니다.
+연결된 CLI·세션 흐름, 실행 승인, 관찰한 생성 코드 검사가 아닌 비공개 내부 계층입니다.
+런타임 실행기는 계속 비활성입니다.
+
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
 발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
@@ -273,6 +278,7 @@ docs/
 | 소유 정책 개선 설계 (제안)                         | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | 생성 PoC/테스트 계약과 선택형 Codex 요청           | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)        |
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
+| 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |

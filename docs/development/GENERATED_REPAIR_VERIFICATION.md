@@ -21,6 +21,11 @@ application files, write/apply/restore files, invoke Codex, start a worker or ex
 No runtime image, engine adapter or runnable container recipe is delivered. #152 remains open;
 neither runtime reproduction nor a verified repair is established.
 
+The later [private workspace foundation](GENERATED_REPAIR_WORKSPACE.md) is a separate low-level
+file-I/O helper for offline filesystem tests. It does not change this pure preview API or enable
+its default executor. A live decision/session coordinator and real captured-byte checks are still
+required before connecting that helper to an operational workflow.
+
 The original generation source, prompt and `pending-maintainer-review` policy metadata remain
 unchanged. The separate control review label is `maintainer-accepted-offline-design`: it records
 acceptance of this offline verification design, not a changed generation prompt, an independently
