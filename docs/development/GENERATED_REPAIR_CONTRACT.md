@@ -85,7 +85,9 @@ The object-root output schema is a shaping candidate, not the authoritative vali
 
 ## Next boundaries
 
-[#152](https://github.com/casing1/authzest/issues/152) must first define and review the new execution boundary and independent maintained owner/non-owner/anonymous/normal-use controls. Separately approved, isolated before/after checks must distinguish test failures from infrastructure failures. Copy-only application, exact diff review, stale-edit refusal, and recovery need their own reviewed behavior and consent; this document authorizes none of them.
+Under [#152](https://github.com/casing1/authzest/issues/152), the new isolation design and independent maintained owner/non-owner/anonymous/normal-use controls are accepted for offline implementation only. Separately approved, isolated before/after checks must distinguish test failures from infrastructure failures. Copy-only application, exact diff review, stale-edit refusal, and recovery need their own reviewed behavior and consent; this document authorizes none of them.
+
+The separate [offline verification foundation](GENERATED_REPAIR_VERIFICATION.md) now binds this inert proposal to the maintainer-accepted offline Docker/control design, 17 maintained cases / 21 requests, proposed budgets and a disabled executor interface. Its pure comparison handles supplied data only; it is not runtime evidence or operational permission. No copy, generated execution, application or recovery is implemented by that slice, and the original generation policy review label remains unchanged.
 
 [#153](https://github.com/casing1/authzest/issues/153) will present actual scan, PoC/test, diff, check, and recovery results in a read-only local React UI. Initial action and approval controls stay in the CLI; cloud deployment is not required. These integrations remain future work.
 
