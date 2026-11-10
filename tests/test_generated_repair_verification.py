@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import asyncio
 import builtins
 import json
@@ -30,6 +31,11 @@ def no_external_effects(monkeypatch, request):
     # values at 32,767 characters. Large test inputs must never become IDs.
     assert len(request.node.nodeid) < 512
 
+    # Python 3.14 lazily initializes its standard-library unparser on first use.
+    # Warm only this maintained AST before blocking exec/module initialization;
+    # never initialize it by parsing or executing generated application text.
+    assert ast.unparse(ast.Constant(value=None)) == "None"
+
     def forbidden(*args, **kwargs):
         pytest.fail("Offline verification must not access files, providers or runtime")
 
@@ -54,6 +60,15 @@ def no_external_effects(monkeypatch, request):
     monkeypatch.setattr(socket, "create_connection", forbidden)
     monkeypatch.setattr(asyncio, "create_subprocess_exec", forbidden)
     monkeypatch.setattr(asyncio, "create_subprocess_shell", forbidden)
+
+
+def test_stdlib_unparser_works_after_all_execution_guards_are_installed():
+    assert ast.unparse(ast.Constant(value=None)) == "None"
+    assert ast.unparse(ast.Name(id="maintained_ast", ctx=ast.Load())) == "maintained_ast"
+    with pytest.raises(pytest.fail.Exception):
+        builtins.exec("raise AssertionError('blocked generated execution')")
+    with pytest.raises(pytest.fail.Exception):
+        builtins.eval("1 + 1")
 
 
 def _proposal(request, status="proposed-change"):
