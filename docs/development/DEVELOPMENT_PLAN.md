@@ -60,7 +60,9 @@ assistant-authored/pending maintainer review; #151 stays open. #152 now has an
 an inert content-bound preview and disabled executor preparation. A separate
 [private file-I/O foundation](GENERATED_REPAIR_WORKSPACE.md) adds fresh-copy byte management and
 guarded exact source apply/restore for offline filesystem tests only. No active decision/session
-coordinator, generated runtime execution or connected apply/restore workflow is implemented;
+runtime coordinator, generated execution or connected apply/restore workflow is implemented.
+The [offline copy session](GENERATED_REPAIR_SESSION.md) now binds one-use expiring decisions to
+fresh-copy creation and disabled before preparation, with no apply/restore API or evidence importer.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
