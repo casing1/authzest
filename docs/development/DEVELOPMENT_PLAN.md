@@ -23,7 +23,7 @@ Model improvements do
 not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
 value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
 
-## Course-release priorities — 2026-11-09 KST
+## Course-release priorities — 2026-11-12 KST
 
 [#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. This order
 supersedes earlier benchmark-first, optional-UI and template-only completion targets; it does not alter
@@ -63,6 +63,8 @@ guarded exact source apply/restore for offline filesystem tests only. No active 
 runtime coordinator, generated execution or connected apply/restore workflow is implemented.
 The [offline copy session](GENERATED_REPAIR_SESSION.md) now binds one-use expiring decisions to
 fresh-copy creation and disabled before preparation, with no apply/restore API or evidence importer.
+The [pure lifecycle model](GENERATED_REPAIR_LIFECYCLE.md) adds only closed fake T → A/B traces,
+shared-budget bookkeeping and identity-scoped cleanup intents; no transport/runtime or live baseline.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST

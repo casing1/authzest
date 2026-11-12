@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The current local dashboard shows static inventory and does not require website deployment.
 
-## Current work — 2026-11-09 KST
+## Current work — 2026-11-12 KST
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
@@ -35,6 +35,10 @@ The [offline copy session](development/GENERATED_REPAIR_SESSION.md) binds origin
 single-use decisions to that fresh copy and disabled before preparation only. It exposes no
 apply/restore method or runtime-evidence importer; neither supplied facts nor exported checkpoints
 can establish a before baseline. There is still no active CLI/session runtime flow.
+
+The separate [pure lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md) models T → A/B
+ordering, shared budgets and exact-object cleanup with fake events only. It has no transport or
+production callsite; simulated completion cannot establish runtime evidence or application authority.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -302,6 +306,7 @@ docs/
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |
 | Generated repair offline copy decisions and before preparation          | [Offline copy session](development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](i18n/ko/development/GENERATED_REPAIR_SESSION.md)      |
+| Generated repair pure lifecycle and failure simulation                  | [Lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](i18n/ko/development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |

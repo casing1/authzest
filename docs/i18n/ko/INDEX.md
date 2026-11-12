@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 현재 로컬 대시보드는 정적 목록을 표시하며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-11-09 KST
+## 현재 작업 — 2026-11-12 KST
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
@@ -34,6 +34,10 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 새 복사본 생성·비활성 before 준비에만 연결합니다. apply/restore 메서드나 런타임 증거 가져오기
 경로는 없으며 전달 사실·내보낸 기록으로 before 근거를 만들 수 없습니다.
 활성 CLI·세션 런타임 흐름도 아직 없습니다.
+
+별도 [순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)은 T → A/B 순서·공유 예산·
+정확한 객체 정리를 가짜 이벤트로만 모의합니다. 전송·운영 호출 경로는 없으며 모의 완료가 런타임
+증거·적용 권한을 만들지 않습니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -285,6 +289,7 @@ docs/
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |
 | 생성 수정 오프라인 결정·복사·비활성 before 준비    | [Offline copy session](../../development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](development/GENERATED_REPAIR_SESSION.md)      |
+| 생성 수정 순수 생명주기·실패 모의                  | [Lifecycle model](../../development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |
