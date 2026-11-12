@@ -44,6 +44,10 @@ jobs:
         run: python -m pytest tests/test_generated_repair_session.py
       - name: Check session refusal paths in another fresh Python interpreter
         run: python -m pytest tests/test_generated_repair_session_failures.py
+      - name: Check pure lifecycle model in a fresh Python interpreter
+        run: python -m pytest tests/test_generated_repair_lifecycle.py
+      - name: Check lifecycle failure paths in another fresh Python interpreter
+        run: python -m pytest tests/test_generated_repair_lifecycle_failures.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -69,6 +73,8 @@ jobs:
           tests/test_generated_repair_workspace_failures.py
           tests/test_generated_repair_session.py
           tests/test_generated_repair_session_failures.py
+          tests/test_generated_repair_lifecycle.py
+          tests/test_generated_repair_lifecycle_failures.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py
