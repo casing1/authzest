@@ -59,6 +59,8 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 일회성·만료 결정을 새 복사본·비활성 before 준비에만 연결하며 적용/복구 API·증거 가져오기는 없습니다.
 [순수 생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)은 제한된 가짜 T → A/B 순서·공유 예산 기록·
 식별자 한정 정리 의도만 추가하며 전송·런타임·실제 before 근거는 없습니다.
+[제한된 HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md)는 고정 요청 입력·좁은 응답 codec·명시적
+fake-stream 수집·호스트 전달 사실 bridge만 추가하며 실제 소켓은 없습니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST

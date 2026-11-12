@@ -40,6 +40,10 @@ The separate [pure lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md) m
 ordering, shared budgets and exact-object cleanup with fake events only. It has no transport or
 production callsite; simulated completion cannot establish runtime evidence or application authority.
 
+The [bounded HTTP relay foundation](development/GENERATED_REPAIR_HTTP_RELAY.md) adds the fixed
+request-only schedule and narrow response parsing through explicit trusted fake streams, plus a
+host-only bridge to supplied-data comparison. It adds no real socket/engine entry or live baseline.
+
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
 report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
@@ -307,6 +311,7 @@ docs/
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |
 | Generated repair offline copy decisions and before preparation          | [Offline copy session](development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](i18n/ko/development/GENERATED_REPAIR_SESSION.md)      |
 | Generated repair pure lifecycle and failure simulation                  | [Lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](i18n/ko/development/GENERATED_REPAIR_LIFECYCLE.md)    |
+| Generated repair bounded HTTP relay and supplied-fact bridge            | [HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](i18n/ko/development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |
