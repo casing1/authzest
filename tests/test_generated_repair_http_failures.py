@@ -716,6 +716,14 @@ def test_host_bridge_rejects_forged_or_incomplete_capture_shapes(mutation):
         "null",
         "[]",
     ],
+    ids=[
+        "duplicate-key",
+        "excessive-depth",
+        "oversized-json",
+        "nonfinite-number",
+        "null",
+        "array",
+    ],
 )
 def test_bridge_bounds_json_and_rejects_duplicate_keys_before_importing_facts(raw):
     with pytest.raises(ContractError):
