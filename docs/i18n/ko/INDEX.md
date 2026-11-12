@@ -39,6 +39,10 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 정확한 객체 정리를 가짜 이벤트로만 모의합니다. 전송·운영 호출 경로는 없으며 모의 완료가 런타임
 증거·적용 권한을 만들지 않습니다.
 
+[제한된 HTTP relay 기반](development/GENERATED_REPAIR_HTTP_RELAY.md)은 고정 요청 입력·명시적
+신뢰 fake-stream의 좁은 응답 해석과 전달 데이터 비교용 호스트 bridge를 추가합니다.
+실제 소켓·엔진 진입점·실제 before 근거는 없습니다.
+
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
 발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
@@ -290,6 +294,7 @@ docs/
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |
 | 생성 수정 오프라인 결정·복사·비활성 before 준비    | [Offline copy session](../../development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](development/GENERATED_REPAIR_SESSION.md)      |
 | 생성 수정 순수 생명주기·실패 모의                  | [Lifecycle model](../../development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)    |
+| 생성 수정 제한된 HTTP relay·전달 사실 bridge       | [HTTP relay](../../development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |

@@ -65,6 +65,8 @@ The [offline copy session](GENERATED_REPAIR_SESSION.md) now binds one-use expiri
 fresh-copy creation and disabled before preparation, with no apply/restore API or evidence importer.
 The [pure lifecycle model](GENERATED_REPAIR_LIFECYCLE.md) adds only closed fake T → A/B traces,
 shared-budget bookkeeping and identity-scoped cleanup intents; no transport/runtime or live baseline.
+The [bounded HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) adds only a fixed request-input schedule,
+narrow response codec, explicit fake-stream capture and host-only supplied-fact bridge; no real sockets.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
