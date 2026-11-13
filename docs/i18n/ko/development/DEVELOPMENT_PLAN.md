@@ -61,6 +61,8 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 식별자 한정 정리 의도만 추가하며 전송·런타임·실제 before 근거는 없습니다.
 [제한된 HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md)는 고정 요청 입력·좁은 응답 codec·명시적
 fake-stream 수집·호스트 전달 사실 bridge만 추가하며 실제 소켓은 없습니다.
+[guest 진입점 소스](GENERATED_REPAIR_GUESTS.md)는 이미지 전용 고정 테스트/서버/relay launcher를
+가짜 의존성으로만 검사하며 호스트 우회 실행·활성 엔진/세션 연결이 아닙니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST
