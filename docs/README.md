@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The current local dashboard shows static inventory and does not require website deployment.
 
-## Current work — 2026-11-12 KST
+## Current work — 2026-11-13 KST
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
@@ -47,6 +47,10 @@ host-only bridge to supplied-data comparison. It adds no real socket/engine entr
 The [image-owned guest entry source](development/GENERATED_REPAIR_GUESTS.md) defines fixed T/A/B
 launchers for future images, checked only with fake dependencies/sockets. It does not activate the
 executor, provision an image or establish runtime evidence; host/guest clock domains stay separate.
+
+The [offline runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md) now binds declared
+local-client/config/image/asset identities to a fixed stopped-create argument template. It does not
+inspect those identities, call Docker or grant runtime readiness; the executor/session stay disabled.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -317,6 +321,7 @@ docs/
 | Generated repair pure lifecycle and failure simulation                  | [Lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](i18n/ko/development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | Generated repair bounded HTTP relay and supplied-fact bridge            | [HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](i18n/ko/development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | Image-owned guest entry source                                          | [Guest entries](development/GENERATED_REPAIR_GUESTS.md)                    | [이미지 소유 guest 진입점](i18n/ko/development/GENERATED_REPAIR_GUESTS.md)           |
+| Offline runtime profile                                                 | [Runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)         | [오프라인 runtime profile](i18n/ko/development/GENERATED_REPAIR_RUNTIME_PROFILE.md)  |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |
