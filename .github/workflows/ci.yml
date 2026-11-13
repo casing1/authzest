@@ -60,6 +60,10 @@ jobs:
         run: python -m pytest tests/test_generated_repair_runtime_profile.py
       - name: Check profile and create-plan refusal paths offline
         run: python -m pytest tests/test_generated_repair_runtime_profile_failures.py
+      - name: Check private input staging with inert temporary files
+        run: python -m pytest tests/test_generated_repair_staging.py
+      - name: Check staging failure and retained-partial paths
+        run: python -m pytest tests/test_generated_repair_staging_failures.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -93,6 +97,8 @@ jobs:
           tests/test_generated_repair_guest_failures.py
           tests/test_generated_repair_runtime_profile.py
           tests/test_generated_repair_runtime_profile_failures.py
+          tests/test_generated_repair_staging.py
+          tests/test_generated_repair_staging_failures.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py

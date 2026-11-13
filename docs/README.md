@@ -52,6 +52,10 @@ The [offline runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md) n
 local-client/config/image/asset identities to a fixed stopped-create argument template. It does not
 inspect those identities, call Docker or grant runtime readiness; the executor/session stay disabled.
 
+The [private input staging](development/GENERATED_REPAIR_STAGING.md) captures exact live-workspace
+checkpoints into separate readable T/A snapshots with private outer records and identity rechecks.
+This observes host files only; no actual mount, runtime baseline or new execution authority is added.
+
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
 report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
@@ -322,6 +326,7 @@ docs/
 | Generated repair bounded HTTP relay and supplied-fact bridge            | [HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](i18n/ko/development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | Image-owned guest entry source                                          | [Guest entries](development/GENERATED_REPAIR_GUESTS.md)                    | [이미지 소유 guest 진입점](i18n/ko/development/GENERATED_REPAIR_GUESTS.md)           |
 | Offline runtime profile                                                 | [Runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)         | [오프라인 runtime profile](i18n/ko/development/GENERATED_REPAIR_RUNTIME_PROFILE.md)  |
+| Private captured input staging                                          | [Input staging](development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](i18n/ko/development/GENERATED_REPAIR_STAGING.md)               |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |
