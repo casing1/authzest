@@ -71,6 +71,8 @@ The [guest entry source](GENERATED_REPAIR_GUESTS.md) adds image-only fixed test/
 with fake-dependency tests, not a host execution fallback or active engine/session connection.
 The [offline runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) validates supplied engine/image
 bindings and constructs fixed stopped-create argument data, without inspection, transport or readiness.
+The [private input stage](GENERATED_REPAIR_STAGING.md) adds separate captured T/A files and host-only
+records with live checkpoint/identity rechecks; it does not mount, execute or establish a before baseline.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
