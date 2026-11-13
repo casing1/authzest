@@ -71,7 +71,7 @@ def test_committed_inventory_matches_without_promoting_reference_metadata():
     }
 
 
-def test_only_historical_and_fixed_reference_artifacts_have_explicit_lf_attributes():
+def test_only_inventoried_artifacts_have_explicit_lf_attributes():
     root = Path(__file__).resolve().parents[1]
     manifest = json.loads((root / MANIFEST_PATH).read_text(encoding="utf-8"))
     historical = [item["path"] for group in manifest["groups"] for item in group["files"]]
@@ -82,7 +82,15 @@ def test_only_historical_and_fixed_reference_artifacts_have_explicit_lf_attribut
         "tests/fixtures/evaluation_reference/v1/references.json",
         "tests/fixtures/evaluation_reference/v1/tasks.json",
     ]
-    expected = sorted([path, "text", "eol=lf"] for path in historical + reference)
+    # #152 guest byte pins are separate from #84 historical/reference artifacts.
+    guest_assets = [
+        "runtime/generated_repair/_guest_common.py",
+        "runtime/generated_repair/app_launcher.py",
+        "runtime/generated_repair/relay_launcher.py",
+        "runtime/generated_repair/test_launcher.py",
+        "src/authzest/runner/_generated_repair_http.py",
+    ]
+    expected = sorted([path, "text", "eol=lf"] for path in historical + reference + guest_assets)
     lines = (root / ".gitattributes").read_text(encoding="utf-8").splitlines()
     actual = sorted(
         line.split() for line in lines if line.strip() and not line.lstrip().startswith("#")

@@ -1,5 +1,10 @@
 # Keep inventoried text bytes stable across Git checkout newline settings.
 # The checker hashes bytes without normalization; do not refresh hashes blindly.
+runtime/generated_repair/_guest_common.py text eol=lf
+runtime/generated_repair/app_launcher.py text eol=lf
+runtime/generated_repair/relay_launcher.py text eol=lf
+runtime/generated_repair/test_launcher.py text eol=lf
+src/authzest/runner/_generated_repair_http.py text eol=lf
 src/authzest/codex/owner_policy_recommendation.py text eol=lf
 src/authzest/codex/owner_policy_repair_pair.py text eol=lf
 src/authzest/codex/owner_policy_review.py text eol=lf

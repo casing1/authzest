@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 현재 로컬 대시보드는 정적 목록을 표시하며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-11-12 KST
+## 현재 작업 — 2026-11-13 KST
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
@@ -46,6 +46,10 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 [이미지 소유 guest 진입점 소스](development/GENERATED_REPAIR_GUESTS.md)는 추후 이미지용 고정
 T/A/B launcher를 가짜 의존성·소켓으로만 검사합니다. 실행기 활성화·이미지 준비·런타임 근거를
 추가하지 않으며 호스트와 guest 시계 기준을 분리합니다.
+
+[오프라인 runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)은 선언한 로컬
+client/config/이미지/자산 식별자를 고정 정지 생성 인자 템플릿에 결합합니다. 실제 식별자 검사·Docker
+호출·준비 완료 권한이 아니고 executor/세션은 비활성입니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -300,6 +304,7 @@ docs/
 | 생성 수정 순수 생명주기·실패 모의                  | [Lifecycle model](../../development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | 생성 수정 제한된 HTTP relay·전달 사실 bridge       | [HTTP relay](../../development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | 이미지 소유 guest 진입점 소스                      | [Guest entries](../../development/GENERATED_REPAIR_GUESTS.md)                    | [이미지 소유 guest 진입점](development/GENERATED_REPAIR_GUESTS.md)           |
+| 오프라인 runtime profile                           | [Runtime profile](../../development/GENERATED_REPAIR_RUNTIME_PROFILE.md)         | [오프라인 runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |

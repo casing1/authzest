@@ -63,6 +63,8 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 fake-stream 수집·호스트 전달 사실 bridge만 추가하며 실제 소켓은 없습니다.
 [guest 진입점 소스](GENERATED_REPAIR_GUESTS.md)는 이미지 전용 고정 테스트/서버/relay launcher를
 가짜 의존성으로만 검사하며 호스트 우회 실행·활성 엔진/세션 연결이 아닙니다.
+[오프라인 runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md)은 전달 엔진/이미지 선언을 검증하고
+고정 정지 생성 인자 데이터만 만들며 실제 검사·전송·준비 완료를 추가하지 않습니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST

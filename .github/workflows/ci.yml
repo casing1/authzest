@@ -56,6 +56,10 @@ jobs:
         run: python -m pytest tests/test_generated_repair_guest.py
       - name: Check guest entry refusal paths with fake dependencies
         run: python -m pytest tests/test_generated_repair_guest_failures.py
+      - name: Check supplied runtime profiles without an engine
+        run: python -m pytest tests/test_generated_repair_runtime_profile.py
+      - name: Check profile and create-plan refusal paths offline
+        run: python -m pytest tests/test_generated_repair_runtime_profile_failures.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -87,6 +91,8 @@ jobs:
           tests/test_generated_repair_http_failures.py
           tests/test_generated_repair_guest.py
           tests/test_generated_repair_guest_failures.py
+          tests/test_generated_repair_runtime_profile.py
+          tests/test_generated_repair_runtime_profile_failures.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py

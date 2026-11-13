@@ -69,6 +69,8 @@ The [bounded HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) adds only a fixed reque
 narrow response codec, explicit fake-stream capture and host-only supplied-fact bridge; no real sockets.
 The [guest entry source](GENERATED_REPAIR_GUESTS.md) adds image-only fixed test/server/relay launchers
 with fake-dependency tests, not a host execution fallback or active engine/session connection.
+The [offline runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) validates supplied engine/image
+bindings and constructs fixed stopped-create argument data, without inspection, transport or readiness.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
