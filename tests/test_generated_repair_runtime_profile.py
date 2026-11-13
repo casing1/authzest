@@ -26,6 +26,7 @@ from authzest.runner._generated_repair_runtime_profile import (
 # Read maintained source only during collection, before effect guards. These are
 # digest regressions, never imports/compilation of an application or test input.
 _REPO = Path(__file__).resolve().parents[1]
+_ATTRIBUTES = (_REPO / ".gitattributes").read_text(encoding="utf-8").splitlines()
 _ASSET_DIGESTS = {
     path.name: sha256(path.read_bytes()).hexdigest()
     for path in (
@@ -111,6 +112,20 @@ def test_expected_assets_are_current_source_bindings_not_image_observations():
         assets.clear()
         assert expected_assets(role)
     assert sha256(b"{}\n").hexdigest() == EMPTY_CONFIG_SHA256
+
+
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "runtime/generated_repair/_guest_common.py",
+        "runtime/generated_repair/app_launcher.py",
+        "runtime/generated_repair/relay_launcher.py",
+        "runtime/generated_repair/test_launcher.py",
+        "src/authzest/runner/_generated_repair_http.py",
+    ],
+)
+def test_inventoried_guest_bytes_keep_lf_on_windows_checkout(relative_path):
+    assert relative_path + " text eol=lf" in _ATTRIBUTES
 
 
 def test_profile_is_immutable_canonical_declaration_without_runtime_receipt():
