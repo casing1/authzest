@@ -67,6 +67,8 @@ fake-stream 수집·호스트 전달 사실 bridge만 추가하며 실제 소켓
 고정 정지 생성 인자 데이터만 만들며 실제 검사·전송·준비 완료를 추가하지 않습니다.
 [비공개 입력 stage](GENERATED_REPAIR_STAGING.md)는 분리된 T/A 캡처 파일·호스트 기록과 live
 checkpoint/식별자 재검사만 추가하며 mount·실행·before 근거를 만들지 않습니다.
+[런타임 메타데이터 reader](GENERATED_REPAIR_PREFLIGHT.md)는 고정 Engine GET·제한된 비교만 가짜
+소켓으로 검사하며 효과적 격리·세션 준비 완료는 여전히 미구현입니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST
