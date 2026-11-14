@@ -80,7 +80,9 @@ def sample():
 
 
 @pytest.fixture(autouse=True)
-def no_real_effects(monkeypatch):
+def no_real_effects(monkeypatch, request):
+    assert len(request.node.nodeid) < 512
+
     def forbidden(*args, **kwargs):
         pytest.fail("Metadata tests may only use supplied frames or a fixed in-memory reader")
 
@@ -104,6 +106,16 @@ def no_real_effects(monkeypatch):
         b"\xff",
         b"x" * 65537,
         b'{"x":' + b"[" * 17 + b"0" + b"]" * 17 + b"}",
+    ],
+    ids=[
+        "empty",
+        "primitive",
+        "array",
+        "duplicate-key",
+        "nonfinite",
+        "non-utf8",
+        "body-over-limit",
+        "too-deep",
     ],
 )
 def test_bad_json_refuses_before_any_runtime_authority(raw):

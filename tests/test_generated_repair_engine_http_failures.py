@@ -50,7 +50,9 @@ class MemorySocket:
 
 
 @pytest.fixture(autouse=True)
-def no_real_boundaries(monkeypatch):
+def no_real_boundaries(monkeypatch, request):
+    assert len(request.node.nodeid) < 512
+
     def forbidden(*args, **kwargs):
         pytest.fail("Only maintained in-memory Engine socket fakes may run")
 
@@ -103,6 +105,34 @@ def installed(monkeypatch):
         response(body=b"{}extra"),
         response(b"X-Large: " + b"x" * 16384 + b"\r\n"),
         response(b"".join(b"X-" + str(n).encode() + b": y\r\n" for n in range(33))),
+    ],
+    ids=[
+        "redirect",
+        "server-error",
+        "http2",
+        "bare-lf",
+        "duplicate-length",
+        "mixed-framing",
+        "negative-length",
+        "nonnumeric-length",
+        "short-length-body",
+        "extra-length-body",
+        "oversized-length",
+        "unsupported-transfer",
+        "gzip-content",
+        "folded-header",
+        "bad-header-name",
+        "control-header",
+        "non-json",
+        "chunk-nonhex",
+        "chunk-extension",
+        "chunk-terminator",
+        "chunk-trailer",
+        "chunk-truncated",
+        "close-body-over-limit",
+        "extra-body",
+        "header-over-limit",
+        "too-many-headers",
     ],
 )
 def test_unsupported_or_ambiguous_response_never_returns_evidence(installed, wire):
