@@ -64,6 +64,10 @@ jobs:
         run: python -m pytest tests/test_generated_repair_staging.py
       - name: Check staging failure and retained-partial paths
         run: python -m pytest tests/test_generated_repair_staging_failures.py
+      - name: Check fixed Engine HTTP with fake sockets only
+        run: python -m pytest tests/test_generated_repair_engine_http.py tests/test_generated_repair_engine_http_failures.py
+      - name: Check runtime metadata with supplied frames only
+        run: python -m pytest tests/test_generated_repair_preflight.py tests/test_generated_repair_preflight_failures.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -99,6 +103,10 @@ jobs:
           tests/test_generated_repair_runtime_profile_failures.py
           tests/test_generated_repair_staging.py
           tests/test_generated_repair_staging_failures.py
+          tests/test_generated_repair_engine_http.py
+          tests/test_generated_repair_engine_http_failures.py
+          tests/test_generated_repair_preflight.py
+          tests/test_generated_repair_preflight_failures.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py
