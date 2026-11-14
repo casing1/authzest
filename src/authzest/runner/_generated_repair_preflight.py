@@ -163,9 +163,12 @@ def _small_object(value):
             pending.extend((child, depth + 1) for child in item)
         elif type(item) is str:
             _text(item, 2048, empty=True)
-        elif item is not None and type(item) is not bool:
-            if type(item) is not int or not 0 <= item <= 2**63 - 1:
-                raise _invalid()
+        elif (
+            item is not None
+            and type(item) is not bool
+            and (type(item) is not int or not 0 <= item <= 2**63 - 1)
+        ):
+            raise _invalid()
     return decode(canonical({"value": value}))["value"]
 
 
