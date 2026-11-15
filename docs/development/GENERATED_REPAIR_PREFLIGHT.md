@@ -77,6 +77,12 @@ dependency lock, recipe or maintained guest assets. No actual supported Engine v
 invented by the fake tests. Local CLI executable/config identities remain unobserved because this
 reader does not execute that client.
 
+The separate [host archive comparison](GENERATED_REPAIR_IMAGES.md) can compare supplied rootfs
+catalogs with maintained assets and exact wheel payloads without extracting or running them. It
+reports granular file observations and retains unverified pip-generated files; even a match keeps
+whole contents/configuration/readiness false. Metadata reader results cannot substitute for those
+file observations, and neither helper authenticates a supplied export's image identity.
+
 Results never grant readiness, generated execution or application authority: `ready`,
 `execution_authorized` and `verified_fix` remain false, authorization unknown and generated runtime
 not run. Exported JSON is historical data, not a resumable receipt or before baseline. Raw daemon

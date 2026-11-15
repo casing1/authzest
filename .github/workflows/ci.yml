@@ -76,6 +76,10 @@ jobs:
         run: python -m pytest tests/test_generated_image_inputs.py
       - name: Check image input refusal paths in a fresh interpreter
         run: python -m pytest tests/test_generated_image_inputs_failures.py
+      - name: Check minimal image contexts with inert local inputs
+        run: python -m pytest tests/test_generated_image_context.py
+      - name: Check host archive comparison without extraction or image execution
+        run: python -m pytest tests/test_generated_image_contents.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -119,6 +123,8 @@ jobs:
           tests/test_generated_repair_bootstrap_failures.py
           tests/test_generated_image_inputs.py
           tests/test_generated_image_inputs_failures.py
+          tests/test_generated_image_context.py
+          tests/test_generated_image_contents.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py

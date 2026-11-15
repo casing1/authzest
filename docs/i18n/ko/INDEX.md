@@ -63,6 +63,9 @@ client/config/이미지/자산 식별자를 고정 정지 생성 인자 템플�
 lock·원본 base metadata digest 연결을 기록합니다. 오프라인 검사기는 입력 일관성을 관찰하며 이미지
 내부 내용·출처를 입증하지 않습니다. 별도 비공개 version/info bootstrap은 임시 이미지 ID 없이 동작하며
 runtime profile·준비 완료 권한을 만들지 않습니다.
+같은 가이드는 비공개 최소 context 준비와 압축 해제 없는 호스트 rootfs 비교도 설명합니다. 제공한
+base/wheel/자산 목록의 세분화된 파일 사실을 추가하며 인증된 이미지 식별자·전체 이미지 검증·런타임
+권한은 만들지 않습니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로

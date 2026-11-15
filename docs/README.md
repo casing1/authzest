@@ -64,6 +64,9 @@ The [pinned image inputs](development/GENERATED_REPAIR_IMAGES.md) record two pla
 T/A/B recipes, wheel locks and raw base-metadata digest chains. The offline checker observes input
 consistency, not image contents or provenance. A separate private version/info bootstrap needs no
 placeholder image IDs and grants no runtime profile or readiness.
+The same guide now covers private minimal-context preparation and extraction-free host rootfs
+comparison against supplied base/wheel/asset inventories. These helpers add granular file facts,
+not authenticated image identities, whole-image verification or runtime authority.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,

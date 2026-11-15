@@ -72,6 +72,9 @@ checkpoint/식별자 재검사만 추가하며 mount·실행·before 근거를 �
 [고정 이미지 입력](GENERATED_REPAIR_IMAGES.md)은 두 platform의 빌드 전 recipe/lock과 오프라인 일관성
 검사를 추가합니다. 별도 비공개 version/info bootstrap은 임시 image ID 없이 미고정 식별자를 관찰하며,
 두 경로 모두 전체 profile·빌드한 이미지·실행 권한을 만들지 않습니다.
+비공개 context 준비는 검사한 선택 입력만 복사하고 호스트 archive 비교는 압축 해제 없이 제공한
+base/자산/wheel 사실을 검사합니다. Receipt는 과거 데이터이며 전체 이미지/config 검증·활성 실행/세션
+연결은 여전히 미완료입니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST

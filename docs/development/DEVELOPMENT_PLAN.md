@@ -78,6 +78,9 @@ bounded comparison, tested with fake sockets only; effective isolation/session r
 The [pinned image inputs](GENERATED_REPAIR_IMAGES.md) add unbuilt two-platform recipes/locks and
 offline consistency checks. A separate private version/info bootstrap observes unpinned identity
 without fabricating image IDs; neither path creates a full profile, built image or execution authority.
+Private context preparation now copies only the checked selected inputs, and host archive comparison
+checks supplied base/asset/wheel facts without extraction. Their receipts remain historical data;
+whole-image/configuration verification and active execution/session integration are still pending.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST

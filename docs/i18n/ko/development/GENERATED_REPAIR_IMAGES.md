@@ -11,13 +11,14 @@
 ## 범위 — 2026-11-15 KST
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 기반은 분리된 T/테스트, A/애플리케이션,
-B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입력 검사기를 추가하며 이미지 빌더·설치기나
-활성 생성 코드 실행기는 추가하지 않습니다. #152는 열린 상태입니다. Manifest의
+B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입력 검사·비공개 context 준비·호스트 archive
+비교를 추가하며 빌더나 활성 생성 코드 실행기는 추가하지 않습니다. #152는 열린 상태입니다. Manifest의
 `status: "candidate-not-built"`, `image_ids: null`, `contents_verified: false`를 유지하며 입력 일치로
 준비된 이미지나 살아 있는 profile을 만들어내지 않습니다.
 
-이번 변경에는 build·pull·load·base layer 가져오기·컨테이너 생성/시작·생성 코드 실행·AI 호출이 없습니다.
-새 공개 AuthZest 명령·런타임 결정·릴리스도 추가하지 않습니다.
+저장소 helper는 build·pull·load·layer 가져오기·컨테이너 생성/시작·생성 코드 실행·Docker CLI/Engine
+요청·AI 호출을 수행하지 않습니다. 새 공개 AuthZest 명령·런타임 결정·릴리스도 추가하지 않습니다.
+운영자 로컬 receipt는 별도 비공개 기록이며 이식 가능한 manifest의 빌드 전 후보 상태를 대체하지 않습니다.
 
 ## 기록한 후보 입력
 
@@ -52,13 +53,15 @@ index는 선언한 Linux architecture/variant를 선택하며, 선택 config는 
 
 이는 입력 식별자·일관성 검사입니다. 보존한 upstream 문서나 wheel 선언이 발행자를 인증하거나 서명을
 검증하거나 공급망 출처를 입증하지 않습니다. 같은 기록 입력의 digest와 일치한다는 사실은 이미지 내부
-파일의 독립적 증거가 아닙니다. Root filesystem layer나 완성한 이미지는 검사하지 않습니다.
+파일의 독립적 증거가 아닙니다. 이 입력 검사는 root filesystem layer나 완성한 이미지를 검사하지
+않으며, 아래의 별도 호스트 archive 비교는 더 좁고 명시적인 관찰 범위만 갖습니다.
 
 향후 recipe는 저장소 checkout·사용자 파일·살아 있는 workspace 대신 선택한 `requirements.txt`,
 `wheels/`, 고정 `assets/`만 있는 최소 준비 context를 기대합니다. T/A는 네트워크 비활성,
 `--no-index`, `--no-deps`, `--require-hashes`를 사용하는 wheel 전용 설치를 기술하며 B는 package를
 설치하지 않습니다. 검사 중 Dockerfile 지시는 비활성 텍스트이고 flag는 관찰한 빌드 격리·런타임 제약이
-아닙니다. Context 준비·검토한 build/provisioning·결과 로컬 image ID 검증은 별도 작업입니다.
+아닙니다. 아래 context helper가 이 입력을 파일로 준비하며 검토한 build/provisioning·결과 로컬
+image ID 검증은 별도 운영 작업입니다.
 
 ## 개발 checkout에서 검사
 
@@ -76,6 +79,53 @@ registry/Engine 접속·Dockerfile 실행·wheel 코드 import는 하지 않습�
 디렉터리를 받습니다. 정확한 선택 파일 이름, 제한된 일반 파일 바이트·크기/digest, 비활성 wheel ZIP
 metadata를 검사하며 다운로드·설치·import는 하지 않습니다. 이 추가 바이트 관찰도 서명·이미지 내부
 내용·비트 단위 재현 빌드·효과적 resource 제약·검증된 수정을 입증하지 않습니다.
+
+## 새 비공개 build context
+
+[scripts/generated_image_context.py](../../../../scripts/generated_image_context.py)는
+`prepare_image_context(repo, wheelhouse, parent, role, platform)`를 제공합니다. 먼저 입력 manifest와
+정확한 기존 wheel 집합을 재검사한 뒤 호출자가 제공한 기존 비공개·소유 parent 아래 새 비공개 bundle을
+만듭니다. Parent는 소스 저장소·wheelhouse와 분리돼야 합니다. 출력 생성에는 지원하는 POSIX Python
+소스 환경이 필요하며 Windows 쓰기는 미지원입니다. 두 선언 platform의 비활성 입력은 준비할 수 있지만
+platform 간 실제 빌드 수용을 의미하지 않습니다.
+
+Build context는 `Dockerfile`, `requirements.txt`, `wheels/`, 역할별 고정 `assets/`만 포함하며 B는
+빈 wheel lock의 주석을 유지합니다. 애플리케이션·생성 테스트·oracle·workspace 기록·계정 데이터·저장소
+checkout은 포함하지 않습니다. Context 디렉터리는 `0700`, 일반 single-link 파일은 `0600`이며 wheel
+바이트는 불투명 파일로 복사하며 코드를 import하거나 payload를 호스트 디렉터리에 풀지 않습니다.
+
+불변 `PreparedImageContext` 결과는 build context **밖**의 `receipt.json`을 가리킵니다. Inventory는
+소스 경로 없이 상대 이름·크기·해시·파일 식별자·manifest/recipe/lock 결합을 기록합니다.
+`check_prepared_context(context_path, receipt)`는 향후 운영 호출자가 사용하기 전 정확한 트리·바이트·
+권한·식별자·외부 기록을 재검사합니다. 추가 파일·변경된 링크/권한·불일치 기록을 거부합니다. Receipt는
+과거 데이터이며 빌드 권한·발행자 인증·악의적 로컬 동시 쓰기 방어 증거가 아닙니다.
+
+준비 과정은 충돌 대상을 재사용하거나 실패한 할당을 재시도하거나 부분 출력을 삭제하지 않습니다.
+실패 시 시도/확인한 bundle·부분 inventory를 보존하고 할당·descriptor close 불확실성을 구분합니다.
+Build·runtime·readiness flag는 false이며 helper에 Docker 호출·새 공개 CLI는 없습니다.
+
+## 호스트 archive 목록과 선택한 내용 비교
+
+[scripts/generated_image_contents.py](../../../../scripts/generated_image_contents.py)는 명시적으로
+제공한 로컬의 압축하지 않은 rootfs tar 파일을 처리합니다. `inventory_archive(path)`는 제한된 chunk로
+경로·종류·권한·소유자·크기·파일 해시·제한된 distribution metadata를 불변 `ArchiveCatalog`에 기록합니다.
+항목을 압축 해제하거나 호스트에서 링크를 따라가거나 코드를 import하거나 Engine에 접속하거나
+컨테이너를 export하지 않습니다. Catalog는 전달한 관찰값이지 인증된 이미지 식별자·실행 권한이 아닙니다.
+
+`compare_image_contents(repo, base_catalog, role_catalog, wheelhouse, role, platform)`는 현재
+`linux/arm64` T/A/B 비교만 지원합니다. 입력/wheel 검사를 재사용하고 제공한 base 목록·관리하는 guest
+자산·일반 wheel payload·설치된 distribution metadata를 비교하며 누락·충돌·예상 밖 추가를 거부합니다.
+호스트에 이식 가능한 데이터 비교이며 Windows나 추가 platform의 런타임 지원이 아닙니다. 관찰한
+Docker 관리 파일 `etc/hostname`, `etc/hosts`, `etc/resolv.conf` 예외는 변경 없는 base 파일로 취급하지
+않고 명시적으로 나열합니다.
+
+성공 시 `baseline_unchanged`, `wheel_payloads_verified`, `maintained_assets_verified`,
+`installed_package_metadata_verified` 같은 세분화된 사실을 보고합니다. Pip이 만드는 `RECORD`와
+entrypoint script의 경로·해시는 `unverified_generated_files`에 남기며 내부 내용은 **독립적으로 검증하지
+않습니다**. 전달한 base catalog만으로 선언한 base 이미지에서 export했다는 사실을 입증하지 못합니다.
+Timestamp·확장 속성·서명·이미지 config·효과적 런타임 동작도 입증하지 않습니다. 따라서 선택 비교가
+성공해도 `contents_verified`, `image_configuration_verified`, `runtime_ready`, `runtime_invoked`,
+`execution_authorized`는 false입니다.
 
 ## 분리된 Engine bootstrap과 남은 조건
 

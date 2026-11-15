@@ -71,6 +71,11 @@ UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 모의 검사를 근거로 실제 지원 Engine 버전·이미지 집합을 만들어내지 않습니다. reader가 CLI를 실행하지
 않으므로 로컬 CLI 바이너리·설정 식별자도 관찰되지 않은 상태입니다.
 
+별도 [호스트 archive 비교](GENERATED_REPAIR_IMAGES.md)는 제공한 rootfs catalog를 압축 해제·실행하지
+않고 관리형 자산·정확한 wheel payload와 비교할 수 있습니다. 세분화된 파일 관찰을 보고하고 검증하지
+않은 pip 생성 파일을 보존하며, 일치해도 전체 내용/config/readiness는 false입니다. 메타데이터 reader
+결과는 이 파일 관찰을 대체하지 않으며 두 helper 모두 제공한 export의 이미지 신원을 인증하지 않습니다.
+
 결과의 `ready`, `execution_authorized`, `verified_fix`는 false, authorization은 unknown이며 생성
 runtime은 미실행입니다. 출력 JSON은 과거 데이터이지 재개 가능한 영수증·before 근거가 아닙니다.
 원시 daemon 정보·로컬 endpoint 상세는 비공개로 유지해야 하며 자동 공개 업로드는 추가하지 않습니다.
