@@ -12,6 +12,7 @@ import subprocess
 import zipfile
 from hashlib import sha256
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from scripts import generated_image_inputs as inputs
@@ -221,6 +222,95 @@ def test_zip_directory_limits_are_enforced_before_eager_parser(monkeypatch, chan
     monkeypatch.setattr(inputs.zipfile, "ZipFile", eager_parser_forbidden)
     with pytest.raises(inputs.ImageInputsError):
         inputs._metadata(raw, {}, "httpx", "1.0", set())
+
+
+_STAT_FIELDS = (
+    "st_dev",
+    "st_ino",
+    "st_mode",
+    "st_uid",
+    "st_gid",
+    "st_nlink",
+    "st_size",
+    "st_mtime_ns",
+    "st_ctime_ns",
+)
+
+
+def _stat_copy(info, **updates):
+    values = {key: getattr(info, key) for key in _STAT_FIELDS}
+    values["st_birthtime_ns"] = 100
+    return SimpleNamespace(**(values | updates))
+
+
+def test_windows_cross_api_binding_retains_creation_time_without_equating_ctime(tmp_path):
+    target = tmp_path / "inert"
+    target.write_bytes(b"inert")
+    path_stat = _stat_copy(target.lstat(), st_ctime_ns=101)
+    opened_stat = _stat_copy(target.lstat(), st_ctime_ns=102)
+    assert inputs._identity(path_stat) != inputs._identity(opened_stat)
+    assert inputs._opened_binding(path_stat, windows=True) == inputs._opened_binding(
+        opened_stat, windows=True
+    )
+    assert inputs._opened_binding(path_stat, windows=False) != inputs._opened_binding(
+        opened_stat, windows=False
+    )
+
+
+@pytest.mark.parametrize(
+    "field", [key for key in _STAT_FIELDS if key != "st_ctime_ns"] + ["st_birthtime_ns"]
+)
+def test_windows_binding_preserves_other_identity_fields(tmp_path, field):
+    target = tmp_path / "inert"
+    target.write_bytes(b"inert")
+    before = _stat_copy(target.lstat())
+    changed = _stat_copy(before, **{field: getattr(before, field) + 1})
+    assert inputs._opened_binding(before, windows=True) != inputs._opened_binding(
+        changed, windows=True
+    )
+
+
+@pytest.mark.parametrize("field", _STAT_FIELDS)
+def test_full_descriptor_drift_is_still_refused_and_closed(tmp_path, monkeypatch, field):
+    target = tmp_path / "inert"
+    target.write_bytes(b"inert")
+    real_fstat = os.fstat
+    calls = []
+
+    def drifting(descriptor):
+        info = real_fstat(descriptor)
+        calls.append(descriptor)
+        if len(calls) >= 2:
+            return _stat_copy(info, **{field: getattr(info, field) + 1})
+        return info
+
+    monkeypatch.setattr(inputs.os, "fstat", drifting)
+    with pytest.raises(inputs.ImageInputsError, match="changed during read"):
+        inputs._read_regular(tmp_path, "inert", 20)
+    assert len(calls) == 2
+    with pytest.raises(OSError):
+        real_fstat(calls[0])
+
+
+def test_full_path_ctime_drift_is_still_refused(tmp_path, monkeypatch):
+    target = tmp_path / "inert"
+    target.write_bytes(b"inert")
+    real_lstat = Path.lstat
+    reads = 0
+
+    def changed_path(path, *args, **kwargs):
+        nonlocal reads
+        info = real_lstat(path, *args, **kwargs)
+        if path == target:
+            reads += 1
+            if reads >= 2:
+                return _stat_copy(info, st_ctime_ns=info.st_ctime_ns + 1)
+        return info
+
+    monkeypatch.setattr(Path, "lstat", changed_path)
+    with pytest.raises(inputs.ImageInputsError, match="changed during read"):
+        inputs._read_regular(tmp_path, "inert", 20)
+    assert reads == 2
 
 
 @pytest.mark.parametrize(

@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import socket
+import stat
 import subprocess
 import zipfile
 from hashlib import sha256
@@ -100,11 +101,22 @@ def wheel_bytes(name: str, version: str = "1.0", requires_dist: tuple[str, ...] 
             + "".join("Requires-Dist: " + item + "\n" for item in requires_dist)
             + "\n"
         )
-        archive.writestr(prefix + "METADATA", metadata)
-        archive.writestr(
-            prefix + "WHEEL", "Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"
-        )
+        for name, content in (
+            (prefix + "METADATA", metadata),
+            (prefix + "WHEEL", "Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n"),
+        ):
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            info.create_system = 3
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            archive.writestr(info, content)
     return output.getvalue()
+
+
+def test_synthetic_wheel_bytes_are_independent_of_current_zip_clock(monkeypatch) -> None:
+    monkeypatch.setattr(zipfile.time, "localtime", lambda *_: (2026, 11, 15, 0, 0, 0, 0, 319, 0))
+    first = wheel_bytes("httpx")
+    monkeypatch.setattr(zipfile.time, "localtime", lambda *_: (2026, 11, 15, 0, 0, 2, 0, 319, 0))
+    assert wheel_bytes("httpx") == first
 
 
 def manifest_data() -> dict:

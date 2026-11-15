@@ -549,6 +549,22 @@ def _identity(value: os.stat_result) -> tuple:
     )
 
 
+def _opened_binding(value: os.stat_result, *, windows: bool | None = None) -> tuple:
+    """Compare only cross-method-compatible fields; full drift pins stay intact."""
+    if windows is None:
+        windows = os.name == "nt"
+    if not windows:
+        return _identity(value)
+    # CPython 3.12 path stat copies birthtime into ctime, whereas fstat exposes
+    # ChangeTime. Keep both full per-method identities and compare birthtime
+    # across methods: cpython Modules/posixmodule.c win32_xstat and
+    # Python/fileutils.c _Py_fstat_noraise / _Py_attribute_data_to_stat.
+    birthtime = getattr(value, "st_birthtime_ns", None)
+    if type(birthtime) is not int or birthtime < 0:
+        _fail("Missing Windows file birthtime binding")
+    return _identity(value)[:-1] + (birthtime,)
+
+
 def _read_regular(root: Path, relative: str, limit: int) -> bytes:
     if type(relative) is not str or any(part in {"", ".", ".."} for part in relative.split("/")):
         _fail("Invalid fixed relative path")
@@ -575,7 +591,8 @@ def _read_regular(root: Path, relative: str, limit: int) -> bytes:
     )
     descriptor = os.open(path, flags)
     try:
-        if _identity(os.fstat(descriptor)) != _identity(before):
+        opened_before = os.fstat(descriptor)
+        if _opened_binding(opened_before) != _opened_binding(before):
             _fail("Input changed before read")
         chunks, size = [], 0
         while size <= limit:
@@ -586,7 +603,7 @@ def _read_regular(root: Path, relative: str, limit: int) -> bytes:
             size += len(chunk)
         if size > limit or size != before.st_size:
             _fail("Input changed/exceeded byte bound")
-        if _identity(os.fstat(descriptor)) != _identity(before) or _identity(
+        if _identity(os.fstat(descriptor)) != _identity(opened_before) or _identity(
             path.lstat()
         ) != _identity(before):
             _fail("Input changed during read")
