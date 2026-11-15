@@ -28,7 +28,7 @@ MAX_ARCHIVE_BYTES = 268_435_456
 MAX_ENTRIES = 16_384
 CHUNK = 65_536
 SITE = "usr/local/lib/python3.12/site-packages/"
-_DYNAMIC = {"etc/hostname", "etc/hosts", "etc/resolv.conf"}
+_DOCKER_MANAGED = {"etc/hostname", "etc/hosts", "etc/resolv.conf"}
 
 
 class ImageContentsError(ValueError):
@@ -491,17 +491,6 @@ def compare_image_contents(
     ):
         _fail("Manifest changed before contents comparison")
     baseline, observed = _catalog_map(base_catalog), _catalog_map(role_catalog)
-    for entries in (baseline, observed):
-        for path in _DYNAMIC & set(entries):
-            item = entries[path]
-            if (
-                item.kind != "file"
-                or item.mode != 0o644
-                or item.uid
-                or item.gid
-                or item.size > CHUNK
-            ):
-                _fail("Unexpected Docker-managed file metadata")
     names = data["roles"][role]["platforms"][platform]["packages"]
     payloads, records, scripts = _wheel_files(data, Path(wheelhouse), names, platform)
     expected = {"opt/authzest-guest": ("directory", 0o555, 0, None)}
@@ -542,24 +531,13 @@ def compare_image_contents(
                 expected[parent] = ("directory", 0o755, 0, None)
             parent = posixpath.dirname(parent)
     for path, before in baseline.items():
-        if path in _DYNAMIC:
-            continue
         if path in expected or path in generated:
             _fail("Selected additions collide with baseline paths")
         if observed.get(path) != before:
             _fail("Baseline rootfs content/metadata changed: " + path)
     unverified = []
     for path, item in observed.items():
-        if path in _DYNAMIC:
-            if (
-                item.kind != "file"
-                or item.mode != 0o644
-                or item.uid != 0
-                or item.gid != 0
-                or item.size > 65_536
-            ):
-                _fail("Unexpected Docker-managed file metadata")
-        elif path in generated:
+        if path in generated:
             expected_mode = 0o644 if generated[path] == "pip-record" else 0o755
             if (
                 item.kind != "file"
@@ -609,7 +587,8 @@ def compare_image_contents(
         "installed_package_metadata_verified": True,
         "installed_packages": package_versions,
         "unverified_generated_files": sorted(unverified, key=lambda item: item["path"]),
-        "docker_managed_exclusions": sorted(_DYNAMIC & (set(baseline) | set(observed))),
+        "docker_managed_exclusions": [],
+        "docker_managed_files_compared": sorted(_DOCKER_MANAGED & set(baseline)),
         "contents_verified": False,
         "image_configuration_verified": False,
         "runtime_ready": False,

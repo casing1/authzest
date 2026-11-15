@@ -116,8 +116,8 @@ Build·runtime·readiness flag는 false이며 helper에 Docker 호출·새 공�
 `linux/arm64` T/A/B 비교만 지원합니다. 입력/wheel 검사를 재사용하고 제공한 base 목록·관리하는 guest
 자산·일반 wheel payload·설치된 distribution metadata를 비교하며 누락·충돌·예상 밖 추가를 거부합니다.
 호스트에 이식 가능한 데이터 비교이며 Windows나 추가 platform의 런타임 지원이 아닙니다. 관찰한
-Docker 관리 파일 `etc/hostname`, `etc/hosts`, `etc/resolv.conf` 예외는 변경 없는 base 파일로 취급하지
-않고 명시적으로 나열합니다.
+Docker 관리 파일 `etc/hostname`, `etc/hosts`, `etc/resolv.conf`도 다른 baseline 항목처럼 제공한 base의
+바이트와 metadata에 일치해야 합니다. 비교한 파일로 나열하며 비교 대상에서 제외하지 않습니다.
 
 성공 시 `baseline_unchanged`, `wheel_payloads_verified`, `maintained_assets_verified`,
 `installed_package_metadata_verified` 같은 세분화된 사실을 보고합니다. Pip이 만드는 `RECORD`와

@@ -126,9 +126,9 @@ image identities or execution capabilities.
 supports `linux/arm64` T/A/B comparisons only. It reuses the input/wheel checks, compares the supplied
 base inventory, maintained guest assets, ordinary wheel payloads and installed distribution metadata,
 and refuses missing/colliding/unexpected additions. This is a host-portable data comparison, not
-Windows or additional-platform runtime support. The observed Docker-managed `etc/hostname`,
-`etc/hosts` and `etc/resolv.conf` exceptions are listed explicitly rather than treated as unchanged
-base files.
+Windows or additional-platform runtime support. The Docker-managed `etc/hostname`, `etc/hosts` and
+`etc/resolv.conf` files must match the supplied base bytes and metadata, like every other baseline
+entry. They are listed as compared files and are not excluded from the comparison.
 
 Success reports granular facts such as `baseline_unchanged`, `wheel_payloads_verified`,
 `maintained_assets_verified` and `installed_package_metadata_verified`. Pip-generated `RECORD` and

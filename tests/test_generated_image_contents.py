@@ -9,7 +9,7 @@ import stat
 import subprocess
 import tarfile
 import zipfile
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from hashlib import sha256
 from pathlib import Path
 
@@ -91,12 +91,13 @@ def comparison_case(tmp_path, role="T"):
     wheelhouse.mkdir()
     base = {
         "usr/lib/base.txt": ("file", 0o644, b"baseline\n"),
-        "etc/hostname": ("file", 0o644, b"base-host\n"),
+        "etc/hostname": ("file", 0o755, b""),
+        "etc/hosts": ("file", 0o755, b""),
+        "etc/resolv.conf": ("file", 0o755, b""),
         "opt": ("directory", 0o755, b""),
         contents.SITE.rstrip("/"): ("directory", 0o755, b""),
     }
     observed = copy.deepcopy(base)
-    observed["etc/hostname"] = ("file", 0o644, b"role-host\n")
     observed["opt/authzest-guest"] = ("directory", 0o555, b"")
     for name in data["roles"][role]["assets"]:
         observed["opt/authzest-guest/" + name] = (
@@ -161,8 +162,38 @@ def test_comparison_verifies_selected_parts_without_promoting_full_contents(tmp_
     assert result["installed_package_metadata_verified"] is True
     assert result["contents_verified"] is result["runtime_ready"] is False
     assert result["runtime_invoked"] is result["execution_authorized"] is False
-    assert result["docker_managed_exclusions"] == ["etc/hostname"]
+    assert result["docker_managed_exclusions"] == []
+    assert result["docker_managed_files_compared"] == [
+        "etc/hostname",
+        "etc/hosts",
+        "etc/resolv.conf",
+    ]
     assert bool(result["unverified_generated_files"]) is (role != "B")
+
+
+@pytest.mark.parametrize("change", ["content", "mode", "ownership", "added", "missing"])
+def test_docker_managed_files_have_no_comparison_exemption(tmp_path, change):
+    repo, wheelhouse, base, observed = comparison_case(tmp_path, "B")
+    target = "etc/hostname"
+    if change == "content":
+        observed[target] = ("file", 0o755, b"changed")
+    elif change == "mode":
+        observed[target] = ("file", 0o644, b"")
+    elif change == "added":
+        del base[target]
+    elif change == "missing":
+        del observed[target]
+    before = write_archive(tmp_path / "base.tar", base)
+    after = write_archive(tmp_path / "role.tar", observed)
+    if change == "ownership":
+        after = replace(
+            after,
+            entries=tuple(
+                replace(entry, uid=1) if entry.path == target else entry for entry in after.entries
+            ),
+        )
+    with pytest.raises(contents.ImageContentsError, match="Baseline|Unexpected rootfs addition"):
+        contents.compare_image_contents(repo, before, after, wheelhouse, "B", "linux/arm64")
 
 
 @pytest.mark.parametrize(
