@@ -298,6 +298,53 @@ def read_engine(
     current decision checks. The optional synchronous hook is coordination, not
     consent. All body/framing bytes consume the supplied cumulative wire budget.
     """
+    return _read_fixed(
+        profile,
+        operation,
+        bootstrap=False,
+        deadline=deadline,
+        budget=budget,
+        before_connect=before_connect,
+    )
+
+
+def _bootstrap_endpoint(endpoint):
+    if type(endpoint) is not str or not endpoint.startswith("unix://"):
+        raise _Failure("invalid-bootstrap-endpoint")
+    path = endpoint[7:]
+    if (
+        not 1 < len(path) <= 512
+        or re.fullmatch(r"/[A-Za-z0-9._/-]+", path, re.ASCII) is None
+        or any(part in {"", ".", ".."} for part in path[1:].split("/"))
+    ):
+        raise _Failure("invalid-bootstrap-endpoint")
+    return endpoint
+
+
+def read_engine_bootstrap(
+    endpoint: str,
+    operation: str,
+    *,
+    deadline: float,
+    budget: WireBudget,
+    before_connect=None,
+) -> EngineResponse:
+    """Read only version or fixed API1.51 info, without inventing a full profile.
+
+    The caller must check version's advertised range before requesting info.
+    No image lookup, expected daemon identity or readiness is represented here.
+    """
+    return _read_fixed(
+        endpoint,
+        operation,
+        bootstrap=True,
+        deadline=deadline,
+        budget=budget,
+        before_connect=before_connect,
+    )
+
+
+def _read_fixed(subject, operation, *, bootstrap, deadline, budget, before_connect):
     diagnostic = {
         "operation": operation
         if type(operation) is str and operation in _OPERATIONS
@@ -322,21 +369,29 @@ def read_engine(
             raise _Failure("wire-budget-exhausted")
         if os.name != "posix" or getattr(sys, "frozen", False) or not hasattr(socket, "AF_UNIX"):
             raise _Failure("unsupported-platform")
-        if type(profile) is not RuntimeProfile or type(operation) is not str:
+        if type(operation) is not str:
             raise _Failure("invalid-runtime-request")
-        data = validate_runtime_profile(profile.payload_json).to_dict()
-        if operation not in _OPERATIONS:
-            raise _Failure("invalid-runtime-request")
+        if bootstrap:
+            if operation not in {"version", "info"}:
+                raise _Failure("invalid-bootstrap-operation")
+            path = _bootstrap_endpoint(subject)[7:]
+            target = "/version" if operation == "version" else "/v1.51/info"
+        else:
+            if type(subject) is not RuntimeProfile:
+                raise _Failure("invalid-runtime-request")
+            data = validate_runtime_profile(subject.payload_json).to_dict()
+            if operation not in _OPERATIONS:
+                raise _Failure("invalid-runtime-request")
+            path = data["engine"]["endpoint"][7:]
+            target = "/version" if operation == "version" else "/v" + data["engine"]["api_version"]
+            if operation == "info":
+                target += "/info"
+            elif operation.startswith("image-"):
+                target += "/images/" + data["images"][operation[-1]]["image_id"] + "/json"
         if before_connect is not None and (
             not callable(before_connect) or inspect.iscoroutinefunction(before_connect)
         ):
             raise _Failure("invalid-preconnect-hook")
-        path = data["engine"]["endpoint"][7:]
-        target = "/version" if operation == "version" else "/v" + data["engine"]["api_version"]
-        if operation == "info":
-            target += "/info"
-        elif operation.startswith("image-"):
-            target += "/images/" + data["images"][operation[-1]]["image_id"] + "/json"
         pin = _endpoint_identity(path)
         clock.remaining()
         if before_connect is not None:

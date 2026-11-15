@@ -90,7 +90,30 @@ def test_only_inventoried_artifacts_have_explicit_lf_attributes():
         "runtime/generated_repair/test_launcher.py",
         "src/authzest/runner/_generated_repair_http.py",
     ]
-    expected = sorted([path, "text", "eol=lf"] for path in historical + reference + guest_assets)
+    # Candidate image recipes/base metadata are a separate exact byte domain.
+    image_inputs = [
+        "runtime/generated_repair/images/base/index.json",
+        "runtime/generated_repair/images/base/linux-amd64.config.json",
+        "runtime/generated_repair/images/base/linux-amd64.manifest.json",
+        "runtime/generated_repair/images/base/linux-arm64.config.json",
+        "runtime/generated_repair/images/base/linux-arm64.manifest.json",
+        "runtime/generated_repair/images/dockerfiles/linux-amd64-A.Dockerfile",
+        "runtime/generated_repair/images/dockerfiles/linux-amd64-B.Dockerfile",
+        "runtime/generated_repair/images/dockerfiles/linux-amd64-T.Dockerfile",
+        "runtime/generated_repair/images/dockerfiles/linux-arm64-A.Dockerfile",
+        "runtime/generated_repair/images/dockerfiles/linux-arm64-B.Dockerfile",
+        "runtime/generated_repair/images/dockerfiles/linux-arm64-T.Dockerfile",
+        "runtime/generated_repair/images/locks/linux-amd64-A.txt",
+        "runtime/generated_repair/images/locks/linux-amd64-B.txt",
+        "runtime/generated_repair/images/locks/linux-amd64-T.txt",
+        "runtime/generated_repair/images/locks/linux-arm64-A.txt",
+        "runtime/generated_repair/images/locks/linux-arm64-B.txt",
+        "runtime/generated_repair/images/locks/linux-arm64-T.txt",
+        "runtime/generated_repair/images/manifest.json",
+    ]
+    expected = sorted(
+        [path, "text", "eol=lf"] for path in historical + reference + guest_assets + image_inputs
+    )
     lines = (root / ".gitattributes").read_text(encoding="utf-8").splitlines()
     actual = sorted(
         line.split() for line in lines if line.strip() and not line.lstrip().startswith("#")

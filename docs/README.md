@@ -60,6 +60,11 @@ The [runtime metadata reader](development/GENERATED_REPAIR_PREFLIGHT.md) adds fi
 transport and bounded metadata comparison, tested only with fake sockets/frames. It avoids CLI plugin
 dispatch and grants no readiness, effective isolation proof or active generated execution.
 
+The [pinned image inputs](development/GENERATED_REPAIR_IMAGES.md) record two platforms' unbuilt
+T/A/B recipes, wheel locks and raw base-metadata digest chains. The offline checker observes input
+consistency, not image contents or provenance. A separate private version/info bootstrap needs no
+placeholder image IDs and grants no runtime profile or readiness.
+
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
 report schema `1.2`. [Tag workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)
@@ -332,6 +337,7 @@ docs/
 | Offline runtime profile                                                 | [Runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)         | [오프라인 runtime profile](i18n/ko/development/GENERATED_REPAIR_RUNTIME_PROFILE.md)  |
 | Private captured input staging                                          | [Input staging](development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](i18n/ko/development/GENERATED_REPAIR_STAGING.md)               |
 | Fixed local Engine metadata                                             | [Runtime metadata](development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](i18n/ko/development/GENERATED_REPAIR_PREFLIGHT.md)               |
+| Pinned unbuilt guest-image inputs                                       | [Image inputs](development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](i18n/ko/development/GENERATED_REPAIR_IMAGES.md)                |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
 | Separately approved fixed-fixture runtime check                         | [Runtime verification](guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](i18n/ko/guides/RUNTIME_VERIFICATION.md)                                |

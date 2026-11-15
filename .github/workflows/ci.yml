@@ -68,6 +68,14 @@ jobs:
         run: python -m pytest tests/test_generated_repair_engine_http.py tests/test_generated_repair_engine_http_failures.py
       - name: Check runtime metadata with supplied frames only
         run: python -m pytest tests/test_generated_repair_preflight.py tests/test_generated_repair_preflight_failures.py
+      - name: Check endpoint bootstrap with synthetic frames and memory sockets
+        run: python -m pytest tests/test_generated_repair_bootstrap.py
+      - name: Check endpoint bootstrap refusal paths in a fresh interpreter
+        run: python -m pytest tests/test_generated_repair_bootstrap_failures.py
+      - name: Check pinned image inputs without an engine or package installation
+        run: python -m pytest tests/test_generated_image_inputs.py
+      - name: Check image input refusal paths in a fresh interpreter
+        run: python -m pytest tests/test_generated_image_inputs_failures.py
 
   proposal-check-windows:
     runs-on: windows-latest
@@ -107,6 +115,10 @@ jobs:
           tests/test_generated_repair_engine_http_failures.py
           tests/test_generated_repair_preflight.py
           tests/test_generated_repair_preflight_failures.py
+          tests/test_generated_repair_bootstrap.py
+          tests/test_generated_repair_bootstrap_failures.py
+          tests/test_generated_image_inputs.py
+          tests/test_generated_image_inputs_failures.py
           tests/test_cli_generation_preview.py
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py

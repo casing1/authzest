@@ -59,6 +59,11 @@ client/config/이미지/자산 식별자를 고정 정지 생성 인자 템플�
 메타데이터 비교를 추가하고 가짜 소켓/프레임만으로 검사합니다. CLI plugin 실행을 피하지만 준비 완료·
 효과적 격리 증거·활성 생성 실행 권한은 부여하지 않습니다.
 
+[고정 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)은 두 platform의 빌드 전 T/A/B recipe·wheel
+lock·원본 base metadata digest 연결을 기록합니다. 오프라인 검사기는 입력 일관성을 관찰하며 이미지
+내부 내용·출처를 입증하지 않습니다. 별도 비공개 version/info bootstrap은 임시 이미지 ID 없이 동작하며
+runtime profile·준비 완료 권한을 만들지 않습니다.
+
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
 발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
@@ -315,6 +320,7 @@ docs/
 | 오프라인 runtime profile                           | [Runtime profile](../../development/GENERATED_REPAIR_RUNTIME_PROFILE.md)         | [오프라인 runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)  |
 | 비공개 캡처 입력 staging                           | [Input staging](../../development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](development/GENERATED_REPAIR_STAGING.md)               |
 | 고정 로컬 Engine 메타데이터                        | [Runtime metadata](../../development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](development/GENERATED_REPAIR_PREFLIGHT.md)               |
+| 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |
