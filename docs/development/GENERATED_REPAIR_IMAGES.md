@@ -22,6 +22,11 @@ generated-code execution, Docker CLI/Engine request or AI call. There is no new 
 command, runtime decision or release. Operator-local receipts are separate private records; they do
 not replace the portable manifest's unbuilt-candidate status.
 
+The [private phase executor](GENERATED_REPAIR_PHASE.md) adds an untrusted A startup coordination
+hint. Its launcher and both A recipe digests changed; prior A image observations are stale for these
+inputs. Dependency locks and T/B assets remain unchanged. No prior image receipt becomes current by
+copying the new source hash into a profile.
+
 ## Recorded candidate inputs
 
 The source directory [runtime/generated_repair/images](../../runtime/generated_repair/images/)

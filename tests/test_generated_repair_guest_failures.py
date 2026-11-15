@@ -11,7 +11,7 @@ from runtime.generated_repair import _guest_common as common
 from runtime.generated_repair import app_launcher, relay_launcher, test_launcher
 
 from authzest.runner import _generated_repair_http as codec
-from test_generated_repair_guest import FakeSocket, no_external_effects  # noqa: F401
+from test_generated_repair_guest import FakeAppServer, FakeSocket, no_external_effects  # noqa: F401
 
 
 def _entry(role="T"):
@@ -100,6 +100,91 @@ def test_async_pytest_server_and_clock_are_closed_not_awaited():
     assert all(
         inspect.getcoroutinestate(value) == inspect.CORO_CLOSED for value in (test, server, clock)
     )
+
+
+def _ready_app(startup, *, write=None, flush=None):
+    events = []
+    app_launcher.run_ready_app(
+        lambda *_, **__: {"events": events, "startup": startup},
+        FakeAppServer,
+        add_path=lambda _: None,
+        write=(lambda text: events.append("unexpected-write") or len(text))
+        if write is None
+        else write,
+        flush=(lambda: events.append("unexpected-flush")) if flush is None else flush,
+    )
+    return events
+
+
+@pytest.mark.parametrize(("started", "exiting"), [(False, False), (True, True), (1, False)])
+def test_no_hint_without_literal_started_state_or_while_exiting(started, exiting):
+    def startup(server):
+        server.started, server.should_exit = started, exiting
+
+    assert _ready_app(startup) == ["startup", "continue-serving"]
+
+
+@pytest.mark.parametrize("failure", [OSError, KeyboardInterrupt, SystemExit])
+def test_startup_failure_preserves_first_cause_without_hint(failure):
+    events = []
+
+    def startup(server):
+        server.started = True
+        raise failure("startup-failed")
+
+    with pytest.raises(failure, match="startup-failed"):
+        _ready_app(
+            startup,
+            write=lambda _: events.append("write"),
+            flush=lambda: events.append("flush"),
+        )
+    assert events == []
+
+
+@pytest.mark.parametrize("count", [None, True, 0, 18, 20])
+def test_short_or_invalid_hint_write_never_flushes_or_continues(count):
+    events = []
+    with pytest.raises(ValueError, match="guest-readiness-write-contract"):
+        _ready_app(
+            lambda server: setattr(server, "started", True),
+            write=lambda _: count,
+            flush=lambda: events.append("flush"),
+        )
+    assert events == []
+
+
+@pytest.mark.parametrize("operation", ["write", "flush"])
+@pytest.mark.parametrize("failure", [OSError, KeyboardInterrupt, SystemExit])
+def test_hint_output_failure_preserves_first_cause(operation, failure):
+    events = []
+
+    def fail(*_):
+        raise failure("stream-failed")
+
+    with pytest.raises(failure, match="stream-failed"):
+        _ready_app(
+            lambda server: setattr(server, "started", True),
+            write=fail if operation == "write" else lambda text: events.append(text) or len(text),
+            flush=fail if operation == "flush" else lambda: events.append("flush"),
+        )
+    assert events == ([] if operation == "write" else [app_launcher.READY_MARKER])
+
+
+def test_async_hint_writer_and_flusher_are_closed_not_awaited():
+    async def pending():
+        pytest.fail("an async stream collaborator must never run")
+
+    writer, flusher = pending(), pending()
+    with pytest.raises(ValueError, match="guest-readiness-write-contract"):
+        _ready_app(lambda server: setattr(server, "started", True), write=lambda _: writer)
+    with pytest.raises(ValueError, match="guest-readiness-flush-contract"):
+        _ready_app(
+            lambda server: setattr(server, "started", True),
+            write=len,
+            flush=lambda: flusher,
+        )
+    assert inspect.getcoroutinestate(writer) == inspect.CORO_CLOSED
+    assert inspect.getcoroutinestate(flusher) == inspect.CORO_CLOSED
 
 
 def _capture(*, socket_factory=lambda *_: FakeSocket(), clock=lambda: 9000, **overrides):
@@ -280,10 +365,12 @@ def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(m
         flags=SimpleNamespace(isolated=1),
         dont_write_bytecode=True,
         stdout=SimpleNamespace(
+            write=lambda text: output.append(text) or len(text),
+            flush=lambda: events.append("flush"),
             buffer=SimpleNamespace(
                 write=lambda data: output.append(data) or len(data),
                 flush=lambda: events.append("flush"),
-            )
+            ),
         ),
     )
     fake_os = SimpleNamespace(environ=env, getuid=lambda: 65532, getgid=lambda: 65532)
@@ -296,10 +383,18 @@ def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(m
         events.append("test")
         return 1
 
-    def native_server(*args, **kwargs):
-        assert "/input" not in fake_sys.path
-        assert args == ("app:app",) and kwargs["app_dir"] == "/input"
-        events.append("server")
+    def native_config(*args, **kwargs):
+        assert fake_sys.path[0] == "/input"
+        assert args == ("app:app",) and "app_dir" not in kwargs
+        assert kwargs["lifespan"] == "off" and kwargs["port"] == 8765
+        return kwargs
+
+    class NativeServer:
+        def __init__(self, config):
+            assert config["workers"] == 1
+
+        def run(self):
+            events.append("server")
 
     def fake_capture(*args, **kwargs):
         assert args == (1000,)
@@ -315,7 +410,7 @@ def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(m
             events.append("import:" + name)
             return {
                 "pytest": SimpleNamespace(main=native_test),
-                "uvicorn": SimpleNamespace(run=native_server),
+                "uvicorn": SimpleNamespace(Config=native_config, Server=NativeServer),
                 "socket": SimpleNamespace(socket=None, AF_INET=2, SOCK_STREAM=1),
                 "time": SimpleNamespace(monotonic=None),
                 "_generated_repair_http": codec,

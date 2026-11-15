@@ -80,7 +80,12 @@ offline consistency checks. A separate private version/info bootstrap observes u
 without fabricating image IDs; neither path creates a full profile, built image or execution authority.
 Private context preparation now copies only the checked selected inputs, and host archive comparison
 checks supplied base/asset/wheel facts without extraction. Their receipts remain historical data;
-whole-image/configuration verification and active execution/session integration are still pending.
+whole-image verification and installed runtime/session integration are still pending.
+The [private phase executor](GENERATED_REPAIR_PHASE.md) now connects fixed stopped-create inspection,
+concurrent bounded CLI transport and T → fresh A/B host comparison internally with fake-only tests.
+Its A startup hint changes the maintained A asset/recipe digests, so older A images are stale for this
+source. Public generation and session execution remain disabled; current image/capability acceptance
+and the thin before/diff/apply/after/restore CLI connection are next.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST

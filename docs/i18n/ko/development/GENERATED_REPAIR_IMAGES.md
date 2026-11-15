@@ -20,6 +20,11 @@ B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입�
 요청·AI 호출을 수행하지 않습니다. 새 공개 AuthZest 명령·런타임 결정·릴리스도 추가하지 않습니다.
 운영자 로컬 receipt는 별도 비공개 기록이며 이식 가능한 manifest의 빌드 전 후보 상태를 대체하지 않습니다.
 
+[비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 신뢰하지 않는 A 시작 조정 신호를 추가합니다.
+Launcher와 두 platform의 A recipe digest가 변경돼 이전 A 이미지 관찰은 현재 입력과 맞지 않습니다.
+의존성 lock과 T/B 자산은 그대로입니다. Profile에 새 소스 해시만 복사해서 이전 이미지 receipt를
+현재 근거로 바꿀 수 없습니다.
+
 ## 기록한 후보 입력
 
 소스의 [runtime/generated_repair/images](../../../../runtime/generated_repair/images/)에는

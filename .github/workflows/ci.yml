@@ -80,6 +80,10 @@ jobs:
         run: python -m pytest tests/test_generated_image_context.py
       - name: Check host archive comparison without extraction or image execution
         run: python -m pytest tests/test_generated_image_contents.py
+      - name: Check stopped configuration and private phase with fake Engine replies
+        run: python -m pytest tests/test_generated_repair_container_inspect.py tests/test_generated_repair_phase.py
+      - name: Check bounded pipes with fake and fixed trusted children
+        run: python -m pytest tests/test_generated_repair_process.py tests/test_generated_repair_process_integration.py
 
   proposal-check-windows:
     runs-on: windows-latest

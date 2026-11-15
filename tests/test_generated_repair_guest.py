@@ -108,6 +108,95 @@ def test_fixed_independent_server_configuration():
     assert config["lifespan"] == "off" and config["ws"] == "none"
 
 
+class FakeAppServer:
+    """Drive only immediately completing maintained fake coroutines, without a loop."""
+
+    def __init__(self, config):
+        self.config = config
+        self.started = self.should_exit = False
+
+    async def startup(self, sockets=None):
+        assert sockets is None
+        self.config["events"].append("startup")
+        self.config["startup"](self)
+
+    def run(self):
+        coroutine = self.startup()
+        try:
+            with pytest.raises(StopIteration):
+                coroutine.send(None)
+        finally:
+            coroutine.close()
+        self.config["events"].append("continue-serving")
+
+
+def test_startup_hint_follows_completed_startup_and_flush_then_serving_continues():
+    events, writes, configurations = [], [], []
+
+    def config(app, **settings):
+        assert events == ["path:/input"]
+        assert app == "app:app" and "app_dir" not in settings
+        configurations.append(settings)
+        return {
+            "events": events,
+            "startup": lambda server: setattr(server, "started", True),
+        }
+
+    def write(text):
+        events.append("write")
+        writes.append(text)
+        return len(text)
+
+    app_launcher.run_ready_app(
+        config,
+        FakeAppServer,
+        add_path=lambda path: events.append("path:" + path),
+        write=write,
+        flush=lambda: events.append("flush"),
+    )
+    assert writes == ["AUTHZEST_A_STARTED\n"]
+    assert events == ["path:/input", "startup", "write", "flush", "continue-serving"]
+    assert configurations[0]["lifespan"] == "off"
+    assert configurations[0]["host"] == "127.0.0.1" and configurations[0]["port"] == 8765
+    assert configurations[0]["workers"] == 1 and configurations[0]["reload"] is False
+
+
+def test_started_flag_during_pending_startup_does_not_emit_early():
+    events = []
+
+    class Pause:
+        def __await__(self):
+            yield "startup-pending"
+
+    class PausingServer:
+        def __init__(self, _):
+            self.started = self.should_exit = False
+
+        async def startup(self, sockets=None):
+            self.started = True
+            await Pause()
+            events.append("startup-complete")
+
+        def run(self):
+            coroutine = self.startup()
+            try:
+                assert coroutine.send(None) == "startup-pending"
+                assert events == []
+                with pytest.raises(StopIteration):
+                    coroutine.send(None)
+            finally:
+                coroutine.close()
+
+    app_launcher.run_ready_app(
+        lambda *_, **__: None,
+        PausingServer,
+        add_path=lambda _: None,
+        write=lambda text: events.append(text) or len(text),
+        flush=lambda: events.append("flush"),
+    )
+    assert events == ["startup-complete", app_launcher.READY_MARKER, "flush"]
+
+
 class FakeSocket:
     def __init__(self):
         self.calls = []

@@ -67,6 +67,11 @@ runtime profile·준비 완료 권한을 만들지 않습니다.
 base/wheel/자산 목록의 세분화된 파일 사실을 추가하며 인증된 이미지 식별자·전체 이미지 검증·런타임
 권한은 만들지 않습니다.
 
+[비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)는 staging 입력, 고정 정지 생성
+inspect, 제한된 동시 CLI 수집, 독립 T → A/B 비교를 내부에서 연결합니다. 테스트는 fake만 사용하며
+공개 생성/세션 실행은 비활성입니다. 현재 이미지 수용과 세션/CLI before·적용·after·복구 연결은
+아직 남아 있습니다.
+
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
 발행했습니다. [태그 workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243)의
@@ -324,6 +329,7 @@ docs/
 | 비공개 캡처 입력 staging                           | [Input staging](../../development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](development/GENERATED_REPAIR_STAGING.md)               |
 | 고정 로컬 Engine 메타데이터                        | [Runtime metadata](../../development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
+| 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
 | 별도 승인하는 고정 fixture 런타임 검사             | [Runtime verification](../../guides/RUNTIME_VERIFICATION.md)                     | [런타임 검증](guides/RUNTIME_VERIFICATION.md)                                |
