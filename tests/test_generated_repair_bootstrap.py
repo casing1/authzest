@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import os
 import socket
 from dataclasses import FrozenInstanceError
 
@@ -88,6 +89,7 @@ def test_supplied_bootstrap_metadata_never_manufactures_a_profile_or_readiness(a
 
 
 @pytest.mark.parametrize("operation,target", [("version", "/version"), ("info", "/v1.51/info")])
+@pytest.mark.skipif(os.name != "posix", reason="Unix socket source scope")
 def test_bootstrap_transport_uses_the_shared_fixed_reader_without_full_profile(
     monkeypatch, operation, target
 ):

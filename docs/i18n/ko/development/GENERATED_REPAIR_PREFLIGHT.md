@@ -11,8 +11,8 @@
 ## 범위 — 2026-11-15 KST
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 로컬 Engine 메타데이터
-reader와 제한된 전달 데이터 비교기를 추가합니다. 유지관리하는 테스트의 소켓·endpoint 정보·시계는
-가짜입니다. 개발 검증 중 실제 엔진·plugin·소켓·생성 코드·AI는 호출하지 않습니다. 기존 executor,
+reader와 제한된 전달 데이터 비교기를 추가합니다. 오프라인 회귀 검사의 소켓·endpoint 정보·시계는
+가짜이며 회귀 검사에서 실제 엔진·plugin·소켓·생성 코드·AI는 호출하지 않습니다. 기존 executor,
 lifecycle 모의 모델·세션·공개 CLI에는 연결하지 않습니다. #152는 열려 있으며 실제 PoC나 수정 검증
 완료가 아닙니다.
 
@@ -76,6 +76,26 @@ runtime은 미실행입니다. 출력 JSON은 과거 데이터이지 재개 가�
 원시 daemon 정보·로컬 endpoint 상세는 비공개로 유지해야 하며 자동 공개 업로드는 추가하지 않습니다.
 
 ## 남은 연결 작업
+
+### 이미지 ID를 만들지 않는 endpoint 전용 bootstrap
+
+비공개 `_generated_repair_bootstrap.py` API는 전달 프레임 2개의 `normalize_engine_bootstrap`과 고정
+reader용 `observe_engine_bootstrap`을 제공합니다. 명시적인 canonical Unix endpoint를 받으며 전체
+`RuntimeProfile`은 생성하지 않습니다. `GET /version` 다음 고정 `GET /v1.51/info`만 허용하고 두 번째
+조회 전 광고한 최소/최대 API 범위에 `1.51`이 포함돼야 합니다. 미지원 API/platform이면 협상·재시도
+없이 중단합니다.
+
+두 조회는 원래 setup/phase 마감과 256 KiB wire 예산을 공유합니다. 첫 응답의 endpoint pin을 두 번째
+조회 trusted hook 전후·연결 전에 재검사하고 반환 pin도 같아야 합니다. 소켓 정리가 guest 정리나
+peer 신원을 성립시키지는 않습니다.
+
+별도 bootstrap 결과는 관찰했지만 **고정하지 않은** engine 식별자/hash를 기록합니다.
+`profile_created`, `images_inspected`, `identity_pinned`, `ready`, `execution_authorized`,
+`verified_fix`는 false입니다. 이미지 ID·recipe/lock 내부·효과적 capability 증거·공개 CLI 흐름은 제공하지 않습니다.
+[고정 이미지 후보 입력](GENERATED_REPAIR_IMAGES.md)은 분리된 오프라인 소스 검사이며 준비된 이미지
+집합이 아닙니다. 로컬 endpoint/daemon 관찰은 비공개이며 운영 기록 공개를 이 가이드에 추가하지 않습니다.
+
+### 런타임 수용은 미완료
 
 실제 호환성·검토한 이미지 준비/내용·정지 컨테이너의 효과적 제약 확인, 제한된 attach/start/capture와
 정확한 guest 정리, 영속 세션 결정·설치형 generation/before/apply/after/restore 수용·읽기 전용 결과 UI는

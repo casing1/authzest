@@ -75,6 +75,9 @@ The [private input stage](GENERATED_REPAIR_STAGING.md) adds separate captured T/
 records with live checkpoint/identity rechecks; it does not mount, execute or establish a before baseline.
 The [runtime metadata reader](GENERATED_REPAIR_PREFLIGHT.md) adds fixed Engine GET transport and
 bounded comparison, tested with fake sockets only; effective isolation/session readiness stay pending.
+The [pinned image inputs](GENERATED_REPAIR_IMAGES.md) add unbuilt two-platform recipes/locks and
+offline consistency checks. A separate private version/info bootstrap observes unpinned identity
+without fabricating image IDs; neither path creates a full profile, built image or execution authority.
 #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST

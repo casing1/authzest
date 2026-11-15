@@ -2,6 +2,24 @@
 # The checker hashes bytes without normalization; do not refresh hashes blindly.
 runtime/generated_repair/_guest_common.py text eol=lf
 runtime/generated_repair/app_launcher.py text eol=lf
+runtime/generated_repair/images/base/index.json text eol=lf
+runtime/generated_repair/images/base/linux-amd64.config.json text eol=lf
+runtime/generated_repair/images/base/linux-amd64.manifest.json text eol=lf
+runtime/generated_repair/images/base/linux-arm64.config.json text eol=lf
+runtime/generated_repair/images/base/linux-arm64.manifest.json text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-amd64-A.Dockerfile text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-amd64-B.Dockerfile text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-amd64-T.Dockerfile text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-arm64-A.Dockerfile text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-arm64-B.Dockerfile text eol=lf
+runtime/generated_repair/images/dockerfiles/linux-arm64-T.Dockerfile text eol=lf
+runtime/generated_repair/images/locks/linux-amd64-A.txt text eol=lf
+runtime/generated_repair/images/locks/linux-amd64-B.txt text eol=lf
+runtime/generated_repair/images/locks/linux-amd64-T.txt text eol=lf
+runtime/generated_repair/images/locks/linux-arm64-A.txt text eol=lf
+runtime/generated_repair/images/locks/linux-arm64-B.txt text eol=lf
+runtime/generated_repair/images/locks/linux-arm64-T.txt text eol=lf
+runtime/generated_repair/images/manifest.json text eol=lf
 runtime/generated_repair/relay_launcher.py text eol=lf
 runtime/generated_repair/test_launcher.py text eol=lf
 src/authzest/runner/_generated_repair_http.py text eol=lf

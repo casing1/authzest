@@ -11,9 +11,9 @@
 ## Scope — 2026-11-15 KST
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) foundation adds a private local
-Engine metadata reader and a bounded supplied-data comparator. Maintained tests use fake sockets,
-endpoint metadata and clocks. No real engine, plugin, socket, generated code or AI is invoked during
-development validation. The existing executor, lifecycle simulation, session and public CLI remain
+Engine metadata reader and a bounded supplied-data comparator. The offline regression suite uses
+fake sockets, endpoint metadata and clocks; it invokes no real engine, plugin, socket, generated code
+or AI. The existing executor, lifecycle simulation, session and public CLI remain
 unconnected to this reader. #152 stays open; this is not an executed PoC or verified repair.
 
 ## Why a dedicated Engine transport
@@ -83,6 +83,27 @@ not run. Exported JSON is historical data, not a resumable receipt or before bas
 information and local endpoint details should remain private; no automatic public upload is added.
 
 ## Remaining integration
+
+### Endpoint-only bootstrap, without invented image IDs
+
+The private `_generated_repair_bootstrap.py` API provides `normalize_engine_bootstrap` for two
+supplied frames and `observe_engine_bootstrap` for the fixed reader. It accepts an explicit canonical
+Unix endpoint without constructing a full `RuntimeProfile`. Only `GET /version` followed by fixed
+`GET /v1.51/info` is allowed; the advertised minimum/maximum API range must include `1.51` before
+the second query. Unsupported API/platform data stops the sequence without negotiation or retry.
+
+Both queries share the original setup/phase deadlines and 256 KiB wire budget. The first response's
+endpoint pin is rechecked before and after the second query's trusted hook, before connection, and
+the returned pins must agree. Socket cleanup still does not establish guest cleanup or peer identity.
+
+The separate bootstrap result records an observed, **unpinned** engine identity/hash;
+`profile_created`, `images_inspected`, `identity_pinned`, `ready`, `execution_authorized` and
+`verified_fix` stay false. It provides no image IDs, recipe/lock contents, effective-capability proof
+or public CLI workflow. [Pinned candidate image inputs](GENERATED_REPAIR_IMAGES.md) remain a separate offline
+source check, not a ready image set. Local endpoint/daemon observations are private; this guide adds
+no publication of operational records.
+
+### Runtime acceptance still pending
 
 Actual interoperability and reviewed image provisioning/contents, effective stopped-container
 inspection, bounded attach/start/capture and exact guest cleanup, durable session decisions, installed
