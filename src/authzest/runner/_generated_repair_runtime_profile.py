@@ -26,7 +26,7 @@ _ASSETS = {
     },
     "A": {
         "_guest_common.py": _COMMON,
-        "app_launcher.py": "a6929decc9c8d528ef5342bd783fc4454fbf4074c279bb4eba2d9e79f138f215",
+        "app_launcher.py": "f47c208ba02f7d5a3edec96fc61c0624ce7ab2354240c87de54c41e0bc78f274",
     },
     "B": {
         "_guest_common.py": _COMMON,

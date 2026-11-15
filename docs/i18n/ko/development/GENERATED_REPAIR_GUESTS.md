@@ -18,8 +18,10 @@ launcher **소스**를 추가하고 가짜 의존성·소켓으로만 검사합�
 [guest 자산](../../../../runtime/generated_repair/)은 추후 검토한 이미지용이지 호스트 우회 실행이나
 설치 CLI 명령이 아닙니다. runner 패키지를 불러오면 호스트 계층까지 import되므로 AuthZest 패키지를
 의도적으로 import하지 않습니다. 각 이미지는 필요한 자산·의존성만 포함해야 하며 호스트 정답·소스
-checkout·자격증명·기록을 넣지 않습니다. 이번에는 Dockerfile·의존성 lock·준비한 이미지·이미지 식별자·
-활성 엔진 adapter가 없습니다. 격리가 없다고 호스트에서 이 파일을 실행하지 마세요.
+checkout·자격증명·기록을 넣지 않습니다. 이후 [고정 이미지 입력](GENERATED_REPAIR_IMAGES.md)은
+Dockerfile·의존성 lock을 추가하고 [비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 fake만으로
+내부 전송을 연결합니다. 공개 세션 실행은 비활성이며, 이 소스 문서가 실제 이미지 준비·런타임 수용을
+입증하지 않습니다. 격리가 없다고 호스트에서 이 파일을 실행하지 마세요.
 
 ## 고정 역할과 입력
 
@@ -45,7 +47,9 @@ T는 pytest plugin 자동 로드·설정/addopts·환경 plugin·conftest 탐색
 
 A는 ASGI3·asyncio·h11·worker 하나를 고정하고 reload·proxy header·WebSocket·access log·lifespan
 hook을 끕니다. health route도 추가하지 않습니다. import·시작 로그·프로세스 시작 성공은 신뢰할 수
-있는 HTTP 준비 근거가 아니며 호스트가 누적 준비 시간 제한을 독립적으로 지켜야 합니다.
+있는 HTTP 준비 근거가 아닙니다. 유지 관리하는 startup은 서버 시작 뒤에만 `AUTHZEST_A_STARTED`를
+출력하지만 앱이 stdout 신호를 위조할 수 있습니다. 비공개 조정기는 누적 준비 시간을 지키며 B의 순서
+조정에만 이를 사용하고, 완전한 독립 HTTP 관찰을 별도로 요구합니다.
 
 B는 숫자 IPv4 loopback과 요청마다 새로운 TCP 소켓만 쓰며 hostname 탐색·proxy·`create_connection`을
 사용하지 않습니다. 연결 dispatch 전에 codec이 소켓 소유권을 받아 연결/설정 실패·취소에도 닫기를

@@ -73,8 +73,12 @@ checkpoint/식별자 재검사만 추가하며 mount·실행·before 근거를 �
 검사를 추가합니다. 별도 비공개 version/info bootstrap은 임시 image ID 없이 미고정 식별자를 관찰하며,
 두 경로 모두 전체 profile·빌드한 이미지·실행 권한을 만들지 않습니다.
 비공개 context 준비는 검사한 선택 입력만 복사하고 호스트 archive 비교는 압축 해제 없이 제공한
-base/자산/wheel 사실을 검사합니다. Receipt는 과거 데이터이며 전체 이미지/config 검증·활성 실행/세션
+base/자산/wheel 사실을 검사합니다. Receipt는 과거 데이터이며 전체 이미지 검증·설치형 런타임/세션
 연결은 여전히 미완료입니다.
+[비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 고정 정지 생성 inspect, 제한된 동시 CLI 전송,
+T → 새 A/B 호스트 비교를 fake 테스트로 내부 연결합니다. A 시작 신호로 유지하는 자산·recipe digest가
+변경돼 이전 A 이미지는 현재 소스와 맞지 않습니다. 공개 생성·세션 실행은 비활성이며 현재 이미지/
+capability 수용과 before·diff·적용·after·복구의 CLI 연결이 다음 작업입니다.
 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST

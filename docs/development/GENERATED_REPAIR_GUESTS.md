@@ -19,8 +19,10 @@ The [guest assets](../../runtime/generated_repair/) are intended for a later rev
 host fallback or an installed CLI command. They deliberately do not import the AuthZest package:
 importing a runner package would also import host machinery. Each image must contain only its
 required assets/dependencies, not the host control oracle, source checkout, credentials or records.
-There is no Dockerfile, dependency lock, provisioned image, image identity or active engine adapter
-in this slice. Do not run these assets on the host to bypass missing isolation.
+The later [pinned image inputs](GENERATED_REPAIR_IMAGES.md) add Dockerfiles and dependency locks,
+and the [private phase executor](GENERATED_REPAIR_PHASE.md) connects internal transport with fake-only
+acceptance. Public session execution remains disabled. Do not run these assets on the host to bypass
+missing isolation.
 
 ## Fixed roles and inputs
 
@@ -48,7 +50,9 @@ source review and installed acceptance remain separate. No report plugin or trus
 
 A fixes ASGI3, asyncio, h11, one worker, no reload, proxy headers, WebSockets, access log or lifespan
 hooks. It adds no health route. An import, startup log or successful process start is not trusted HTTP
-readiness evidence; the future host must enforce its cumulative readiness budget independently.
+readiness evidence. The maintained startup emits `AUTHZEST_A_STARTED` only after server startup;
+the app can forge that stdout hint. The private controller uses it for scheduling B while enforcing
+the cumulative readiness budget; independent complete HTTP observations remain necessary.
 
 B uses numeric IPv4 loopback and a fresh TCP socket per fixed request, without hostname lookup,
 proxy configuration or `create_connection`. Ownership reaches the codec before connection dispatch,
