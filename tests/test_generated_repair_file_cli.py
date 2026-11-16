@@ -17,25 +17,65 @@ from authzest import _generated_repair_cli as flow
 from authzest.cli import app
 from authzest.cli_output import WorkflowOutput, format_generated_file_workflow_result
 from authzest.codex.contracts import canonical
-from authzest.codex.generated_repair import prepare_generated_repair_preview
-from authzest.codex.generated_repair_transport import build_generated_repair_transport_request
+from authzest.codex.generated_repair import (
+    prepare_generated_repair_preview,
+    validate_generated_repair_request,
+)
+from authzest.codex.generated_repair_transport import (
+    build_generated_repair_transport_request,
+    prepare_generated_repair_transport_result,
+)
 from authzest.runner import codex_generated_repair
 from authzest.runner._generated_repair_session import (
     GeneratedRepairSessionPlan,
     GeneratedRepairSessionResult,
 )
 from authzest.runner.codex_generated_repair import build_generated_repair_sharing_preview
-from test_codex_generate_cli import fake_result
 from test_generated_repair_runtime_profile import profile
-from test_generated_repair_transport import inner
 
 MODEL = "offline-file-flow-model"
+
+
+def inner(request):
+    return validate_generated_repair_request(canonical(request.to_dict()["request"]))
+
+
+def draft(request, status):
+    # Maintained inert fixture data only. Do not import another CLI/schema test
+    # module: the cold-start job intentionally installs only the product+pytest.
+    context = request.to_dict()
+    source = context["scenario"]["source"]
+    return {
+        "schema_version": "1.0",
+        "request_id": request.request_id,
+        "status": status,
+        "rationale": "Scripted file-flow candidate, not model output or a verified repair.",
+        "evidence_ids": list(context["evidence_ids"].values()),
+        "assumptions": ["Policy remains pending maintainer review."],
+        "uncertainties": ["No execution or safety check performed."]
+        if status in ("unknown", "refused")
+        else [],
+        "limitations": ["AST parsing is not compilation, correctness, safety or approval."],
+        "proposal": {
+            "source_path": source["path"],
+            "before_sha256": source["sha256"],
+            "after_text": source["text"] + "\n# Scripted candidate text, not an implemented fix.\n",
+            "test_path": context["scenario"]["test_path"],
+            "test_text": "def test_scripted_candidate():\n    assert True\n",
+        }
+        if status == "proposed-change"
+        else None,
+    }
 
 
 def generation(status="proposed-change"):
     sharing = build_generated_repair_sharing_preview(MODEL, invocation_nonce="b" * 32)
     request = build_generated_repair_transport_request(MODEL)
-    checked = fake_result(request, status).to_dict()
+    checked = prepare_generated_repair_transport_result(
+        canonical(draft(inner(request), status)),
+        request,
+        usage={"input_tokens": 10, "output_tokens": 20},
+    ).to_dict()
     proposal = flow.validate_generated_repair_proposal(
         canonical(checked["proposal"]), inner(request)
     )
