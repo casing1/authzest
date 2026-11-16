@@ -16,6 +16,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 소스 `codex-generate --model EXPLICIT_MODEL`에 명시적
+  `--file-workflow --runtime-profile PATH`를 연결합니다. 공유 전 새 로컬 profile 검토, 개별
+  복사/before/diff/적용/after/복구 계획, 직접 phase 결과 결합과 읽기 쉬운/단일 JSON 결과를 제공합니다.
+  기본 생성 전용·비공개 복사 범위·실패/복구 보존을 유지합니다. 현재 recipe/lock profile 검사와 필수
+  pre-import guest 커널 제어 거부를 추가하여 모든 guest 자산/recipe 6개 pin이 바뀌고 현재 재빌드 이미지가
+  필요합니다. 오프라인/mock/신뢰 회귀 테스트 범위이며 새 실제 AI/Docker/생성 실행이나 설치형 수용이
+  아닙니다. #152/#150은 열어 두고 공개 alpha.4·패키지/리포트 버전은 유지합니다.
+
 - 기존 고정 소유 가짜 프로세스 peer에 `BatchCoordinator`를 연결하는 테스트 전용 통합을 추가합니다.
   예약/송신/ack 순서·합성 원래 예산 만료·실패/취소·정리 거부·예정 분모 보존을 검사하고 phase
   finish 전에 pipe 닫힘과 자식 회수를 요구합니다. 합성 `Clock` 값과 fixture watchdog은 운영 시간

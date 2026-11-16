@@ -18,19 +18,19 @@ MAX_PROFILE_BYTES = 16_384
 EMPTY_CONFIG_SHA256 = sha256(b"{}\n").hexdigest()
 _ROLES = ("T", "A", "B")
 _ROOT = "/opt/authzest-guest/"
-_COMMON = "65ae40e704b8c7d2d4c695a322fa6eeb4830e4df208a7658bdcc6096cf21dc4b"
+_COMMON = "697472d2b8a168a0ec79ea00e1dee508b4b44e0dbb87c64ac3f4b1cd07df85ad"
 _ASSETS = {
     "T": {
         "_guest_common.py": _COMMON,
-        "test_launcher.py": "90c69083d0a875262e72b02474ea5e91678d80f823ac1e4adc7b87d664059916",
+        "test_launcher.py": "8618413fa13af4772585924ffbd9d4627a141716abbc6638f4f9937629f65bb8",
     },
     "A": {
         "_guest_common.py": _COMMON,
-        "app_launcher.py": "f47c208ba02f7d5a3edec96fc61c0624ce7ab2354240c87de54c41e0bc78f274",
+        "app_launcher.py": "4f52b484a155b43812d41545285af10a96bfc31b99c078b467a1c246904bb59a",
     },
     "B": {
         "_guest_common.py": _COMMON,
-        "relay_launcher.py": "6ac463f74c68ec10c676cfb4bb88a09017412c427ea6ee24c1d2613713f6ceaf",
+        "relay_launcher.py": "88eebbf0a344fb5150a45753028c4393ece810ebd06b3acb792d3a070c9a46af",
         "_generated_repair_http.py": (
             "8bf5048d83d50f288bdbce8dc6dd2763416d7d153b3f30f082a7579c2b14b930"
         ),

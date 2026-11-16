@@ -85,11 +85,14 @@ AuthZest は、FastAPI アプリケーションのソースコードに基づい
 - `scan` コマンドによる読みやすい形式または JSON のレポート
 - オフラインの [`authzest generation-preview`](../../development/GENERATED_REPAIR_CONTRACT.md)
   （`--json` は任意）は固定入力だけを表示します。ソースの `codex-generate --model EXPLICIT_MODEL` は
-  各プラットフォームで使える `--preview-only`、または新しい正確なリクエストへの共有同意後に POSIX で
-  アダプターを 1 回試行する経路を提供します。読みやすい出力/`--json` に検証した提案とホスト計算の
-  ソース・テスト diff を表示し、コピー・適用・生成コードの実行・復元は行いません。ポリシーはレビュー待ちで、
-  `X-Demo-Actor` は認証ではありません。この接続はオフライン/mock 検査のみで、実際の生成・提供者互換性は
-  未検証です。#151 は未完了で、#152/#153 は未実装です。
+  移植可能な `--preview-only`、または正確な新規リクエストの共有同意後に POSIX アダプターを一度呼び出します。
+  既定ではファイルを実行せず、検証済み提案とホスト計算のソース/テスト diff を表示します。
+  明示的な `--file-workflow --runtime-profile PATH` は個別に判断する非公開コピーの before 検査、
+  正確な diff/適用、新しい after 検査、復元を追加します。
+  [生成ファイルのワークフロー](../../guides/GENERATED_FILE_WORKFLOW.md)を参照してください。
+  現在の検討済みイメージと対応カーネル制御が必要です。接続はオフライン/mock 検査済みで、
+  インストール済み環境の受け入れは未完了です。ポリシーはレビュー待ちで `X-Demo-Actor` は認証ではありません。
+  #151/#152 は未完了で、#153 の結果 UI も残っています。
 - alpha.4 では `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
   表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
   出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。

@@ -7,13 +7,13 @@
 
 [문서 목차](../INDEX.md) · [검증 기반](GENERATED_REPAIR_VERIFICATION.md)
 
-## 범위 — 2026-11-10 KST
+## 범위 — 2026-11-16 KST
 
-[#152](https://github.com/casing1/authzest/issues/152)의 추가 오프라인 단계입니다.
-**비공개 저수준 파일 I/O 경계**를 구현하며 실제 생성 수정 워크플로는 아닙니다.
-생성/검증 미리보기 명령과 기본 비활성 실행기는 그대로입니다.
-CLI·공개 API route·실제 결정/세션 조정기·이미지·컨테이너·worker·새 provider 요청은
-이 도우미에 연결하지 않으며 #152는 계속 열어 둡니다.
+[#152](https://github.com/casing1/authzest/issues/152)의 **비공개 저수준 파일 I/O 경계**입니다.
+Opt-in [세션](GENERATED_REPAIR_SESSION.md)과 [CLI 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md)이
+현재 단계 결정과 직접 phase 관찰을 이 도우미에 연결합니다. 기본 생성·비활성 준비는 유지합니다.
+도우미 자체에는 provider/컨테이너 실행 API·공개 route·브라우저 승인 화면이 없습니다.
+현재 이미지의 설치형 수용은 남아 있으며 #152는 열린 상태입니다.
 
 유지보수 테스트는 직접 작성한 비활성 제안 문자열과 pytest 소유 임시 부모만 사용합니다.
 이 바이트를 복사·교체·복구하는 것은 파일시스템 회귀 검사지, 실제 모델 패치의 운영 수용·
@@ -23,12 +23,10 @@ CLI·공개 API route·실제 결정/세션 조정기·이미지·컨테이너·
 ## 비공개 경계
 
 [`_generated_repair_workspace.py`](../../../../src/authzest/runner/_generated_repair_workspace.py)는
-향후 별도로 통제할 조정기를 위한 내부 구현입니다. Python 호출자와 동기 guard callback을
-신뢰합니다. 밑줄 이름·유효한 미리보기·파일 해시·callback 어느 것도 사용자를 인증하거나
+별도 통제하는 현재 세션의 내부 구현입니다. Python 호출자와 동기 guard callback을 신뢰합니다. 밑줄 이름·유효한 미리보기·파일 해시·callback 어느 것도 사용자를 인증하거나
 실행/패치 권한을 부여하지 않습니다.
 
-향후 조정기는 새롭고 만료되는 일회성 복사/diff/apply/restore 결정과 실제 독립 런타임 근거를
-연결해야 합니다. 특히 호출자가 제공한 `data-only` HTTP 비교는 **before 검사 조건을 충족할
+활성 조정기는 새롭고 만료되는 일회성 복사/diff/apply/restore 결정과 현재 독립 phase 관찰을 연결합니다. 특히 호출자가 제공한 `data-only` HTTP 비교는 **before 검사 조건을 충족할
 수 없습니다**. 이 도우미에는 그런 JSON을 런타임 증명으로 바꾸는 API가 없습니다.
 모델 응답이나 UI에서 이 쓰기로 직접 연결하지 마십시오.
 
@@ -46,7 +44,7 @@ before 소스는 고정 관리 사례이고 after 소스/테스트는 검증한 
 
 선택형 비공개 `_before_create` hook은 도우미의 자체 검증 후 디렉터리 할당 직전에 신뢰한 세션이
 현재 복사 결정을 다시 확인하게 합니다. 동기적으로 `None`을 반환해야 합니다. 거절·다른 반환값·
-비동기 callback은 디렉터리를 만들지 않습니다. 사람 인증·보편적 파일시스템 시간 상한·후속 소스
+비동기 callback은 디렉터리를 만들지 않습니다. 사람 인증·보편적 파일시스템 시간 상한·별도 소스
 commit 직전 만료 검사를 제공하는 것은 아닙니다.
 
 관리 파일은 다음과 같습니다.
@@ -76,15 +74,21 @@ root와 `tests`의 디렉터리 descriptor를 보유하고 열린 객체와 이�
 확인합니다. 누락·symlink·hardlink·특수 파일·권한 변경·root/하위 디렉터리 교체·동일 바이트의
 inode 교체도 검토한 상태로 간주하지 않습니다.
 
-`apply_source(expected, guard=...)`는 `app.py`만 정확한 after 바이트로 교체하고,
-`restore_source(expected, guard=...)`는 확인된 적용 파일을 정확한 before로 돌립니다.
-테스트·불변 snapshot·추적 journal도 그대로인지 확인합니다. 동기 guard는 `None`으로 정상
-완료해야 하며 동의가 아닌 재확인 hook입니다. intent journal·소스 commit 전에 한 번 호출하지만
-정확한 비공개 staging 파일 준비는 callback보다 앞설 수 있습니다. 재진입 전환은 거절합니다.
-이후 파일 상태를 다시 확인합니다. 이 읽기에도 시간이 걸리므로 실시간 만료 보장이나 원자적 결정/쓰기는 아닙니다.
-소스 교체 전에 미확인 작업 의도를 영속 기록하고 소스 fsync·재읽기가 성공한 뒤에만 journal을
-확정합니다. 잘못된 단계·오래된 입력·사용자 편집은
-덮어쓰는 대신 거절해야 합니다.
+`apply_source(expected, guard=..., commit_guard=None)`는 `app.py`만 정확한 after 바이트로 교체하고,
+`restore_source(expected, guard=..., commit_guard=None)`는 확인된 적용 파일을 정확한 before로 돌립니다.
+테스트·불변 snapshot·추적 journal도 확인합니다. 두 동기 hook은 `None`을 반환해야 하며 동의가 아닙니다.
+
+기존 `guard`는 영속 intent 전에 한 번 실행하며 `commit_guard=None`인 저수준 기본 동작은 유지합니다.
+정확한 staging 파일은 그보다 먼저 준비할 수 있습니다. 미확인 pending journal을 기록하고 최종 추적 파일·
+staging 검사를 마친 뒤 선택형 `commit_guard`가 `os.replace` 직전에 실행됩니다. 활성 세션은 항상 이를
+제공합니다. 원래 profile/결정·소스/테스트·pending 기록 결합을 재검사하고 monotonic 시계를 마지막으로
+확인합니다. 정상 반환과 rename dispatch 사이에 추가 파일시스템 검증은 없습니다.
+
+최종 hook에서 만료·취소·거부되면 앱 소스 rename은 수행하지 않습니다. 이미 기록한 pending journal은
+`state-unconfirmed`로 남으며 재시도·강제 복구 없이 점검용으로 보존합니다. Rename 성공 후에도 소스
+fsync·재읽기·최종 journal 확인이 필요합니다. 재진입·잘못된 단계·오래된 입력·감지된 편집은 덮어쓰지 않고
+거부합니다. 마지막 협조적 검사는 rename dispatch를 제한하며 파일시스템 작업 완료나 동시 작성자에 대한
+원자적 compare-and-swap을 보장하지 않습니다.
 
 복사 직후 기준은 **before 앱+생성 테스트**입니다. 테스트 생성은 복사에 속하고 이후 소스 적용은
 앱만 바꿉니다. restore는 테스트/근거를 보존하며 테스트가 없던 원본 tree를 복원하거나 생성
@@ -107,7 +111,7 @@ inode 교체도 검토한 상태로 간주하지 않습니다.
 journal을 삭제하지 않습니다. 자동 재시도·프로세스 재시작·journal 재개·강제 rollback·부분 근거로
 성공 처리는 없습니다.
 
-## 한계와 다음 연결
+## 한계와 남은 수용
 
 필요한 descriptor/no-follow 기능이 있는 POSIX non-frozen 소스 설치만 지원합니다.
 다른 플랫폼은 이 파일 경계를 거절해야 하며 이식 가능한 일반 scan/preview·계약 지원과는
@@ -117,12 +121,8 @@ journal을 삭제하지 않습니다. 자동 재시도·프로세스 재시작·
 CAS가 아닙니다. 신뢰한 운영자가 동시 작성을 배제해야 합니다. 디렉터리 생성·여러 파일 쓰기·
 앱 교체·journal은 하나의 트랜잭션이 아니며 파일시스템 호출의 전체 시간 상한은 없습니다.
 
-다음 조정기는 효과 전에 실제 단계 결정을 소비하고 유한 monotonic 만료·일회성 시도를 강제하며
-적용 전에 유효한 실제 before 근거를 요구해야 합니다. 실제 캡처 바이트 검사와 guest 정리 확인도
-연결해야 합니다. 기본 실행기는 계속 비활성이고 이 파일 도우미는 우회 실행 경로가 아닙니다.
-생성 pytest 보고는 신뢰하지 않는 보조 데이터이며 독립 대조·실제 after 파일 관찰·거절/복구·정확한
-설치 후보 수용은 여전히 필요합니다. 로컬 읽기 전용 UI와 릴리스도 별도 조건입니다.
-
-별도의 [오프라인 복사 세션](GENERATED_REPAIR_SESSION.md)은 새 복사본 결정과 비활성 before 준비만
-다룹니다. 소스 적용/복구를 호출하거나 런타임 기준을 받아들이지 않습니다. 운영 조정기나 최종 소스
-commit 직전의 만료 재확인까지 완료한 것은 아닙니다.
+활성 [세션](GENERATED_REPAIR_SESSION.md)은 현재 일회성 결정·원래 monotonic 만료·직접 캡처 바이트
+phase 결과·정리 확인을 비공개 복사본 작업에 연결하고 적용·복구 모두 최종 소스 commit hook을 제공합니다.
+기본 세션은 여전히 복사·비활성 준비만 제공하며 저수준 도우미는 우회 실행 경로가 아닙니다.
+생성 pytest 보고는 신뢰하지 않는 보조 데이터입니다. 현재 재빌드 이미지·커널 실현 가능성·정확한 설치형
+before/after/복구 수용·로컬 읽기 전용 UI·릴리스는 별도 조건으로 남습니다.

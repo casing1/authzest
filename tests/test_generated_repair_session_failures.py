@@ -624,9 +624,11 @@ def test_closing_retains_fixed_artifacts_and_cannot_be_reopened(live, monkeypatc
             operation()
 
 
-def test_module_has_no_execution_apply_or_imported_approval_surface():
+def test_optional_active_surface_has_no_imported_approval_or_generic_executor():
     parameters = inspect.signature(session.GeneratedRepairSession).parameters
-    assert set(parameters) == {"preview", "clock"}
+    assert set(parameters) == {"preview", "clock", "runtime_profile", "runtime_guard"}
+    assert parameters["runtime_profile"].default is None
+    assert parameters["runtime_guard"].default is None
     assert not any(
         hasattr(session.GeneratedRepairSession, name)
         for name in (
@@ -637,8 +639,6 @@ def test_module_has_no_execution_apply_or_imported_approval_surface():
             "from_dict",
             "from_json",
             "accept_facts",
-            "apply_source",
-            "restore_source",
             "apply",
             "restore",
         )

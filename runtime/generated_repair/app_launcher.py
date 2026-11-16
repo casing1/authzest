@@ -75,7 +75,7 @@ def _script_main() -> int:
     if __file__ != SCRIPT_PATH or sys.platform != "linux":
         return 64
     sys.path.insert(0, "/opt/authzest-guest")
-    from _guest_common import entry_allowed, prepare_environment
+    from _guest_common import entry_allowed, prepare_environment, require_kernel_controls
 
     if not entry_allowed(
         "A",
@@ -89,6 +89,10 @@ def _script_main() -> int:
     ):
         return 64
     prepare_environment(os.environ, sys.path)
+    try:
+        require_kernel_controls("A")
+    except (OSError, ValueError):
+        return 78
     import uvicorn
 
     run_ready_app(

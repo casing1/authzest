@@ -8,20 +8,21 @@
 [문서 목차](../INDEX.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)
 
-## 범위 — 2026-11-12 KST
+## 범위 — 2026-11-15 KST
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 관리형 standalone guest
 launcher **소스**를 추가하고 가짜 의존성·소켓으로만 검사합니다. 실제 guest·앱·생성 테스트·소켓·
-이미지·엔진은 시작하지 않습니다. 운영 executor와 세션은 계속 런타임 비활성이고 #152는 OPEN입니다.
-실제 PoC 재현이나 수정 검증을 완료한 것이 아닙니다.
+이미지·엔진은 시작하지 않습니다. 명시적 [CLI 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md)은
+현재 세션 결정을 phase 실행기에 연결하고 기본 생성은 제안 전용을 유지합니다. 현재 이미지의 설치형
+수용은 남아 있고 #152는 OPEN이며 소스 테스트로 실제 PoC 재현·수정 검증을 완료하지 않습니다.
 
 [guest 자산](../../../../runtime/generated_repair/)은 추후 검토한 이미지용이지 호스트 우회 실행이나
 설치 CLI 명령이 아닙니다. runner 패키지를 불러오면 호스트 계층까지 import되므로 AuthZest 패키지를
 의도적으로 import하지 않습니다. 각 이미지는 필요한 자산·의존성만 포함해야 하며 호스트 정답·소스
 checkout·자격증명·기록을 넣지 않습니다. 이후 [고정 이미지 입력](GENERATED_REPAIR_IMAGES.md)은
 Dockerfile·의존성 lock을 추가하고 [비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 fake만으로
-내부 전송을 연결합니다. 공개 세션 실행은 비활성이며, 이 소스 문서가 실제 이미지 준비·런타임 수용을
-입증하지 않습니다. 격리가 없다고 호스트에서 이 파일을 실행하지 마세요.
+내부 전송을 연결합니다. 소스 opt-in 흐름에는 현재 재빌드/검토 이미지가 필요하며 이 문서가
+실제 런타임 수용을 입증하지 않습니다. 격리가 없다고 호스트에서 이 파일을 실행하지 마세요.
 
 ## 고정 역할과 입력
 
@@ -31,10 +32,16 @@ Dockerfile·의존성 lock을 추가하고 [비공개 단계 실행기](GENERATE
 | A    | `app_launcher.py`   | `/input/app.py:app`만 사용, `127.0.0.1:8765`의 단일 ASGI 서버                         |
 | B    | `relay_launcher.py` | 관리형 요청 전용 codec, 앱·테스트 mount·정답·호출자 URL 없음                          |
 
-추후 진입 호출은 Linux·`-I -B` 격리 Python·정확한 `/opt/authzest-guest/` 스크립트 배치·
+진입 호출은 Linux·`-I -B` 격리 Python·정확한 `/opt/authzest-guest/` 스크립트 배치·
 UID/GID `65532`를 요구합니다. T/A는 추가 인자를 받지 않고 B는 1~40,000 밀리초의 표준 정수
 남은 시간 하나만 받습니다. 이는 진단 조건이지 **격리·이미지 증명·실행 동의가 아닙니다**.
 호스트가 정지 상태 컨테이너의 정확한 recipe·mount·namespace·자원 제약을 별도로 검사해야 합니다.
+
+공통 guard는 target/tool import 전에 고정 커널 경로를 읽어 미지원 PID/nonroot·seccomp/
+no-new-privileges/capability·cgroup·mount·interface 설정을 종료 78로 거부합니다. 대상 내용은
+읽지 않고 프로세스·소켓도 만들지 않습니다. 좁은 지원 속성 검사이지 자원 부하 벤치마크·탈출 불가·
+독립 A/B namespace 증명이 아닙니다. 공통/launcher 자산과 platform recipe 6개가 바뀌어 T/A/B
+이미지를 현재 소스로 재빌드·검토해야 합니다. 입력한 runtime 검토나 갱신한 선언은 이미지 내용의 대체가 아닙니다.
 
 의존성 로드 전에 상속 환경을 지우고 고정된 신뢰 자산 폴더를 명시합니다(`-I`는 스크립트 폴더를
 검색 경로에 남기지 않습니다). T/A는 `/input`을 앱 검색에 노출하기 전에 이미지 소유 pytest/Uvicorn을
@@ -69,10 +76,10 @@ guest timer는 협조적 보조 제한이지 호스트 원래 마감의 대체·
 
 ## 남은 운영 연결
 
-검토한 고정 이미지/의존성 lock·신뢰 로컬 엔진, 캡처 입력 staging/식별 재검사, 정지 생성 recipe 검사,
-시작 전 attach 전송, 공유 출력/시간 제한, 영속 수집과 정확한 guest 정리, 세션/결정 연결과 별도 범위의
-설치 before/적용/after/복구 수용이 남았습니다. 생성 테스트 출력이 before 근거·쓰기 권한을 만들지
-않습니다. 전달 relay 사실이 일치해도 미검증·`verified_fix: false`이고 demo actor header는 인증이 아닙니다.
+Staging·정지 생성 inspect·attach/수집/정리·세션/CLI 결정을 구현하고 fake/비활성 파일로 검사합니다.
+현재 재빌드 이미지 내용·커널 실현 가능성과 별도 범위의 설치형 before/적용/after/복구 수용은 남아 있습니다.
+생성 테스트 출력만으로 before 근거·쓰기 권한을 만들지 않으며 호스트는 완전한 현재 독립 관찰과
+정리 확인을 요구합니다. 내보낸 데이터는 `verified_fix: false`를 유지하고 demo actor header는 인증이 아닙니다.
 
 이번 단계는 새 제공자/소스 공유·실제 생성 import/수집/실행·운영 적용/복구·위험 수용·이슈 완료·
 버전 변경·릴리스를 하지 않습니다.

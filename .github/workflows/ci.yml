@@ -24,7 +24,7 @@ jobs:
 
   generated-contract-cold-start:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -84,6 +84,16 @@ jobs:
         run: python -m pytest tests/test_generated_repair_container_inspect.py tests/test_generated_repair_phase.py
       - name: Check bounded pipes with fake and fixed trusted children
         run: python -m pytest tests/test_generated_repair_process.py tests/test_generated_repair_process_integration.py
+      - name: Check current private profile input without an engine
+        run: python -m pytest tests/test_generated_repair_runtime_input.py
+      - name: Check supplied kernel controls without launching a guest
+        run: python -m pytest tests/test_generated_repair_kernel_controls.py
+      - name: Check active session with inert copies and fake phase results
+        run: python -m pytest tests/test_generated_repair_session_live.py
+      - name: Check explicit file CLI with fake provider and phase
+        run: python -m pytest tests/test_generated_repair_file_cli.py
+      - name: Check final apply and restore expiry after durable intent
+        run: python -m pytest tests/test_generated_repair_commit_deadline.py
 
   proposal-check-windows:
     runs-on: windows-latest

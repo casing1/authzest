@@ -369,8 +369,22 @@ def codex_generate(
             help="Include complete final result metadata; sharing preview stays full.",
         ),
     ] = False,
+    file_workflow: Annotated[
+        bool,
+        typer.Option(
+            "--file-workflow",
+            help="Opt in to separately approved private-copy checks, application and restoration.",
+        ),
+    ] = False,
+    runtime_profile: Annotated[
+        Path | None,
+        typer.Option(
+            "--runtime-profile",
+            help="Private reviewed runtime profile for --file-workflow; no automatic provisioning.",
+        ),
+    ] = None,
 ) -> None:
-    """Request a new owned-scenario test and repair proposal; never execute or apply it."""
+    """Generate a proposal; explicitly opt in to a separately approved private-copy flow."""
     from authzest.codex.diagnostics import sanitize_failure
     from authzest.runner.codex_generated_repair import (
         GeneratedRepairInputError,
@@ -379,39 +393,100 @@ def codex_generate(
     )
 
     output = WorkflowOutput(as_json, details=details)
+    loaded, result, error = None, None, False
     try:
+        if runtime_profile is not None and not file_workflow:
+            raise GeneratedRepairInputError("--runtime-profile requires --file-workflow")
+        if file_workflow and runtime_profile is None:
+            raise GeneratedRepairInputError("--file-workflow requires --runtime-profile")
+        sharing_preview = build_generated_repair_sharing_preview(
+            model, timeout_seconds=timeout_seconds
+        )
+        reviewed = None
+        if file_workflow:
+            from authzest._generated_repair_cli import (
+                build_generated_runtime_review,
+                close_file_runtime,
+                declined_generated_runtime_result,
+                guarded_generated_sharing_read,
+                prepare_file_runtime,
+                review_generated_runtime,
+                run_generated_file_workflow,
+            )
+
+            loaded = prepare_file_runtime(runtime_profile)
+            if not preview_only:
+                reviewed = review_generated_runtime(loaded, emit=output.emit, read=output.read)
         if preview_only:
-            result = build_generated_repair_sharing_preview(model, timeout_seconds=timeout_seconds)
+            result = sharing_preview
+            if file_workflow:
+                result = {
+                    "kind": "codex-generated-file-workflow-preview",
+                    "sharing_preview": result,
+                    "runtime_review_preview": build_generated_runtime_review(loaded),
+                    "notice": (
+                        "Runtime review data is local only and excluded from the provider request."
+                    ),
+                }
+        elif reviewed is not None and reviewed.decision != "approved":
+            result = declined_generated_runtime_result(reviewed)
         else:
+            if file_workflow:
+                reviewed.assert_current()
             result = asyncio.run(
                 run_codex_generated_repair(
-                    model, timeout_seconds=timeout_seconds, emit=output.emit, read=output.read
+                    model,
+                    timeout_seconds=timeout_seconds,
+                    emit=output.emit,
+                    read=guarded_generated_sharing_read(reviewed, output.read)
+                    if file_workflow
+                    else output.read,
                 )
             )
+            if file_workflow:
+                # Keep the synchronous phase outside asyncio.run: Ctrl-C must
+                # reach its exact cleanup path, not only cancel an idle task.
+                result = run_generated_file_workflow(
+                    result,
+                    model=model,
+                    timeout_seconds=timeout_seconds,
+                    runtime_input=reviewed,
+                    emit=output.emit,
+                    read=output.read,
+                )
     except GeneratedRepairInputError as exc:
-        output.finish({"status": "invalid-input", "detail": str(exc)}, error=True)
-        raise typer.Exit(code=2) from exc
+        attempts = result.get("application_turn_attempts", 0) if isinstance(result, dict) else 0
+        result = {"status": "invalid-input", "detail": str(exc), "exit_code": 2}
+        if file_workflow:
+            result.update(
+                application_turn_attempts=attempts,
+                execution_status="not-run",
+                patch_application="not-run",
+                original_checkout_modified=False,
+            )
+        error = True
     except (asyncio.CancelledError, KeyboardInterrupt):
-        output.finish(
-            {
-                "status": "cancelled",
-                "execution_status": "not-run",
-                "patch_application": "not-run",
-                "failure": sanitize_failure(None, code="cancelled"),
-            }
-        )
-        raise typer.Exit(code=130) from None
+        result = {
+            "status": "cancelled",
+            "exit_code": 130,
+            "execution_status": "not-run",
+            "patch_application": "not-run",
+            "failure": sanitize_failure(None, code="cancelled"),
+        }
     except Exception:
-        output.finish(
-            {
-                "status": "generation-failed",
-                "execution_status": "not-run",
-                "patch_application": "not-run",
-                "failure": sanitize_failure(None),
-            }
-        )
-        raise typer.Exit(code=1) from None
-    output.finish(result, preview=preview_only)
+        result = {
+            "status": "generation-failed",
+            "exit_code": 1,
+            "execution_status": "not-run",
+            "patch_application": "not-run",
+            "failure": sanitize_failure(None),
+        }
+    finally:
+        if loaded is not None:
+            result = close_file_runtime(
+                loaded, result or {"status": "generation-failed", "exit_code": 1}
+            )
+    output.finish(result, error=error, preview=preview_only)
     raise typer.Exit(code=result.get("exit_code", 0))
 
 

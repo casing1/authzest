@@ -51,42 +51,28 @@ No package/version/tag change, stable publication or new execution is authorized
 
 The [#151 contract and adapter connection](GENERATED_REPAIR_CONTRACT.md) prepares the fixed synthetic
 request and validates source/test proposals with host-derived diffs. `authzest generation-preview`
-(`--json` optional) remains input-only. Source `codex-generate --model EXPLICIT_MODEL` adds portable
-`--preview-only` and a POSIX one-attempt adapter path after fresh exact-request sharing consent;
-it creates no copy and does not apply, execute, or restore generated code. This change has only
-offline/mocked verification, not actual model/provider/schema acceptance. The policy remains
-assistant-authored/pending maintainer review; #151 stays open. #152 now has an
-[offline verification foundation](GENERATED_REPAIR_VERIFICATION.md): maintained data controls,
-an inert content-bound preview and disabled executor preparation. A separate
-[private file-I/O foundation](GENERATED_REPAIR_WORKSPACE.md) adds fresh-copy byte management and
-guarded exact source apply/restore for offline filesystem tests only. No active decision/session
-runtime coordinator, generated execution or connected apply/restore workflow is implemented.
-The [offline copy session](GENERATED_REPAIR_SESSION.md) now binds one-use expiring decisions to
-fresh-copy creation and disabled before preparation, with no apply/restore API or evidence importer.
-The [pure lifecycle model](GENERATED_REPAIR_LIFECYCLE.md) adds only closed fake T → A/B traces,
-shared-budget bookkeeping and identity-scoped cleanup intents; no transport/runtime or live baseline.
-The [bounded HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) adds only a fixed request-input schedule,
-narrow response codec, explicit fake-stream capture and host-only supplied-fact bridge; no real sockets.
-The [guest entry source](GENERATED_REPAIR_GUESTS.md) adds image-only fixed test/server/relay launchers
-with fake-dependency tests, not a host execution fallback or active engine/session connection.
-The [offline runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) validates supplied engine/image
-bindings and constructs fixed stopped-create argument data, without inspection, transport or readiness.
-The [private input stage](GENERATED_REPAIR_STAGING.md) adds separate captured T/A files and host-only
-records with live checkpoint/identity rechecks; it does not mount, execute or establish a before baseline.
-The [runtime metadata reader](GENERATED_REPAIR_PREFLIGHT.md) adds fixed Engine GET transport and
-bounded comparison, tested with fake sockets only; effective isolation/session readiness stay pending.
-The [pinned image inputs](GENERATED_REPAIR_IMAGES.md) add unbuilt two-platform recipes/locks and
-offline consistency checks. A separate private version/info bootstrap observes unpinned identity
-without fabricating image IDs; neither path creates a full profile, built image or execution authority.
-Private context preparation now copies only the checked selected inputs, and host archive comparison
-checks supplied base/asset/wheel facts without extraction. Their receipts remain historical data;
-whole-image verification and installed runtime/session integration are still pending.
-The [private phase executor](GENERATED_REPAIR_PHASE.md) now connects fixed stopped-create inspection,
-concurrent bounded CLI transport and T → fresh A/B host comparison internally with fake-only tests.
-Its A startup hint changes the maintained A asset/recipe digests, so older A images are stale for this
-source. Public generation and session execution remain disabled; current image/capability acceptance
-and the thin before/diff/apply/after/restore CLI connection are next.
-#152 remains open and #153 UI integration is still pending.
+(`--json` optional) remains input-only. Source `codex-generate --model EXPLICIT_MODEL` keeps portable
+`--preview-only` and the default proposal-only path after fresh exact-request sharing consent.
+The policy remains assistant-authored/pending maintainer review and #151 stays open.
+
+The explicit [generated file workflow](../guides/GENERATED_FILE_WORKFLOW.md) now connects a bounded
+private runtime-profile loader and fresh local review to generation, then separately decided
+copy/before/source-diff/source-apply/after/restore stages. The [session](GENERATED_REPAIR_SESSION.md)
+binds current files/profile/plans and directly returned [phase](GENERATED_REPAIR_PHASE.md) results,
+independently checks all 17 cases/21 requests, and reuses exact private-copy application/restoration.
+Default disabled preparation and existing registered workflows remain unchanged. Imported results,
+test output or runtime acknowledgments do not establish kernel proof or source-write authority.
+
+The [guest entries](GENERATED_REPAIR_GUESTS.md) check supported kernel settings before target/tool
+import and refuse unsupported conditions. All maintained guest assets and six
+[pinned image recipes](GENERATED_REPAIR_IMAGES.md) changed; current rebuilt/reviewed images are required.
+This narrow guard is not escape proof, whole-image attestation or a resource stress benchmark.
+The manifest remains a build-input declaration rather than a ready-image distribution.
+
+Source integration uses inert files, fake adapter/phase/kernel replies and trusted regression children.
+This implementation performs no actual new AI/Docker/generated-code call, image provisioning,
+operational patch or release. Next establish current-image feasibility and exact installed
+before/apply/after/restore acceptance; #152 remains open and #153 UI integration is still pending.
 
 ## Current baseline — 2026-11-05 KST
 
