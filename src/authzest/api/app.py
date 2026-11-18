@@ -4,11 +4,12 @@ import os
 import sys
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from authzest import __version__
+from authzest.result_viewer import MAX_RESULT_BYTES, ResultViewError, preview_workflow_result
 from authzest.runner import ScanRunner
 
 
@@ -46,6 +47,23 @@ def create_app(frontend_dist: Path | None = None, scan_root: Path | None = None)
             return runner.run(resolved_scan_root).to_dict()
         except (FileNotFoundError, NotADirectoryError) as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @application.post("/api/results/preview", tags=["results"])
+    async def preview_result(request: Request) -> dict[str, object]:
+        """Project explicitly uploaded bytes; never accept a path or retain a result."""
+        if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != (
+            "application/json"
+        ):
+            raise HTTPException(status_code=415, detail="Upload an application/json result")
+        content = bytearray()
+        async for chunk in request.stream():
+            if len(content) + len(chunk) > MAX_RESULT_BYTES:
+                raise HTTPException(status_code=413, detail="Result exceeds the 512 KiB limit")
+            content.extend(chunk)
+        try:
+            return preview_workflow_result(bytes(content))
+        except ResultViewError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from None
 
     resolved_frontend = frontend_dist or _default_frontend_dist()
     if resolved_frontend.is_dir():
