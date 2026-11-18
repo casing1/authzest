@@ -7,11 +7,18 @@
 
 [Documentation index](../README.md)
 
-## Status — 2026-11-09 KST
+## Status — 2026-11-19 KST
 
-[#151](https://github.com/casing1/authzest/issues/151), under the [course-release scope](https://github.com/casing1/authzest/issues/150), now connects the offline request/proposal contract to an opt-in `codex-generate` adapter workflow. This change is verified with offline/mocked tests only: no actual account, Codex process, or model was used for generation acceptance. Real provider/schema compatibility and genuine-generation acceptance remain unverified, so #151 stays open. Existing registered-template acceptance is not acceptance of a newly authored repair.
+[#151](https://github.com/casing1/authzest/issues/151), under the
+[course-release scope](https://github.com/casing1/authzest/issues/150), connects the offline
+request/proposal contract to the opt-in `codex-generate` adapter. The
+[course demonstration](../guides/COURSE_DEMO.md#evidence-to-cite) records one historical live response
+at `34baebc` for the maintained scenario. #151 remains open for final-candidate acceptance.
 
-The pure contract and preview-only paths do not start Codex. The active workflow can make one separately approved request for this fixed scenario; it does not accept an arbitrary repository, create a source copy, apply a patch, execute generated code, or restore files. #152/#153 verification/UI work is not implemented here. Existing product/report versions and the Codex pin are unchanged; the new command requires an explicit model.
+The preview-only paths render the maintained request offline. The proposal-only command requires
+an explicit model and permits one request after exact sharing approval. See the
+[generated repair file workflow](../guides/GENERATED_FILE_WORKFLOW.md) for the separate copy, check,
+application and recovery stages.
 
 ## Offline input preview
 
@@ -74,21 +81,24 @@ Only `proposed-change` contains a proposal: fixed `source_path`, matching `befor
 
 Each generated source/test text is limited to 16,384 UTF-8 bytes before parse-only AST validation, with at most 4,096 AST nodes and depth 64. JSON, prompt, and preview data have a 256 KiB bound. Current contract bindings are revalidated; the host computes LF-aware source/test diffs and hashes. Preview state remains unverified, not applied, and execution not run.
 
-The object-root output schema is a shaping candidate, not the authoritative validator. The host additionally enforces status/proposal relationships, required uncertainty, unique evidence IDs, exact UTF-8 byte limits and AST budgets. Following the [current structured-output schema guidance](https://developers.openai.com/api/docs/guides/structured-outputs) does not establish compatibility with the pinned App Server; that remains untested.
+The object-root output schema is a shaping candidate, not the authoritative validator. The host additionally enforces status/proposal relationships, required uncertainty, unique evidence IDs, exact UTF-8 byte limits and AST budgets. See the [structured-output schema guidance](https://developers.openai.com/api/docs/guides/structured-outputs). Candidate compatibility requires an observed response from the pinned App Server.
 
 ## What validation does not prove
 
 - AST parsing is not compilation, test collection, an OS sandbox, semantic validation, or a safety check. Syntax-valid code may violate the requested limits or policy.
 - IDs and hashes bind content; they do not authenticate a reviewer/model, prove freshness, or authorize sharing, execution, application, or recovery.
-- A model-written test passing against the model-written repair is not independent evidence of a correct fix. No generated code is executed in this slice.
+- A model-written test passing against the model-written repair is not independent evidence of a correct fix. The proposal contract uses parse-only validation.
 - Prior registered-template approvals do not authorize this new scenario or generated code. No current artifact is claimed to be an accepted live trial, a verified repair, or a stable-release gate completion.
 
-## Next boundaries
+## Verification and result interfaces
 
-Under [#152](https://github.com/casing1/authzest/issues/152), the new isolation design and independent maintained owner/non-owner/anonymous/normal-use controls are accepted for offline implementation only. Separately approved, isolated before/after checks must distinguish test failures from infrastructure failures. Copy-only application, exact diff review, stale-edit refusal, and recovery need their own reviewed behavior and consent; this document authorizes none of them.
+[#152](https://github.com/casing1/authzest/issues/152) tracks candidate acceptance for the
+[generated repair file workflow](../guides/GENERATED_FILE_WORKFLOW.md). The
+[offline verification foundation](GENERATED_REPAIR_VERIFICATION.md) defines the maintained comparison
+and can evaluate supplied observations. The active workflow combines that comparison with separately
+decided stages and records test, infrastructure and recovery outcomes.
 
-The separate [offline verification foundation](GENERATED_REPAIR_VERIFICATION.md) now binds this inert proposal to the maintainer-accepted offline Docker/control design, 17 maintained cases / 21 requests, proposed budgets and a disabled executor interface. Its pure comparison handles supplied data only; it is not runtime evidence or operational permission. No copy, generated execution, application or recovery is implemented by that slice, and the original generation policy review label remains unchanged.
-
-[#153](https://github.com/casing1/authzest/issues/153) will present actual scan, PoC/test, diff, check, and recovery results in a read-only local React UI. Initial action and approval controls stay in the CLI; cloud deployment is not required. These integrations remain future work.
-
-The adapter uses the current-turn `outputSchema` direction described by the [official Codex App Server documentation](https://learn.chatgpt.com/docs/app-server). The source connection, offline schema and mocked tests are **not** actual provider compatibility evidence for the unchanged pinned Codex version `0.153.0`; a real request still needs separate consent and acceptance evidence.
+The [local viewer](../guides/RESULT_VIEWER.md) from
+[#153](https://github.com/casing1/authzest/issues/153) displays the final JSON read-only. The CLI
+owns sharing and stage decisions. The adapter uses the current-turn `outputSchema` field described
+in the [Codex App Server documentation](https://learn.chatgpt.com/docs/app-server).
