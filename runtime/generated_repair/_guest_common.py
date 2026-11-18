@@ -7,6 +7,20 @@ import re
 
 GUEST_ROOT = "/opt/authzest-guest"
 _SCRIPTS = {"T": "test_launcher.py", "A": "app_launcher.py", "B": "relay_launcher.py"}
+# Closed kernel fallback devices, not a general interface-name allowlist. The
+# values are (ARPHRD type, exact administratively-DOWN sysfs flags).
+_FALLBACK_INTERFACES = {
+    "tunl0": (768, 0x80),
+    "gre0": (778, 0x80),
+    "gretap0": (1, 0x1002),
+    "erspan0": (1, 0x1002),
+    "ip_vti0": (768, 0x80),
+    "ip6_vti0": (769, 0x80),
+    "sit0": (776, 0x80),
+    "ip6tnl0": (769, 0x80),
+    "ip6gre0": (823, 0x80),
+}
+_NETWORK_ATTRIBUTES = ("flags", "operstate", "type", "ifindex", "iflink")
 
 
 def entry_allowed(
@@ -87,6 +101,120 @@ def _options(text):
     return result
 
 
+def _kernel_text(text):
+    if (
+        type(text) is not str
+        or len(text) > 65_536
+        or not text.isascii()
+        or any((ord(char) < 32 and char not in "\t\n") or ord(char) == 127 for char in text)
+    ):
+        raise ValueError("guest-kernel-controls")
+    return text
+
+
+def _network_names(text):
+    lines = _kernel_text(text).splitlines()
+    if (
+        not 3 <= len(lines) <= 12
+        or not lines[0].startswith("Inter-|")
+        or not lines[1].lstrip().startswith("face |")
+    ):
+        raise ValueError("guest-kernel-controls")
+    names = []
+    for line in lines[2:]:
+        name, separator, counters = line.partition(":")
+        name = name.strip()
+        # Counters are syntax only; zero/nonzero counters establish no safety.
+        if (
+            not separator
+            or name not in {"lo", *_FALLBACK_INTERFACES}
+            or name in names
+            or re.fullmatch(r"[ \t]*[0-9]{1,20}(?:[ \t]+[0-9]{1,20}){0,15}[ \t]*", counters) is None
+        ):
+            raise ValueError("guest-kernel-controls")
+        names.append(name)
+    if "lo" not in names:
+        raise ValueError("guest-kernel-controls")
+    return names
+
+
+def _network_snapshot(names, snapshot):
+    if type(snapshot) is not dict or set(snapshot) != set(names):
+        raise ValueError("guest-kernel-controls")
+    indexes = set()
+    for name in names:
+        entry = snapshot[name]
+        if type(entry) is not dict or set(entry) != set(_NETWORK_ATTRIBUTES):
+            raise ValueError("guest-kernel-controls")
+        if (
+            any(type(entry[key]) is not int for key in ("flags", "type", "ifindex", "iflink"))
+            or type(entry["operstate"]) is not str
+            or not 1 <= entry["ifindex"] <= 2**31 - 1
+            or entry["ifindex"] in indexes
+        ):
+            raise ValueError("guest-kernel-controls")
+        indexes.add(entry["ifindex"])
+        if name == "lo":
+            expected_type, expected_flags = 772, 0x9
+            expected_state, expected_link = "unknown", entry["ifindex"]
+        else:
+            expected_type, expected_flags = _FALLBACK_INTERFACES[name]
+            expected_state, expected_link = "down", 0
+        if (
+            entry["type"] != expected_type
+            or entry["flags"] != expected_flags
+            or entry["operstate"] != expected_state
+            or entry["iflink"] != expected_link
+        ):
+            raise ValueError("guest-kernel-controls")
+
+
+def _check_network(observation):
+    names = _network_names(observation["network"])
+    if names == ["lo"] and "network_interfaces" not in observation:
+        return
+    detail = observation.get("network_interfaces")
+    if type(detail) is not dict or set(detail) != {"before", "after", "names_after"}:
+        raise ValueError("guest-kernel-controls")
+    after_names = detail["names_after"]
+    if (
+        type(after_names) is not list
+        or not 1 <= len(after_names) <= 10
+        or any(type(name) is not str for name in after_names)
+        or len(set(after_names)) != len(after_names)
+        or set(after_names) != set(names)
+    ):
+        raise ValueError("guest-kernel-controls")
+    # Validate native scalar types before equality (True must not equal 1).
+    _network_snapshot(names, detail["before"])
+    _network_snapshot(names, detail["after"])
+    if detail["before"] != detail["after"]:
+        raise ValueError("guest-kernel-controls")
+
+
+def _read_network_snapshot(names, read):
+    result = {}
+    for name in names:
+        # _network_names has already constrained names to this fixed set.
+        entry = {}
+        for key in _NETWORK_ATTRIBUTES:
+            raw = read("/sys/class/net/" + name + "/" + key, 64)
+            if key == "operstate":
+                if re.fullmatch(r"(?:down|unknown)\n?", raw, re.ASCII) is None:
+                    raise ValueError("guest-kernel-controls")
+                entry[key] = raw.removesuffix("\n")
+            elif key == "flags":
+                if re.fullmatch(r"0x[0-9a-f]{1,8}\n?", raw, re.ASCII) is None:
+                    raise ValueError("guest-kernel-controls")
+                entry[key] = int(raw.removesuffix("\n")[2:], 16)
+            else:
+                if re.fullmatch(r"[0-9]{1,10}\n?", raw, re.ASCII) is None:
+                    raise ValueError("guest-kernel-controls")
+                entry[key] = int(raw.removesuffix("\n"))
+        result[name] = entry
+    return result
+
+
 def check_kernel_controls(role, observation) -> None:
     """Check bounded supplied kernel facts; no I/O or attestation in this function.
 
@@ -113,7 +241,10 @@ def check_kernel_controls(role, observation) -> None:
     }
     if type(role) is not str or role not in _SCRIPTS:
         raise ValueError("guest-kernel-controls")
-    if type(observation) is not dict or set(observation) != fields:
+    if type(observation) is not dict or set(observation) not in (
+        fields,
+        fields | {"network_interfaces"},
+    ):
         raise ValueError("guest-kernel-controls")
     for key, expected in (
         ("pid", 1),
@@ -126,14 +257,7 @@ def check_kernel_controls(role, observation) -> None:
         if type(observation[key]) is not int or observation[key] != expected:
             raise ValueError("guest-kernel-controls")
     for key in ("status", "cgroup", "memory", "swap", "pids", "cpu", "mountinfo", "network"):
-        text = observation[key]
-        if (
-            type(text) is not str
-            or len(text) > 65_536
-            or not text.isascii()
-            or any((ord(char) < 32 and char not in "\t\n") or ord(char) == 127 for char in text)
-        ):
-            raise ValueError("guest-kernel-controls")
+        _kernel_text(observation[key])
     status = {}
     for line in observation["status"].splitlines():
         key, separator, value = line.partition(":")
@@ -171,17 +295,7 @@ def check_kernel_controls(role, observation) -> None:
     quota, period = map(_number, cpu)
     if not 1000 <= period <= 1_000_000 or quota * (2 if small else 1) != period:
         raise ValueError("guest-kernel-controls")
-    interfaces = []
-    lines = observation["network"].splitlines()
-    if len(lines) != 3:
-        raise ValueError("guest-kernel-controls")
-    for line in lines[2:]:
-        name, separator, _ = line.partition(":")
-        if not separator:
-            raise ValueError("guest-kernel-controls")
-        interfaces.append(name.strip())
-    if interfaces != ["lo"]:
-        raise ValueError("guest-kernel-controls")
+    _check_network(observation)
     mounts = {}
     for line in observation["mountinfo"].splitlines():
         columns = line.split()
@@ -239,15 +353,15 @@ def require_kernel_controls(role) -> None:
     if type(role) is not str or role not in _SCRIPTS:
         raise ValueError("guest-kernel-controls")
 
-    def read(path):
+    def read(path, limit=65_536):
         fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
         failure = None
         try:
             data = bytearray()
             while True:
-                chunk = os.read(fd, min(4096, 65_537 - len(data)))
+                chunk = os.read(fd, min(4096, limit + 1 - len(data)))
                 data.extend(chunk)
-                if len(data) > 65_536:
+                if len(data) > limit:
                     raise ValueError("guest-kernel-controls")
                 if not chunk:
                     return bytes(data).decode("ascii")
@@ -289,4 +403,13 @@ def require_kernel_controls(role) -> None:
         "tmp_gid": folder.st_gid,
         "input_readonly": [bool(os.statvfs(path).f_flag & os.ST_RDONLY) for path in inputs],
     }
+    names = _network_names(observation["network"])
+    if names != ["lo"]:
+        before = _read_network_snapshot(names, read)
+        after = _read_network_snapshot(names, read)
+        observation["network_interfaces"] = {
+            "before": before,
+            "after": after,
+            "names_after": _network_names(read("/proc/net/dev")),
+        }
     check_kernel_controls(role, observation)

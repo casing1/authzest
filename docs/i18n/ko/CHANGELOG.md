@@ -194,6 +194,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 수정
 
+- 엄격한 lo-only guest guard를 유지하고 관리하는 정확한 이름/type/flag, non-loopback 관리상/
+  operstate DOWN·iflink0·양수이며 서로 다른 index를 요구하는 닫힌 기본 tunnel fallback 경로를 추가합니다.
+  고정 proc/sysfs의 제한된 전후 사실이 같아야 하며 미확인·활성·변경·잘못된 관찰은 target import 전
+  종료 78로 거부합니다. socket/netlink·NET_ADMIN·sysctl·network template 변경은 없습니다. 주장은
+  진입 시 활성 non-loopback interface가 관찰되지 않음뿐이며 주소/route 부재·실제 외부 연결성 측정·
+  격리 증명이 아닙니다. 공통 자산/recipe6개 pin이 바뀌어 현재 재빌드/검토 T/A/B 이미지와 설치형 수용이
+  필요합니다. 기본 생성·고정 의존성·버전·공개 릴리스는 유지합니다.
+
 - [#130](https://github.com/casing1/authzest/issues/130)의 오프라인 가짜 Codex 서버가 append 중인
   로그를 polling 독자에게 노출하지 않고 완성된 JSONL 이벤트 로그 스냅샷을 원자적으로 공개합니다.
   부모 독자와 후속 가짜 서버 세대에서 엄격한 UTF-8·줄바꿈 framing·완성된 JSON 기록 검증을

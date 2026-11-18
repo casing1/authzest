@@ -8,7 +8,7 @@
 [Documentation index](../README.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [Lifecycle model](GENERATED_REPAIR_LIFECYCLE.md)
 
-## Scope — 2026-11-15 KST
+## Scope — 2026-11-18 KST
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) slice adds maintained standalone
 guest launcher **source**, tested only with fake dependencies and sockets. No guest, application,
@@ -44,8 +44,17 @@ Before target/tool imports, the common guard reads fixed kernel paths and refuse
 PID/nonroot, seccomp/no-new-privileges/capability, cgroup, mount and interface settings with exit 78.
 It checks no target contents and creates no process/socket. This is a narrow supported-property check,
 not a resource stress benchmark, escape proof or independent A/B namespace attestation.
-All common/launcher assets and six platform recipes changed; current T/A/B images must be rebuilt
-and reviewed. A typed runtime review or updated declaration cannot substitute for image contents.
+
+The network guard retains strict lo-only acceptance and adds a closed default-tunnel fallback path.
+Names, types and flags must match maintained source literals; every non-loopback fallback must be
+administratively DOWN, operstate DOWN and iflink0, with positive unique indexes. Fixed proc/sysfs
+snapshots are bounded and compared before/after. Unknown, active, changed or malformed data refuses
+with exit 78 before a target is imported. This means only **no active non-loopback interface observed
+at entry**, not absence of addresses/all routes, measured external connectivity or isolation proof.
+The check uses no socket/netlink, NET_ADMIN, sysctl or network-template change.
+
+This common-asset change invalidates all T/A/B common pins and six platform recipes. Current images
+must be rebuilt and reviewed. A typed runtime review or updated declaration cannot substitute for image contents.
 
 The launchers clear inherited environment before loading dependencies and expose the fixed trusted
 asset directory explicitly (`-I` does not retain the script directory). T/A import image-owned

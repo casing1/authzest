@@ -29,19 +29,19 @@ EXPECTED_IMAGE_INPUTS = {
             "dependency_lock_sha256": (
                 "8f87350f05c065015a9f2c7633aee604afc31c6d02cc96459b6fcd09520718fc"
             ),
-            "recipe_sha256": "49a14000611d41f7def45d6fdfd7e82991a9da2edc8040df4c2c170e7c675f0b",
+            "recipe_sha256": "dca3e1e7f946036ca2cfcfd84ce9a328a47e6a0ef652f0f37adf1af35175a32d",
         },
         "A": {
             "dependency_lock_sha256": (
                 "d5e47e336f638d33f90d8241f76ebe58cecb45d7e910ce9d7fe487efd8e636bb"
             ),
-            "recipe_sha256": "1893184a3b5bd78002ee650f11202c92753d3173c97f1a2f7a852e5ace9ecefb",
+            "recipe_sha256": "d4fdf1be501e67bfa745866b80839f386c3df423049bf592d6f415b6226c501d",
         },
         "B": {
             "dependency_lock_sha256": (
                 "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e"
             ),
-            "recipe_sha256": "1b3a91f9e158888d956ed2ffc4f857b1f56e13ffdc8a2907044b557c63f661e8",
+            "recipe_sha256": "b74ac75b61872b242de3468cf2bb557ee72e4a6acc6f76bd23d07a9cdbe3edb6",
         },
     },
     "linux/arm64": {
@@ -49,19 +49,19 @@ EXPECTED_IMAGE_INPUTS = {
             "dependency_lock_sha256": (
                 "e2a56894eeff0a0ef1433ec9eecf99e75339e52e92f9fe39ea9e015618f030cf"
             ),
-            "recipe_sha256": "3217cf92e3bafe8271f63c249fce0e1cb8946f1d2dccb99b712791018f30eaee",
+            "recipe_sha256": "4df11eb391e89bb2fed9fc1b40bb69c675c720e390aba5c59a3423b760defc4a",
         },
         "A": {
             "dependency_lock_sha256": (
                 "4fe83c082c5db3d478c0b40f39d626b3c687182d0c28efd818d5cffea93699b8"
             ),
-            "recipe_sha256": "90d33a51e79ff4a0b66b158ae2761e2ee5f674b2aebb4e6a4f78165cb3f9aae3",
+            "recipe_sha256": "967c8e33fe2c21dcaf81a00dcb0f46e76d27f26c49c518bb4fcd0a41a233d8ed",
         },
         "B": {
             "dependency_lock_sha256": (
                 "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e"
             ),
-            "recipe_sha256": "834a517d59526bb5493ff413436f917f5349a9ed5beb1989c171738e3088a660",
+            "recipe_sha256": "093ff1de9c111d46117677e437cc84f564dee8b758476117cb3002aee7a11d3d",
         },
     },
 }

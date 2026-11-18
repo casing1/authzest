@@ -87,12 +87,21 @@ may remain true after confirmed restoration.
 
 Before target/tool imports, each maintained image entry checks supported kernel-reported controls:
 PID 1/nonroot, seccomp/no-new-privileges/zero capabilities, cgroupv2 CPU/memory/swap/PID limits,
-read-only root/input, bounded tmpfs and loopback-only interfaces. Missing or wrong properties refuse
-with exit 78. This is not an escape proof, resource stress benchmark or independent namespace attestation.
-The host still enforces its phase/capture/cleanup limits and exact object ownership.
+read-only root/input, bounded tmpfs and a closed network-interface contract. The strict lo-only path
+is retained. A second path permits only source-defined default tunnel fallbacks whose names, types
+and flags exactly match the maintained allowlist. Each non-loopback interface must be administratively
+DOWN with operstate DOWN and iflink0; indexes must be positive and unique. Bounded before/after facts
+from fixed proc/sysfs paths must remain stable. Unknown, active, changed or malformed facts refuse
+with exit 78 before target imports.
 
-The common guard and all launchers changed, so all T/A/B assets and six platform recipes require
-current images. Copying new declared hashes into an old profile does not update an image.
+The network observation is only **no active non-loopback interface observed at entry**. It does not
+establish the absence of IP addresses or all routes, measured external connectivity, independent
+namespace identity or isolation proof. The check opens no socket/netlink channel and adds no
+NET_ADMIN, sysctl or network-template change. The host still applies its phase/capture/cleanup limits
+and exact object ownership.
+
+This network fix changes the common asset used by every T/A/B image and all six platform recipe
+pins, so current rebuilt/reviewed images are required. Copying new declared hashes into an old profile does not update an image.
 The shared limits remain phase 40 s, cumulative setup 10 s, cleanup 10 s, captured output 256 KiB
 (normal 224 KiB plus cleanup 32 KiB) and retained session evidence 2 MiB with reserved recovery bookkeeping.
 Synchronous filesystem/kernel calls have no universal wall-time guarantee.

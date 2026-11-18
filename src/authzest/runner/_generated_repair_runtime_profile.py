@@ -18,7 +18,7 @@ MAX_PROFILE_BYTES = 16_384
 EMPTY_CONFIG_SHA256 = sha256(b"{}\n").hexdigest()
 _ROLES = ("T", "A", "B")
 _ROOT = "/opt/authzest-guest/"
-_COMMON = "697472d2b8a168a0ec79ea00e1dee508b4b44e0dbb87c64ac3f4b1cd07df85ad"
+_COMMON = "3910bbfb67e7a921bd3870beedb76680bc0c9c6b1c2f8b1f201e95abebcc4fd5"
 _ASSETS = {
     "T": {
         "_guest_common.py": _COMMON,
