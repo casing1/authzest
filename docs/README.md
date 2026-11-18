@@ -7,7 +7,9 @@
 
 AuthZest is an installable, CLI-first FastAPI source-analysis project. Start with the project README
 for installation, then use the parser scope to understand what a scan does and does not establish.
-The current local dashboard shows static inventory and does not require website deployment.
+The local dashboard shows static inventory and explicitly imported workflow results without website
+deployment. See the [local result viewer](guides/RESULT_VIEWER.md) for the source-install route,
+English/Korean interface, bounded import and unverified-record limits.
 
 ## Current work — 2026-11-15 KST
 
@@ -319,6 +321,7 @@ docs/
 | Fixed local Engine metadata                                             | [Runtime metadata](development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](i18n/ko/development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | Pinned unbuilt guest-image inputs                                       | [Image inputs](development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](i18n/ko/development/GENERATED_REPAIR_IMAGES.md)                |
 | Approved generated copy/check/apply/restore CLI                         | [Generated file workflow](guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](i18n/ko/guides/GENERATED_FILE_WORKFLOW.md)                          |
+| Read-only local workflow result viewer                                  | [Result viewer](guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](i18n/ko/guides/RESULT_VIEWER.md)                                    |
 | Internal generated T → A/B executor                                     | [Private phase](development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](i18n/ko/development/GENERATED_REPAIR_PHASE.md)                  |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |

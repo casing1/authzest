@@ -105,6 +105,9 @@ bit-reproducible build, effective resource limits or a verified repair.
 
 ## Fresh private build context
 
+Keep the build client's Docker configuration separate from the strict runtime-only configuration
+described in the [file workflow guide](../guides/GENERATED_FILE_WORKFLOW.md).
+
 [scripts/generated_image_context.py](../../scripts/generated_image_context.py) provides
 `prepare_image_context(repo, wheelhouse, parent, role, platform)`. It first rechecks the input
 manifest and exact existing wheel set, then writes a fresh private bundle under the caller's

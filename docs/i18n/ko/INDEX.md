@@ -7,7 +7,9 @@
 
 AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. 설치는 프로젝트 README에서 시작하고,
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
-현재 로컬 대시보드는 정적 목록을 표시하며 웹사이트 배포가 필요하지 않습니다.
+로컬 대시보드는 정적 목록과 사용자가 가져온 워크플로 결과를 표시하며 웹사이트 배포가 필요하지 않습니다.
+소스 설치·영한 UI·제한된 가져오기·미인증 기록의 한계는 [로컬 결과 화면](guides/RESULT_VIEWER.md)을
+참고하세요.
 
 ## 현재 작업 — 2026-11-15 KST
 
@@ -302,6 +304,7 @@ docs/
 | 고정 로컬 Engine 메타데이터                        | [Runtime metadata](../../development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
 | 승인형 생성 복사/검사/적용/복구 CLI                | [Generated file workflow](../../guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)                          |
+| 읽기 전용 로컬 워크플로 결과 화면                  | [Result viewer](../../guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](guides/RESULT_VIEWER.md)                                    |
 | 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |

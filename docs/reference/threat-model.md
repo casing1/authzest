@@ -16,10 +16,13 @@ This is an architecture-backed review guide, not a completed security audit, a f
 or proof that a fix is effective. It models AuthZest itself, not the access-control policy of
 a FastAPI application being analyzed.
 The baseline was checked with an independent, offline architecture review; that is not audit coverage.
+The result-import boundary notes below describe the current source addition; they do not refresh
+the historical baseline review or establish security acceptance of the complete application.
 
 The supported product is a local, single-operator, CLI-first source analyzer. Ordinary scans
 collect static evidence without importing the target or calling a model. The optional API/dashboard
-scans a workspace selected at server startup. A separate POSIX Codex workflow shares one packaged
+scans a workspace selected at server startup and previews an explicitly selected workflow JSON as
+unverified data. Import adds no browser approval or execution authority. A separate POSIX Codex workflow shares one packaged
 fixture after approval, accepts only its exact debug-setting replacement, and offers independent
 copy-application, verification, and restoration decisions. General repository AI, generated
 regression-test execution, and edits to an existing checkout are not supported by that workflow.
@@ -122,6 +125,22 @@ The runtime execution boundary is at [_runtime_worker:107](../../src/authzest/ru
 - The API has no authentication, tenant isolation or explicit origin/Host protection in create_app.
   Keep it local and operator-controlled. Public/shared deployment is unsupported; browser-to-loopback
   abuse needs a concrete reachable request/read path before it is treated as a vulnerability.
+- Read-only result import accepts selected JSON bytes at `POST /api/results/preview`, not a file path.
+  The local API streams at most 512 KiB and applies bounded JSON depth/item/text and supported-record
+  checks in [`preview_workflow_result`](../../src/authzest/result_viewer.py); it does not store the
+  upload, follow workspace/receipt directories, invoke AI/workers or apply a patch
+  ([API](../../src/authzest/api/app.py), [file chooser](../../frontend/src/ResultViewer.tsx)). The
+  existing local-only deployment assumptions still apply; the byte limit is not a general request
+  duration or concurrency guarantee.
+- A producer of an imported record controls its claimed decisions, observations and model/source
+  text. Shape/hash consistency is not authenticated provenance, approval or repair proof. The
+  [viewer](../../frontend/src/WorkflowResult.tsx) uses ordinary React text rendering, with control
+  and bidirectional characters escaped by [`visibleText`](../../frontend/src/viewer-text.ts), rather
+  than HTML/Markdown execution. Missing evidence remains unavailable and imported claims remain
+  unverified, including legacy unversioned records. Display projection omits operational metadata
+  but cannot remove secrets embedded in source/model text; importing does not authorize or resume a
+  CLI session. Misleading status text or script-like input is a review hypothesis, not a validated
+  vulnerability or a newly accepted risk.
 - Windows scanning is distinct from POSIX fixture application/checking. An exact configuration/health
   demo is not an authentication/ownership PoC. Test fixtures may intentionally contain unsafe settings;
   do not flag their presence alone, or exempt the production code that consumes them.
