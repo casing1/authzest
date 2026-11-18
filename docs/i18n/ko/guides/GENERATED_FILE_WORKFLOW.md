@@ -8,12 +8,13 @@
 [문서 목차](../INDEX.md) · [생성 계약](../development/GENERATED_REPAIR_CONTRACT.md) ·
 [세션 계약](../development/GENERATED_REPAIR_SESSION.md)
 
-## 현재 소스 상태 — 2026-11-15 KST
+## 현재 소스 상태
 
 소스 CLI는 현재 생성 제안 하나를 별도 결정하는 비공개 복사본 검사·정확한 소스 적용·복구에 연결합니다.
-기본 생성 명령은 제안 전용입니다. Opt-in 구현은 오프라인/mock 검사를 받았으며 현재 이미지·커널의
-실현 가능성과 설치형 전체 흐름 수용은 [#152](https://github.com/casing1/authzest/issues/152)에 남아 있습니다.
-불변의 공개 alpha.4 릴리스에는 포함하지 않으며 #150/#153도 미완료입니다.
+기본 생성 명령은 제안 전용입니다. [과제 시연](COURSE_DEMO.md)에 이전 설치형 실행 한 건과 별도로 완료한
+[#153 로컬 결과 화면](https://github.com/casing1/authzest/issues/153)을 기록했습니다.
+현재 후보의 설치형 수용은 [#152](https://github.com/casing1/authzest/issues/152)에서 추적합니다.
+활성 흐름은 소스에서 사용할 수 있습니다. 공개 alpha.4 산출물은 이 기능이 추가되기 전에 만들었습니다.
 
 범위는 관리하는 합성 소유권 사례 하나, 앱 파일 하나와 생성 테스트 하나입니다. 임의 저장소 실행기,
 host pytest 우회, 브라우저 승인 흐름이나 범용 수정 엔진이 아닙니다.
@@ -107,6 +108,5 @@ socket/netlink 채널을 열지 않고 NET_ADMIN·sysctl·network template도 �
 누적 준비10초·정리10초·출력256KiB(일반224KiB와 정리32KiB)·복구 기록 공간을 예약한 세션 근거2MiB입니다.
 동기 파일시스템·커널 호출의 보편적 시간 상한은 없습니다.
 
-이번 소스 변경에서 실제 AI/Docker/생성 실행·새 이미지 준비·운영 패치·릴리스는 수행하지 않습니다.
-다음은 현재 이미지로 정확한 설치 흐름을 검증하고
-[#153](https://github.com/casing1/authzest/issues/153)의 읽기 전용 로컬 결과 UI에 연결하는 작업입니다.
+이미 저장한 결과는 [로컬 결과 화면](RESULT_VIEWER.md)에서 시연합니다.
+[과제 시연](COURSE_DEMO.md)에서 기록된 단계와 리비전·형식의 한계를 확인하세요.

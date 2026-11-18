@@ -10,17 +10,19 @@ for installation, then use the parser scope to understand what a scan does and d
 The local dashboard shows static inventory and explicitly imported workflow results without website
 deployment. See the [local result viewer](guides/RESULT_VIEWER.md) for the source-install route,
 English/Korean interface, bounded import and unverified-record limits.
+The [course demo](guides/COURSE_DEMO.md) brings installation, the recorded walkthrough and evidence
+limits together.
 
-## Current work — 2026-11-15 KST
+## Current work
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
 → [#152 approved-copy before/after and recovery](https://github.com/casing1/authzest/issues/152)
 → [#153 local read-only results UI](https://github.com/casing1/authzest/issues/153)
-→ [#85 installation/docs/demo](https://github.com/casing1/authzest/issues/85). These are pending
-deliverables, not current capabilities. The registered-template acceptance below is not genuine
-generation completion. CLI remains the decision/execution path; UI work adds no cloud deployment
-or browser patch authority. The [development plan](development/DEVELOPMENT_PLAN.md) defines the scope.
+→ [#85 installation/docs/demo](https://github.com/casing1/authzest/issues/85). PR #173 delivered the
+local viewer and closed #153. Generation and verification acceptance remain open under #151 and #152.
+The CLI handles decisions and execution. The [development plan](development/DEVELOPMENT_PLAN.md)
+defines the release scope.
 
 The [generated file workflow](guides/GENERATED_FILE_WORKFLOW.md) now connects a bounded private
 runtime-profile loader and fresh local review to current generation, then separate copy, before,
@@ -42,10 +44,10 @@ changed, requiring current rebuilt/reviewed T/A/B images. The
 [Engine metadata](development/GENERATED_REPAIR_PREFLIGHT.md) do not prove whole-image contents,
 escape-proof isolation or stress-tested enforcement. No ready profile or automatic provisioning ships.
 
-This source integration uses inert-file, fake adapter/phase/kernel and trusted regression-child tests.
-It performs no new live AI/Docker/generated-code call, image provisioning, operational patch or release.
-Current-image feasibility and installed acceptance remain pending under #152; #150/#153 are incomplete.
-Published alpha.4 bytes remain unchanged.
+The 2026-11-15 source integration was covered by inert-file, fake adapter/phase/kernel and trusted
+regression-child tests. The [course demo evidence](guides/COURSE_DEMO.md) records a later scoped
+installed observation and its limits. Acceptance for a stable candidate remains open under #150–152.
+The published alpha.4 release has its own record below.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -69,10 +71,10 @@ reviewed cases and Codex template selection. Active owned-file operation require
 Python source; native binaries support scan/offline previews, not that active file workflow.
 POSIX binaries also retain the older owned-fixture apply/runtime workflow. Packaged
 fixed debug/health runtime checks on POSIX are distinct from owner-policy authorization; Windows checks
-explicit unsupported behavior. UI acceptance, consumer-device installation/upgrades and signing/
-notarization are not established. General FastAPI PoC and model-authored repair-source generation remain
-unimplemented. #89 remains open at `needs_review` / medium with visible warnings and alpha.4-only
-residual-risk acceptance, not a fix or a stable-release waiver.
+explicit unsupported behavior. The alpha.4 release record does not establish native UI acceptance,
+consumer-device installation/upgrades or signing/notarization. General FastAPI PoC and model-authored
+repair-source generation remain beyond this registered scope. #89 remains open at `needs_review` /
+medium with visible warnings and alpha.4-only residual-risk acceptance, not a fix or a stable-release waiver.
 
 The post-alpha.4 source change under #130 publishes complete fake-server JSONL snapshots atomically,
 with strict completed-record validation and deterministic regression cases. This is test-harness
@@ -322,6 +324,7 @@ docs/
 | Pinned unbuilt guest-image inputs                                       | [Image inputs](development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](i18n/ko/development/GENERATED_REPAIR_IMAGES.md)                |
 | Approved generated copy/check/apply/restore CLI                         | [Generated file workflow](guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](i18n/ko/guides/GENERATED_FILE_WORKFLOW.md)                          |
 | Read-only local workflow result viewer                                  | [Result viewer](guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](i18n/ko/guides/RESULT_VIEWER.md)                                    |
+| Course installation, recorded demo and evidence limits                  | [Course demo](guides/COURSE_DEMO.md)                                       | [과제 시연](i18n/ko/guides/COURSE_DEMO.md)                                           |
 | Internal generated T → A/B executor                                     | [Private phase](development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](i18n/ko/development/GENERATED_REPAIR_PHASE.md)                  |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |
@@ -416,9 +419,9 @@ three-platform artifacts, and validation limits. Compare the changelog and commi
 [#33](https://github.com/casing1/authzest/issues/33) is implemented in source, and
 [#35](https://github.com/casing1/authzest/issues/35) is complete for the accepted bounded core.
 Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
-Next is [#150 course-complete stable](https://github.com/casing1/authzest/issues/150): genuine
-generation #151 → approved-copy verification/recovery #152 → local results UI #153 →
-[#85 course-demo evidence](https://github.com/casing1/authzest/issues/85).
+For [#150 course-complete stable](https://github.com/casing1/authzest/issues/150), the viewer is
+implemented in #153. See the [course demo](guides/COURSE_DEMO.md) for the #85 walkthrough and the
+remaining #151/#152 acceptance work.
 [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) remains separately open;
 its missing comparative evidence must be explicit, not invented or silently completed.
 

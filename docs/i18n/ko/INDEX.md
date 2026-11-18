@@ -10,17 +10,17 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 로컬 대시보드는 정적 목록과 사용자가 가져온 워크플로 결과를 표시하며 웹사이트 배포가 필요하지 않습니다.
 소스 설치·영한 UI·제한된 가져오기·미인증 기록의 한계는 [로컬 결과 화면](guides/RESULT_VIEWER.md)을
 참고하세요.
+[과제 시연](guides/COURSE_DEMO.md)에서 설치, 저장된 기록의 시연 순서, 근거의 한계를 확인할 수 있습니다.
 
-## 현재 작업 — 2026-11-15 KST
+## 현재 작업
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
 → [#152 승인형 복사본 before/after·복구](https://github.com/casing1/authzest/issues/152)
 → [#153 읽기 전용 로컬 결과 UI](https://github.com/casing1/authzest/issues/153)
-→ [#85 설치/문서/시연](https://github.com/casing1/authzest/issues/85) 순서입니다. 모두 미완료 목표이며
-현재 기능 주장이 아닙니다. 아래 등록 템플릿 수용은 실제 생성 완료가 아닙니다. CLI가 결정/실행을
-담당하고 UI가 클라우드 배포나 브라우저 패치 권한을 추가하지 않습니다.
-범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)에 명시합니다.
+→ [#85 설치/문서/시연](https://github.com/casing1/authzest/issues/85) 순서입니다. PR #173에서
+로컬 결과 화면을 구현해 #153을 닫았습니다. 생성 및 검증 수용은 #151·#152에 남아 있습니다.
+CLI에서 승인하고 실행합니다. 릴리스 범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 참고하세요.
 
 [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)은 제한된 비공개 runtime-profile loader와 새
 로컬 검토를 현재 생성에 연결하고 복사·before·정확한 diff/적용·after·복구를 각각 결정합니다.
@@ -42,9 +42,9 @@ Opt-in 세션은 현재 직접 반환한 [phase 결과](development/GENERATED_RE
 [Engine metadata](development/GENERATED_REPAIR_PREFLIGHT.md)는 전체 이미지 내용·탈출 불가 격리·
 부하 검증 자원 강제를 입증하지 않으며 ready profile이나 자동 준비 명령을 제공하지 않습니다.
 
-소스 연결은 비활성 파일·가짜 adapter/phase/커널·신뢰 회귀 자식으로 검사합니다. 새 실제 AI/Docker/생성
-호출·이미지 준비·운영 패치·릴리스를 수행하지 않습니다. 현재 이미지 실현 가능성·설치형 수용은 #152에
-남고 #150/#153도 미완료이며 공개 alpha.4 바이트는 유지합니다.
+2026-11-15 당시 소스 연결은 비활성 파일, 모의 adapter/phase/커널, 신뢰 회귀 자식 프로세스로
+검사했습니다. 이후 한정된 설치 실행과 그 한계는 [과제 시연의 근거](guides/COURSE_DEMO.md)를
+참고하세요. 정식 후보 수용은 #150–152에 남아 있습니다. 공개 alpha.4 기록은 아래에 정리했습니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -68,8 +68,9 @@ job 7개가 통과했고 발행을 건너뛰었습니다. macOS/Python 3.12 host
 native 바이너리는 스캔·오프라인 미리보기를 지원하며 해당 활성 소유 파일 흐름은 지원하지 않습니다.
 POSIX 바이너리는 기존 소유 fixture 적용·런타임 흐름도 유지합니다.
 POSIX 패키지의 고정 debug/health 런타임 검사는 소유 정책 인가와 별개이며 Windows는 명시적 미지원
-동작을 검사합니다. UI 수용·일반 사용자 기기 설치/업데이트·서명/공증은 입증하지 않았습니다.
-일반 FastAPI PoC와 모델이 새로 작성하는 수정 소스 생성은 미구현입니다. #89는 명시적 경고와
+동작을 검사합니다. alpha.4 릴리스 기록에는 native UI 수용, 일반 사용자 기기 설치·업데이트,
+서명·공증의 검증이 없습니다. 일반 FastAPI PoC와 모델이 새로 작성하는 수정 소스 생성은 이 등록
+워크플로의 범위 밖입니다. #89는 명시적 경고와
 alpha.4 한정 잔여 위험 수용 아래 `needs_review` / medium으로 열어두며 수정 완료나 정식 릴리스
 위험 면제가 아닙니다.
 
@@ -305,6 +306,7 @@ docs/
 | 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
 | 승인형 생성 복사/검사/적용/복구 CLI                | [Generated file workflow](../../guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)                          |
 | 읽기 전용 로컬 워크플로 결과 화면                  | [Result viewer](../../guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](guides/RESULT_VIEWER.md)                                    |
+| 과제용 설치, 저장된 기록 시연, 근거 범위           | [Course demo](../../guides/COURSE_DEMO.md)                                       | [과제 시연](guides/COURSE_DEMO.md)                                           |
 | 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |
@@ -398,9 +400,9 @@ Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 
 [#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐고
 [#35](https://github.com/casing1/authzest/issues/35)는 수용한 제한 범위 핵심을 완료했습니다.
 소스 테스트 harness 안정화 전달은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다.
-다음은 [#150 과제 완성형 정식판](https://github.com/casing1/authzest/issues/150)의 실제 생성 #151 →
-승인형 복사본 검사/복구 #152 → 로컬 결과 UI #153 →
-[#85 제출 시연 근거](https://github.com/casing1/authzest/issues/85)입니다.
+[#150 과제 완성형 정식판](https://github.com/casing1/authzest/issues/150)의 로컬 결과 화면은 #153에서
+구현했습니다. #85의 시연 순서와 남은 #151·#152 수용 작업은 [과제 시연](guides/COURSE_DEMO.md)을
+참고하세요.
 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 별도로 열어 두며 미확보 비교 근거를
 명시합니다. 결과를 꾸미거나 조용히 완료 처리하지 않습니다.
 

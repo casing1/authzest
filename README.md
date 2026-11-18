@@ -24,15 +24,12 @@ The CLI retains approval and execution; no website deployment is required. See t
 [local result viewer](docs/guides/RESULT_VIEWER.md) for the supported source-install route and import limits.
 
 > [!NOTE]
-> **Course-complete `0.1.0`: planned, not released.** Alpha.4 currently uses Codex to select a registered
-> repair template; it does **not** generate new PoC/test code or model-authored repair source.
-> The stable target is one maintained, owned FastAPI object-ownership scenario: one application file,
-> a new generated test, and an explicit in-memory policy. The intended demo is genuine Codex-generated
-> PoC/test and repair patch → user-approved fresh copy → approved before/after checks → recovery,
-> with a local results UI. Working, documented installation and an end-to-end demo are release gates,
-> not current capabilities or a promise of general-repository repair.
-> Track [the course-complete release (#150)](https://github.com/casing1/authzest/issues/150) and the
-> [development plan](docs/development/DEVELOPMENT_PLAN.md).
+> **Course release `0.1.0` is still pending.** The published alpha.4 supports registered-template
+> selection. The current source targets one maintained FastAPI object-ownership scenario with one
+> application file and an explicit in-memory policy. The CLI handles generation, copy-only checks and
+> recovery. The local viewer displays saved results. The [course demo guide](docs/guides/COURSE_DEMO.md)
+> covers source installation and records the scope of the evidence. Track the remaining stable
+> release gates in [#150](https://github.com/casing1/authzest/issues/150).
 
 > [!IMPORTANT]
 > **Latest published release:**
@@ -92,9 +89,9 @@ The CLI retains approval and execution; no website deployment is required. See t
   Explicit `--file-workflow --runtime-profile PATH` adds separately decided private-copy before checks,
   exact diff/application, fresh after checks and restoration; see the
   [generated file workflow](docs/guides/GENERATED_FILE_WORKFLOW.md). It requires current reviewed images
-  and supported kernel controls. This source integration has offline/mock coverage; installed acceptance
-  remains pending. Policy review is pending, `X-Demo-Actor` is not authentication, #151/#152 stay open,
-  and the #153 results UI is pending.
+  and supported kernel controls. Policy review and stable acceptance remain open in #151/#152.
+  The `X-Demo-Actor` header selects a synthetic actor. The read-only results UI shipped in source
+  through [PR #173](https://github.com/casing1/authzest/pull/173).
 - Alpha.4 makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
   Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly
@@ -231,8 +228,8 @@ active file workflow ran in these checks; the earlier `c868152` owner-flow obser
 
 The final source `090002d` was checked separately on 2026-11-05 KST: a fresh installation and genuine
 alpha.3 → alpha.4 replacement each passed 13/13 offline installed-CLI checks on one macOS/Python 3.12
-host, with noneditable provenance and package-byte verification. This is not a native upgrade, another
-platform's installation or a new live owner-file observation.
+host, with noneditable provenance and package-byte verification. See the
+[course demo guide](docs/guides/COURSE_DEMO.md) for the separate source UI route and its evidence.
 
 For a prebuilt executable, see [standalone binaries](#standalone-binaries). The `ui` extra installs Python
 backend dependencies; it does not include built dashboard assets in a regular wheel/pipx installation.
