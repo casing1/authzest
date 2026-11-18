@@ -28,6 +28,14 @@ The file must be owned by the current user, regular, mode `0600`, single-link, n
 The loader binds current bytes/inode/parents and maintained platform recipe, dependency-lock and
 guest-asset pins. Invalid input stops before account use.
 
+Use a separate runtime-only Docker configuration directory. Prepare an owned `0700` directory
+containing only an owned, single-link `0600` `config.json` with the exact bytes `{}\n`. Keep build/
+Buildx configuration separate: [BuildKit](https://github.com/moby/buildkit/blob/master/session/auth/authprovider/tokenseed.go)
+can create `.token_seed` and `.token_seed.lock` even with an empty configuration. Extra entries cause
+`private-empty-config-required`. Preserve a previously used build directory and prepare a fresh
+runtime directory instead of deleting its files or relaxing the check. A changed configuration path
+requires a new profile identity and fresh local runtime review; it does not resume a completed call.
+
 The following is an offline example with a placeholder profile path; replace it only with a profile
 whose actual client and immutable images you have reviewed:
 
@@ -74,6 +82,9 @@ file and cleanup remain confirmed. Nothing restores automatically or overwrites 
 Human output summarizes stages, T exits, independent case/request counts, application and recovery.
 `--details` includes full metadata; `--json` emits exactly one final stdout JSON while current
 plans and interaction use stderr. Raw captures remain in private phase records.
+
+The [local result viewer](RESULT_VIEWER.md) displays a selected final JSON without another model
+request. Importing a record does not run a stage, apply a change or reuse a decision.
 
 T before exit 1 and after exit 0 are auxiliary observations, not proof of assertion authenticity.
 The host independently checks the full 17-case/21-request HTTP profile and exact input bindings.

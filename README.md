@@ -19,8 +19,9 @@ record. New PoC generation and model-generated repair source for general FastAPI
 implemented. Alpha.3 includes the opt-in owned-fixture path;
 one live source-CLI draft/apply/runtime-check/restore check has passed. Static scans remain offline.
 
-The current React dashboard displays static-scan results. A local results viewer is part of the planned
-course-complete release below; the CLI initially retains approval and execution. No website deployment is required.
+The source React dashboard displays static-scan results and explicitly imported workflow records.
+The CLI retains approval and execution; no website deployment is required. See the
+[local result viewer](docs/guides/RESULT_VIEWER.md) for the supported source-install route and import limits.
 
 > [!NOTE]
 > **Course-complete `0.1.0`: planned, not released.** Alpha.4 currently uses Codex to select a registered
@@ -281,7 +282,8 @@ CI uses Node.js 22.
 
 ## Optional local dashboard
 
-These commands start the current static-scan UI, not the planned generated-PoC/repair results viewer.
+These commands start the source dashboard for static scans and read-only workflow-result imports.
+Choose an existing final JSON in the dashboard; viewing it does not make another AI call or execute a stage.
 
 After the editable development setup, build and run the dashboard from the repository root:
 
@@ -409,7 +411,7 @@ src/authzest/
 ├── api/        # Optional FastAPI transport
 └── models.py   # Core report data
 tests/          # Regression tests
-frontend/       # Current React/Vite/TypeScript static-scan dashboard
+frontend/       # Local static-scan dashboard and read-only workflow-result viewer
 docs/           # Guides, translations, and assets
 scripts/        # Release helpers
 .github/        # CI/release workflows and contribution templates

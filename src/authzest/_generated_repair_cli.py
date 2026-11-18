@@ -15,6 +15,7 @@ from dataclasses import dataclass
 
 from authzest.codex.contracts import canonical
 from authzest.codex.generated_repair import (
+    build_generated_repair_request,
     prepare_generated_repair_preview,
     validate_generated_repair_proposal,
     validate_generated_repair_request,
@@ -191,6 +192,8 @@ def guarded_generated_sharing_read(reviewed, read):
 def declined_generated_runtime_result(reviewed):
     return {
         "kind": "codex-generated-file-workflow",
+        "schema_version": "1.0",
+        "source_evidence": None,
         "status": "runtime-review-" + reviewed.decision,
         "exit_code": 130 if reviewed.decision == "cancelled" else 0,
         "runtime_review": {
@@ -211,6 +214,32 @@ def declined_generated_runtime_result(reviewed):
         "authorization_status": "unknown",
         "file_workflow": {"requested": True, "status": "not-started", "session_result": None},
     }
+
+
+def add_file_result_metadata(result):
+    """Attach inert source context only when the current fixed request ID matches.
+
+    The version labels a display record, never authenticates its observations or
+    expands its execution authority. Early failures have no inferred evidence.
+    """
+    result["kind"] = "codex-generated-file-workflow"
+    result["schema_version"] = "1.0"
+    request = build_generated_repair_request()
+    result["source_evidence"] = None
+    if result.get("generation_request_id") == request.request_id:
+        scenario = request.to_dict()["scenario"]
+        result["source_evidence"] = {
+            key: scenario[key]
+            for key in (
+                "scenario_id",
+                "source",
+                "declarations",
+                "policy",
+                "policy_authorship",
+                "policy_review",
+            )
+        }
+    return result
 
 
 def _emit(emit, value):
@@ -337,7 +366,7 @@ def run_generated_file_workflow(
     if type(generation_result) is not dict:
         raise GeneratedRepairInputError("Expected a current generation result")
     result = json.loads(canonical(generation_result))
-    result["kind"] = "codex-generated-file-workflow"
+    add_file_result_metadata(result)
     result["generation_workflow_kind"] = generation_result.get("kind")
     result["file_workflow"] = {
         "requested": True,

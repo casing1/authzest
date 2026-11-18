@@ -486,6 +486,10 @@ def codex_generate(
             result = close_file_runtime(
                 loaded, result or {"status": "generation-failed", "exit_code": 1}
             )
+    if file_workflow and not preview_only:
+        from authzest._generated_repair_cli import add_file_result_metadata
+
+        add_file_result_metadata(result)
     output.finish(result, error=error, preview=preview_only)
     raise typer.Exit(code=result.get("exit_code", 0))
 

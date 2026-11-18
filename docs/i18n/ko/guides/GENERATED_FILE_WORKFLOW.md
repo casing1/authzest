@@ -25,6 +25,14 @@ host pytest 우회, 브라우저 승인 흐름이나 범용 수정 엔진이 아
 일반 파일, mode `0600`, 단일 link, no-follow, 최대16 KiB 조건이어야 합니다. Loader는 현재 바이트/inode/
 부모와 관리하는 platform recipe·의존성 lock·guest 자산 pin을 결합하며 잘못된 입력은 계정 사용 전에 중단합니다.
 
+Docker 설정은 빌드용과 runtime 전용을 분리하세요. Runtime 설정은 현재 사용자 소유의 `0700` 폴더에
+단일 링크·소유자 `0600`인 `config.json` 하나만 두고 정확한 바이트 `{}\n`으로 준비합니다.
+[BuildKit](https://github.com/moby/buildkit/blob/master/session/auth/authprovider/tokenseed.go)은 빈 설정에서도
+`.token_seed`와 `.token_seed.lock`을 만들 수 있으며 추가 항목은 `private-empty-config-required`로
+거부됩니다. 사용한 빌드 폴더는 보존하고 새 runtime 폴더를 준비하세요. 기존 파일을 삭제하거나 검사를
+완화하지 않습니다. 설정 경로가 바뀌면 새 profile 식별자와 새 로컬 runtime 검토가 필요하며 종료한
+호출을 재개하지 않습니다.
+
 다음은 profile 경로가 placeholder인 오프라인 예제입니다. 실제 client와 불변 이미지를 검토한
 profile 경로로만 바꾸세요.
 
@@ -68,6 +76,9 @@ Enter는 거절하고 cancel은 해당 선택을 취소합니다. EOF/Ctrl-C/Sys
 사람용 출력은 단계·T 종료·독립 사례/요청 수·적용·복구를 요약합니다. `--details`는 전체 metadata를
 포함하고 `--json`은 stdout에 최종 JSON 하나만 출력하며 현재 계획·상호작용은 stderr로 보냅니다.
 원본 출력은 비공개 phase 기록에 보존합니다.
+
+[로컬 결과 화면](RESULT_VIEWER.md)은 모델을 다시 호출하지 않고 선택한 최종 JSON을 표시합니다.
+기록을 가져와도 단계를 실행하거나 변경을 적용하거나 결정을 재사용하지 않습니다.
 
 T의 before 종료1·after 종료0은 보조 관찰이며 assertion 진위의 증명이 아닙니다. 호스트는 전체 17사례/
 21요청 HTTP 결과와 정확한 입력 결합을 독립 검사합니다. 현재 직접 반환한 phase만 세션 before 근거가

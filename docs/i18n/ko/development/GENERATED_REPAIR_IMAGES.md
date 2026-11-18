@@ -96,6 +96,9 @@ metadata를 검사하며 다운로드·설치·import는 하지 않습니다. �
 
 ## 새 비공개 build context
 
+빌드 client의 Docker 설정은 [파일 흐름 안내](../guides/GENERATED_FILE_WORKFLOW.md)의 엄격한 runtime
+전용 설정과 분리합니다.
+
 [scripts/generated_image_context.py](../../../../scripts/generated_image_context.py)는
 `prepare_image_context(repo, wheelhouse, parent, role, platform)`를 제공합니다. 먼저 입력 manifest와
 정확한 기존 wheel 집합을 재검사한 뒤 호출자가 제공한 기존 비공개·소유 parent 아래 새 비공개 bundle을

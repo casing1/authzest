@@ -298,6 +298,15 @@ def invoke(world, result=None):
 
 def test_full_current_generation_proceeds_synchronously_through_independent_choices(world):
     result = invoke(world)
+    assert result["schema_version"] == "1.0"
+    assert result["source_evidence"] == {
+        key: value
+        for key, value in inner(build_generated_repair_transport_request(MODEL))
+        .to_dict()["scenario"]
+        .items()
+        if key
+        in {"scenario_id", "source", "declarations", "policy", "policy_authorship", "policy_review"}
+    }
     assert world.actions == list(flow._ACTIONS)
     assert result["status"] == "file-workflow-complete" and result["exit_code"] == 0
     assert result["file_workflow"]["session_result"]["closed"] is True
@@ -516,6 +525,14 @@ def test_invalid_option_pair_fails_before_runtime_loader_or_provider(world, monk
     monkeypatch.setattr(flow, "prepare_file_runtime", lambda *_: pytest.fail("No loader"))
     result = CliRunner().invoke(app, ["codex-generate", "--model", MODEL, "--json", *args])
     assert result.exit_code == 2 and json.loads(result.stdout)["status"] == "invalid-input"
+    if "--file-workflow" in args:
+        value = json.loads(result.stdout)
+        assert value["schema_version"] == "1.0" and value["source_evidence"] is None
+        from authzest.result_viewer import preview_workflow_result
+
+        view = preview_workflow_result(result.stdout.encode())
+        assert view["summary"]["status"] == "invalid-input"
+        assert view["summary"]["applied"] is None and view["session"] is None
     assert world.generation_calls == 0
 
 
