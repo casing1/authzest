@@ -7,13 +7,14 @@
 
 [Documentation index](../README.md) · [Verification foundation](GENERATED_REPAIR_VERIFICATION.md)
 
-## Scope — 2026-11-10 KST
+## Scope — 2026-11-16 KST
 
-This is a further offline slice of [#152](https://github.com/casing1/authzest/issues/152).
-It implements a **private low-level file-I/O seam**, not the active generated-repair workflow.
-The generation/verification preview commands and default disabled executor remain unchanged.
-No CLI, public API route, live decision/session coordinator, image, container, worker or new
-provider request is connected to this helper. #152 remains open.
+This is the **private low-level file-I/O seam** under
+[#152](https://github.com/casing1/authzest/issues/152). The opt-in
+[session](GENERATED_REPAIR_SESSION.md) and [CLI file workflow](../guides/GENERATED_FILE_WORKFLOW.md)
+now connect it to current stage decisions and direct phase observations. Default generation and
+disabled preparation remain unchanged. The helper itself has no provider/container execution API,
+public route or browser approval surface. Current-image installed acceptance remains pending; #152 stays open.
 
 Maintained tests use hand-authored inert proposal strings and pytest-owned temporary parents.
 Copying those bytes and replacing/restoring the test copy are filesystem regressions, not an
@@ -23,12 +24,12 @@ No private actual-generation response, account history or historical live copy i
 ## Private boundary
 
 [`_generated_repair_workspace.py`](../../src/authzest/runner/_generated_repair_workspace.py) is
-internal implementation machinery for a future separately gated coordinator. Its Python caller
-and synchronous guard callback are trusted. Neither underscore names, a valid preview, a file
+internal implementation machinery for the separately gated current session. Its Python caller
+and synchronous guard callbacks are trusted. Neither underscore names, a valid preview, a file
 hash nor that callback authenticates a user or grants execution/patch authority.
 
-The future coordinator must still bind fresh, expiring, single-use copy/diff/apply/restore
-decisions and accepted independent runtime evidence. In particular, a caller-supplied
+The active coordinator binds fresh, expiring, single-use copy/diff/apply/restore decisions and
+accepted current independent phase observations. In particular, a caller-supplied
 `data-only` HTTP comparison **cannot satisfy the before-check gate**. This helper has no API to
 turn such JSON into runtime proof. Do not connect its writes directly to a model response or UI.
 
@@ -48,7 +49,7 @@ artifact-controlled destination or a supported end-user option.
 The optional private `_before_create` hook lets a trusted session recheck its current copy decision
 after this helper's own validation and immediately before directory allocation. It must return
 `None` synchronously. Refusal, non-`None` and asynchronous callbacks create no directory. It is not
-an authenticated decision, a universal filesystem deadline or the later source-commit expiry hook.
+an authenticated decision, a universal filesystem deadline or the separate source-commit expiry hook.
 
 The managed files are:
 
@@ -79,16 +80,24 @@ inode, mode, owner/group, link count, size, mtime and ctime. Missing files, syml
 special files, permission changes, root/subdirectory replacement and same-byte inode replacement
 are not silently accepted as the reviewed state.
 
-`apply_source(expected, guard=...)` may replace only `app.py` with the exact proposed after bytes;
-`restore_source(expected, guard=...)` may return that confirmed applied file to the exact before
-bytes. The helper also verifies the unchanged test, immutable snapshots and tracked journal.
-The synchronous guard must complete normally with `None`; it is a recheck hook, not consent.
-It runs once before the intent journal/source commit; preparing an exact private staging file
-can precede the callback. Reentrant transitions are refused. Tracked files are checked again after it. Those reads
-take time, so this callback does not promise real-time expiry enforcement or an atomic decision/write.
-Persist a durable unconfirmed intent before source replacement, then fsync/read back the source
-and confirm the host journal only after those steps succeed.
-Wrong phase, stale input or detected user edits must refuse a write, not overwrite the changed file.
+`apply_source(expected, guard=..., commit_guard=None)` may replace only `app.py` with the exact
+proposed after bytes; `restore_source(expected, guard=..., commit_guard=None)` may return that
+confirmed applied file to the exact before bytes. The helper also verifies the unchanged test,
+immutable snapshots and tracked journal. Both synchronous hooks must return `None`; neither is consent.
+
+The original `guard` still runs once before the durable intent, preserving the low-level default when
+`commit_guard=None`. An exact staging file may be prepared before it. After writing the unconfirmed
+pending journal and completing final tracked-file/staging checks, an optional `commit_guard` runs
+immediately before `os.replace`. The active session always supplies it. It rechecks the original
+profile/decision, source/test and pending-record bindings, with the monotonic clock last. No further
+filesystem validation occurs between its normal return and rename dispatch.
+
+Expiry, cancellation or refusal at that final hook performs no application-source rename. The already
+written pending journal remains `state-unconfirmed`; it is retained for inspection without retry or
+forced restoration. A successful rename still requires source fsync/readback and final journal
+confirmation. Reentry, wrong phase, stale input or detected edits refuse rather than overwrite.
+The final cooperative check bounds rename dispatch, not completion of filesystem work or atomic
+compare-and-swap against a concurrent writer.
 
 The copy-created baseline is **before app plus the generated test**. Test materialization belongs
 to copy creation; later source apply changes only the app. Restore preserves the test and evidence;
@@ -115,7 +124,7 @@ be silently treated as success or broadened to user-selected paths. `close()` re
 descriptors; it does not delete the copy, test or journal. There is no automatic retry, process
 restart, imported-journal resume, forced rollback or success through partial evidence.
 
-## Limits and next integration
+## Limits and remaining acceptance
 
 This supports POSIX non-frozen source installation with the required descriptor/no-follow
 primitives. Other platforms must refuse this file boundary; ordinary portable scan/preview and
@@ -126,14 +135,9 @@ compare-and-swap against a hostile concurrent same-user writer. The trusted oper
 such writers. Directory creation, multiple file writes, application and journal persistence are
 not one filesystem transaction; filesystem calls have no universal wall-clock guarantee.
 
-The next coordinator must consume real stage decisions before any effect, enforce finite
-monotonic lifetimes and once-only attempts, require a valid real before baseline before apply,
-and connect actual captured-byte runtime checks with confirmed guest cleanup. The current default
-executor is still disabled, and the private file helper is not an alternate execution path.
-Generated pytest reports remain untrusted auxiliary data; independent controls, actual after-file
-observations, refusal/recovery paths and exact installed-candidate acceptance are still required.
-Local read-only UI and release work remain separate gates.
-
-The separate [offline copy session](GENERATED_REPAIR_SESSION.md) now covers fresh-copy decisions
-and disabled before preparation only. It calls no source apply/restore method and accepts no runtime
-baseline. This does not complete the operational coordinator or its final source-commit expiry hook.
+The active [session](GENERATED_REPAIR_SESSION.md) now binds current one-use decisions, original
+monotonic expiry, direct captured-byte phase results and confirmed cleanup to private-copy operations.
+It supplies the final source-commit hook for both application and restoration. The default session
+still offers only copy/disabled preparation; the low-level helper is not an alternate execution path.
+Generated pytest reports remain untrusted auxiliary data. Current rebuilt images, kernel feasibility,
+exact installed before/after/recovery acceptance, local read-only UI and release remain separate gates.

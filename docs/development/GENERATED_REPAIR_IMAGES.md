@@ -22,10 +22,12 @@ generated-code execution, Docker CLI/Engine request or AI call. There is no new 
 command, runtime decision or release. Operator-local receipts are separate private records; they do
 not replace the portable manifest's unbuilt-candidate status.
 
-The [private phase executor](GENERATED_REPAIR_PHASE.md) adds an untrusted A startup coordination
-hint. Its launcher and both A recipe digests changed; prior A image observations are stale for these
-inputs. Dependency locks and T/B assets remain unchanged. No prior image receipt becomes current by
-copying the new source hash into a profile.
+The [CLI file workflow](../guides/GENERATED_FILE_WORKFLOW.md) connects the existing private phase to
+separately decided stages. Its mandatory pre-import kernel guard changes the common asset and all
+T/A/B launchers, updating six platform recipe digests. Current rebuilt/reviewed images are required;
+dependency locks remain unchanged. Copying new declared hashes into an old profile does not update
+or verify an image. The private loader checks current maintained recipe/lock/asset bindings before
+account use and each dispatch, without treating them as runtime readiness.
 
 ## Recorded candidate inputs
 
@@ -48,7 +50,8 @@ Python installation or inherited files dependency-free or verified.
 The guest candidate selects `pytest==9.0.3` from the reviewed release metadata. This is separate
 from the host development environment: its existing pytest constraint is unchanged. The fixed guest
 launcher still selects its exact test with `-c /dev/null`; the image inputs do not broaden test
-discovery, add model-selected dependencies or modify the launcher source.
+discovery or add model-selected dependencies. The separate kernel guard changes launcher source,
+not the selected dependency versions.
 
 ## What the offline check establishes
 
@@ -152,8 +155,9 @@ and fixed `/v1.51/info`, and refuses an unsupported advertised API range before 
 Its engine identity is observed but unpinned; it does not create a full runtime profile, inspect
 images or enable the executor. It is not a public CLI workflow.
 
-Before generated execution, we still need reviewed image provisioning/contents and local image IDs,
-effective stopped-container checks, current input/session decisions, bounded execution/capture and
-confirmed exact guest cleanup, followed by installed before/after/restore acceptance and the local
+Stopped-create inspection, current input/session decisions, bounded execution/capture and exact
+guest cleanup are implemented in source. Actual active acceptance still needs current reviewed image
+provisioning/contents, local image IDs, kernel feasibility and installed before/after/restore acceptance,
+followed by the local
 results UI. `ready`, execution authority and verified repair remain unestablished. This document
 does not accept #89 risk, close #152, change a version or authorize a release.

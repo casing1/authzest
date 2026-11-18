@@ -9,7 +9,7 @@ AuthZest is an installable, CLI-first FastAPI source-analysis project. Start wit
 for installation, then use the parser scope to understand what a scan does and does not establish.
 The current local dashboard shows static inventory and does not require website deployment.
 
-## Current work — 2026-11-13 KST
+## Current work — 2026-11-15 KST
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
@@ -20,58 +20,30 @@ deliverables, not current capabilities. The registered-template acceptance below
 generation completion. CLI remains the decision/execution path; UI work adds no cloud deployment
 or browser patch authority. The [development plan](development/DEVELOPMENT_PLAN.md) defines the scope.
 
-The [generated repair verification foundation](development/GENERATED_REPAIR_VERIFICATION.md) is
-an offline-only source API: maintained controls, content-bound preview, supplied-data comparison
-and a disabled executor. Its 17 cases / 21 requests and Docker budgets are definitions/proposals,
-not observed checks. It adds no copy, generated execution, apply/recovery, CLI option or runtime
-image/engine; #152 remains open.
+The [generated file workflow](guides/GENERATED_FILE_WORKFLOW.md) now connects a bounded private
+runtime-profile loader and fresh local review to current generation, then separate copy, before,
+exact diff/application, after and restore decisions. The default generation command is proposal-only;
+the default [session](development/GENERATED_REPAIR_SESSION.md) retains disabled before preparation.
 
-The separate [private workspace foundation](development/GENERATED_REPAIR_WORKSPACE.md) now
-provides fresh-copy byte I/O, guarded exact source replacement/restoration and retained host
-bookkeeping for offline filesystem tests. It is private machinery, not a connected CLI/session
-workflow, execution approval or observed generated-code check. The runtime executor stays disabled.
+The opt-in session consumes only direct current [phase results](development/GENERATED_REPAIR_PHASE.md),
+checks actual [staged input](development/GENERATED_REPAIR_STAGING.md) identities and independently
+recomputes all 17 cases/21 requests through the [host relay comparison](development/GENERATED_REPAIR_HTTP_RELAY.md).
+T output remains auxiliary. Imported profiles, supplied facts or checkpoints do not authorize writes.
+The [verification interface](development/GENERATED_REPAIR_VERIFICATION.md),
+[workspace](development/GENERATED_REPAIR_WORKSPACE.md) and
+[pure lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md) retain their separate contracts.
 
-The [offline copy session](development/GENERATED_REPAIR_SESSION.md) binds original-deadline,
-single-use decisions to that fresh copy and disabled before preparation only. It exposes no
-apply/restore method or runtime-evidence importer; neither supplied facts nor exported checkpoints
-can establish a before baseline. There is still no active CLI/session runtime flow.
+The [image entries](development/GENERATED_REPAIR_GUESTS.md) refuse unsupported kernel settings before
+target/tool import. All common/launcher assets and six [image recipes](development/GENERATED_REPAIR_IMAGES.md)
+changed, requiring current rebuilt/reviewed T/A/B images. The
+[runtime declaration](development/GENERATED_REPAIR_RUNTIME_PROFILE.md) and
+[Engine metadata](development/GENERATED_REPAIR_PREFLIGHT.md) do not prove whole-image contents,
+escape-proof isolation or stress-tested enforcement. No ready profile or automatic provisioning ships.
 
-The separate [pure lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md) models T → A/B
-ordering, shared budgets and exact-object cleanup with fake events only. It has no transport or
-production callsite; simulated completion cannot establish runtime evidence or application authority.
-
-The [bounded HTTP relay foundation](development/GENERATED_REPAIR_HTTP_RELAY.md) adds the fixed
-request-only schedule and narrow response parsing through explicit trusted fake streams, plus a
-host-only bridge to supplied-data comparison. It adds no real socket/engine entry or live baseline.
-
-The [image-owned guest entry source](development/GENERATED_REPAIR_GUESTS.md) defines fixed T/A/B
-launchers for future images, checked only with fake dependencies/sockets. It does not activate the
-executor, provision an image or establish runtime evidence; host/guest clock domains stay separate.
-
-The [offline runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md) now binds declared
-local-client/config/image/asset identities to a fixed stopped-create argument template. It does not
-inspect those identities, call Docker or grant runtime readiness; the executor/session stay disabled.
-
-The [private input staging](development/GENERATED_REPAIR_STAGING.md) captures exact live-workspace
-checkpoints into separate readable T/A snapshots with private outer records and identity rechecks.
-This observes host files only; no actual mount, runtime baseline or new execution authority is added.
-
-The [runtime metadata reader](development/GENERATED_REPAIR_PREFLIGHT.md) adds fixed local Engine GET
-transport and bounded metadata comparison, tested only with fake sockets/frames. It avoids CLI plugin
-dispatch and grants no readiness, effective isolation proof or active generated execution.
-
-The [pinned image inputs](development/GENERATED_REPAIR_IMAGES.md) record two platforms' unbuilt
-T/A/B recipes, wheel locks and raw base-metadata digest chains. The offline checker observes input
-consistency, not image contents or provenance. A separate private version/info bootstrap needs no
-placeholder image IDs and grants no runtime profile or readiness.
-The same guide now covers private minimal-context preparation and extraction-free host rootfs
-comparison against supplied base/wheel/asset inventories. These helpers add granular file facts,
-not authenticated image identities, whole-image verification or runtime authority.
-
-The [private phase executor](development/GENERATED_REPAIR_PHASE.md) now connects staged inputs,
-fixed stopped-create inspection, bounded concurrent CLI capture and independent T → A/B comparison
-internally. Its tests use fakes; public generation/session execution remains disabled. Current image
-acceptance and session/CLI before/apply/after/restore integration are still pending.
+This source integration uses inert-file, fake adapter/phase/kernel and trusted regression-child tests.
+It performs no new live AI/Docker/generated-code call, image provisioning, operational patch or release.
+Current-image feasibility and installed acceptance remain pending under #152; #150/#153 are incomplete.
+Published alpha.4 bytes remain unchanged.
 
 Latest release [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published
 on 2026-11-05 KST from exact source `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`,
@@ -338,7 +310,7 @@ docs/
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |
-| Generated repair offline copy decisions and before preparation          | [Offline copy session](development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](i18n/ko/development/GENERATED_REPAIR_SESSION.md)      |
+| Generated repair default and opt-in file decisions                      | [Offline copy session](development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](i18n/ko/development/GENERATED_REPAIR_SESSION.md)      |
 | Generated repair pure lifecycle and failure simulation                  | [Lifecycle model](development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](i18n/ko/development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | Generated repair bounded HTTP relay and supplied-fact bridge            | [HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](i18n/ko/development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | Image-owned guest entry source                                          | [Guest entries](development/GENERATED_REPAIR_GUESTS.md)                    | [이미지 소유 guest 진입점](i18n/ko/development/GENERATED_REPAIR_GUESTS.md)           |
@@ -346,6 +318,7 @@ docs/
 | Private captured input staging                                          | [Input staging](development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](i18n/ko/development/GENERATED_REPAIR_STAGING.md)               |
 | Fixed local Engine metadata                                             | [Runtime metadata](development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](i18n/ko/development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | Pinned unbuilt guest-image inputs                                       | [Image inputs](development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](i18n/ko/development/GENERATED_REPAIR_IMAGES.md)                |
+| Approved generated copy/check/apply/restore CLI                         | [Generated file workflow](guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](i18n/ko/guides/GENERATED_FILE_WORKFLOW.md)                          |
 | Internal generated T → A/B executor                                     | [Private phase](development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](i18n/ko/development/GENERATED_REPAIR_PHASE.md)                  |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
 | Opt-in owned-fixture Codex draft                                        | [Codex fixture](guides/CODEX_FIXTURE.md)                                   | [Codex fixture](i18n/ko/guides/CODEX_FIXTURE.md)                                     |

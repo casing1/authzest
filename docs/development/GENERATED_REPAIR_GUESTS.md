@@ -8,12 +8,14 @@
 [Documentation index](../README.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [Lifecycle model](GENERATED_REPAIR_LIFECYCLE.md)
 
-## Scope — 2026-11-12 KST
+## Scope — 2026-11-15 KST
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) slice adds maintained standalone
 guest launcher **source**, tested only with fake dependencies and sockets. No guest, application,
-generated test, real socket, image or engine is started by these tests. The production executor and
-session stay disabled for runtime. #152 remains open; no actual PoC or repair is verified here.
+generated test, real socket, image or engine is started by these tests. The explicit
+[CLI file workflow](../guides/GENERATED_FILE_WORKFLOW.md) connects current session decisions to the
+phase executor, while default generation remains proposal-only. Current-image installed acceptance
+is pending; #152 remains open and no actual PoC or repair is verified by these source tests.
 
 The [guest assets](../../runtime/generated_repair/) are intended for a later reviewed image, not a
 host fallback or an installed CLI command. They deliberately do not import the AuthZest package:
@@ -21,8 +23,8 @@ importing a runner package would also import host machinery. Each image must con
 required assets/dependencies, not the host control oracle, source checkout, credentials or records.
 The later [pinned image inputs](GENERATED_REPAIR_IMAGES.md) add Dockerfiles and dependency locks,
 and the [private phase executor](GENERATED_REPAIR_PHASE.md) connects internal transport with fake-only
-acceptance. Public session execution remains disabled. Do not run these assets on the host to bypass
-missing isolation.
+acceptance. The source opt-in flow requires current rebuilt/reviewed images; this document does not
+establish runtime acceptance. Do not run these assets on the host to bypass missing isolation.
 
 ## Fixed roles and inputs
 
@@ -32,11 +34,18 @@ missing isolation.
 | A    | `app_launcher.py`   | Only `/input/app.py:app`; one loopback ASGI server on `127.0.0.1:8765`                      |
 | B    | `relay_launcher.py` | Maintained request-only codec; no app/test mount, expected labels or caller URL             |
 
-Future entry invocation requires Linux, isolated Python with `-I -B`, the exact
+Entry invocation requires Linux, isolated Python with `-I -B`, the exact
 `/opt/authzest-guest/` script layout and UID/GID `65532`. T/A accept no extra arguments; B accepts
 only one canonical integer remaining-time value in milliseconds, from 1 through 40,000.
 These checks are diagnostics, **not containment, image attestation or execution consent**. The future
 host must still inspect the exact stopped-container recipe, mounts, namespaces and resource controls.
+
+Before target/tool imports, the common guard reads fixed kernel paths and refuses unsupported
+PID/nonroot, seccomp/no-new-privileges/capability, cgroup, mount and interface settings with exit 78.
+It checks no target contents and creates no process/socket. This is a narrow supported-property check,
+not a resource stress benchmark, escape proof or independent A/B namespace attestation.
+All common/launcher assets and six platform recipes changed; current T/A/B images must be rebuilt
+and reviewed. A typed runtime review or updated declaration cannot substitute for image contents.
 
 The launchers clear inherited environment before loading dependencies and expose the fixed trusted
 asset directory explicitly (`-I` does not retain the script directory). T/A import image-owned
@@ -75,12 +84,11 @@ filesystem, daemon and kernel operations still have no universal preemption guar
 
 ## Remaining operational work
 
-We still need reviewed pinned images/dependency locks and a trusted local engine, safe captured-input
-staging with identity rechecks, effective stopped-create inspection, attach-before-start transport,
-shared output/time budgets, durable capture and exact guest cleanup, session/decision integration
-and separately scoped installed before/apply/after/restore acceptance. Generated test output cannot
-unlock a baseline or source write. Matching supplied relay facts remain unverified and
-`verified_fix: false`; the demo actor header is not authentication.
+Staging, stopped-create inspection, attach/capture/cleanup and session/CLI decisions are implemented
+and covered with fakes/inert files. Current rebuilt image contents, kernel feasibility and separately
+scoped installed before/apply/after/restore acceptance remain pending. Generated test output alone
+cannot unlock a baseline or write; the host requires complete current independent observations and
+confirmed cleanup. Exported data keeps `verified_fix: false`; the demo actor header is not authentication.
 
 No provider/source sharing, real generated import/collection/execution, operational application or
 restoration, risk acceptance, issue completion, version change or release is performed by this slice.

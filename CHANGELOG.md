@@ -16,6 +16,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Connect source `codex-generate --model EXPLICIT_MODEL` to explicit
+  `--file-workflow --runtime-profile PATH`: fresh local profile review before sharing, separate
+  copy/before/diff/apply/after/restore plans, direct phase-result bindings and readable/single-JSON
+  outcomes. Preserve generation-only defaults, private-copy scope and retained failure/recovery states.
+  Add current recipe/lock profile checks and mandatory pre-import guest kernel-control refusal;
+  all guest asset/six recipe pins change and current rebuilt images are required. Coverage is
+  offline/mock/trusted regression tests, not new live AI/Docker/generated execution or installed
+  acceptance. #152/#150 remain open; published alpha.4 and package/report versions are unchanged.
+
 - Add test-only `BatchCoordinator` integration with the existing fixed owned fake-process peers.
   Exercise reservation/send/ack ordering, synthetic original-budget expiry, failure/cancellation,
   cleanup refusal and retained planned denominators; require closed pipes and reaped children before

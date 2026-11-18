@@ -87,10 +87,13 @@ course-complete release below; the CLI initially retains approval and execution.
 - Includes offline [`authzest generation-preview`](docs/development/GENERATED_REPAIR_CONTRACT.md)
   (`--json` optional) for fixed input only, plus source `codex-generate --model EXPLICIT_MODEL`:
   portable `--preview-only`, or one POSIX adapter attempt after fresh exact-request sharing consent.
-  Human-readable output/`--json` shows a validated proposal and host-derived source/test diff;
-  no copy, apply, generated-code execution or restore. Policy review is pending and `X-Demo-Actor`
-  is not authentication. This connection has offline/mocked coverage only; actual generation/provider
-  compatibility remains unverified, #151 stays open, and #152/#153 are not implemented.
+  The default shows a validated proposal and host-derived source/test diff without file execution.
+  Explicit `--file-workflow --runtime-profile PATH` adds separately decided private-copy before checks,
+  exact diff/application, fresh after checks and restoration; see the
+  [generated file workflow](docs/guides/GENERATED_FILE_WORKFLOW.md). It requires current reviewed images
+  and supported kernel controls. This source integration has offline/mock coverage; installed acceptance
+  remains pending. Policy review is pending, `X-Demo-Actor` is not authentication, #151/#152 stay open,
+  and the #153 results UI is pending.
 - Alpha.4 makes `codex-owner-review`, `codex-owner-repair`, `codex-fixture` and `fixture-demo` readable by
   default. Add `--json` for one final stdout result; full consent previews/prompts go to stderr.
   Offline `--preview-only --json` returns one complete owner-review or owner-repair preview. Scripts must explicitly

@@ -455,16 +455,32 @@ class GeneratedRepairWorkspace:
         self._tracked["record.json"] = result
         self._assert_all()
 
-    def _transition(self, expected: FileState, guard: Callable[[], None], *, restore: bool):
+    def _transition(
+        self,
+        expected: FileState,
+        guard: Callable[[], None],
+        *,
+        restore: bool,
+        commit_guard: Callable[[], None] | None = None,
+    ):
         if self._busy:
             raise WorkspaceError("Reentrant workspace effects are not permitted")
         self._busy = True
         try:
-            return self._transition_once(expected, guard, restore=restore)
+            return self._transition_once(
+                expected, guard, restore=restore, commit_guard=commit_guard
+            )
         finally:
             self._busy = False
 
-    def _transition_once(self, expected: FileState, guard: Callable[[], None], *, restore: bool):
+    def _transition_once(
+        self,
+        expected: FileState,
+        guard: Callable[[], None],
+        *,
+        restore: bool,
+        commit_guard: Callable[[], None] | None = None,
+    ):
         operation = "restore" if restore else "apply"
         required = "applied-after" if restore else "ready-before"
         next_state = "restored-before" if restore else "applied-after"
@@ -475,6 +491,8 @@ class GeneratedRepairWorkspace:
             type(expected) is not FileState
             or not callable(guard)
             or inspect.iscoroutinefunction(guard)
+            or commit_guard is not None
+            and (not callable(commit_guard) or inspect.iscoroutinefunction(commit_guard))
         ):
             raise WorkspaceError("A tracked state and synchronous decision guard are required")
         try:
@@ -507,6 +525,15 @@ class GeneratedRepairWorkspace:
             self._assert_all()
             if self._read(stage[0], limit=MAX_RECORD_BYTES) != stage[1]:
                 raise WorkspaceError("Source staging entry changed after intent persistence")
+            # The optional active coordinator must check its original expiry
+            # after the potentially slow durable intent and validation above.
+            # There is no filesystem operation between this return and rename.
+            if commit_guard is not None:
+                decision = commit_guard()
+                if decision is not None:
+                    if inspect.iscoroutine(decision):
+                        decision.close()
+                    raise WorkspaceError("Commit guard must synchronously return None")
             # Not CAS: exclude hostile concurrent same-user writers.
             attempted = True
             os.replace(stage[0], "app.py", src_dir_fd=self._fd, dst_dir_fd=self._fd)
@@ -574,10 +601,22 @@ class GeneratedRepairWorkspace:
                 else:
                     raise error from original
 
-    def apply_source(self, expected: FileState, *, guard: Callable[[], None]) -> FileState:
+    def apply_source(
+        self,
+        expected: FileState,
+        *,
+        guard: Callable[[], None],
+        commit_guard: Callable[[], None] | None = None,
+    ) -> FileState:
         """Replace app.py only with the validated after bytes; never execute it."""
-        return self._transition(expected, guard, restore=False)
+        return self._transition(expected, guard, restore=False, commit_guard=commit_guard)
 
-    def restore_source(self, expected: FileState, *, guard: Callable[[], None]) -> FileState:
+    def restore_source(
+        self,
+        expected: FileState,
+        *,
+        guard: Callable[[], None],
+        commit_guard: Callable[[], None] | None = None,
+    ) -> FileState:
         """Restore exact creation-time before bytes, preserving the generated test."""
-        return self._transition(expected, guard, restore=True)
+        return self._transition(expected, guard, restore=True, commit_guard=commit_guard)

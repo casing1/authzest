@@ -353,7 +353,10 @@ def test_unicode_output_budget_is_checked_in_bytes_before_write():
 
 
 @pytest.mark.parametrize("role", ["T", "A", "B"])
-def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(monkeypatch, role):
+@pytest.mark.parametrize("refused", [False, True])
+def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(
+    monkeypatch, role, refused
+):
     module = {"T": test_launcher, "A": app_launcher, "B": relay_launcher}[role]
     entry = _entry(role)
     env = {"OPENAI_API_KEY": "FAKE-NOT-A-SECRET", "PYTEST_ADDOPTS": "--invalid", "HTTP_PROXY": "x"}
@@ -405,6 +408,7 @@ def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(m
         if name in {"os", "sys", "_guest_common"}:
             return {"os": fake_os, "sys": fake_sys, "_guest_common": common}[name]
         if name in {"pytest", "uvicorn", "socket", "time", "_generated_repair_http"}:
+            assert events[0] == "kernel-controls"
             assert env == {"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}
             assert "/input" not in fake_sys.path and "" not in fake_sys.path
             events.append("import:" + name)
@@ -418,8 +422,22 @@ def test_entry_wiring_imports_only_fake_dependencies_after_environment_cleanup(m
         return original(name, *args, **kwargs)
 
     monkeypatch.setattr(module, "__file__", entry["script_path"])
+
+    def kernel_controls(current_role):
+        assert current_role == role
+        assert env == {"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}
+        assert "/input" not in fake_sys.path and "" not in fake_sys.path
+        events.append("kernel-controls")
+        if refused:
+            raise ValueError("guest-kernel-controls")
+
+    monkeypatch.setattr(common, "require_kernel_controls", kernel_controls)
     monkeypatch.setattr(builtins, "__import__", fake_import)
     monkeypatch.setattr(relay_launcher, "capture_relay", fake_capture)
+    if refused:
+        assert module._script_main() == 78
+        assert events == ["kernel-controls"]
+        return
     assert module._script_main() == (1 if role in {"T", "B"} else 0)
     assert events[-1] == {"T": "test", "A": "server", "B": "flush"}[role]
     assert not any(name.startswith("import:authzest") for name in events)

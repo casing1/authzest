@@ -440,11 +440,12 @@ def test_shared_evidence_budget_accounts_both_phases_and_does_not_refresh(world)
     assert second["status"] == "complete" and used < budget.used <= phase.MAX_SESSION_EVIDENCE_BYTES
 
 
-@pytest.mark.parametrize("bad_exit", [2, 5, 137])
+@pytest.mark.parametrize("bad_exit", [2, 5, 78, 137])
 def test_test_infrastructure_failure_never_starts_application(world, bad_exit):
     world.t_exit = bad_exit
     result = world.invoke().to_dict()
     assert result["status"] == "failed" and result["failure"] == "docker-command-failed"
+    assert result["test_exit_code"] == bad_exit
     assert result["comparison"] is None and result["cleanup_confirmed"] is True
     assert set(world.plans) == {"T"} and world.containers == {}
 

@@ -247,6 +247,145 @@ def format_generated_repair_result(value: dict, *, details: bool = False) -> str
     return "\n\n".join(parts)
 
 
+def _generated_file_checkpoint(value: Any) -> str:
+    """Show distinct current file state and finite historical observations."""
+    checkpoint = value if isinstance(value, dict) else {}
+    workspace = checkpoint.get("workspace")
+    workspace = workspace if isinstance(workspace, dict) else {}
+    lines = ["Generated file checkpoint"]
+    for label, item in (
+        ("Retained private copy", workspace.get("path")),
+        ("Current file state", workspace.get("state")),
+        ("Baseline", checkpoint.get("baseline")),
+        ("Source application", checkpoint.get("source_application")),
+        ("Restoration", checkpoint.get("restoration_status")),
+        ("Cleanup unconfirmed", checkpoint.get("cleanup_unconfirmed")),
+        ("Authorization", checkpoint.get("authorization_status")),
+    ):
+        lines.append("  " + label + ": " + _display_value(item))
+    checks = checkpoint.get("checks")
+    checks = checks if isinstance(checks, dict) else {}
+    for candidate, label in (("before", "Before"), ("after", "Applied after")):
+        check = checks.get(candidate)
+        if not isinstance(check, dict):
+            lines.append("  " + label + ": not observed")
+            continue
+        comparison = check.get("comparison")
+        comparison = comparison if isinstance(comparison, dict) else check
+        lines.extend(
+            [
+                "  "
+                + label
+                + " execution: "
+                + _display_value(check.get("status", check.get("execution_status"))),
+                "    Independent cases: "
+                + _display_value(comparison.get("matching_case_count"))
+                + "/"
+                + _display_value(comparison.get("case_count")),
+                "    Independent requests: "
+                + _display_value(comparison.get("matching_request_count"))
+                + "/"
+                + _display_value(comparison.get("request_count")),
+                "    Native test exit (untrusted auxiliary): "
+                + _display_value(check.get("test_exit_code")),
+                "    Exact guest/local cleanup: " + _display_value(check.get("cleanup_confirmed")),
+            ]
+        )
+    if checkpoint.get("restoration_status") == "restored-before":
+        lines.append(
+            "  Restored-before: after observations are historical; "
+            "the restored file was not rechecked."
+        )
+    lines.append(
+        "Finite HTTP comparisons and native test exits do not prove general authorization "
+        "or assertion/report authenticity. Raw captures remain in private evidence."
+    )
+    return "\n".join(lines)
+
+
+def format_generated_file_workflow_result(value: dict, *, details: bool = False) -> str:
+    workflow = value.get("file_workflow")
+    workflow = workflow if isinstance(workflow, dict) else {}
+    parts = [
+        "Generated repair file workflow",
+        "Only separately approved stages affect the private copy; authorization remains unknown.",
+        "Summary\n"
+        + "\n".join(
+            "  " + label + ": " + _display_value(item)
+            for label, item in (
+                ("Workflow", value.get("status")),
+                ("Proposal", value.get("proposal_status")),
+                ("File flow", workflow.get("status")),
+                ("Stopped stage", workflow.get("stopped_stage")),
+                (
+                    "Runtime input cleanup",
+                    workflow.get("runtime_input_cleanup", "not-reported"),
+                ),
+                ("Session close", workflow.get("close_status", "not-reported")),
+                ("File-flow failure", workflow.get("failure")),
+                ("Execution", value.get("execution_status")),
+                ("Source application", value.get("patch_application")),
+                ("Applied (historical)", value.get("applied")),
+                ("Current private copy", value.get("current_copy_state", "not-reported")),
+                ("Restoration", value.get("restoration_status")),
+                ("Original checkout modified", value.get("original_checkout_modified")),
+            )
+        ),
+        _generated_file_checkpoint(workflow.get("session_result")),
+        "Copies and evidence are retained. No automatic rollback, retry or session resume. "
+        "Use --json for the complete result; --details also includes it in human output.",
+    ]
+    if details:
+        parts.append("Complete result (authoritative JSON)\n" + json_output(value))
+    return "\n\n".join(parts)
+
+
+def format_generated_file_stage_preview(value: dict) -> str:
+    return "\n\n".join(
+        [
+            "Generated private-copy stage - not approved; no effect implied",
+            section(
+                "Separate current decision",
+                {
+                    "stage": value.get("stage"),
+                    "confirmation_phrase": value.get("confirmation_phrase"),
+                    "notice": value.get("notice"),
+                },
+            ),
+            "Complete current plan (review all fields before deciding)\n" + json_output(value),
+        ]
+    )
+
+
+def format_generated_runtime_review(value: dict) -> str:
+    return "\n\n".join(
+        [
+            "Local runtime review - separate from source sharing and stage approval",
+            "This local profile is not sent to the provider and is not kernel/image attestation.",
+            "Complete local review data\n" + json_output(value),
+        ]
+    )
+
+
+def format_generated_file_offline_preview(value: dict) -> str:
+    runtime = value.get("runtime_review_preview")
+    sharing = value.get("sharing_preview")
+    return "\n\n".join(
+        [
+            "Generated file workflow preview - offline, no prompt or effect",
+            section(
+                "Preview status",
+                {
+                    "status": value.get("status", "offline-no-effects"),
+                    "file_workflow": value.get("file_workflow"),
+                },
+            ),
+            format_generated_runtime_review(runtime if isinstance(runtime, dict) else {}),
+            format_sharing_preview(sharing if isinstance(sharing, dict) else {}),
+        ]
+    )
+
+
 def format_sharing_preview(value: dict) -> str:
     scope = {
         key: value[key]
@@ -468,6 +607,15 @@ class WorkflowOutput:
                     ]
                 )
             )
+        elif isinstance(value, dict) and value.get("kind") == "generated-repair-file-stage-preview":
+            typer.echo(format_generated_file_stage_preview(value))
+        elif (
+            isinstance(value, dict)
+            and value.get("kind") == "generated-repair-runtime-review-preview"
+        ):
+            typer.echo(format_generated_runtime_review(value))
+        elif isinstance(value, dict) and value.get("kind") == "generated-repair-file-stage-result":
+            typer.echo(_generated_file_checkpoint(value.get("session_result")))
         else:
             typer.echo(format_record(value, title="Workflow preview / observation"))
 
@@ -483,10 +631,16 @@ class WorkflowOutput:
             # mode includes application failures in its single stdout result.
             typer.echo(json_output(value), err=error and not self.as_json)
         elif preview:
-            typer.echo(format_sharing_preview(value))
+            typer.echo(
+                format_generated_file_offline_preview(value)
+                if value.get("kind") == "codex-generated-file-workflow-preview"
+                else format_sharing_preview(value)
+            )
         elif value.get("kind") == "codex-owner-file-workflow":
             typer.echo(format_file_workflow_result(value))
         elif value.get("kind") == "codex-generated-repair-workflow":
             typer.echo(format_generated_repair_result(value, details=self.details))
+        elif value.get("kind") == "codex-generated-file-workflow":
+            typer.echo(format_generated_file_workflow_result(value, details=self.details))
         else:
             typer.echo(format_record(value), err=error)

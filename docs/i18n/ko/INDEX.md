@@ -9,7 +9,7 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
 현재 로컬 대시보드는 정적 목록을 표시하며 웹사이트 배포가 필요하지 않습니다.
 
-## 현재 작업 — 2026-11-13 KST
+## 현재 작업 — 2026-11-15 KST
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
@@ -20,57 +20,29 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 담당하고 UI가 클라우드 배포나 브라우저 패치 권한을 추가하지 않습니다.
 범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)에 명시합니다.
 
-[생성 수정 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md)은 관리형 대조군, 내용에
-결합된 미리보기, 전달 데이터 비교, 비활성 executor를 제공하는 오프라인 전용 소스 API입니다.
-17개 사례 / 21개 요청과 Docker 예산은 정의·제안이지 관찰한 검사가 아닙니다. 복사·생성 실행·
-적용·복구, CLI 옵션, 런타임 이미지·엔진은 추가하지 않으며 #152는 열린 상태입니다.
+[생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)은 제한된 비공개 runtime-profile loader와 새
+로컬 검토를 현재 생성에 연결하고 복사·before·정확한 diff/적용·after·복구를 각각 결정합니다.
+기본 생성 명령은 제안 전용이며 기본 [세션](development/GENERATED_REPAIR_SESSION.md)은 비활성
+before 준비를 유지합니다.
 
-별도의 [비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)은 오프라인 파일시스템
-테스트용 새 복사본 바이트 I/O, 정확한 소스 적용·복구와 호스트 기록 보존을 제공합니다.
-연결된 CLI·세션 흐름, 실행 승인, 관찰한 생성 코드 검사가 아닌 비공개 내부 계층입니다.
-런타임 실행기는 계속 비활성입니다.
+Opt-in 세션은 현재 직접 반환한 [phase 결과](development/GENERATED_REPAIR_PHASE.md)와 실제
+[staging 입력](development/GENERATED_REPAIR_STAGING.md) 식별자를 검사하고
+[호스트 relay 비교](development/GENERATED_REPAIR_HTTP_RELAY.md)로 전체 17사례/21요청을 독립
+재계산합니다. T 출력은 보조 자료이며 가져온 profile·전달 사실·checkpoint는 쓰기 권한이 아닙니다.
+[검증 interface](development/GENERATED_REPAIR_VERIFICATION.md),
+[workspace](development/GENERATED_REPAIR_WORKSPACE.md),
+[순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)은 별도 계약을 유지합니다.
 
-[오프라인 복사 세션](development/GENERATED_REPAIR_SESSION.md)은 원래 만료 시각과 일회성 결정을
-새 복사본 생성·비활성 before 준비에만 연결합니다. apply/restore 메서드나 런타임 증거 가져오기
-경로는 없으며 전달 사실·내보낸 기록으로 before 근거를 만들 수 없습니다.
-활성 CLI·세션 런타임 흐름도 아직 없습니다.
+[이미지 진입점](development/GENERATED_REPAIR_GUESTS.md)은 target/tool import 전에 미지원 커널 설정을
+거부합니다. 공통/launcher 자산과 [이미지 recipe](development/GENERATED_REPAIR_IMAGES.md)6개가 바뀌어
+현재 재빌드/검토한 T/A/B 이미지가 필요합니다.
+[Runtime 선언](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)과
+[Engine metadata](development/GENERATED_REPAIR_PREFLIGHT.md)는 전체 이미지 내용·탈출 불가 격리·
+부하 검증 자원 강제를 입증하지 않으며 ready profile이나 자동 준비 명령을 제공하지 않습니다.
 
-별도 [순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)은 T → A/B 순서·공유 예산·
-정확한 객체 정리를 가짜 이벤트로만 모의합니다. 전송·운영 호출 경로는 없으며 모의 완료가 런타임
-증거·적용 권한을 만들지 않습니다.
-
-[제한된 HTTP relay 기반](development/GENERATED_REPAIR_HTTP_RELAY.md)은 고정 요청 입력·명시적
-신뢰 fake-stream의 좁은 응답 해석과 전달 데이터 비교용 호스트 bridge를 추가합니다.
-실제 소켓·엔진 진입점·실제 before 근거는 없습니다.
-
-[이미지 소유 guest 진입점 소스](development/GENERATED_REPAIR_GUESTS.md)는 추후 이미지용 고정
-T/A/B launcher를 가짜 의존성·소켓으로만 검사합니다. 실행기 활성화·이미지 준비·런타임 근거를
-추가하지 않으며 호스트와 guest 시계 기준을 분리합니다.
-
-[오프라인 runtime profile](development/GENERATED_REPAIR_RUNTIME_PROFILE.md)은 선언한 로컬
-client/config/이미지/자산 식별자를 고정 정지 생성 인자 템플릿에 결합합니다. 실제 식별자 검사·Docker
-호출·준비 완료 권한이 아니고 executor/세션은 비활성입니다.
-
-[비공개 입력 staging](development/GENERATED_REPAIR_STAGING.md)은 정확한 live-workspace checkpoint를
-분리된 읽기용 T/A 스냅샷으로 캡처하고 바깥 비공개 기록·식별자 재검사를 유지합니다. 호스트 파일
-관찰일 뿐 실제 mount·before 근거·새 실행 권한은 없습니다.
-
-[런타임 메타데이터 reader](development/GENERATED_REPAIR_PREFLIGHT.md)는 고정 로컬 Engine GET과 제한된
-메타데이터 비교를 추가하고 가짜 소켓/프레임만으로 검사합니다. CLI plugin 실행을 피하지만 준비 완료·
-효과적 격리 증거·활성 생성 실행 권한은 부여하지 않습니다.
-
-[고정 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)은 두 platform의 빌드 전 T/A/B recipe·wheel
-lock·원본 base metadata digest 연결을 기록합니다. 오프라인 검사기는 입력 일관성을 관찰하며 이미지
-내부 내용·출처를 입증하지 않습니다. 별도 비공개 version/info bootstrap은 임시 이미지 ID 없이 동작하며
-runtime profile·준비 완료 권한을 만들지 않습니다.
-같은 가이드는 비공개 최소 context 준비와 압축 해제 없는 호스트 rootfs 비교도 설명합니다. 제공한
-base/wheel/자산 목록의 세분화된 파일 사실을 추가하며 인증된 이미지 식별자·전체 이미지 검증·런타임
-권한은 만들지 않습니다.
-
-[비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)는 staging 입력, 고정 정지 생성
-inspect, 제한된 동시 CLI 수집, 독립 T → A/B 비교를 내부에서 연결합니다. 테스트는 fake만 사용하며
-공개 생성/세션 실행은 비활성입니다. 현재 이미지 수용과 세션/CLI before·적용·after·복구 연결은
-아직 남아 있습니다.
+소스 연결은 비활성 파일·가짜 adapter/phase/커널·신뢰 회귀 자식으로 검사합니다. 새 실제 AI/Docker/생성
+호출·이미지 준비·운영 패치·릴리스를 수행하지 않습니다. 현재 이미지 실현 가능성·설치형 수용은 #152에
+남고 #150/#153도 미완료이며 공개 alpha.4 바이트는 유지합니다.
 
 최신 릴리스 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)는 2026-11-05 KST에
 정확한 소스 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 리포트 스키마 `1.2`로
@@ -321,7 +293,7 @@ docs/
 | 생성 PoC/테스트 계약과 선택형 Codex 요청           | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)        |
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |
-| 생성 수정 오프라인 결정·복사·비활성 before 준비    | [Offline copy session](../../development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](development/GENERATED_REPAIR_SESSION.md)      |
+| 생성 수정 기본/opt-in 파일 결정                    | [Offline copy session](../../development/GENERATED_REPAIR_SESSION.md)            | [생성 수정 오프라인 복사 세션](development/GENERATED_REPAIR_SESSION.md)      |
 | 생성 수정 순수 생명주기·실패 모의                  | [Lifecycle model](../../development/GENERATED_REPAIR_LIFECYCLE.md)               | [생성 수정 순수 생명주기 모델](development/GENERATED_REPAIR_LIFECYCLE.md)    |
 | 생성 수정 제한된 HTTP relay·전달 사실 bridge       | [HTTP relay](../../development/GENERATED_REPAIR_HTTP_RELAY.md)                   | [생성 수정 HTTP relay](development/GENERATED_REPAIR_HTTP_RELAY.md)           |
 | 이미지 소유 guest 진입점 소스                      | [Guest entries](../../development/GENERATED_REPAIR_GUESTS.md)                    | [이미지 소유 guest 진입점](development/GENERATED_REPAIR_GUESTS.md)           |
@@ -329,6 +301,7 @@ docs/
 | 비공개 캡처 입력 staging                           | [Input staging](../../development/GENERATED_REPAIR_STAGING.md)                   | [비공개 입력 staging](development/GENERATED_REPAIR_STAGING.md)               |
 | 고정 로컬 Engine 메타데이터                        | [Runtime metadata](../../development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
+| 승인형 생성 복사/검사/적용/복구 CLI                | [Generated file workflow](../../guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)                          |
 | 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |

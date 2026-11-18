@@ -85,11 +85,13 @@ alpha.3에는 opt-in 소유 fixture 흐름이 포함되며 실제 소스 CLI의 
 - `scan` 명령으로 사람이 읽는 형식 또는 JSON 보고서 출력
 - 오프라인 [`authzest generation-preview`](development/GENERATED_REPAIR_CONTRACT.md)
   (`--json` 선택)는 고정 입력만 보여줍니다. 소스의 `codex-generate --model EXPLICIT_MODEL`은
-  플랫폼에 독립적인 `--preview-only` 또는 새 정확한 요청의 공유 동의 후 POSIX 어댑터 1회 시도를 지원합니다.
-  사람이 읽는 출력/`--json`에 검증한 제안과 호스트 계산 소스·테스트 diff를 표시하며 복사·적용·
-  생성 코드 실행·복구는 하지 않습니다. 정책 검토는 대기 중이며 `X-Demo-Actor`는 인증이 아닙니다.
-  오프라인/mock으로만 검사한 연결이고 실제 생성·제공자 호환성은 미검증입니다.
-  #151은 열려 있으며 #152/#153은 미구현입니다.
+  플랫폼에 독립적인 `--preview-only` 또는 새 정확한 요청 공유 동의 후 POSIX adapter 시도 한 번을 지원합니다.
+  기본 동작은 파일 실행 없이 검증한 제안과 호스트 계산 소스/테스트 diff를 표시합니다.
+  명시적 `--file-workflow --runtime-profile PATH`는 별도 결정하는 비공개 복사본 before 검사·정확한
+  diff/적용·새 after 검사·복구를 추가합니다. [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)을
+  참고하세요. 현재 검토한 이미지와 지원 커널 제어가 필요하며 소스 연결은 오프라인/mock 검사 상태로
+  설치형 수용은 남아 있습니다. 정책 검토는 대기 중이고 `X-Demo-Actor`는 인증이 아닙니다.
+  #151/#152는 열려 있으며 #153 결과 UI도 남아 있습니다.
 - alpha.4의 `codex-owner-review`·`codex-owner-repair`·`codex-fixture`·`fixture-demo`는 읽기 쉬운 출력을
   기본으로 사용합니다. `--json`은 stdout에 최종 결과 하나만 출력하고 완전한 동의 미리보기·질문은
   stderr로 보냅니다. 오프라인 `--preview-only --json`은 완전한 소유 정책 검토 또는 수정 추천 미리보기 하나를

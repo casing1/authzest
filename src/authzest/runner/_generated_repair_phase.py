@@ -616,10 +616,14 @@ class _Phase:
             stage_t,
         )
         handle_t = self.start(item_t, stage_t)
-        result_t = self.checked(handle_t, self.deadline, (0, 1))
+        try:
+            result_t = self.checked(handle_t, self.deadline, (0, 1))
+        finally:
+            # Preserve entry/infrastructure refusal (including the maintained
+            # guard's 78) without treating any guest exit as trusted proof.
+            self.test_exit = self.pool.snapshot(handle_t).returncode
         self.current(stage_t)
         self.finished(item_t, result_t)
-        self.test_exit = result_t.returncode
         self.remove(item_t, limit=self.deadline)
 
         stage_a = GeneratedRepairInputStage(self.workspace, self.candidate, "A")

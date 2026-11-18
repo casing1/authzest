@@ -46,40 +46,26 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 않습니다. 이 계획은 패키지/버전/태그 변경·정식 발행·새 실행을 승인하지 않습니다.
 
 [#151 계약과 어댑터 연결](GENERATED_REPAIR_CONTRACT.md)은 고정 합성 요청을 준비하고 소스/테스트
-제안을 호스트 계산 diff와 함께 검증합니다. `authzest generation-preview`(`--json` 선택)는 계속
-입력 전용입니다. 소스의 `codex-generate --model EXPLICIT_MODEL`은 플랫폼에 독립적인
-`--preview-only`와 새 정확한 요청의 공유 동의 후 POSIX 어댑터 1회 시도 경로를 추가합니다.
-복사본을 만들거나 생성 코드를 적용·실행·복구하지 않습니다. 이번 변경은 오프라인/mock 검증만
-수행하며 실제 모델·제공자·스키마 수용 검증은 아닙니다. 정책은 assistant 작성/관리자 검토 대기이고
-#151은 열린 상태입니다. #152에는 이제 [오프라인 검증 기반](GENERATED_REPAIR_VERIFICATION.md)이
-있으며 관리형 데이터 대조·비활성 콘텐츠 결합 미리보기·비활성 실행기 준비만 제공합니다.
-별도의 [비공개 파일 I/O 기반](GENERATED_REPAIR_WORKSPACE.md)은 오프라인 파일시스템 테스트용
-새 복사본 바이트 관리·정확한 소스 적용/복구를 제공합니다. 활성 세션 런타임·생성 코드 실행과
-연결된 적용/복구 흐름은 미구현입니다. [오프라인 복사 세션](GENERATED_REPAIR_SESSION.md)은
-일회성·만료 결정을 새 복사본·비활성 before 준비에만 연결하며 적용/복구 API·증거 가져오기는 없습니다.
-[순수 생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)은 제한된 가짜 T → A/B 순서·공유 예산 기록·
-식별자 한정 정리 의도만 추가하며 전송·런타임·실제 before 근거는 없습니다.
-[제한된 HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md)는 고정 요청 입력·좁은 응답 codec·명시적
-fake-stream 수집·호스트 전달 사실 bridge만 추가하며 실제 소켓은 없습니다.
-[guest 진입점 소스](GENERATED_REPAIR_GUESTS.md)는 이미지 전용 고정 테스트/서버/relay launcher를
-가짜 의존성으로만 검사하며 호스트 우회 실행·활성 엔진/세션 연결이 아닙니다.
-[오프라인 runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md)은 전달 엔진/이미지 선언을 검증하고
-고정 정지 생성 인자 데이터만 만들며 실제 검사·전송·준비 완료를 추가하지 않습니다.
-[비공개 입력 stage](GENERATED_REPAIR_STAGING.md)는 분리된 T/A 캡처 파일·호스트 기록과 live
-checkpoint/식별자 재검사만 추가하며 mount·실행·before 근거를 만들지 않습니다.
-[런타임 메타데이터 reader](GENERATED_REPAIR_PREFLIGHT.md)는 고정 Engine GET·제한된 비교만 가짜
-소켓으로 검사하며 효과적 격리·세션 준비 완료는 여전히 미구현입니다.
-[고정 이미지 입력](GENERATED_REPAIR_IMAGES.md)은 두 platform의 빌드 전 recipe/lock과 오프라인 일관성
-검사를 추가합니다. 별도 비공개 version/info bootstrap은 임시 image ID 없이 미고정 식별자를 관찰하며,
-두 경로 모두 전체 profile·빌드한 이미지·실행 권한을 만들지 않습니다.
-비공개 context 준비는 검사한 선택 입력만 복사하고 호스트 archive 비교는 압축 해제 없이 제공한
-base/자산/wheel 사실을 검사합니다. Receipt는 과거 데이터이며 전체 이미지 검증·설치형 런타임/세션
-연결은 여전히 미완료입니다.
-[비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 고정 정지 생성 inspect, 제한된 동시 CLI 전송,
-T → 새 A/B 호스트 비교를 fake 테스트로 내부 연결합니다. A 시작 신호로 유지하는 자산·recipe digest가
-변경돼 이전 A 이미지는 현재 소스와 맞지 않습니다. 공개 생성·세션 실행은 비활성이며 현재 이미지/
-capability 수용과 before·diff·적용·after·복구의 CLI 연결이 다음 작업입니다.
-#152는 열려 있고 #153 UI 통합도 남아 있습니다.
+제안을 호스트 계산 diff로 검증합니다. `authzest generation-preview`(`--json` 선택)는 입력 전용이며
+소스의 `codex-generate --model EXPLICIT_MODEL`은 플랫폼 독립 `--preview-only`와 새 정확한 공유
+동의 뒤의 기본 제안 전용 경로를 유지합니다. 정책은 assistant 작성/관리자 검토 대기이며 #151은 열어 둡니다.
+
+명시적 [생성 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md)은 제한된 비공개 runtime-profile loader와
+새 로컬 검토를 생성에 연결하고 복사/before/source-diff/source-apply/after/복구를 각각 결정합니다.
+[세션](GENERATED_REPAIR_SESSION.md)은 현재 파일/profile/계획과 직접 반환한
+[phase](GENERATED_REPAIR_PHASE.md) 결과에 결합하고 전체 17사례/21요청을 독립 검사하며 정확한 비공개
+복사본 적용·복구를 재사용합니다. 기본 비활성 준비와 기존 등록 흐름은 유지합니다. 가져온 결과·
+테스트 출력·runtime 확인은 커널 증명이나 소스 쓰기 권한이 아닙니다.
+
+[Guest 진입점](GENERATED_REPAIR_GUESTS.md)은 target/tool import 전에 지원하는 커널 설정을 검사하고
+미지원 조건을 거부합니다. 모든 관리 guest 자산과
+[고정 이미지 recipe](GENERATED_REPAIR_IMAGES.md)6개가 바뀌어 현재 재빌드/검토 이미지가 필요합니다.
+좁은 guard는 탈출 불가·전체 이미지 증명·자원 부하 벤치마크가 아닙니다. Manifest는 계속 빌드 입력
+선언이며 준비 완료 이미지 배포가 아닙니다.
+
+소스 연결은 비활성 파일·가짜 adapter/phase/커널 응답·신뢰 회귀 자식으로 검사합니다. 이번 구현은
+새 실제 AI/Docker/생성 호출·이미지 준비·운영 패치·릴리스를 수행하지 않습니다. 다음은 현재 이미지
+실현 가능성과 정확한 설치형 before/적용/after/복구 수용이며 #152는 열려 있고 #153 UI 통합도 남아 있습니다.
 
 ## 현재 기준 — 2026-11-05 KST
 

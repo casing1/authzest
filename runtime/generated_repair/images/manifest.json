@@ -747,8 +747,8 @@
   "roles": {
     "A": {
       "assets": {
-        "_guest_common.py": "65ae40e704b8c7d2d4c695a322fa6eeb4830e4df208a7658bdcc6096cf21dc4b",
-        "app_launcher.py": "f47c208ba02f7d5a3edec96fc61c0624ce7ab2354240c87de54c41e0bc78f274"
+        "_guest_common.py": "697472d2b8a168a0ec79ea00e1dee508b4b44e0dbb87c64ac3f4b1cd07df85ad",
+        "app_launcher.py": "4f52b484a155b43812d41545285af10a96bfc31b99c078b467a1c246904bb59a"
       },
       "direct_requirements": [
         "fastapi",
@@ -774,7 +774,7 @@
             "typing-inspection",
             "uvicorn"
           ],
-          "recipe_sha256": "46caf957f28b12c71a78efac9eef4985bb35078ee806a828480b02d510dfd582",
+          "recipe_sha256": "1893184a3b5bd78002ee650f11202c92753d3173c97f1a2f7a852e5ace9ecefb",
           "requirements_file": "locks/linux-amd64-A.txt",
           "requirements_sha256": "d5e47e336f638d33f90d8241f76ebe58cecb45d7e910ce9d7fe487efd8e636bb"
         },
@@ -797,7 +797,7 @@
             "typing-inspection",
             "uvicorn"
           ],
-          "recipe_sha256": "fd7046a54edc28735c30a3da61155c11c70d5f59defd7b91a094a4321668368c",
+          "recipe_sha256": "90d33a51e79ff4a0b66b158ae2761e2ee5f674b2aebb4e6a4f78165cb3f9aae3",
           "requirements_file": "locks/linux-arm64-A.txt",
           "requirements_sha256": "4fe83c082c5db3d478c0b40f39d626b3c687182d0c28efd818d5cffea93699b8"
         }
@@ -806,8 +806,8 @@
     "B": {
       "assets": {
         "_generated_repair_http.py": "8bf5048d83d50f288bdbce8dc6dd2763416d7d153b3f30f082a7579c2b14b930",
-        "_guest_common.py": "65ae40e704b8c7d2d4c695a322fa6eeb4830e4df208a7658bdcc6096cf21dc4b",
-        "relay_launcher.py": "6ac463f74c68ec10c676cfb4bb88a09017412c427ea6ee24c1d2613713f6ceaf"
+        "_guest_common.py": "697472d2b8a168a0ec79ea00e1dee508b4b44e0dbb87c64ac3f4b1cd07df85ad",
+        "relay_launcher.py": "88eebbf0a344fb5150a45753028c4393ece810ebd06b3acb792d3a070c9a46af"
       },
       "direct_requirements": [],
       "platforms": {
@@ -815,7 +815,7 @@
           "dockerfile": "dockerfiles/linux-amd64-B.Dockerfile",
           "dockerfile_sha256": "cfc788d18a224a76bc3a86094684953b4cb539a0074946e9319562b0dcce53a2",
           "packages": [],
-          "recipe_sha256": "f29a2f78788265447ad15a7ec3cd952f06db99f14684c56a40274a1855c98294",
+          "recipe_sha256": "1b3a91f9e158888d956ed2ffc4f857b1f56e13ffdc8a2907044b557c63f661e8",
           "requirements_file": "locks/linux-amd64-B.txt",
           "requirements_sha256": "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e"
         },
@@ -823,7 +823,7 @@
           "dockerfile": "dockerfiles/linux-arm64-B.Dockerfile",
           "dockerfile_sha256": "153b92e7af41a851dd16ff2c415152abaa19580a37ef9ce950aa79db53a582b5",
           "packages": [],
-          "recipe_sha256": "a97eceda7277dcac103d84c5df99a532013a390eac7fe5817ddafdd21d86f083",
+          "recipe_sha256": "834a517d59526bb5493ff413436f917f5349a9ed5beb1989c171738e3088a660",
           "requirements_file": "locks/linux-arm64-B.txt",
           "requirements_sha256": "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e"
         }
@@ -831,8 +831,8 @@
     },
     "T": {
       "assets": {
-        "_guest_common.py": "65ae40e704b8c7d2d4c695a322fa6eeb4830e4df208a7658bdcc6096cf21dc4b",
-        "test_launcher.py": "90c69083d0a875262e72b02474ea5e91678d80f823ac1e4adc7b87d664059916"
+        "_guest_common.py": "697472d2b8a168a0ec79ea00e1dee508b4b44e0dbb87c64ac3f4b1cd07df85ad",
+        "test_launcher.py": "8618413fa13af4772585924ffbd9d4627a141716abbc6638f4f9937629f65bb8"
       },
       "direct_requirements": [
         "fastapi",
@@ -865,7 +865,7 @@
             "typing-extensions",
             "typing-inspection"
           ],
-          "recipe_sha256": "1d7414660c677adbe0b85b0a1e855e3efe6d8e01d0bc0342d2905e10714d86c8",
+          "recipe_sha256": "49a14000611d41f7def45d6fdfd7e82991a9da2edc8040df4c2c170e7c675f0b",
           "requirements_file": "locks/linux-amd64-T.txt",
           "requirements_sha256": "8f87350f05c065015a9f2c7633aee604afc31c6d02cc96459b6fcd09520718fc"
         },
@@ -894,7 +894,7 @@
             "typing-extensions",
             "typing-inspection"
           ],
-          "recipe_sha256": "7cc1d7c2736a41ed58544eaa01292ef37658a90db207f51e6d3d0d578064b3e7",
+          "recipe_sha256": "3217cf92e3bafe8271f63c249fce0e1cb8946f1d2dccb99b712791018f30eaee",
           "requirements_file": "locks/linux-arm64-T.txt",
           "requirements_sha256": "e2a56894eeff0a0ef1433ec9eecf99e75339e52e92f9fe39ea9e015618f030cf"
         }

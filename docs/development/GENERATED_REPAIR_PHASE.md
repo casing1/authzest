@@ -15,11 +15,16 @@ input staging, fixed Docker commands, concurrent capture and the host-owned HTTP
 one internal T → fresh A/B phase. Tests use inert files, fake children/pipes and fake Engine replies.
 They do not start Docker, import generated Python or establish installed runtime acceptance.
 
-The public generation command and existing preparation-only session remain unchanged and disabled
-for generated execution. There is no new public command or runtime-result importer. A future trusted
-coordinator must review provisioned image contents and current capabilities, bind each expiring
-decision to the actual files/profile, and consume only its directly returned current-call result.
-Calling the private executor is effectful; a profile or matching inspect JSON alone is not permission.
+The default generation command and preparation-only session remain unchanged. The explicit
+[CLI file workflow](../guides/GENERATED_FILE_WORKFLOW.md) now connects this phase to current
+profile/file-bound decisions and exact private-copy application/restoration. There is no runtime-result
+importer. The operator must review the actual pinned client and current immutable image contents;
+profile/inspect JSON or a typed acknowledgment is not image or kernel proof.
+
+The fixed image entries now check supported kernel controls before target/tool imports and refuse
+with exit 78 if unsupported. All guest assets and six recipes change, so current rebuilt/reviewed
+T/A/B images are required. These are narrow kernel-reported settings, not stress benchmarks or an
+escape-proof sandbox. Current-image feasibility and installed acceptance remain pending.
 
 ## Fixed execution and observation
 
@@ -52,9 +57,10 @@ phase stops at 224 KiB and reserves 32 KiB for cleanup. After that normal output
 capture pipes close without claiming complete EOF, preserving room to attempt exact guest removal.
 The existing
 metadata reader separately bounds Engine wire bytes. A coordinator-owned cumulative 2 MiB evidence
-budget charges journal JSON and metadata wire bytes, and reserves 512 KiB for each bounded result
-including base64 expansion, even if persistence fails. It spans before and after; the future session
-must retain the same budget instance. No capture or cleanup resets it.
+budget charges journal JSON and metadata wire bytes, and reserves 512 KiB for each bounded phase result
+including base64 expansion, even if persistence fails. The opt-in session retains the same budget
+across before/after and also reserves final-summary/restoration-plan capacity before effects.
+No capture or cleanup resets it.
 Synchronous filesystem, process creation, daemon and kernel operations have no universal time bound.
 
 Exact owned IDs are inspected before forced removal. An ambiguous create is reconciled only through
@@ -67,14 +73,15 @@ later cleanup errors; cancellation propagates with its historical result when av
 keeps authorization unknown, `verified_fix: false`, and source application false. It cannot be imported
 to establish a before baseline or unlock a write.
 
-## Next integration
+## Remaining acceptance
 
-The A launcher and both platform A recipe digests changed. Old A images/receipts are stale for the new
-source and must not be relabeled as current. Dependency locks and T/B assets did not change.
+The common kernel guard and T/A/B launchers changed, updating all guest assets and six platform
+recipe digests. Old image receipts are stale for this source; dependency locks remain unchanged.
+Updating a profile declaration does not rebuild or verify an image.
 
-Next connect current session decisions to before, exact diff acceptance/application, fresh after and
-restore, then perform separately scoped installed acceptance with current images. The read-only local
-results UI follows that working CLI path. #152, #153 and the stable release remain incomplete.
+The opt-in session/CLI connection is implemented. Next perform current-image feasibility and
+separately scoped installed before/apply/after/restore acceptance. The read-only local results UI
+follows that working CLI path. #152, #153 and the stable release remain incomplete.
 
 References: [Docker CLI start source](https://github.com/docker/cli/blob/v29.4.3/cli/command/container/start.go),
 [Uvicorn server source](https://github.com/Kludex/uvicorn/blob/0.54.0/uvicorn/server.py).

@@ -20,10 +20,11 @@ B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입�
 요청·AI 호출을 수행하지 않습니다. 새 공개 AuthZest 명령·런타임 결정·릴리스도 추가하지 않습니다.
 운영자 로컬 receipt는 별도 비공개 기록이며 이식 가능한 manifest의 빌드 전 후보 상태를 대체하지 않습니다.
 
-[비공개 단계 실행기](GENERATED_REPAIR_PHASE.md)는 신뢰하지 않는 A 시작 조정 신호를 추가합니다.
-Launcher와 두 platform의 A recipe digest가 변경돼 이전 A 이미지 관찰은 현재 입력과 맞지 않습니다.
-의존성 lock과 T/B 자산은 그대로입니다. Profile에 새 소스 해시만 복사해서 이전 이미지 receipt를
-현재 근거로 바꿀 수 없습니다.
+[CLI 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md)은 기존 비공개 phase를 개별 결정하는 단계에
+연결합니다. 필수 pre-import 커널 guard가 공통 자산·T/A/B launcher를 바꿔 platform recipe 6개의
+해시를 갱신합니다. 현재 재빌드/검토 이미지가 필요하며 의존성 lock은 그대로입니다. 이전 profile에
+새 선언 해시를 넣어도 이미지가 갱신·검증되지 않습니다. 비공개 loader는 계정 사용 전·각 dispatch 전에
+현재 관리 recipe/lock/자산 결합을 확인하지만 이를 런타임 준비 완료로 취급하지 않습니다.
 
 ## 기록한 후보 입력
 
@@ -45,8 +46,8 @@ lock 6개, Dockerfile recipe 6개, 보존한 원본 base-image JSON 5개가 있�
 
 Guest 후보는 검토한 release metadata에서 `pytest==9.0.3`을 선택합니다. 호스트 개발 환경과 별개이며
 기존 호스트 pytest 제약은 바꾸지 않습니다. 고정 guest launcher는 `-c /dev/null`과 정확한 테스트
-선택을 유지합니다. 이미지 입력이 테스트 탐색을 확대하거나 모델이 선택한 의존성을 추가하거나
-launcher 소스를 수정하지 않습니다.
+선택을 유지합니다. 이미지 입력은 테스트 탐색을 확대하거나 모델이 선택한 의존성을 추가하지 않습니다.
+별도 커널 guard가 launcher 소스를 변경하며 선택 의존성 버전은 그대로입니다.
 
 ## 오프라인 검사가 확인하는 범위
 
@@ -140,7 +141,7 @@ Timestamp·확장 속성·서명·이미지 config·효과적 런타임 동작�
 상태이고 전체 runtime profile 생성·이미지 검사·executor 활성화는 하지 않습니다. 공개 CLI 흐름도
 아닙니다.
 
-생성 실행 전에는 검토한 이미지 준비/내용·로컬 image ID, 효과적 정지 컨테이너 검사, 현재 입력/세션
-결정, 제한된 실행/수집·정확한 guest 정리 확인이 필요합니다. 이후 설치형 before/after/restore 수용과
-로컬 결과 UI도 남아 있습니다. `ready`·실행 권한·수정 검증은 성립하지 않습니다. #89 위험 수용·#152
+정지 생성 inspect·현재 입력/세션 결정·제한 실행/수집·정확한 guest 정리는 소스로 구현했습니다.
+실제 활성 수용 전에는 현재 검토한 이미지 준비/내용·로컬 image ID·커널 실현 가능성과 설치형
+before/after/restore 수용이 필요하며 로컬 결과 UI도 남아 있습니다. `ready`·실행 권한·수정 검증은 성립하지 않습니다. #89 위험 수용·#152
 완료·버전 변경·릴리스 권한은 이 문서에 포함하지 않습니다.
