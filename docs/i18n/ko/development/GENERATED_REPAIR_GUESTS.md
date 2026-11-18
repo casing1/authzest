@@ -8,7 +8,7 @@
 [문서 목차](../INDEX.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)
 
-## 범위 — 2026-11-15 KST
+## 범위 — 2026-11-18 KST
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 관리형 standalone guest
 launcher **소스**를 추가하고 가짜 의존성·소켓으로만 검사합니다. 실제 guest·앱·생성 테스트·소켓·
@@ -40,8 +40,17 @@ UID/GID `65532`를 요구합니다. T/A는 추가 인자를 받지 않고 B는 1
 공통 guard는 target/tool import 전에 고정 커널 경로를 읽어 미지원 PID/nonroot·seccomp/
 no-new-privileges/capability·cgroup·mount·interface 설정을 종료 78로 거부합니다. 대상 내용은
 읽지 않고 프로세스·소켓도 만들지 않습니다. 좁은 지원 속성 검사이지 자원 부하 벤치마크·탈출 불가·
-독립 A/B namespace 증명이 아닙니다. 공통/launcher 자산과 platform recipe 6개가 바뀌어 T/A/B
-이미지를 현재 소스로 재빌드·검토해야 합니다. 입력한 runtime 검토나 갱신한 선언은 이미지 내용의 대체가 아닙니다.
+독립 A/B namespace 증명이 아닙니다.
+
+네트워크 guard는 엄격한 lo-only 수용을 유지하고 닫힌 기본 tunnel fallback 경로를 추가합니다.
+이름·type·flag가 관리하는 소스 상수와 같아야 하며 모든 non-loopback fallback은 관리상 DOWN·
+operstate DOWN·iflink0, 양수이며 서로 다른 index 조건을 만족해야 합니다. 고정 proc/sysfs snapshot을
+제한해 전후 비교하고 미확인·활성·변경·잘못된 데이터는 target import 전에 종료 78로 거부합니다.
+관찰은 **진입 시 활성 non-loopback interface가 관찰되지 않음**뿐이며 주소/모든 route의 부재·
+실제 외부 연결성 측정·격리 증명이 아닙니다. socket/netlink·NET_ADMIN·sysctl·network template 변경은 없습니다.
+
+이번 공통 자산 변경으로 T/A/B의 공통 pin과 platform recipe6개가 모두 바뀌므로 현재 이미지로
+재빌드·검토해야 합니다. 입력한 runtime 검토나 갱신한 선언은 이미지 내용의 대체가 아닙니다.
 
 의존성 로드 전에 상속 환경을 지우고 고정된 신뢰 자산 폴더를 명시합니다(`-I`는 스크립트 폴더를
 검색 경로에 남기지 않습니다). T/A는 `/input`을 앱 검색에 노출하기 전에 이미지 소유 pytest/Uvicorn을

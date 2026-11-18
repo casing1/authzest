@@ -29,6 +29,15 @@ dependency locks remain unchanged. Copying new declared hashes into an old profi
 or verify an image. The private loader checks current maintained recipe/lock/asset bindings before
 account use and each dispatch, without treating them as runtime readiness.
 
+The network-guard correction retains strict lo-only acceptance and adds only exact maintained default
+tunnel fallback name/type/flag combinations. Non-loopback fallbacks must be administratively DOWN,
+operstate DOWN and iflink0 with positive unique indexes, with stable bounded before/after fixed
+proc/sysfs facts. It adds no socket/netlink, NET_ADMIN, sysctl or network-template changes. Its claim
+is only no active non-loopback interface observed at entry, not addresses/routes, measured external
+connectivity or isolation proof. The shared common asset and all six recipe pins change again;
+current rebuilt/reviewed T/A/B images and installed acceptance remain pending. Locked dependencies
+and the default generation path are unchanged.
+
 ## Recorded candidate inputs
 
 The source directory [runtime/generated_repair/images](../../runtime/generated_repair/images/)

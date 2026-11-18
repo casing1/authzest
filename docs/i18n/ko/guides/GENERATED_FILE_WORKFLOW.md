@@ -80,12 +80,19 @@ T의 before 종료1·after 종료0은 보조 관찰이며 assertion 진위의 �
 
 유지 관리하는 이미지 진입점은 target/tool import 전에 지원하는 커널 보고 제어를 확인합니다.
 PID 1/nonroot·seccomp/no-new-privileges/zero capabilities·cgroupv2 CPU/메모리/swap/PID 제한,
-읽기 전용 root/input·제한 tmpfs·loopback 전용 interface를 검사하고 누락·불일치 시 종료 78로 거부합니다.
-탈출 불가 증명·자원 부하 벤치마크·독립 namespace 증명이 아니며 호스트의 단계/수집/정리 제한과
-정확한 객체 소유권 확인도 유지합니다.
+읽기 전용 root/input·제한 tmpfs·닫힌 network-interface 계약을 검사합니다. 엄격한 lo-only 경로를
+유지하고 두 번째 경로는 이름·type·flag가 소스의 고정 허용 목록과 정확히 같은 기본 tunnel fallback만
+허용합니다. 각 non-loopback interface는 관리상 DOWN·operstate DOWN·iflink0이어야 하며 index는
+양수이고 서로 달라야 합니다. 고정 proc/sysfs 경로의 제한된 전후 snapshot도 같아야 합니다.
+미확인·활성·변경·잘못된 사실은 target import 전에 종료 78로 거부합니다.
 
-공통 guard와 모든 launcher가 바뀌었으므로 T/A/B 자산과 platform recipe 6개에 맞는 현재 이미지가
-필요합니다. 이전 profile에 새 선언 해시를 넣어도 이미지가 바뀌지 않습니다. 공유 제한은 phase40초·
+네트워크 관찰의 범위는 **진입 시 활성 non-loopback interface가 관찰되지 않음**뿐입니다. IP 주소나
+모든 route의 부재, 실제 외부 연결성 측정, 독립 namespace 신원·격리 증명을 뜻하지 않습니다.
+socket/netlink 채널을 열지 않고 NET_ADMIN·sysctl·network template도 바꾸지 않습니다.
+호스트의 단계/수집/정리 제한과 정확한 객체 소유권 확인도 유지합니다.
+
+이번 네트워크 수정은 T/A/B 이미지가 함께 사용하는 공통 자산과 platform recipe6개의 pin을 바꾸므로
+현재 재빌드/검토 이미지가 필요합니다. 이전 profile에 새 선언 해시를 넣어도 이미지가 바뀌지 않습니다. 공유 제한은 phase40초·
 누적 준비10초·정리10초·출력256KiB(일반224KiB와 정리32KiB)·복구 기록 공간을 예약한 세션 근거2MiB입니다.
 동기 파일시스템·커널 호출의 보편적 시간 상한은 없습니다.
 

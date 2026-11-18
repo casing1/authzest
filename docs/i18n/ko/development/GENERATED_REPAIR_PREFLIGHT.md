@@ -8,13 +8,15 @@
 [문서 목록](../INDEX.md) · [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) ·
 [입력 staging](GENERATED_REPAIR_STAGING.md)
 
-## 범위 — 2026-11-15 KST
+## 범위 — 2026-11-18 KST
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 로컬 Engine 메타데이터
 reader와 제한된 전달 데이터 비교기를 추가합니다. 오프라인 회귀 검사의 소켓·endpoint 정보·시계는
-가짜이며 회귀 검사에서 실제 엔진·plugin·소켓·생성 코드·AI는 호출하지 않습니다. 기존 executor,
-lifecycle 모의 모델·세션·공개 CLI에는 연결하지 않습니다. #152는 열려 있으며 실제 PoC나 수정 검증
-완료가 아닙니다.
+가짜이며 회귀 검사에서 실제 엔진·plugin·소켓·생성 코드·AI는 호출하지 않습니다. 소스 phase 실행기는
+PR #170에서 연결한 [세션](GENERATED_REPAIR_SESSION.md)과 명시적
+[CLI 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md) 안에서 이 reader를 사용합니다. 순수 lifecycle
+모델은 별도 모의를 유지합니다. 소스 통합은 구현했지만 현재 재빌드 이미지와 설치형 전체 수용은 #152에
+남아 있으며 이 소스 테스트가 실제 PoC·수정 검증 완료를 뜻하지 않습니다.
 
 ## 전용 Engine transport를 사용하는 이유
 
@@ -43,8 +45,8 @@ OS 가정하에 현재 사용자/root 소켓만 받아들이며 공유 sticky �
 악의적인 동일 사용자 동시 쓰기에 대한 원자성이나 인증된 peer/daemon 출처를 보장하지 않습니다.
 
 호출자가 보유한 원래 setup·phase 절대 마감을 전체 순서에 적용하고 조회마다 갱신하지 않습니다. 기존
-제안 한도는 원래 40초 phase 안의 누적 setup/readiness 10초이며, 후속 세션이 앞선 작업량도 계산해야
-합니다. 동기 coordinator hook을 매 연결 직전에 다시 확인하지만 동의나 재사용 가능한 실행 결정은
+제안 한도는 원래 40초 phase 안의 누적 setup/readiness 10초이며 현재 phase/세션 통합이 앞선
+작업량도 계산합니다. 동기 coordinator hook을 매 연결 직전에 다시 확인하지만 동의나 재사용 가능한 실행 결정은
 아닙니다. 동기 OS 호출 전체의 선점 시간 보장은 없으며 소켓 close를 별도 guest 정리 시간으로 보지 않습니다.
 
 HTTP header는 요청당 16 KiB/32개, body는 64 KiB이며 framing을 포함한 원시 응답 전체가 조회 5개에
@@ -57,8 +59,9 @@ HTTP header는 요청당 16 KiB/32개, body는 64 KiB이며 framing을 포함한
 
 `normalize_runtime_metadata`는 정확한 순서의 응답 객체 5개와 제한된 JSON만 받습니다. 전달 프레임은
 호출자가 제공한 데이터입니다. `observe_runtime_metadata`는 고정 reader를 조정하고 query 시도와 실제
-contact 시도를 구분합니다. 가짜를 주입해도 인증된 관찰이 되지 않으며 비활성 executor를 바꾸거나
-살아 있는 세션 권한을 만들지 않습니다.
+contact 시도를 구분합니다. 가짜를 주입해도 인증된 관찰이 되지 않으며 반환 결과만으로 준비 완료나
+살아 있는 세션 권한을 만들지 않습니다. 활성 phase는 현재 세션 결정 아래 새 직접 reader 관찰을
+사용하며 내보낸 JSON으로 세션을 재개하거나 적용을 승인할 수 없습니다.
 
 광고된 API 범위·Linux platform·version/info의 서버 버전 일치·선언한 엔진 식별자·역할별 정확한
 이미지 ID/architecture를 대조합니다. 엔진 식별자의 preimage는 `schema_version: "1.0"`,
@@ -69,7 +72,8 @@ UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 **메타데이터에서 읽은 선언**이며 실제 resource·seccomp·namespace/mount 제약이나 이미지 내부 파일
 증거가 아닙니다. ID/label 일치가 dependency lock·recipe·유지관리 guest 자산을 검증하지 않습니다.
 모의 검사를 근거로 실제 지원 Engine 버전·이미지 집합을 만들어내지 않습니다. reader가 CLI를 실행하지
-않으므로 로컬 CLI 바이너리·설정 식별자도 관찰되지 않은 상태입니다.
+않으므로 해당 응답은 로컬 CLI 바이너리·설정 식별자를 관찰하지 않습니다. 바깥 phase가 별도 client/config
+식별자 검사를 수행하며 이를 메타데이터 응답이 제공한 근거로 표시하면 안 됩니다.
 
 별도 [호스트 archive 비교](GENERATED_REPAIR_IMAGES.md)는 제공한 rootfs catalog를 압축 해제·실행하지
 않고 관리형 자산·정확한 wheel payload와 비교할 수 있습니다. 세분화된 파일 관찰을 보고하고 검증하지
@@ -80,7 +84,7 @@ UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 runtime은 미실행입니다. 출력 JSON은 과거 데이터이지 재개 가능한 영수증·before 근거가 아닙니다.
 원시 daemon 정보·로컬 endpoint 상세는 비공개로 유지해야 하며 자동 공개 업로드는 추가하지 않습니다.
 
-## 남은 연결 작업
+## 통합과 남은 수용
 
 ### 이미지 ID를 만들지 않는 endpoint 전용 bootstrap
 
@@ -102,9 +106,17 @@ peer 신원을 성립시키지는 않습니다.
 
 ### 런타임 수용은 미완료
 
-실제 호환성·검토한 이미지 준비/내용·정지 컨테이너의 효과적 제약 확인, 제한된 attach/start/capture와
-정확한 guest 정리, 영속 세션 결정·설치형 generation/before/apply/after/restore 수용·읽기 전용 결과 UI는
-남아 있습니다. #89 위험 수용·이슈 완료·버전 변경·릴리스도 수행하지 않습니다.
+정지 생성 inspect·제한된 attach/start/capture·정확한 guest 정리·현재 세션/CLI 결정을 소스로
+연결했습니다. 메타데이터 관찰은 실제 이미지 내용 검토나 이미지 소유 pre-import 커널 guard를
+대체하지 않습니다. 네트워크 수정은 엄격한 lo-only 또는 고정 기본 tunnel fallback 사실만 허용하며,
+non-loopback fallback은 관리상 DOWN·operstate DOWN·iflink0, 양수이며 서로 다른 index와 제한된
+고정 proc/sysfs 전후 snapshot 일치 조건을 만족해야 합니다. 미확인/활성/변경/잘못된 사실은 종료 78로
+거부합니다. socket/netlink를 열지 않고 NET_ADMIN·sysctl·network template도 바꾸지 않습니다.
+
+지원하는 주장은 진입 시 활성 non-loopback interface가 관찰되지 않았다는 범위뿐입니다. IP 주소/모든
+route의 부재·실제 외부 연결성 측정·격리 증명이 아닙니다. 공통 자산과 recipe6개 pin이 바뀌어 현재
+재빌드/검토한 T/A/B 이미지, 현재 소스의 설치형 generation/before/apply/after/restore 수용과 읽기 전용
+결과 UI는 남아 있습니다. 기본 생성은 제안 전용입니다. #89 위험 수용·이슈 완료·버전 변경·릴리스는 없습니다.
 
 근거: [Docker CLI info 소스](https://github.com/docker/cli/blob/v29.0.0/cli/command/system/info.go#L78-L105),
 [metadata 실행](https://github.com/docker/cli/blob/v29.0.0/cli-plugins/manager/candidate.go#L16-L18),

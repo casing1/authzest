@@ -217,6 +217,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Preserve the strict lo-only guest guard and add a closed default-tunnel fallback branch with exact
+  maintained names/types/flags, non-loopback administrative/operstate DOWN, iflink0 and positive unique
+  indexes. Require stable bounded before/after fixed proc/sysfs facts; reject unknown, active, changed
+  or malformed observations with exit 78 before target import. No socket/netlink, NET_ADMIN, sysctl or
+  network-template change is added. The claim is only no active non-loopback interface observed at
+  entry, not absent addresses/routes, measured external connectivity or isolation proof. The common
+  asset/six recipe pins change, requiring current rebuilt/reviewed T/A/B images and installed acceptance.
+  Default generation, locked dependencies, versions and published releases remain unchanged.
+
 - Publish the offline fake Codex server's complete JSONL event-log snapshots atomically for
   [#130](https://github.com/casing1/authzest/issues/130), instead of exposing append writes to polling
   readers. Reuse strict UTF-8, newline-framing and completed-record JSON validation in the parent

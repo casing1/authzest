@@ -8,13 +8,17 @@
 [Documentation index](../README.md) · [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) ·
 [Input staging](GENERATED_REPAIR_STAGING.md)
 
-## Scope — 2026-11-15 KST
+## Scope — 2026-11-18 KST
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) foundation adds a private local
 Engine metadata reader and a bounded supplied-data comparator. The offline regression suite uses
 fake sockets, endpoint metadata and clocks; it invokes no real engine, plugin, socket, generated code
-or AI. The existing executor, lifecycle simulation, session and public CLI remain
-unconnected to this reader. #152 stays open; this is not an executed PoC or verified repair.
+or AI. The source phase executor now uses this reader within the
+[session](GENERATED_REPAIR_SESSION.md) and explicit
+[CLI file workflow](../guides/GENERATED_FILE_WORKFLOW.md), connected under PR #170. The pure lifecycle
+model remains a separate simulation. Source integration is implemented; current rebuilt-image and
+installed end-to-end acceptance remain pending under #152. These source tests are not an executed
+PoC or verified repair.
 
 ## Why a dedicated Engine transport
 
@@ -46,8 +50,8 @@ authenticated peer/daemon provenance.
 
 One caller-owned absolute setup deadline and original phase deadline govern the whole sequence.
 They are not refreshed per query. The existing proposed limits remain 10 seconds of cumulative
-setup/readiness within the original 40-second phase; future session integration must account for
-earlier work. A synchronous coordinator hook is checked immediately before each connection. It is
+setup/readiness within the original 40-second phase; the current phase/session integration accounts
+for earlier work. A synchronous coordinator hook is checked immediately before each connection. It is
 not consent or a new reusable execution decision. Synchronous OS calls have no universal preemption
 guarantee, and closing a socket is not the lifecycle's additional guest-cleanup budget.
 
@@ -63,7 +67,9 @@ failure/cancellation is retained and successful cleanup never erases an earlier 
 `normalize_runtime_metadata` accepts only the exact ordered five response objects and bounded JSON.
 Supplied frames remain caller-supplied data. `observe_runtime_metadata` coordinates the fixed reader
 and records query/contact disposition separately; an injected fake cannot establish authenticated
-observations. Neither path changes the disabled executor or creates a live session capability.
+observations. Neither returned result alone grants readiness or a live session capability. The active
+phase uses fresh direct reader observations under the current session decision; exported JSON cannot
+reopen a session or authorize application.
 
 Comparisons bind the advertised API range, Linux platform, matching version/info server version,
 declared engine identity and exact role image IDs/architectures. The engine identity preimage is
@@ -75,7 +81,8 @@ options and cgroup fields are **declarations observed in metadata**, not proof o
 seccomp, namespace/mount restrictions or image file contents. Matching IDs/labels do not verify the
 dependency lock, recipe or maintained guest assets. No actual supported Engine version/image set is
 invented by the fake tests. Local CLI executable/config identities remain unobserved because this
-reader does not execute that client.
+reader does not execute that client. The enclosing phase performs its own separate client/config
+identity checks; those checks must not be attributed to the metadata response.
 
 The separate [host archive comparison](GENERATED_REPAIR_IMAGES.md) can compare supplied rootfs
 catalogs with maintained assets and exact wheel payloads without extracting or running them. It
@@ -88,7 +95,7 @@ Results never grant readiness, generated execution or application authority: `re
 not run. Exported JSON is historical data, not a resumable receipt or before baseline. Raw daemon
 information and local endpoint details should remain private; no automatic public upload is added.
 
-## Remaining integration
+## Integration and remaining acceptance
 
 ### Endpoint-only bootstrap, without invented image IDs
 
@@ -111,10 +118,20 @@ no publication of operational records.
 
 ### Runtime acceptance still pending
 
-Actual interoperability and reviewed image provisioning/contents, effective stopped-container
-inspection, bounded attach/start/capture and exact guest cleanup, durable session decisions, installed
-generation/before/apply/after/restore acceptance and the read-only results UI remain pending. This
-change does not accept #89 risk, finish an issue, change a version or publish a release.
+Stopped-create inspection, bounded attach/start/capture, exact guest cleanup and current session/CLI
+decisions are connected in source. Metadata observations still cannot replace actual image-content
+review or the image-owned pre-import kernel guard. The guard's network correction permits only
+strict lo-only or exact maintained default-tunnel fallback facts: non-loopback fallbacks must be
+administratively DOWN, operstate DOWN and iflink0, with positive unique indexes and stable bounded
+before/after fixed proc/sysfs snapshots. Unknown/active/changed/malformed facts refuse with exit 78.
+It opens no socket/netlink and changes no NET_ADMIN, sysctl or network template.
+
+The supported claim is only no active non-loopback interface observed at entry; it is not a claim
+about absent IP addresses/all routes, measured external connectivity or isolation proof. The common
+asset and six recipe pins changed, so current rebuilt/reviewed T/A/B images, current-source installed
+generation/before/apply/after/restore acceptance and the read-only results UI remain pending. Default
+generation stays proposal-only. This change does not accept #89 risk, finish an issue, change a version
+or publish a release.
 
 References: [Docker CLI info source](https://github.com/docker/cli/blob/v29.0.0/cli/command/system/info.go#L78-L105),
 [metadata execution](https://github.com/docker/cli/blob/v29.0.0/cli-plugins/manager/candidate.go#L16-L18),

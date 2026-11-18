@@ -26,6 +26,14 @@ B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입�
 새 선언 해시를 넣어도 이미지가 갱신·검증되지 않습니다. 비공개 loader는 계정 사용 전·각 dispatch 전에
 현재 관리 recipe/lock/자산 결합을 확인하지만 이를 런타임 준비 완료로 취급하지 않습니다.
 
+네트워크 guard 수정은 엄격한 lo-only 수용을 유지하며 관리하는 기본 tunnel fallback의 정확한
+이름/type/flag 조합만 추가합니다. Non-loopback fallback은 관리상 DOWN·operstate DOWN·iflink0,
+양수이며 서로 다른 index와 고정 proc/sysfs 사실의 제한된 전후 일치 조건을 만족해야 합니다.
+socket/netlink·NET_ADMIN·sysctl·network template 변경은 없습니다. 관찰은 진입 시 활성
+non-loopback interface가 없었다는 범위뿐이며 주소/route·실제 외부 연결성 측정·격리 증명이 아닙니다.
+공유 common 자산과 recipe6개 pin이 다시 바뀌어 현재 재빌드/검토한 T/A/B 이미지와 설치형 수용은
+남아 있습니다. 고정 의존성과 기본 생성 경로는 그대로입니다.
+
 ## 기록한 후보 입력
 
 소스의 [runtime/generated_repair/images](../../../../runtime/generated_repair/images/)에는
