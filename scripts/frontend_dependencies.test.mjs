@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -27,6 +28,29 @@ const minimatchConsumers = [
   createRequire(frontendRequire.resolve("@eslint/config-array")),
   createRequire(frontendRequire.resolve("@typescript-eslint/typescript-estree")),
 ];
+
+test("the guarded formatter uses the reviewed Prettier bundle for #89", () => {
+  const packagePath = "node_modules/prettier";
+  const expectedVersion = "3.10.1";
+  const copies = Object.keys(lock.packages).filter((location) =>
+    location.endsWith(packagePath),
+  );
+  assert.deepEqual(copies, [packagePath]);
+  assert.equal(lock.packages[""].devDependencies.prettier, expectedVersion);
+  assert.equal(lock.packages[packagePath].version, expectedVersion);
+
+  const installed = path.join(frontend, packagePath);
+  const metadata = JSON.parse(
+    fs.readFileSync(path.join(installed, "package.json"), "utf8"),
+  );
+  assert.equal(metadata.version, expectedVersion);
+  // The npm override for standalone Minimatch cannot replace this ESM bundle.
+  const bundle = fs.readFileSync(path.join(installed, "index.mjs"));
+  assert.equal(
+    createHash("sha256").update(bundle).digest("hex"),
+    "efa4ff19afa80e7e5531273138ffe61dd0749d36c14a5299dfc742d5e2363171",
+  );
+});
 
 // GHSA-g3hv-75wg-m249: tiny bounded substitutes, never an exhaustion test.
 test("every locked and installed standalone minimatch uses the exact security override", () => {

@@ -73,8 +73,9 @@ POSIX binaries also retain the older owned-fixture apply/runtime workflow. Packa
 fixed debug/health runtime checks on POSIX are distinct from owner-policy authorization; Windows checks
 explicit unsupported behavior. The alpha.4 release record does not establish native UI acceptance,
 consumer-device installation/upgrades or signing/notarization. General FastAPI PoC and model-authored
-repair-source generation remain beyond this registered scope. #89 remains open at `needs_review` /
-medium with visible warnings and alpha.4-only residual-risk acceptance, not a fix or a stable-release waiver.
+repair-source generation remain beyond this registered scope. Alpha.4's recorded #89 decision was
+limited to that release. The [current source formatter](development/FORMATTING.md#current-source-formatter)
+documents the scoped #89 update and #171 follow-up.
 
 The post-alpha.4 source change under #130 publishes complete fake-server JSONL snapshots atomically,
 with strict completed-record validation and deterministic regression cases. This is test-harness
