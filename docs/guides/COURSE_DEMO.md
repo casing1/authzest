@@ -55,17 +55,17 @@ The command deliberately omits the required runtime profile. It exits `2` before
 runtime startup or workspace changes. Open the printed file path in the viewer.
 
 ```bash
-demo_dir=$(mktemp -d)
-refusal_status=0
 (
   umask 077
-  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json"
-) || refusal_status=$?
-if [ "$refusal_status" -eq 2 ]; then
+  demo_dir=$(mktemp -d) || exit 1
+  refusal_status=0
+  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json" || refusal_status=$?
+  if [ "$refusal_status" -ne 2 ]; then
+    printf 'Expected refusal exit 2, received %s\n' "$refusal_status" >&2
+    exit 1
+  fi
   printf '%s\n' "$demo_dir/refused.json"
-else
-  printf 'Expected refusal exit 2, received %s\n' "$refusal_status" >&2
-fi
+)
 ```
 
 Expect `invalid-input`, `not-run`, zero adapter attempts and unavailable before/after observations.
@@ -74,12 +74,12 @@ regression fixtures. Keep that coverage distinct from the live observation below
 
 ## Evidence to cite
 
-| Scope                                                                                                                                               | Observation and limit                                                                                                                                                                                                                                                                                                                                                            |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Historical installed run at [`ad4dea7` / #172](https://github.com/casing1/authzest/pull/172)                                                        | A live adapter returned a proposed test and source change. The generated test exit was 1 before and 0 after. Independent controls matched 17/17 cases and 21/21 requests in each phase against that phase's expected profile. The approved change was applied only to a copy, which was restored to its original bytes. Cleanup was confirmed and checkout bytes were preserved. |
-| Local viewer at [`c454628` / #173](https://github.com/casing1/authzest/pull/173)                                                                    | Browser verification opened the historical record and separately displayed a version 1.0 refusal. Version 1.0 success and source fields have fixture coverage. A new version 1.0 live success on this revision is unrecorded.                                                                                                                                                    |
-| [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577) and [merged CI](https://github.com/casing1/authzest/actions/runs/44276437537) | 8,712 Python tests passed and the Windows job reported 3,037 passed with 422 skipped on the reviewed PR. The merged jobs passed, including the [CodeQL analysis](https://github.com/casing1/authzest/actions/runs/44276438312).                                                                                                                                                  |
-| [Independent evaluation #84](https://github.com/casing1/authzest/issues/84)                                                                         | Independent comparative evidence is unavailable for this submission. The reported phases measure finite workflow behavior and leave authorization assurance unknown.                                                                                                                                                                                                             |
+| Scope                                                                                                                                                                          | Observation and limit                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Historical installed run at [`34baebc`](https://github.com/casing1/authzest/commit/34baebc), same tree as [#172 merge `ad4dea7`](https://github.com/casing1/authzest/pull/172) | A live adapter returned a proposed test and source change. The generated test exit was 1 before and 0 after. Independent controls matched 17/17 cases and 21/21 requests in each phase against that phase's expected profile. The approved change was applied only to a copy, which was restored to its original bytes. Cleanup was confirmed and checkout bytes were preserved. |
+| Local viewer at [`c454628` / #173](https://github.com/casing1/authzest/pull/173)                                                                                               | Browser verification opened the historical record and separately displayed a version 1.0 refusal. Version 1.0 success and source fields have fixture coverage. A new version 1.0 live success on this revision is unrecorded.                                                                                                                                                    |
+| [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577) and [merged CI](https://github.com/casing1/authzest/actions/runs/44276437537)                            | 8,712 Python tests passed and the Windows job reported 3,037 passed with 422 skipped on the reviewed PR. The merged jobs passed, including the [CodeQL analysis](https://github.com/casing1/authzest/actions/runs/44276438312).                                                                                                                                                  |
+| [Independent evaluation #84](https://github.com/casing1/authzest/issues/84)                                                                                                    | Independent comparative evidence is unavailable for this submission. The reported phases measure finite workflow behavior and leave authorization assurance unknown.                                                                                                                                                                                                             |
 
 Stable acceptance remains tracked in [#150](https://github.com/casing1/authzest/issues/150),
 with installed acceptance follow-up in [#151](https://github.com/casing1/authzest/issues/151) and

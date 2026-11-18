@@ -54,17 +54,17 @@ npm --prefix frontend run build
 종료 코드 `2`로 끝납니다. 출력된 경로의 파일을 결과 화면에서 엽니다.
 
 ```bash
-demo_dir=$(mktemp -d)
-refusal_status=0
 (
   umask 077
-  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json"
-) || refusal_status=$?
-if [ "$refusal_status" -eq 2 ]; then
+  demo_dir=$(mktemp -d) || exit 1
+  refusal_status=0
+  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json" || refusal_status=$?
+  if [ "$refusal_status" -ne 2 ]; then
+    printf 'Expected refusal exit 2, received %s\n' "$refusal_status" >&2
+    exit 1
+  fi
   printf '%s\n' "$demo_dir/refused.json"
-else
-  printf 'Expected refusal exit 2, received %s\n' "$refusal_status" >&2
-fi
+)
 ```
 
 `invalid-input`, `not-run`, 어댑터 시도 0회와 before/after 관찰 없음이 표시됩니다.
@@ -73,12 +73,12 @@ fi
 
 ## 인용할 검증 근거
 
-| 범위                                                                                                                                            | 관찰과 한계                                                                                                                                                                                                                                                                                                       |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`ad4dea7` / #172](https://github.com/casing1/authzest/pull/172) 설치형 실행 기록                                                               | 실제 어댑터가 테스트와 소스 변경을 제안했습니다. 생성 테스트 종료 코드는 before 1, after 0이었습니다. 독립 대조는 각 단계의 기대 프로필에 대해 사례 17/17개와 요청 21/21개에 일치했습니다. 승인한 변경은 복사본에만 적용했고 복사본을 원래 바이트로 복구했습니다. 정리를 확인했고 checkout 바이트를 보존했습니다. |
-| [`c454628` / #173](https://github.com/casing1/authzest/pull/173) 로컬 화면                                                                      | 브라우저에서 이전 실제 기록을 열었고, 별도로 버전 1.0 거절도 표시했습니다. 버전 1.0 성공과 소스 필드는 테스트 예제로 검증했습니다. 이 리비전의 새로운 버전 1.0 실제 성공 기록은 없습니다.                                                                                                                         |
-| [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577)와 [병합 CI](https://github.com/casing1/authzest/actions/runs/44276437537) | 검토한 PR에서 Python 테스트 8,712개와 Windows 테스트 3,037개가 통과했고 Windows 테스트 422개를 건너뛰었습니다. 병합 후 [CodeQL 분석](https://github.com/casing1/authzest/actions/runs/44276438312)을 포함한 검사 작업이 통과했습니다.                                                                             |
-| [독립 평가 #84](https://github.com/casing1/authzest/issues/84)                                                                                  | 이 제출에서 인용할 독립 비교 근거는 확보되지 않았습니다. 기록한 단계는 한정된 흐름의 동작을 측정하며 접근제어 보장 여부는 불명입니다.                                                                                                                                                                             |
+| 범위                                                                                                                                                              | 관찰과 한계                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`34baebc`](https://github.com/casing1/authzest/commit/34baebc) 설치형 실행 기록, [#172 병합 `ad4dea7`](https://github.com/casing1/authzest/pull/172)과 같은 트리 | 실제 어댑터가 테스트와 소스 변경을 제안했습니다. 생성 테스트 종료 코드는 before 1, after 0이었습니다. 독립 대조는 각 단계의 기대 프로필에 대해 사례 17/17개와 요청 21/21개에 일치했습니다. 승인한 변경은 복사본에만 적용했고 복사본을 원래 바이트로 복구했습니다. 정리를 확인했고 checkout 바이트를 보존했습니다. |
+| [`c454628` / #173](https://github.com/casing1/authzest/pull/173) 로컬 화면                                                                                        | 브라우저에서 이전 실제 기록을 열었고, 별도로 버전 1.0 거절도 표시했습니다. 버전 1.0 성공과 소스 필드는 테스트 예제로 검증했습니다. 이 리비전의 새로운 버전 1.0 실제 성공 기록은 없습니다.                                                                                                                         |
+| [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577)와 [병합 CI](https://github.com/casing1/authzest/actions/runs/44276437537)                   | 검토한 PR에서 Python 테스트 8,712개와 Windows 테스트 3,037개가 통과했고 Windows 테스트 422개를 건너뛰었습니다. 병합 후 [CodeQL 분석](https://github.com/casing1/authzest/actions/runs/44276438312)을 포함한 검사 작업이 통과했습니다.                                                                             |
+| [독립 평가 #84](https://github.com/casing1/authzest/issues/84)                                                                                                    | 이 제출에서 인용할 독립 비교 근거는 확보되지 않았습니다. 기록한 단계는 한정된 흐름의 동작을 측정하며 접근제어 보장 여부는 불명입니다.                                                                                                                                                                             |
 
 정식판 수용은 [#150](https://github.com/casing1/authzest/issues/150)에서 추적하며, 설치형 수용의 후속
 작업은 [#151](https://github.com/casing1/authzest/issues/151)과 [#152](https://github.com/casing1/authzest/issues/152)에
