@@ -87,11 +87,13 @@ test("abstention rationale and uncertainties remain readable with no proposed co
 });
 test("source/model HTML stays inert and bidi/control text is visibly escaped", () => {
   const record = view();
-  const payload = '<script>alert("never")</script>\u202e\u001b';
+  const payload = '<script>alert("never")</script><SCRIPT>UPPER</SCRIPT>\u202e\u001b';
   record.assessment = { status: "unknown", rationale: payload, assumptions: [], uncertainties: [], limitations: [] };
   record.failure = { stage: payload, code: "scripted-failure", turn_start: null };
   const html = render(record);
-  assert.doesNotMatch(html, /<script>|\u202e|\u001b/);
+  assert.equal(html.toLowerCase().includes("<script"), false);
+  assert.equal(html.includes("\u202e"), false);
+  assert.equal(html.includes("\u001b"), false);
   assert.match(html, /&lt;script&gt;/);
   assert.match(html, /\\u202e\\u001b/);
   assert.equal(visibleText("line1\nline2\t\r"), "line1\nline2\t\\u000d");
