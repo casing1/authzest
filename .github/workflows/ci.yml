@@ -34,6 +34,8 @@ jobs:
       - run: python -m pip install -e . 'pytest>=7.4,<9.0'
       - name: Check verification module in a fresh Python interpreter
         run: python -m pytest tests/test_generated_repair_verification.py
+      - name: Check bounded read-only result contracts without optional UI dependencies
+        run: python -m pytest tests/test_result_viewer.py
       - name: Check controls module in another fresh Python interpreter
         run: python -m pytest tests/test_generated_repair_controls.py
       - name: Check private workspace in a fresh Python interpreter
@@ -143,6 +145,7 @@ jobs:
           tests/test_generated_repair_transport.py
           tests/test_codex_generate_cli.py
           tests/test_generated_repair_output.py
+          tests/test_result_viewer.py tests/test_api_results.py
           tests/test_cli_output.py
           tests/test_owner_case_plan.py
           tests/test_owner_policy_recommendation.py
@@ -187,5 +190,7 @@ jobs:
         run: node scripts/format.mjs markdown --check
         working-directory: .
       - run: npm run lint
+      - name: Test read-only result rendering and translations
+        run: npm test
       - run: npm run format:check
       - run: npm run build
