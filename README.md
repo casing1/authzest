@@ -52,17 +52,17 @@ The CLI retains approval and execution; no website deployment is required. See t
 > it is a test-harness reliability change, not a production Codex fix or new live-AI acceptance.
 > The published alpha.4 tag/assets are unchanged. Tag attempt 1 failed one JSONL test-harness read race
 > (4,923 passed / 1 failed); the unchanged-source rerun passed, not a first-pass result or a fix.
-> The maintainer accepted #89's named residual tooling risk **for alpha.4 only**, with the warning
-> below; #89 stays open at `needs_review` / medium. This is not a fix or a future stable-release waiver.
+> The maintainer accepted #89's residual tooling risk **for the published alpha.4 only**. See the
+> [alpha.4 risk record](docs/development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
 
 > [!WARNING]
-> **Developer-tooling risk (#89):** affected Prettier can stall or fail on malicious EditorConfig.
-> Use only reviewed, guarded formatting commands. Direct `npx prettier`, editor and API integrations
-> are outside the wrapper guarantee; their actual exposure to untrusted configuration and supported AuthZest availability impact
-> remain unverified. This is not a confirmed AuthZest runtime vulnerability or a dependency fix.
-> See the [formatting limits and follow-up](docs/development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst). The next-alpha.4 acceptance
-> is not a blanket future waiver or AI/worker permission; compatible upstream fixes or new impact
-> evidence require follow-up.
+> **Developer tooling.** The published alpha.4 warning still applies to its affected Prettier version,
+> which can stall or fail on malicious EditorConfig. The current source pins Prettier 3.10.1. Its
+> bundled brace-expansion 5.0.12 meets the fixed-version thresholds for the three advisories tracked in
+> [#89](https://github.com/casing1/authzest/issues/89). Use the
+> [guarded formatting commands](docs/development/FORMATTING.md). Direct formatter, editor and API
+> integrations are outside that guard. The separate
+> [picomatch issue #171](https://github.com/casing1/authzest/issues/171) still has no published fix.
 
 ## What the current source supports
 
@@ -152,8 +152,8 @@ The CLI retains approval and execution; no website deployment is required. See t
   template selection and POSIX source CLI. Acceptance uses the documented run above and existing
   offline refusal/user-edit/recovery tests; it is not a new live run. Final status documentation was
   normally merged in [PR #123](https://github.com/casing1/authzest/pull/123) at `ee49f5a`, followed by
-  closure of #82 → #81 → #35 for this bounded core. #84/#85/#89 remain independently open;
-  #83's public-release receipt is separate. #89's residual tooling risk is accepted for alpha.4 only, not fixed.
+  closure of #82 → #81 → #35 for this bounded core. #84 and #85 remain independently open.
+  #83's public-release receipt is separate. The #89 risk decision applied to the published alpha.4 only.
   Windows/frozen active file execution remains
   unsupported; published alpha.3 and the report schema are unchanged.
 - Includes [`authzest fixture-demo`](docs/guides/FIXTURE_DEMO.md): a packaged offline mock
@@ -449,9 +449,10 @@ Current source and next step:
    [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) stays separately open;
    report missing comparative evidence rather than expanding its executor ahead of core delivery.
    Keep [#83's exact release/public-asset receipt](https://github.com/casing1/authzest/issues/83) separate.
-   #89 stays open at `needs_review` / medium with alpha.4-only risk acceptance, not a fix or stable-release
-   waiver. A scoped `0.1.0` stable release requires that genuine-generation workflow, UI, demo,
-   regression/install and renewed relevant-risk gates; the current alpha does not implement them.
+   Track [#89](https://github.com/casing1/authzest/issues/89) and
+   [#171](https://github.com/casing1/authzest/issues/171) separately for stable-release review.
+   A scoped `0.1.0` stable release requires that genuine-generation workflow, UI, demo,
+   regression/install and renewed relevant-risk gates.
 
 The [offline foundation](docs/reference/AI_CONTRACT.md) supplies contracts used by alpha.3's fixture command;
 its evaluation scripts and corpus remain checkout-only. The bounded-core acceptance above does not

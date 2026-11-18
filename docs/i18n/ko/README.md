@@ -50,17 +50,17 @@ CLI가 승인과 실행을 담당하며 웹사이트 배포는 필요하지 않�
 > 소스 변경은 가짜 서버의 완성된 테스트 로그를 원자적으로 공개합니다. 테스트 harness 안정성
 > 변경이지 운영 Codex 수정이나 새 실제 AI 수용이 아니며 공개 alpha.4 태그·산출물은 그대로입니다.
 > 태그 attempt 1은 JSONL 테스트 harness 읽기 경합 1건으로 4,923개 통과/1개 실패했으며 소스를
-> 바꾸지 않은 재실행이 통과했습니다. 첫 실행 통과나 수정 완료가 아닙니다. 아래 경고와 함께 수용한 #89의
-> 잔여 위험은 **alpha.4에만** 해당하며 #89는 `needs_review` / medium으로 열려 있습니다.
-> 수정 완료나 이후 정식 릴리스의 위험 면제가 아닙니다.
+> 바꾸지 않은 재실행이 통과했습니다. 첫 실행 통과나 수정 완료가 아닙니다. #89의 잔여 위험은
+> **공개된 alpha.4에 한해** 수용했습니다.
+> [alpha.4 위험 결정 기록](development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)을 참고하세요.
 
 > [!WARNING]
-> **개발 도구 위험(#89):** 영향받는 Prettier는 악의적인 EditorConfig로 멈추거나 실패할 수 있습니다.
-> 검토한 guard 적용 포맷 명령만 사용하세요. 직접 `npx prettier`·편집기·API 연동은 wrapper의 보장
-> 범위 밖이며 비신뢰 설정의 실제 유입과 지원하는 AuthZest 가용성 영향은 미확인입니다. 입증된 AuthZest 런타임
-> 취약점이나 의존성 수정이라는 뜻은 아닙니다. [포맷 경계와 후속 조치](development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)를
-> 참고하세요. 다음 alpha.4 수용은 이후 버전의 포괄적 면제나 AI/worker 권한이 아니며 호환되는
-> upstream 수정 또는 새로운 영향 근거가 나오면 후속 검토가 필요합니다.
+> **개발 도구.** 공개된 alpha.4의 Prettier에는 기존 경고가 적용됩니다. 이 버전은 악의적인 EditorConfig로
+> 멈추거나 실패할 수 있습니다. 현재 소스에서 사용하는 Prettier 3.10.1에 내장된 brace-expansion 5.0.12는
+> [#89](https://github.com/casing1/authzest/issues/89)에서 추적하는 세 권고의 수정 버전 기준을 충족합니다.
+> [검증을 거치는 포맷 명령](development/FORMATTING.md)을 사용하세요. 포맷터를 직접 실행하거나 편집기·API와
+> 연동하면 이 검증을 거치지 않습니다. 별도의 [picomatch 이슈 #171](https://github.com/casing1/authzest/issues/171)은
+> 아직 공개된 수정 버전이 없습니다.
 
 ## 현재 소스에서 지원하는 기능
 
@@ -148,8 +148,8 @@ CLI가 승인과 실행을 담당하며 웹사이트 배포는 필요하지 않�
   위 기록의 실행과 기존 오프라인 거절·사용자 편집·복구 테스트를 근거로 한 결정이며 새 실제 실행이
   아닙니다. 최종 상태 문서는 [PR #123](https://github.com/casing1/authzest/pull/123)의 `ee49f5a`로
   정상 병합했고 이 제한된 핵심 범위에서 #82 → #81 → #35를 순서대로 종료했습니다.
-  #84/#85/#89는 별도로 열려 있으며 #83의 공개 릴리스 검증 기록은 별개입니다. #89의 도구 잔여
-  위험은 alpha.4에만 수용했으며 수정 완료는 아닙니다.
+  #84와 #85는 별도로 열려 있으며 #83의 공개 릴리스 검증 기록은 별개입니다.
+  #89의 위험 결정은 공개된 alpha.4에 한해 적용했습니다.
   Windows/frozen의 활성 파일 실행은 여전히 지원하지 않으며 공개 alpha.3·리포트 스키마는
   바뀌지 않습니다.
 - [`authzest fixture-demo`](guides/FIXTURE_DEMO.md) 포함: 지원하는 POSIX 시스템에서 패키지에
@@ -448,9 +448,9 @@ CLI와 선택적인 API·UI는 같은 core를 사용합니다. core 분석은 �
    [#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 별도로 열어 두며 비교 근거가 없으면
    이를 밝히고 핵심보다 비교 실행기 확대를 앞세우지 않습니다.
    [#83의 정확한 릴리스·공개 파일 검증 기록](https://github.com/casing1/authzest/issues/83)은 별도로
-   유지합니다. #89는 `needs_review` / medium으로 열어두며 alpha.4 한정 위험 수용은 수정 완료나
-   정식 릴리스의 면제가 아닙니다. 범위를 정한 `0.1.0` 정식판은 실제 생성 흐름·UI·시연·회귀/설치
-   검사와 관련 위험의 새 판단이 필요하며 현재 alpha가 이를 구현한 것은 아닙니다.
+   유지합니다. 정식판 검토에서 [#89](https://github.com/casing1/authzest/issues/89)와
+   [#171](https://github.com/casing1/authzest/issues/171)은 별도로 추적합니다.
+   범위를 정한 `0.1.0` 정식판에는 실제 생성 흐름·UI·시연·회귀 및 설치 검사와 관련 위험의 새 판단이 필요합니다.
 
 [오프라인 기반](reference/AI_CONTRACT.md)은 alpha.3 fixture 명령에서 사용하는 계약을 제공합니다.
 평가 스크립트와 데이터셋은 checkout 전용으로 유지합니다. 위 제한된 핵심 흐름 수용은 일반

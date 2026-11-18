@@ -103,12 +103,10 @@ Commit types have the following meanings:
 ## Development setup
 
 > [!WARNING]
-> The development formatter contains an affected embedded parser that can stall or fail on malicious
-> patterns. Review unfamiliar PRs/tooling before use, disable direct automatic Prettier formatting for
-> unreviewed checkouts, and use only the guarded commands below without bypassing refusals. Direct CLI,
-> editor and API calls do not inherit the guard. The maintainer has accepted this residual risk for the
-> forthcoming alpha.4 only; #89 remains open and this is not a fix or a blanket waiver. See the
-> [formatting warning and follow-up conditions](docs/development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
+> Review unfamiliar PRs and tooling before use. Disable automatic Prettier formatting for unreviewed
+> checkouts and use the guarded commands below. The guard checks the repository commands specifically.
+> See the [current source formatter](docs/development/FORMATTING.md#current-source-formatter) for the
+> #89 update and the remaining #171 dependency follow-up.
 
 Run the commands below from the cloned repository root with the development virtual environment active.
 

@@ -3,14 +3,30 @@
 [문서](../INDEX.md) · [English](../../../development/FORMATTING.md) · 한국어
 
 저장소 포맷 명령은 Prettier를 시작하기 전에 EditorConfig와 파일 탐색을 검증합니다.
-이는 [#89](https://github.com/casing1/authzest/issues/89)의 개발/CI 경로에 한정한 완화이며,
-Prettier 내장 의존성 교체나 입증한 AuthZest 런타임 보안 수정은 아닙니다.
+이 설정을 사용하려면 소스 checkout에 잠금 파일의 포맷터를 설치하세요.
 
 > [!WARNING]
-> Prettier 내장 파서는 악성 패턴을 처리할 때 멈추거나 실패할 수 있습니다. checkout/도구를 검토한 뒤
-> 아래 보호 명령만 사용하고 거부를 우회하지 마세요. 직접 Prettier CLI·에디터·API 연동에는 같은 보호가
-> 보장되지 않습니다. 남은 개발 도구 위험은 [다가오는 alpha.4에만 명시적으로 수용](#alpha4-관리자-판단--2026-11-05-kst)했으며,
-> 수정 완료·경고 무시·사용자 귀책 처리가 아닙니다.
+> 익숙하지 않은 checkout을 먼저 검토한 뒤 아래 보호 명령을 사용하세요. 직접 CLI·에디터·API 호출에는
+> 보호 명령의 사전 검사가 적용되지 않습니다. 과거 위험 수용은
+> [alpha.4에만 적용](#alpha4-관리자-판단--2026-11-05-kst)됩니다.
+
+## 현재 소스 포맷터
+
+잠금 파일은 [Prettier 3.10.1](https://github.com/prettier/prettier/releases/tag/3.10.1)을 고정합니다.
+[공식 npm 배포 파일](https://registry.npmjs.org/prettier/-/prettier-3.10.1.tgz)이 레지스트리의 SHA-512와
+일치함을 확인했습니다. 배포본의 고지에는 내장 `brace-expansion` 5.0.12가 명시되어 있으며, 이전 버전에는
+5.0.6이 들어 있었습니다. 확인한 파서 코드는 [#89](https://github.com/casing1/authzest/issues/89)에서 추적하는
+[다시 쓰기](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
+[중첩 확장](https://github.com/advisories/GHSA-qhr7-859c-m2p7),
+[쉼표 파서](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p) 권고의 수정 내용을 포함합니다.
+의존성 검사는 기존 CLI와 CJS API가 사용하는 설치된 ESM 번들을 검토한 SHA-256과 대조합니다.
+정상 포맷 테스트에서는 EditorConfig 동작을 확인합니다.
+
+[#171](https://github.com/casing1/authzest/issues/171)은 개발 의존성에 포함된 picomatch 4.0.7과
+Prettier 파일 탐색 번들에 포함된 2.3.2를 별도로 추적합니다. 두 버전은
+[공개 권고 범위](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)에 해당하며 수정 버전이 없습니다.
+보호 명령은 고정된 디렉터리 인수 또는 검사한 기존 Markdown 경로를 전달합니다.
+다른 입력과 도구 연동 경로의 적용 여부는 남아 있습니다.
 
 ## 명령
 
@@ -68,8 +84,7 @@ Checkout과 toolchain을 검토한 뒤 터미널에서 [명령](#명령)의 보�
 호출이나 **문서 서식 지정(Format Document)**으로 대체하지 않습니다. Guard가 설정을 거절하면
 우회하지 말고 설정을 검토하세요. 다른 편집기에서도 이 checkout의 자동 Prettier 연동을 끄고 같은
 명령을 사용하며, 편집기 간 설정 호환성을 보장하지 않습니다. 테스트는 프리셋 데이터와 npm 경로를
-검사할 뿐 실제 편집기를 실행하지 않습니다. 이 변경은 Prettier의 내장 파서를 교체하거나 #89를
-해결하거나 릴리스 위험을 수용하는 것이 아닙니다.
+검사할 뿐 실제 편집기를 실행하지 않습니다. 설치된 포맷터와 번들은 별도로 검사합니다.
 
 ## 검토한 설정
 

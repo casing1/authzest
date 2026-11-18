@@ -3,15 +3,31 @@
 [Documentation](../README.md) · English · [한국어](../i18n/ko/development/FORMATTING.md)
 
 The repository formatting commands validate EditorConfig and file discovery before starting Prettier.
-This is a scoped developer/CI mitigation for [#89](https://github.com/casing1/authzest/issues/89), not
-a replacement of Prettier's bundled dependency or a demonstrated AuthZest runtime security fix.
+Install the locked formatter from the source checkout to use that configuration.
 
 > [!WARNING]
-> Prettier's embedded parser can stall or fail when processing malicious patterns. Use only the reviewed
-> guarded commands below after reviewing the checkout/toolchain; do not bypass a refusal. Direct Prettier
-> CLI, editor and API integrations do not inherit this protection. The remaining developer-tooling risk
-> is [explicitly accepted for the forthcoming alpha.4 only](#alpha4-maintainer-disposition--2026-11-05-kst),
-> not fixed, dismissed or assigned to user fault.
+> Review unfamiliar checkouts and use the guarded commands below. Direct CLI, editor and API calls
+> operate outside the guard. The historical risk decision applies to
+> [alpha.4 only](#alpha4-maintainer-disposition--2026-11-05-kst).
+
+## Current source formatter
+
+The lock pins [Prettier 3.10.1](https://github.com/prettier/prettier/releases/tag/3.10.1).
+Its [official npm archive](https://registry.npmjs.org/prettier/-/prettier-3.10.1.tgz) matches the
+registry SHA-512 integrity. The package notices identify bundled `brace-expansion` 5.0.12,
+replacing 5.0.6 in the previous pin. The selected parser code matches the fixes for the
+[rewrite](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
+[nested expansion](https://github.com/advisories/GHSA-qhr7-859c-m2p7), and
+[comma parser](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p) advisories tracked in
+[#89](https://github.com/casing1/authzest/issues/89). The dependency check binds the installed ESM
+bundle used by the legacy CLI and CJS API to the reviewed SHA-256. Normal format tests retain
+EditorConfig behavior.
+
+[#171](https://github.com/casing1/authzest/issues/171) separately tracks picomatch 4.0.7 in the
+development dependency lock and 2.3.2 in Prettier's file discovery bundle. Both versions fall in the
+[advisory range](https://github.com/advisories/GHSA-fc5q-39xc-vjpf), which lists no patched release.
+The supported guard sends a fixed directory argument or validated existing Markdown paths.
+Applicability for other inputs and tooling integrations remains open.
 
 ## Commands
 
@@ -69,7 +85,7 @@ the terminal. Do not replace them with direct Prettier invocation or **Format Do
 refuses a configuration, review the configuration instead of bypassing the guard. Other editors should
 disable automatic Prettier integration for this checkout and use the same commands; no cross-editor
 settings compatibility is claimed. Tests validate the preset data and npm routing, not a running editor.
-This workflow change does not replace Prettier's bundled parser, resolve #89, or accept release risk.
+The preset covers editor defaults. The installed formatter and its bundle have separate checks.
 
 ## Reviewed configuration
 
