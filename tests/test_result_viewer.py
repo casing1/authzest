@@ -342,9 +342,11 @@ def test_rejects_inconsistent_or_wrongly_typed_records(path, value):
         b'{"x":"\\ud800"}',
         b"[" * 35 + b"0" + b"]" * 35,
         b'{"values":[' + b"0," * 512 + b"0]}",
-        b'{"text":"' + b"a" * 65_537 + b'"}',
-        b'{"number":' + b"9" * 5000 + b"}",
-        b" " * (MAX_RESULT_BYTES + 1),
+        # pytest includes parameter IDs in PYTEST_CURRENT_TEST, which has a
+        # smaller size limit than these input bodies on Windows.
+        pytest.param(b'{"text":"' + b"a" * 65_537 + b'"}', id="oversized-text"),
+        pytest.param(b'{"number":' + b"9" * 5000 + b"}", id="oversized-number"),
+        pytest.param(b" " * (MAX_RESULT_BYTES + 1), id="oversized-body"),
     ],
 )
 def test_rejects_malformed_or_over_budget_json(raw):
