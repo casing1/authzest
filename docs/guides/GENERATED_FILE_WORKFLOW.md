@@ -8,13 +8,14 @@
 [Documentation index](../README.md) · [Generation contract](../development/GENERATED_REPAIR_CONTRACT.md) ·
 [Session contract](../development/GENERATED_REPAIR_SESSION.md)
 
-## Current source status — 2026-11-15 KST
+## Current source status
 
 The source CLI connects one current generated proposal to separately decided private-copy checks,
 exact source application and recovery. The default generation command remains proposal-only.
-This opt-in implementation has offline/mock coverage; current image/kernel feasibility and the
-installed end-to-end acceptance are still pending under [#152](https://github.com/casing1/authzest/issues/152).
-It is not included in the immutable published alpha.4 release, and #150/#153 remain incomplete.
+The [course demonstration](COURSE_DEMO.md) records one historical installed run and the separate
+local viewer delivery in [#153](https://github.com/casing1/authzest/issues/153).
+Current-candidate installed acceptance is tracked in [#152](https://github.com/casing1/authzest/issues/152).
+The active workflow is available from source. The published alpha.4 artifacts predate it.
 
 The scope is the one maintained synthetic ownership scenario, one application file and one generated
 test. It is not an arbitrary repository runner, a host pytest fallback, a browser approval flow or
@@ -117,6 +118,5 @@ The shared limits remain phase 40 s, cumulative setup 10 s, cleanup 10 s, captur
 (normal 224 KiB plus cleanup 32 KiB) and retained session evidence 2 MiB with reserved recovery bookkeeping.
 Synchronous filesystem/kernel calls have no universal wall-time guarantee.
 
-This source change performs no live AI/Docker/generated-code run, new image provisioning,
-operational patch or release. Next validate the exact installed flow with current images, then connect
-the read-only local results UI under [#153](https://github.com/casing1/authzest/issues/153).
+Use the [local result viewer](RESULT_VIEWER.md) to present an already saved result. The
+[course demonstration](COURSE_DEMO.md) lists the recorded phases and their revision and format limits.
