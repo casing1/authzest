@@ -13,6 +13,9 @@ from difflib import unified_diff
 from hashlib import sha256
 from typing import Any
 
+from authzest.codex.contracts import ContractError
+from authzest.codex.contracts import _text as _contract_text
+
 MAX_RESULT_BYTES = 524_288
 _STAGES = ("copy", "before", "source-diff", "source-apply", "after", "restore")
 _STAGE_SUCCESS = (
@@ -70,10 +73,19 @@ def _hash(value: Any, *, nullable: bool = True) -> str | None:
     return value
 
 
+def _explanation(value: Any) -> str:
+    # Match the producer's character limit for multilingual prose. The upload
+    # and decoded JSON still have independent byte budgets.
+    try:
+        return _contract_text(value)
+    except ContractError:
+        raise ResultViewError("Invalid or unsupported workflow result") from None
+
+
 def _strings(value: Any) -> list[str]:
     if type(value) is not list or len(value) > 32:
         _bad()
-    return [_text(item, limit=4096, nullable=False) for item in value]
+    return [_explanation(item) for item in value]
 
 
 def _failure(value: Any) -> dict | None:
@@ -206,7 +218,7 @@ def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None
         _bad()
     assessment = {
         "status": status,
-        "rationale": _text(proposal.get("rationale"), limit=4096, nullable=False),
+        "rationale": _explanation(proposal.get("rationale")),
         **{
             key: _strings(proposal.get(key))
             for key in ("assumptions", "uncertainties", "limitations")

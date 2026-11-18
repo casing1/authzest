@@ -361,3 +361,21 @@ def test_source_and_model_markup_is_inert_exact_data():
     data["proposal_preview"]["proposal"] = copy.deepcopy(proposal)
     view = preview_workflow_result(encoded(data))
     assert view["proposal"]["rationale"] == proposal["rationale"]
+
+
+@pytest.mark.parametrize("field", ["rationale", "assumptions", "uncertainties", "limitations"])
+def test_korean_explanations_match_producer_character_limit(field):
+    data = record()
+    proposal = data["generation"]["proposal"]
+    for length in (4096, 4097):
+        text = "한" * length
+        value = text if field == "rationale" else [text]
+        proposal[field] = value
+        data["proposal_preview"]["proposal"] = copy.deepcopy(proposal)
+        payload = encoded(data)
+        assert len(payload) < MAX_RESULT_BYTES
+        if length == 4096:
+            assert preview_workflow_result(payload)["assessment"][field] == value
+        else:
+            with pytest.raises(ResultViewError):
+                preview_workflow_result(payload)
