@@ -7,8 +7,8 @@ the current release process. The binaries are not signed or notarized.
 
 ## Stable 0.1.0 readiness — 2026-11-19 KST
 
-[#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. Source
-package metadata remains `0.1.0a4`. The latest public release is
+[#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. The candidate
+uses package version `0.1.0`. Its [changelog](../../CHANGELOG.md) records the preparation date. The latest public release is
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
 November 18 was an approximate course submission date. Readiness depends on the outstanding checks below.
 

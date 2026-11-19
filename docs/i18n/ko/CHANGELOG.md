@@ -14,6 +14,10 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-19
+
+위 날짜는 과제용 정식 후보를 준비한 날입니다.
+
 ### alpha.4 이후 주요 변경사항
 
 - **Codex 제안.** 소스 CLI에서 요청을 오프라인으로 먼저 확인하고, 관리하는 FastAPI 소유권 예제의
@@ -213,6 +217,9 @@ AuthZest의 주요 변경사항을 기록합니다.
   완료를 추가하지 않습니다.
 
 ### 수정
+
+- 네이티브 패키징 도구가 실행 파일과 체크섬을 쓰기 전에 요청한 버전을 설치된 패키지 버전과
+  대조합니다. 릴리스 이름의 버전이 다르면 패키징을 중단합니다.
 
 - 엄격한 lo-only guest guard를 유지하고 관리하는 정확한 이름/type/flag, non-loopback 관리상/
   operstate DOWN·iflink0·양수이며 서로 다른 index를 요구하는 닫힌 기본 tunnel fallback 경로를 추가합니다.
@@ -751,7 +758,8 @@ Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은
 - HTTP scan endpoint의 대상을 로컬 프로세스 소유자가 선택한 workspace로 제한했습니다.
 - HTTP API 계약에서 호출자가 지정하는 파일시스템 경로를 제거했습니다.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.4...main
+[Unreleased]: https://github.com/casing1/authzest/commits/main/
+[0.1.0]: https://github.com/casing1/authzest/issues/150
 [0.1.0-alpha.4]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2

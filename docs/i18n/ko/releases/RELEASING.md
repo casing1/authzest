@@ -7,8 +7,8 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 
 ## 정식 0.1.0 준비 상태 — 2026-11-19 KST
 
-[#150](https://github.com/casing1/authzest/issues/150)에서 과제용 정식판을 추적합니다. 소스 패키지
-버전은 `0.1.0a4`이고 최신 공개판은
+[#150](https://github.com/casing1/authzest/issues/150)에서 과제용 정식판을 추적합니다. 후보 패키지
+버전은 `0.1.0`이며 [변경 이력](../CHANGELOG.md)에 후보 준비일을 기록했습니다. 최신 공개판은
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다.
 11월 18일은 과제 제출 예상일이었습니다. 정식판 준비 상태는 아래 검사 결과에 따릅니다.
 
