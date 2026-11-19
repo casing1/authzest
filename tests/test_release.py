@@ -2,6 +2,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from scripts import package_release
 from scripts.package_release import write_checksum
 from scripts.verify_release import (
     expected_tag,
@@ -55,6 +56,65 @@ def test_write_checksum_uses_a_portable_lf_manifest(tmp_path: Path) -> None:
     manifest = checksum.read_bytes()
     assert manifest.endswith(b"  authzest-windows-x64.exe\n")
     assert b"\r\n" not in manifest
+
+
+@pytest.mark.parametrize(
+    ("installed_version", "release_tag", "label"),
+    [
+        ("0.1.0a4", None, "0.1.0a4"),
+        ("0.1.0a4", "", "0.1.0a4"),
+        ("0.1.0a4", "0.1.0a4", "0.1.0a4"),
+        ("0.1.0a4", "0.1.0-alpha.4", "0.1.0-alpha.4"),
+        ("0.1.0a4", "v0.1.0-alpha.4", "0.1.0-alpha.4"),
+        ("0.1.0", "v0.1.0", "0.1.0"),
+    ],
+)
+def test_package_release_preserves_matching_labels(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    installed_version: str,
+    release_tag: str | None,
+    label: str,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(package_release, "version", lambda _: installed_version)
+    monkeypatch.setattr(package_release, "normalized_platform", lambda: ("windows", "x64"))
+    if release_tag is None:
+        monkeypatch.delenv("AUTHZEST_RELEASE_TAG", raising=False)
+    else:
+        monkeypatch.setenv("AUTHZEST_RELEASE_TAG", release_tag)
+    source = tmp_path / "dist/authzest.exe"
+    source.parent.mkdir()
+    source.write_bytes(b"release artifact")
+
+    package_release.main()
+
+    binary = tmp_path / f"release/authzest-{label}-windows-x64.exe"
+    manifest = binary.with_name(binary.name + ".sha256")
+    assert set(binary.parent.iterdir()) == {binary, manifest}
+    assert binary.read_bytes() == source.read_bytes()
+    assert manifest.read_bytes().endswith(f"  {binary.name}\n".encode())
+
+
+def test_package_release_rejects_mismatched_tag_before_overwriting_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(package_release, "version", lambda _: "0.1.0a4")
+    monkeypatch.setattr(package_release, "normalized_platform", lambda: ("macos", "arm64"))
+    monkeypatch.setenv("AUTHZEST_RELEASE_TAG", "v0.1.0")
+    source = tmp_path / "dist/authzest"
+    source.parent.mkdir()
+    source.write_bytes(b"alpha build")
+    existing = tmp_path / "release/authzest-0.1.0-macos-arm64"
+    existing.parent.mkdir()
+    existing.write_bytes(b"previous artifact")
+
+    with pytest.raises(SystemExit, match="does not match"):
+        package_release.main()
+
+    assert set(existing.parent.iterdir()) == {existing}
+    assert existing.read_bytes() == b"previous artifact"
 
 
 TAG = "v0.1.0-alpha.2"

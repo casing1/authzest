@@ -7,6 +7,11 @@ import shutil
 from importlib.metadata import version
 from pathlib import Path
 
+if __package__:
+    from .verify_release import verify_release_tag
+else:
+    from verify_release import verify_release_tag
+
 
 def normalized_platform() -> tuple[str, str]:
     system = {"darwin": "macos", "windows": "windows"}.get(
@@ -26,8 +31,13 @@ def write_checksum(target: Path) -> Path:
 
 def main() -> None:
     system, architecture = normalized_platform()
-    release_label = os.environ.get("AUTHZEST_RELEASE_TAG") or version("authzest")
-    release_label = release_label.removeprefix("v")
+    installed_version = version("authzest")
+    release_label = (os.environ.get("AUTHZEST_RELEASE_TAG") or installed_version).removeprefix("v")
+    if release_label != installed_version:
+        try:
+            verify_release_tag(f"v{release_label}", installed_version)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
     extension = ".exe" if system == "windows" else ""
     source = Path("dist") / f"authzest{extension}"
     if not source.is_file():
