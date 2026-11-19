@@ -20,6 +20,20 @@ an explicit model and permits one request after exact sharing approval. See the
 [generated repair file workflow](../guides/GENERATED_FILE_WORKFLOW.md) for the separate copy, check,
 application and recovery stages.
 
+## Reading an archived record in the next candidate
+
+This change adds an offline baseline for a separate course demonstration. Under the intended policy an owner
+can read their active and archived records. The baseline wrongly denies the archived read. Pending records
+remain unavailable. The trusted application checks ownership and handles anonymous users and missing records.
+
+In the planned demonstration Codex receives the baseline and the policy. It must write a new regression test
+for the owner's archived read and propose a source correction without receiving an after solution. The only
+application file eligible for editing in a private copy is `src/authzest/owner_read_demo/availability.py`.
+Maintainer-owned checks independently cover the active, archived, pending, non-owner, anonymous and missing cases.
+Sharing, creating and checking the copy, accepting the exact diff, applying it, checking the result and restoration
+require separate decisions. Acceptance requires a compact local English/Korean report of the real run on one
+installed candidate tied to its commit and passing CI. Live generation and this integration are pending.
+
 ## Offline input preview
 
 From a source checkout installed with this change, these commands display the fixed request without sending it:
