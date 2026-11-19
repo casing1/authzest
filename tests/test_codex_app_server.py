@@ -213,6 +213,63 @@ def assert_stopped(fake):
         assert not Path(event["cwd"]).exists()
 
 
+@pytest.mark.parametrize("as_json", [True, False])
+def test_owner_read_cli_uses_reviewed_request_over_stdio(monkeypatch, fake_factory, as_json):
+    from typer.testing import CliRunner
+
+    from authzest.cli import app
+    from authzest.codex.owner_read_suggestion import build_owner_read_request
+    from authzest.runner import owner_read_suggestion as flow
+
+    model = "owner-read-stdio-test"
+    request = build_owner_read_request(model)
+    response = {
+        "request_id": request.request_id,
+        "status": "proposed-change",
+        "rationale": "Scripted response for a display and transport test.",
+        "source": 'def available_to_owner(state: str) -> bool:\n    return state == "archived"\n',
+        "test": (
+            "def test_archived(owner_client):\n"
+            '    assert owner_client.get("/records/archived-note").status_code == 200\n'
+        ),
+    }
+    fake = fake_factory(request=request, response=response)
+    monkeypatch.setattr(flow.secrets, "token_hex", lambda _size: "0" * 32)
+    preview = flow.build_preview(model)
+    monkeypatch.setattr(
+        app_server,
+        "CodexAppServerAdapter",
+        lambda **opts: CodexAppServerAdapter(**opts, executable=str(fake.executable)),
+    )
+    command = ["owner-read-suggest", "--model", model]
+    if as_json:
+        command.append("--json")
+    result = CliRunner().invoke(app, command, input=f"share {preview['sharing_id']}\n")
+    assert result.exit_code == 0, result.output
+    if as_json:
+        record = json.loads(result.stdout)
+        assert record["proposal"] == response
+        assert len(record["diffs"]) == 2
+        assert record["application_turn_attempts"] == 1
+        assert record["execution_status"] == record["patch_application"] == "not-run"
+        display = result.stderr
+    else:
+        assert "Suggestion: proposed-change" in result.stdout
+        assert "Proposed diff for " in result.stdout
+        assert "Test execution: not-run" in result.stdout
+        display = result.stdout
+    assert preview["sharing_id"] in display
+    turns = [
+        event["message"]["params"]
+        for event in fake.events()
+        if event["event"] == "request" and event["message"]["method"] == "turn/start"
+    ]
+    assert len(turns) == 1
+    assert turns[0]["input"] == [{"type": "text", "text": preview["request"]["prompt"]}]
+    assert turns[0]["outputSchema"] == preview["request"]["output_schema"]
+    assert_stopped(fake)
+
+
 def assert_descendant_stopped(fake):
     pid = next(event["pid"] for event in fake.events() if event["event"] == "descendant")
     status = subprocess.run(

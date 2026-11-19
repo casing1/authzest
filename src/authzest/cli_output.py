@@ -575,6 +575,27 @@ def format_file_workflow_result(value: dict) -> str:
     return "\n\n".join(parts)
 
 
+def format_owner_read_suggestion(value: dict) -> str:
+    lines = [
+        "Owner's archived record",
+        "Suggestion: " + _display_value(value.get("status")),
+        "Test execution: " + _display_value(value.get("execution_status")),
+        "File application: " + _display_value(value.get("patch_application")),
+    ]
+    proposal = value.get("proposal")
+    if proposal:
+        lines.append(_payload_block("Model rationale", proposal["rationale"]))
+    for change in value.get("diffs", []):
+        lines.append(
+            _payload_block("Proposed diff for " + _display_value(change["path"]), change["diff"])
+        )
+    if value.get("failure"):
+        lines.append(section("Failure", value["failure"]))
+    if value.get("detail"):
+        lines.append(_payload_block("Detail", value["detail"]))
+    return "\n".join(lines)
+
+
 @dataclass
 class WorkflowOutput:
     """Separate interactive I/O from the single machine-readable final result."""
@@ -591,6 +612,7 @@ class WorkflowOutput:
             "codex-owner-repair-sharing-preview",
             "codex-generated-repair-sharing-preview",
             "codex-fixture-sharing-preview",
+            "owner-read-sharing-preview",
         ):
             typer.echo(format_sharing_preview(value))
         elif isinstance(value, dict) and value.get("kind") in (
@@ -626,7 +648,9 @@ class WorkflowOutput:
         return input()
 
     def finish(self, value: dict, *, error: bool = False, preview: bool = False) -> None:
-        if self.as_json or error:
+        if not self.as_json and value.get("kind") == "owner-read-suggestion":
+            typer.echo(format_owner_read_suggestion(value), err=error)
+        elif self.as_json or error:
             # Small redacted errors retain stderr in human mode; explicit JSON
             # mode includes application failures in its single stdout result.
             typer.echo(json_output(value), err=error and not self.as_json)

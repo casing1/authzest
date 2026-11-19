@@ -54,6 +54,11 @@ from authzest.codex.owner_policy_review import (
     owner_policy_prompt,
     validate_owner_policy_draft,
 )
+from authzest.codex.owner_read_suggestion import (
+    OwnerReadRequest,
+    validate_owner_read_request,
+    validate_owner_read_response,
+)
 
 _ReviewT = TypeVar("_ReviewT")
 
@@ -803,12 +808,30 @@ class CodexAppServerAdapter:
             lambda raw, usage: prepare_generated_repair_transport_result(raw, checked, usage=usage),
         )
 
+    async def suggest_owner_read(self, request: OwnerReadRequest) -> dict[str, Any]:
+        """Request a positive owner-read regression and a change to the availability rule."""
+        self._begin_request(detailed_validation=True)
+        try:
+            checked = validate_owner_read_request(request)
+            self._check_sharing(checked)
+            payload = checked.to_dict()
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
+        return await self._turn(
+            checked,
+            payload["prompt"],
+            payload["output_schema"],
+            lambda raw, _usage: validate_owner_read_response(raw, checked),
+        )
+
     def _check_sharing(
         self,
         request: (
             CodexAnalysisRequest
             | OwnerPolicyRepairTransportRequest
             | GeneratedRepairTransportRequest
+            | OwnerReadRequest
         ),
     ) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
@@ -822,6 +845,7 @@ class CodexAppServerAdapter:
             CodexAnalysisRequest
             | OwnerPolicyRepairTransportRequest
             | GeneratedRepairTransportRequest
+            | OwnerReadRequest
         ),
         prompt: str,
         schema: dict[str, Any],

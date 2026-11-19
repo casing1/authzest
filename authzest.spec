@@ -7,6 +7,9 @@ from PyInstaller.utils.hooks import copy_metadata
 project_root = Path(SPECPATH)
 frontend_dist = project_root / "frontend" / "dist"
 datas = copy_metadata("authzest")
+datas.append(
+    (str(project_root / "src/authzest/owner_read_demo/availability.py"), "authzest/owner_read_demo")
+)
 if frontend_dist.is_dir():
     datas.append((str(frontend_dist), "frontend/dist"))
 
@@ -15,7 +18,7 @@ analysis = Analysis(
     pathex=[str(project_root / "src")],
     binaries=[],
     datas=datas,
-    hiddenimports=["authzest.api.app"],
+    hiddenimports=["authzest.api.app", "authzest.owner_read_demo"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
