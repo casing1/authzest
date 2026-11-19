@@ -281,6 +281,47 @@ def codex_fixture(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("owner-read-suggest")
+def owner_read_suggest(
+    model: Annotated[str, typer.Option(help="Exact Codex model for the owner-read suggestion.")],
+    preview_only: Annotated[bool, typer.Option(help="Show the complete request offline.")] = False,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Write the final JSON to stdout.")
+    ] = False,
+    timeout_seconds: Annotated[
+        float, typer.Option(help="Adapter timeout, up to 120 seconds.")
+    ] = 120,
+) -> None:
+    """Suggest a regression test and availability-rule change for an owner's archived record."""
+    from authzest.codex.contracts import ContractError
+    from authzest.runner.owner_read_suggestion import build_preview, run_suggestion
+
+    output = WorkflowOutput(as_json)
+    try:
+        if preview_only:
+            output.finish(build_preview(model, timeout_seconds=timeout_seconds), preview=True)
+            return
+        result = asyncio.run(
+            run_suggestion(
+                model, timeout_seconds=timeout_seconds, emit=output.emit, read=output.read
+            )
+        )
+    except (ContractError, KeyboardInterrupt, asyncio.CancelledError) as exc:
+        cancelled = not isinstance(exc, ContractError)
+        result = {
+            "kind": "owner-read-suggestion",
+            "status": "cancelled" if cancelled else "invalid-input",
+            "exit_code": 130 if cancelled else 2,
+            "detail": "Interrupted."
+            if cancelled
+            else "Check the model, timeout and installed fixture.",
+            "execution_status": "not-run",
+            "patch_application": "not-run",
+        }
+    output.finish(result, error=result["exit_code"] != 0)
+    raise typer.Exit(code=result["exit_code"])
+
+
 @app.command("codex-owner-review")
 def codex_owner_review(
     model: Annotated[

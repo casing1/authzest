@@ -22,17 +22,27 @@ application and recovery stages.
 
 ## Reading an archived record in the next candidate
 
-This change adds an offline baseline for a separate course demonstration. Under the intended policy an owner
+The course demonstration starts with a synthetic FastAPI app. Under the intended policy an owner
 can read their active and archived records. The baseline wrongly denies the archived read. Pending records
 remain unavailable. The trusted application checks ownership and handles anonymous users and missing records.
 
-In the planned demonstration Codex receives the baseline and the policy. It must write a new regression test
-for the owner's archived read and propose a source correction without receiving an after solution. The only
-application file eligible for editing in a private copy is `src/authzest/owner_read_demo/availability.py`.
-Maintainer-owned checks independently cover the active, archived, pending, non-owner, anonymous and missing cases.
-Sharing, creating and checking the copy, accepting the exact diff, applying it, checking the result and restoration
-require separate decisions. Acceptance requires a compact local English/Korean report of the real run on one
-installed candidate tied to its commit and passing CI. Live generation and this integration are pending.
+Use the following command to inspect the exact sharing request offline. Replace `EXPLICIT_MODEL` with
+the model identifier you intend to use. Add `--json` to save a machine-readable preview.
+
+```bash
+authzest owner-read-suggest --model EXPLICIT_MODEL --preview-only
+```
+
+On a POSIX Python installation, omit `--preview-only` to review the full request and choose whether
+to send it using the existing Codex login. Press Enter to decline. The request contains the packaged
+availability rule, its policy, and the observed mismatch. Codex is asked to author a new positive
+regression for the owner's archived note and a revised rule. The host checks the response structure
+and produces both diffs for a proposed change. The CLI reports the test and patch as `not-run`.
+With `--json`, interaction goes to stderr and one final result goes to stdout.
+
+The release demonstration still needs the separately approved copy, application, seven independent
+checks and restoration on one installed revision. Only the availability rule is eligible for
+application changes. The trusted app continues to check identity and ownership.
 
 ## Offline input preview
 
