@@ -59,8 +59,8 @@ CLI가 승인과 실행을 담당하며 웹사이트 배포는 필요하지 않�
 > 멈추거나 실패할 수 있습니다. 현재 소스에서 사용하는 Prettier 3.10.1에 내장된 brace-expansion 5.0.12는
 > [#89](https://github.com/casing1/authzest/issues/89)에서 추적하는 세 권고의 수정 버전 기준을 충족합니다.
 > [검증을 거치는 포맷 명령](development/FORMATTING.md)을 사용하세요. 포맷터를 직접 실행하거나 편집기·API와
-> 연동하면 이 검증을 거치지 않습니다. 별도의 [picomatch 이슈 #171](https://github.com/casing1/authzest/issues/171)은
-> 아직 공개된 수정 버전이 없습니다.
+> 연동하면 이 검증을 거치지 않습니다. GitHub는 [picomatch 이슈 #171](https://github.com/casing1/authzest/issues/171)의
+> 권고를 철회했습니다. CVE 원본에는 여전히 공개 상태로 표시됩니다.
 
 ## 현재 소스에서 지원하는 기능
 

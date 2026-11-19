@@ -23,11 +23,20 @@ replacing 5.0.6 in the previous pin. The selected parser code matches the fixes 
 bundle used by the legacy CLI and CJS API to the reviewed SHA-256. Normal format tests retain
 EditorConfig behavior.
 
-[#171](https://github.com/casing1/authzest/issues/171) separately tracks picomatch 4.0.7 in the
-development dependency lock and 2.3.2 in Prettier's file discovery bundle. Both versions fall in the
-[advisory range](https://github.com/advisories/GHSA-fc5q-39xc-vjpf), which lists no patched release.
-The supported guard sends a fixed directory argument or validated existing Markdown paths.
-Applicability for other inputs and tooling integrations remains open.
+### Picomatch follow-up — 2026-11-19 KST
+
+GitHub [withdrew GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) on
+November 18 UTC. The [CVE record API](https://cveawg.mitre.org/api/cve/CVE-2026-112366) still returned
+`PUBLISHED` at this check. GitHub lists no patched version. The source at `d793d32` resolves picomatch
+4.0.7 through the development toolchain. Prettier bundles picomatch 2.3.2 for file discovery.
+[#171](https://github.com/casing1/authzest/issues/171) tracks both copies and the different source records.
+
+The guarded commands supply a fixed directory or validated existing Markdown paths. The
+[three native preview artifacts](https://github.com/casing1/authzest/actions/runs/44437348930) contain
+the compiled frontend HTML, JavaScript, and CSS. Their archive inventory shows no frontend
+`node_modules` or separately packaged picomatch and Prettier entries. This is a packaging observation
+for those artifacts. Individual editor settings, extension versions, and direct tool calls require
+separate evidence. The alpha.4 disposition applies to the published prerelease.
 
 ## Commands
 

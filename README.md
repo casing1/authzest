@@ -61,8 +61,8 @@ The CLI retains approval and execution; no website deployment is required. See t
 > bundled brace-expansion 5.0.12 meets the fixed-version thresholds for the three advisories tracked in
 > [#89](https://github.com/casing1/authzest/issues/89). Use the
 > [guarded formatting commands](docs/development/FORMATTING.md). Direct formatter, editor and API
-> integrations are outside that guard. The separate
-> [picomatch issue #171](https://github.com/casing1/authzest/issues/171) still has no published fix.
+> integrations are outside that guard. GitHub withdrew the advisory tracked in
+> [picomatch issue #171](https://github.com/casing1/authzest/issues/171). The CVE record still shows it as published.
 
 ## What the current source supports
 
