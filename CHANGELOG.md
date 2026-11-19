@@ -14,6 +14,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-19
+
+This date records preparation of the course release candidate.
+
 ### Highlights since alpha.4
 
 - **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
@@ -236,6 +240,9 @@ verification and publication are tracked in the [release checklist](https://gith
   approval, release or completed #84 criterion.
 
 ### Fixed
+
+- Native packaging checks the requested version against the installed package before writing the
+  executable or its checksum. A mismatched release label stops packaging.
 
 - Preserve the strict lo-only guest guard and add a closed default-tunnel fallback branch with exact
   maintained names/types/flags, non-loopback administrative/operstate DOWN, iflink0 and positive unique
@@ -800,7 +807,8 @@ These improvements are included in alpha.2, not the alpha.1 binaries.
 - Restricted the HTTP scan endpoint to the workspace selected by the local process owner.
 - Removed caller-controlled filesystem paths from the HTTP API contract.
 
-[Unreleased]: https://github.com/casing1/authzest/compare/v0.1.0-alpha.4...main
+[Unreleased]: https://github.com/casing1/authzest/commits/main/
+[0.1.0]: https://github.com/casing1/authzest/issues/150
 [0.1.0-alpha.4]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.2
