@@ -62,7 +62,8 @@ AuthZest は、FastAPI アプリケーションのソースコードに基づい
 > 同梱の brace-expansion 5.0.12 は [#89](https://github.com/casing1/authzest/issues/89) の
 > 3 件のアドバイザリで示される修正版の要件を満たします。[ガード付き整形コマンド](../../development/FORMATTING.md)を使用してください。
 > 整形ツールの直接実行やエディター・API 連携にはガードが適用されません。
-> 別件の [picomatch #171](https://github.com/casing1/authzest/issues/171) には公開された修正版がまだありません。
+> GitHub は [picomatch #171](https://github.com/casing1/authzest/issues/171) のアドバイザリを取り下げました。
+> CVE の原本では引き続き公開済みと表示されています。
 
 ## 現在のソースが対応する機能
 

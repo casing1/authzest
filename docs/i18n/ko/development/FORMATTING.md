@@ -22,11 +22,20 @@
 의존성 검사는 기존 CLI와 CJS API가 사용하는 설치된 ESM 번들을 검토한 SHA-256과 대조합니다.
 정상 포맷 테스트에서는 EditorConfig 동작을 확인합니다.
 
-[#171](https://github.com/casing1/authzest/issues/171)은 개발 의존성에 포함된 picomatch 4.0.7과
-Prettier 파일 탐색 번들에 포함된 2.3.2를 별도로 추적합니다. 두 버전은
-[공개 권고 범위](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)에 해당하며 수정 버전이 없습니다.
-보호 명령은 고정된 디렉터리 인수 또는 검사한 기존 Markdown 경로를 전달합니다.
-다른 입력과 도구 연동 경로의 적용 여부는 남아 있습니다.
+### Picomatch 후속 확인 — 2026-11-19 KST
+
+GitHub는 11월 18일 UTC에 [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)를
+철회했습니다. 확인 시점에 [CVE 원본 API](https://cveawg.mitre.org/api/cve/CVE-2026-112366)는
+여전히 `PUBLISHED`를 반환했습니다. GitHub는 수정 버전을 표시하지 않습니다. `d793d32`의 개발
+도구는 picomatch 4.0.7을 사용하고, Prettier 개발 도구 번들에는 picomatch 2.3.2가 들어 있습니다.
+[#171](https://github.com/casing1/authzest/issues/171)에서 두 사본과 두 출처의 상태를 추적합니다.
+
+보호 명령은 고정된 디렉터리 또는 검사한 기존 Markdown 경로를 전달합니다.
+[네이티브 사전 검증 산출물 세 개](https://github.com/casing1/authzest/actions/runs/44437348930)에는
+빌드한 프런트엔드 HTML·JavaScript·CSS가 들어 있습니다. 아카이브 목록에서 프런트엔드
+`node_modules`나 별도 picomatch·Prettier 항목은 확인되지 않았습니다. 이 관찰은 해당 산출물에
+한정됩니다. 편집기 유효 설정, 확장 버전, 도구 직접 실행 경로는 별도 근거가 필요합니다.
+기존 alpha.4 위험 결정은 공개 프리릴리스에 적용됩니다.
 
 ## 명령
 

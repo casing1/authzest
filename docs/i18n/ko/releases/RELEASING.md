@@ -23,7 +23,9 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 - 정확한 후보의 CI·리뷰·설치·플랫폼 검사와
   [#89](https://github.com/casing1/authzest/issues/89)·[#171](https://github.com/casing1/authzest/issues/171)의
   도구 의존성 판단이 남았습니다. 후보에는 버전과 변경 이력을 포함합니다. 발행 때 불변 태그·native 빌드·공개 다운로드와 checksum을 확인합니다. [#175](https://github.com/casing1/authzest/pull/175)는 저장소 포맷터의 brace-expansion
-  권고 세 건을 반영했습니다. 기존 위험 결정은 alpha.4에 적용됩니다.
+  권고 세 건을 반영했습니다. [현재 포맷터 근거](../development/FORMATTING.md#현재-소스-포맷터)에
+  #171의 GitHub 권고 철회, CVE 공개 상태, 네이티브 사전 검증 산출물 확인을 기록했습니다. 기존 위험
+  결정은 alpha.4에 적용됩니다.
 - 독립 비교는 [#84](https://github.com/casing1/authzest/issues/84)에서 추적합니다. 확보하지 못한 근거를 밝히고,
   벤치마크 확대는 핵심 릴리스 범위 밖에 둡니다.
 

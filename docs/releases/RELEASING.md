@@ -25,7 +25,9 @@ November 18 was an approximate course submission date. Readiness depends on the 
   [#89](https://github.com/casing1/authzest/issues/89) and [#171](https://github.com/casing1/authzest/issues/171),
   remain required before publication. The candidate must include its version and changelog. Verify the immutable tag, native build and public downloads/checksums for the release.
   [#175](https://github.com/casing1/authzest/pull/175) covers the three named brace-expansion advisories
-  in the repository formatter. The alpha.4 risk decision applies to that prerelease.
+  in the repository formatter. [Current formatter evidence](../development/FORMATTING.md#current-source-formatter)
+  records GitHub's #171 advisory withdrawal, the still-published CVE record, and the inspected native
+  previews. The alpha.4 risk decision applies to that prerelease.
 - Independent comparison remains under [#84](https://github.com/casing1/authzest/issues/84).
   Report unavailable evidence and keep benchmark expansion outside the core delivery.
 
