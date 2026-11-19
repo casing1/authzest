@@ -5,35 +5,53 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
-## Stable 0.1.0 target — 2026-11-09 KST
+## Stable 0.1.0 readiness — 2026-11-19 KST
 
-[#150](https://github.com/casing1/authzest/issues/150) tracks the course-complete stable release.
-All new stable gates remain pending; the current package and latest public release remain `0.1.0a4`
-and `v0.1.0-alpha.4`. Do not rename that prerelease as stable or treat historical template acceptance
-as genuine PoC/repair generation. The prior November 12–13 estimate is superseded by this gate-based
-plan; the approximate November 18 submission date is not a delivery promise.
+[#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. Source
+package metadata remains `0.1.0a4`. The latest public release is
+[`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
+November 18 was an approximate course submission date. Readiness depends on the outstanding checks below.
 
-- [#151](https://github.com/casing1/authzest/issues/151): one owned FastAPI scenario with a newly
-  generated defensive PoC/test and model-authored repair source, not registered after-template selection.
-- [#152](https://github.com/casing1/authzest/issues/152): reviewed generated-code execution boundary,
-  installed before reproduction, approved new-copy-only diff application, independent after controls,
-  refusal/user-edit safety and verified restoration. New runtime/sharing decisions remain separate.
-- [#153](https://github.com/casing1/authzest/issues/153): local read-only UI for actual CLI workflow
-  artifacts and honest unsupported/not-run/unknown/failure states; no cloud deployment or browser patch API.
-- [#85](https://github.com/casing1/authzest/issues/85): usable source installation plus UI assets,
-  reproducible demo, English/Korean docs, four README languages and exact platform/version limits.
-- Exact stable-candidate tests, required CI/reviews, UI and install/replacement/package checks, fresh
-  [#89](https://github.com/casing1/authzest/issues/89) assessment/disposition, then version/changelog,
-  immutable tag/build and public download/checksum verification. The alpha.4-only risk decision does
-  not transfer. No new stable publication is performed by this planning update.
+- [#151](https://github.com/casing1/authzest/issues/151) and [#152](https://github.com/casing1/authzest/issues/152):
+  The source CLI implements generation, separately decided checks and copy-only application/recovery
+  for one maintained FastAPI scenario. A historical installed run at `34baebc` recorded a
+  model-authored test and repair, independent comparisons, and restoration. See the
+  [course evidence](../guides/COURSE_DEMO.md#evidence-to-cite). The installed workflow on the final candidate
+  still needs its own end-to-end evidence in the current result format.
+- [#153](https://github.com/casing1/authzest/issues/153) delivered the local read-only result viewer.
+  [#85](https://github.com/casing1/authzest/issues/85) has a bilingual [course walkthrough](../guides/COURSE_DEMO.md).
+  The final candidate still needs installation/demo evidence and a check that all four READMEs match its scope.
+- Exact-candidate CI, reviews, installation and platform checks, plus a fresh tooling decision for
+  [#89](https://github.com/casing1/authzest/issues/89) and [#171](https://github.com/casing1/authzest/issues/171),
+  remain required before publication. The candidate must include its version and changelog. Verify the immutable tag, native build and public downloads/checksums for the release.
+  [#175](https://github.com/casing1/authzest/pull/175) covers the three named brace-expansion advisories
+  in the repository formatter. The alpha.4 risk decision applies to that prerelease.
+- Independent comparison remains under [#84](https://github.com/casing1/authzest/issues/84).
+  Report unavailable evidence and keep benchmark expansion outside the core delivery.
 
-Keep [#84](https://github.com/casing1/authzest/issues/84) open if its comparative criteria remain
-unmet. Report unavailable independent/model-quality evidence without blocking core delivery on more
-benchmark-executor expansion or claiming unmeasured benefits. Preserve the alpha.4 receipts below.
-Infrastructure failure or skipped analysis is not a security pass: on the current `7aebf9e` baseline,
-ordinary main CI passed, but CodeQL Python initialization failed downloading its bundle with HTTP
-504 and analysis did not run ([run 42566232674](https://github.com/casing1/authzest/actions/runs/42566232674)).
-This is not a reported code finding or clearance of a future stable candidate.
+### Source installation preflight — 2026-11-19 KST
+
+At [`db3eee6`](https://github.com/casing1/authzest/commit/db3eee65bc4f47a72f7d9a9d7bf88ee7fde63152),
+[main CI](https://github.com/casing1/authzest/actions/runs/44331310556) and
+[CodeQL](https://github.com/casing1/authzest/actions/runs/44331310197) passed. The older CodeQL
+[download failure](https://github.com/casing1/authzest/actions/runs/42566232674) at `7aebf9e`
+remains a historical infrastructure result.
+
+- On macOS arm64 and Python 3.12.7, a fresh noneditable CLI install and a same-environment replacement
+  of the published alpha.4 tag source each passed all 13 installed CLI smoke checks. Both current installs
+  reported `0.1.0a4`, and 86 package files matched the tracked source bytes. The replacement used two
+  different source revisions with the same package version.
+- The installed `generation-preview` and `codex-generate --preview-only` emitted their offline
+  JSON contracts. Omitting the runtime profile returned exit 2 and a version 1.0 `invalid-input`
+  record with zero adapter attempts and execution/application marked `not-run`.
+- A separate editable `[ui]` install and locked frontend build with Node 24.11.0 served health,
+  HTML and built assets on loopback. An isolated Chrome profile displayed the refusal, switched to Korean,
+  cleared the view after a rejected import, and showed the static example's three routes. The API
+  labeled the imported refusal `imported-unverified`.
+
+This preflight covers the listed source-install routes on one host. Actual provider generation,
+generated-code execution, current native packages, public downloads and a stable-version upgrade remain
+outside this observation.
 
 ## Post-alpha.4 test-harness stabilization — 2026-11-05 KST
 

@@ -15,13 +15,10 @@ defensive PoC/regression test → AI-authored repair or valid no-change/unknown 
 → approved new-copy application → separately approved before/after checks → inspectable recovery.
 Codex is a core goal, not an optional explanation add-on. Keep deterministic scan useful without an AI account.
 
-Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The existing
-local API/React dashboard currently shows static inventory; presenting actual workflow results is now
-a required release deliverable. Initially keep execution and approval in the CLI, with the local UI
-reading results rather than adding a second execution/consent surface. Cloud deployment is unnecessary.
-Model improvements do
-not justify rewriting the product as an autonomous agent or general Python interpreter. Evidence-assisted
-value is a hypothesis to measure, not an established advantage; see [model strategy](MODEL_STRATEGY.md).
+Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The local API
+and React dashboard display static inventory and imported workflow results. The CLI handles execution
+and approval. Evidence-assisted value remains a hypothesis to measure. See the
+[model strategy](MODEL_STRATEGY.md).
 
 ## Course-release priorities — 2026-11-12 KST
 
@@ -36,12 +33,10 @@ historical receipts. The accepted registered-template flow is a foundation, not 
 | 3 — [#153](https://github.com/casing1/authzest/issues/153)        | Use the local React UI to display actual scan, PoC/test, diff, before/after and recovery results, including failed/not-run/unknown states. Keep initial execution and approvals in the CLI; no cloud deployment is required.                                                                                                                                                                 |
 | 4 — [#85](https://github.com/casing1/authzest/issues/85) and #150 | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
 
-These are pending implementation and acceptance requirements, not authority to run generated code.
-The new execution boundary, isolation, permitted operations, limits and failure handling must be designed
-under #152 before any active generated-code test/apply/restore operation; model/source sharing also
-requires fresh exact-request consent.
-Previous fixture approvals cannot authorize the new scenario. Arbitrary repositories, general code
-execution and multi-file repair remain outside this first delivery.
+The [release readiness record](../releases/RELEASING.md) tracks what shipped and what still needs
+final-candidate evidence. Active stages and source sharing require the current decisions described in the
+[generated workflow guide](../guides/GENERATED_FILE_WORKFLOW.md). The course scope is one maintained
+scenario and one application file.
 
 Broader [#84](https://github.com/casing1/authzest/issues/84) benchmark/transport work is secondary to
 this usable end-to-end release. Preserve its work and all seven unchecked criteria. Release evidence
@@ -69,12 +64,12 @@ import and refuse unsupported conditions. All maintained guest assets and six
 This narrow guard is not escape proof, whole-image attestation or a resource stress benchmark.
 The manifest remains a build-input declaration rather than a ready-image distribution.
 
-Source integration uses inert files, fake adapter/phase/kernel replies and trusted regression children.
-This implementation performs no actual new AI/Docker/generated-code call, image provisioning,
-operational patch or release. Next establish current-image feasibility and exact installed
-before/apply/after/restore acceptance; #152 remains open and #153 UI integration is still pending.
+Source regression checks use inert files, fake adapter/phase/kernel replies and trusted children.
+The [course demonstration](../guides/COURSE_DEMO.md) distinguishes the historical installed run at
+`34baebc` from the delivered #153 viewer and current-format refusal. #152 remains open for installed
+acceptance at the final candidate.
 
-## Current baseline — 2026-11-05 KST
+## Published alpha.4 baseline — 2026-11-05 KST
 
 Release source: `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`, scan schema `1.2`,
 tag [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
@@ -521,8 +516,8 @@ regressions in the source candidate; repeated release retries are not a replacem
 
 ## Core acceptance and defensive PoC
 
-The checked items below retain the earlier registered-template acceptance. They do not complete the
-new generation/verification/UI requirements, which remain separately unchecked.
+The checklist keeps historical registered-template acceptance and current deliveries visible.
+Open items cover the remaining release acceptance.
 
 - [x] Exact ten-case label review recorded separately on 2026-10-09 KST (#77); offline contracts exist, but plans remain non-executable and execution consent is separate.
 - [x] Readable CLI results, retained records and documented text/JSON streams accepted (#79 / PR #90).
@@ -534,7 +529,7 @@ new generation/verification/UI requirements, which remain separately unchecked.
 - [x] PR #123 acceptance-status documentation passed exact-head checks and separately approved automatic reviews, merged normally at `ee49f5a`, and completed #82 → #81 → #35 in order on 2026-11-02 KST. This covers bounded source acceptance only.
 - [ ] Newly generated defensive PoC/test and AI-authored one-file repair for the maintained FastAPI scenario accepted (#151); not a registered-template choice.
 - [ ] New isolated execution design and separately approved before/after controls, exact-diff refusal/application, stale-edit protection and recovery accepted (#152).
-- [ ] Actual scan/PoC/diff/check/recovery results available in the local React UI, with execution and consent initially kept in the CLI (#153).
+- [x] Actual scan/PoC/diff/check/recovery results available in the local React UI, with execution and consent initially kept in the CLI (#153).
 - [ ] Frozen independent reference review and measured evaluation, or explicit unavailable evidence, recorded (#84).
 - [ ] Exact stable distribution claims, reproducible installed demo, multilingual README and minimum course evidence accepted (#150/#85), with a fresh candidate-specific #89 disposition.
 
