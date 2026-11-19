@@ -66,9 +66,22 @@ def _preview(request: OwnerReadRequest, timeout_seconds: float, nonce: str) -> d
     return {**challenged, "sharing_id": "share-" + identity(challenged)}
 
 
-def build_preview(model: str, *, timeout_seconds: float = 120) -> dict[str, Any]:
+def build_preview(
+    model: str, *, timeout_seconds: float = 120, prepare_copy: bool = False
+) -> dict[str, Any]:
     """Build an offline, complete sharing preview for a new invocation."""
-    return _preview(build_owner_read_request(model), timeout_seconds, secrets.token_hex(16))
+    sharing = _preview(build_owner_read_request(model), timeout_seconds, secrets.token_hex(16))
+    if not prepare_copy:
+        return sharing
+    from authzest.runner.owner_read_copy import copy_spec
+
+    return {
+        "kind": "owner-read-copy-offline-preview",
+        "schema_version": "1.0",
+        "sharing_preview": sharing,
+        "local_copy": copy_spec(),
+        "status": "preview-only",
+    }
 
 
 def _changes(request: OwnerReadRequest, proposal: dict[str, Any]) -> list[dict[str, Any]]:
@@ -98,6 +111,7 @@ async def run_suggestion(
     emit: Callable[[str], Any] = print,
     read: Callable[[str], str] = input,
     adapter_factory: Callable[..., Any] | None = None,
+    prepare_copy: bool = False,
 ) -> dict[str, Any]:
     preview = build_preview(model, timeout_seconds=timeout_seconds)
     emit(json.dumps(preview, ensure_ascii=True, indent=2, allow_nan=False))
@@ -119,6 +133,13 @@ async def run_suggestion(
         "patch_application": "not-run",
         "original_checkout_modified": False,
     }
+    if prepare_copy:
+        from authzest.runner.owner_read_copy import copy_supported, prepare_current_copy
+
+        result["copy"] = {"status": "not-started", "path": None}
+        if not copy_supported():
+            result.update(status="unsupported", sharing_decision="not-requested", exit_code=2)
+            return result
     try:
         answer = read(f"Type 'share {preview['sharing_id']}' to send, or press Enter to decline: ")
     except (EOFError, KeyboardInterrupt):
@@ -170,4 +191,20 @@ async def run_suggestion(
         result.update(status="suggestion-failed", exit_code=1, failure=failure)
         return result
     result.update(status=proposal["status"], proposal=proposal, diffs=diffs)
+    if prepare_copy and proposal["status"] == "proposed-change":
+
+        def current_plan_inputs():
+            rebuilt = validate_owner_read_request(build_owner_read_request(model))
+            if _preview(rebuilt, timeout_seconds, preview["invocation_nonce"]) != preview:
+                raise ContractError("Sharing identity changed", code="validation-identity")
+            artifacts = validate_owner_read_response(canonical(proposal), rebuilt)
+            exact_diffs = _changes(rebuilt, artifacts)
+            if exact_diffs != diffs:
+                raise ContractError("Proposed diffs changed", code="validation-identity")
+            return rebuilt, artifacts, exact_diffs
+
+        result["copy"] = prepare_current_copy(
+            sharing_id=preview["sharing_id"], inputs=current_plan_inputs, emit=emit, read=read
+        )
+        result["exit_code"] = result["copy"]["exit_code"]
     return result

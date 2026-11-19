@@ -285,6 +285,9 @@ def codex_fixture(
 def owner_read_suggest(
     model: Annotated[str, typer.Option(help="Exact Codex model for the owner-read suggestion.")],
     preview_only: Annotated[bool, typer.Option(help="Show the complete request offline.")] = False,
+    prepare_copy: Annotated[
+        bool, typer.Option(help="Review and stage a private baseline copy.")
+    ] = False,
     as_json: Annotated[
         bool, typer.Option("--json", help="Write the final JSON to stdout.")
     ] = False,
@@ -299,11 +302,18 @@ def owner_read_suggest(
     output = WorkflowOutput(as_json)
     try:
         if preview_only:
-            output.finish(build_preview(model, timeout_seconds=timeout_seconds), preview=True)
+            output.finish(
+                build_preview(model, timeout_seconds=timeout_seconds, prepare_copy=prepare_copy),
+                preview=True,
+            )
             return
         result = asyncio.run(
             run_suggestion(
-                model, timeout_seconds=timeout_seconds, emit=output.emit, read=output.read
+                model,
+                timeout_seconds=timeout_seconds,
+                emit=output.emit,
+                read=output.read,
+                prepare_copy=prepare_copy,
             )
         )
     except (ContractError, KeyboardInterrupt, asyncio.CancelledError) as exc:

@@ -582,6 +582,14 @@ def format_owner_read_suggestion(value: dict) -> str:
         "Test execution: " + _display_value(value.get("execution_status")),
         "File application: " + _display_value(value.get("patch_application")),
     ]
+    copy = value.get("copy")
+    if copy:
+        lines.append("Private copy: " + _display_value(copy["status"]))
+        if copy.get("path"):
+            label = "Retained directory" if copy["status"] == "prepared" else "Last known location"
+            lines.append(label + ": " + _display_value(copy["path"]))
+        if copy.get("status") == "incomplete":
+            lines.append(section("Last recorded file states", copy.get("files")))
     proposal = value.get("proposal")
     if proposal:
         lines.append(_payload_block("Model rationale", proposal["rationale"]))
@@ -620,6 +628,8 @@ class WorkflowOutput:
             "owner-policy-file-stage-preview",
         ):
             typer.echo(format_file_workflow_preview(value))
+        elif isinstance(value, dict) and value.get("kind") == "owner-read-copy-plan":
+            typer.echo("Private copy review\n" + json_output(value))
         elif isinstance(value, dict) and value.get("kind") == "owner-policy-file-stage-result":
             typer.echo(
                 "\n\n".join(
@@ -654,6 +664,9 @@ class WorkflowOutput:
             # Small redacted errors retain stderr in human mode; explicit JSON
             # mode includes application failures in its single stdout result.
             typer.echo(json_output(value), err=error and not self.as_json)
+        elif preview and value.get("kind") == "owner-read-copy-offline-preview":
+            typer.echo(format_sharing_preview(value["sharing_preview"]))
+            typer.echo(section("Private files and expected observations", value["local_copy"]))
         elif preview:
             typer.echo(
                 format_generated_file_offline_preview(value)
