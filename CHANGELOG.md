@@ -14,6 +14,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Highlights since alpha.4
+
+- **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
+  regression test and one-file repair for the maintained FastAPI ownership example after sharing
+  approval. The active workflow uses separate approvals, verifies changes on a private copy, and records recovery.
+  It requires a non-frozen POSIX source installation and reviewed Linux runtime images.
+- **Local result viewer.** The English/Korean dashboard shows the static route inventory and imports
+  a selected workflow result for read-only inspection. Current workflow results use schema `1.0`.
+  The viewer displays source evidence, proposed changes, observed checks, and refusal or recovery
+  status. Use an editable source install and a frontend build. [Viewer guide](docs/guides/RESULT_VIEWER.md)
+- **Installation and demonstration.** The bilingual guide walks through static scanning and viewing
+  saved results. The current source's native previews cover static scan and offline preview on
+  Linux x64, macOS arm64, and Windows x64. [Course guide](docs/guides/COURSE_DEMO.md)
+- **Developer formatting.** The brace-expansion bundled in Prettier 3.10.1 meets the fixed-version
+  requirements for the three advisories tracked in #89. The formatting guide records the separate picomatch advisory status in
+  #171. [Formatting guide](docs/development/FORMATTING.md)
+
+The historical installed workflow observation is tied to its recorded source revision. Final-candidate
+verification and publication are tracked in the [release checklist](https://github.com/casing1/authzest/issues/150).
+
 ### Added
 
 - Connect source `codex-generate --model EXPLICIT_MODEL` to explicit
@@ -242,9 +262,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Record the verified alpha.4 publication in a postpublication documentation follow-up without
   changing its tag, package/schema version or assets. Align four README languages, English/Korean
   release records, indexes and current development/model priorities; preserve historical observations
-  and source-only active-file limits. Plan conditional November 10–11 RC and November 12–13 stable
-  targets around #130's test-harness repair, #84/#85 evidence and final checks, with November 14–17
-  reserved for submission buffer. The alpha.4-only #89 decision is not stable-release clearance.
+  and source-only active-file limits. The earlier November 10–11 RC and November 12–13 stable
+  estimates were part of the postpublication plan. The [current release guide](docs/releases/RELEASING.md)
+  tracks the remaining checks. The #89 decision applies to alpha.4.
   Normal documentation delivery is tracked in #83 without changing the published release bytes.
 
 ## [0.1.0-alpha.4] - 2026-11-05
