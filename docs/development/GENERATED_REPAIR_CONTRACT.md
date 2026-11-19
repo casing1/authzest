@@ -40,9 +40,55 @@ regression for the owner's archived note and a revised rule. The host checks the
 and produces both diffs for a proposed change. The CLI reports the test and patch as `not-run`.
 With `--json`, interaction goes to stderr and one final result goes to stdout.
 
-The release demonstration still needs the separately approved copy, application, seven independent
-checks and restoration on one installed revision. Only the availability rule is eligible for
-application changes. The trusted app continues to check identity and ownership.
+### Preparing a private copy
+
+To see what would be copied and the seven expected responses, run this offline command on any supported platform.
+
+```bash
+authzest owner-read-suggest --model EXPLICIT_MODEL --prepare-copy --preview-only
+```
+
+On supported POSIX source installations, remove `--preview-only` to request a suggestion and then
+review the local copy plan. Sharing and creating the directory have separate decisions. Only an
+accepted proposal from the current invocation can reach the copy prompt. The plan binds the
+installed baseline bytes, current request and sharing decision, exact source and test diffs and
+their SHA-256 digests. A digest of installed content does not establish a Git commit. The one-time
+copy phrase is bound to a fresh nonce. It must be accepted within 300 seconds. Declining or letting
+it expire ends the copy step. Filesystem operations have no hard completion deadline.
+
+The CLI creates a fresh private directory (0700) under the system `/tmp`, resolving the alias on macOS
+and ignoring the working directory and `TMPDIR`. It creates each file exclusively (0600), checks its
+identity and bytes, and refuses symbolic links.
+Diff paths identify the packaged source and proposed test. The copy can contain up to three files,
+with at most 4 KiB of validated ASCII per file and 12 KiB of payload in total.
+
+| File                          | Contents at preparation                          |
+| ----------------------------- | ------------------------------------------------ |
+| `availability.py`             | Exact installed baseline rule                    |
+| `test_owner_archived_read.py` | Exact authored regression, staged for inspection |
+| `proposed-availability.txt`   | Proposed replacement rule as text                |
+
+The local step runs in the CLI process. It reads no provider credentials, sends no HTTP requests and
+executes none of the staged files. There is no worker output. The original checkout stays intact.
+If creation fails partway through, inspect the reported directory and file state. The CLI leaves the partial copy in
+place and has no reopen, overwrite or retry operation. With `--json`, the copy outcome is in the final
+CLI result. The copy contains exactly the three files above. File permissions provide user-level privacy;
+another process acting as that user can still change the files.
+
+### Remaining verification on the installed candidate
+
+The next execution design requires review before enabling a worker. It must specify process startup,
+isolation, network and credential access, limits for time, output and other resources, cleanup and
+failure reporting. Each before check, diff acceptance, application, after check and restoration needs
+its own decision bound to the current bytes and prior result.
+
+The release demonstration must run the generated test for the owner's read and record its result separately
+from the seven maintainer-defined checks. The owner's archived read should change from 403 to 200 with the expected note.
+The other six expected responses are 200 for the owner's active note, 403 for a different user's
+active and archived reads, 401 for an anonymous active read, 404 for the owner's missing note and
+403 for the owner's pending note. Recovery must verify the original baseline bytes and staged test
+state. If the user has edited the copy, preserve those edits and report recovery as incomplete.
+Copy preparation alone supplies no before, after or restoration result.
 
 ## Offline input preview
 
