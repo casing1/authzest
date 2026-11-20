@@ -575,6 +575,44 @@ def format_file_workflow_result(value: dict) -> str:
     return "\n\n".join(parts)
 
 
+def format_owner_read_rehearsal(value: dict) -> str:
+    lines = [
+        "Owner's archived note | Maintainer rehearsal",
+        "Result: " + _display_value(value["status"]),
+    ]
+    for phase, title in (
+        ("baseline", "Installed baseline"),
+        ("reference", "Maintained correction"),
+    ):
+        record = value[phase]
+        lines.append("")
+        lines.append(title + "  [" + _display_value(record["status"]) + "]")
+        observation = record.get("observation")
+        if observation:
+            regression = observation["regression"]
+            lines.append("  Positive pytest: " + _display_value(regression["status"]))
+            if response := regression.get("response"):
+                lines.append(
+                    "  Owner's archived read: HTTP " + _display_value(response["status_code"])
+                )
+        comparison = record.get("comparison")
+        if comparison:
+            lines.append(
+                "  Responses matching intended policy: "
+                + _display_value(comparison["intended_matches"])
+                + " / "
+                + _display_value(comparison["checks_total"])
+            )
+        if record.get("failure"):
+            lines.append("  Observation failed: " + _display_value(record["failure"]))
+    if value["status"] == "missing-dependencies":
+        lines.append("\nIn the source checkout, install the rehearsal dependencies with:")
+        lines.append('  python -m pip install -e ".[owner-read]"')
+    if value["status"] == "unsupported":
+        lines.append("\nRun from a POSIX Python installation of AuthZest.")
+    return "\n".join(lines)
+
+
 def format_owner_read_suggestion(value: dict) -> str:
     lines = [
         "Owner's archived record",

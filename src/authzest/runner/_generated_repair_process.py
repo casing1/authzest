@@ -218,7 +218,9 @@ class ProcessPool:
         finally:
             self._busy = False
 
-    def start(self, argv, env, deadline: float, label: str) -> ProcessHandle:
+    def start(
+        self, argv, env, deadline: float, label: str, *, cwd: str | None = None
+    ) -> ProcessHandle:
         """Spawn exactly supplied data; command policy belongs to the caller."""
         self._enter()
         state = None
@@ -243,6 +245,7 @@ class ProcessPool:
                     for key, value in env.items()
                 )
                 or sum(len(key) + len(value.encode()) for key, value in env.items()) > 65_536
+                or (cwd is not None and (type(cwd) is not str or not os.path.isabs(cwd)))
                 or type(label) is not str
                 or re.fullmatch(r"[A-Za-z0-9_.-]{1,64}", label) is None
                 or len(self._states) >= 64
@@ -263,6 +266,7 @@ class ProcessPool:
                 shell=False,
                 start_new_session=True,
                 bufsize=0,
+                **({"cwd": cwd} if cwd is not None else {}),
             )
             process = state.process
             if type(process.pid) is not int or process.pid <= 0:
