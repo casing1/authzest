@@ -7,7 +7,7 @@
 
 [Documentation index](../README.md)
 
-## Status — 2026-11-19 KST
+## Status — 2026-11-20 KST
 
 [#151](https://github.com/casing1/authzest/issues/151), under the
 [course-release scope](https://github.com/casing1/authzest/issues/150), connects the offline
@@ -75,20 +75,94 @@ place and has no reopen, overwrite or retry operation. With `--json`, the copy o
 CLI result. The copy contains exactly the three files above. File permissions provide user-level privacy;
 another process acting as that user can still change the files.
 
-### Remaining verification on the installed candidate
+### Running the packaged regression
 
-The next execution design requires review before enabling a worker. It must specify process startup,
-isolation, network and credential access, limits for time, output and other resources, cleanup and
-failure reporting. Each before check, diff acceptance, application, after check and restoration needs
-its own decision bound to the current bytes and prior result.
+From this candidate's checkout, install the test dependencies in your Python environment. The command
+runs on POSIX with a regular Python installation.
 
-The release demonstration must run the generated test for the owner's read and record its result separately
-from the seven maintainer-defined checks. The owner's archived read should change from 403 to 200 with the expected note.
-The other six expected responses are 200 for the owner's active note, 403 for a different user's
-active and archived reads, 401 for an anonymous active read, 404 for the owner's missing note and
-403 for the owner's pending note. Recovery must verify the original baseline bytes and staged test
-state. If the user has edited the copy, preserve those edits and report recovery as incomplete.
-Copy preparation alone supplies no before, after or restoration result.
+```bash
+python -m pip install '.[owner-read]'
+authzest owner-read-rehearse
+authzest owner-read-rehearse --json
+```
+
+Each invocation exercises the same maintainer-written pytest test against two packaged rules. It first
+checks the baseline rule, then checks a reference rule that allows the owner's archived read. In each
+phase, the test makes one request through an authenticated owner client. Each of the seven independent
+ASGI requests runs in-process against a fresh app instance. The host checks status codes and JSON bodies.
+
+| Phase     | Owner's archived note in pytest                                                      | Independent checks matching intended policy |
+| --------- | ------------------------------------------------------------------------------------ | ------------------------------------------- |
+| Baseline  | One failed assertion after 403 with `{"detail":"Read denied"}`                       | 6/7                                         |
+| Reference | One passed assertion after 200 with `{"id":"archived-note","title":"Archived note"}` | 7/7                                         |
+
+A successful rehearsal includes the expected baseline assertion failure. Collection, setup or teardown
+errors fail the rehearsal. The JSON result has kind `owner-read-rehearsal` and provenance
+`maintainer-reference`. Its `baseline` and `reference` objects separate the pytest result from the
+seven observations. Both rules and the test ship with the package. This command takes no model or file argument.
+
+The host starts each phase with its installed interpreter in a fresh temporary working directory,
+using `-I -B` and a minimal environment with pytest plugin autoload disabled. Each child gets a
+20-second execution budget and up to 2 additional seconds for local process cleanup. Combined stdout
+and stderr are limited to 32 KiB per child. OS startup and filesystem calls can overrun those times.
+Both children run with the local user's permissions. Running a generated artifact requires the
+separate isolation described below.
+
+### Building the dedicated guest
+
+From the same checkout, choose a new output file for the context. Replace `REVIEWED_LOCAL_T_IMAGE`
+with the local reference for the verified pytest image for your platform. Check its identity against
+your reviewed image ID and make it available to the Docker builder before building. The context script
+writes a tar stream containing only the fixed recipe and guest assets. The recipe uses the test
+dependencies already present in the base image.
+
+```bash
+python -m scripts.owner_read_image_context > owner-read-context.tar
+docker build --pull=false --network=none --build-arg OWNER_READ_TEST_BASE=REVIEWED_LOCAL_T_IMAGE --tag authzest-owner-read:local - < owner-read-context.tar
+```
+
+The guest has separate test and control roles. Both receive read-only mounts for the exact
+`/input/availability.py` and `/input/test_owner_archived_read.py` files. The control role uses the test
+digest to identify the case and runs only the maintained ASGI checks. Before importing the test
+packages, the entry checks effective Linux process restrictions, network devices, cgroup limits,
+mount flags and input file properties. Those observations describe what the guest can see.
+The host must separately verify the image ID, bind sources and removal of both containers.
+
+A Linux arm64 smoke test exercised the packaged test and maintained rule inputs in four fresh
+containers. Both roles confirmed the supplied rule and test hashes in each phase. The baseline
+pytest run failed its assertion after the owner received 403 with `Read denied` (exit 1). The
+reference run passed after the owner received 200 with the archived note (exit 0). In separate
+containers, 6/7 baseline and 7/7 reference responses matched the intended policy. The host
+confirmed removal of all four containers. Live generation, applying its diff and restoring its
+private copy still need to be verified on the same release candidate.
+
+### Host integration for the generated regression
+
+The guest and the host rehearsal supply components for the installed-candidate demonstration.
+Connecting the approved copy to these guests, applying the change and restoring the source are
+tracked in [#152](https://github.com/casing1/authzest/issues/152). The host integration design follows.
+
+- Bind each plan to the current invocation, installed candidate, request, exact diffs, file identities
+  and SHA-256 digests. Read the actual rule and test from the approved private copy, validate their
+  fixed grammar and enforce the 4 KiB limit on each artifact. Recheck the inputs before dispatch.
+- In each before/after phase, start two fresh guests from a locally present image identified by a
+  reviewed digest. One runs the single authored pytest item with the packaged owner client. The other
+  runs only the seven maintained ASGI requests on the same captured rule. Give each guest only its
+  required inputs as read-only files, a fixed entry point, UID/GID 65532, a read-only root and
+  private temporary storage. Disable networking, inherited credentials and capabilities. Restrict
+  mounts to the approved inputs. Check the effective isolation before loading either artifact.
+- Proposed limits per guest are 1 CPU, 512 MiB of memory, 64 processes and a 32 MiB temporary
+  filesystem. Each phase shares a 40-second startup/execution budget and a 256 KiB combined output
+  budget across its two guests. Allow a further 10 seconds for cleanup and verify both guests have
+  been removed. Record artifact hashes, exit statuses, bounded output and cleanup status privately.
+- Require a fresh, single-use decision valid for up to 300 seconds for each before check, exact diff
+  acceptance, application, after check and restoration. Proceed to application only after observing the
+  specific failing baseline assertion and all seven expected baseline responses. After application,
+  require the archived read's exact 200 response, a passing regression and all seven intended responses.
+  Before replacing or restoring anything, recheck the private files against the reviewed states.
+- Record a missing response, expired decision, changed file, timeout, truncated output or unconfirmed
+  cleanup at the affected stage. Preserve user edits. Report restoration only after confirming the
+  original source bytes and staged test state. The original checkout stays outside these operations.
 
 ## Offline input preview
 

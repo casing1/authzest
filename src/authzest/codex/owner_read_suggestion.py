@@ -180,7 +180,7 @@ def _state_predicate(expr: ast.expr) -> bool:
     return False
 
 
-def _validate_rule(source: str) -> None:
+def _validate_rule(source: str) -> ast.FunctionDef:
     func = _single_function(source)
     match func.name, func.args.args[0], func.returns, _without_docstring(func.body):
         case (
@@ -189,7 +189,7 @@ def _validate_rule(source: str) -> None:
             ast.Name(id="bool"),
             [ast.Return(value=predicate)],
         ) if _state_predicate(predicate):
-            return
+            return func
     raise ContractError("Invalid owner-read availability rule", code="validation-shape")
 
 
@@ -204,7 +204,7 @@ def _owner_get(expr: ast.expr) -> bool:
     return False
 
 
-def _validate_test(test: str) -> None:
+def _validate_test(test: str) -> ast.FunctionDef:
     func = _single_function(test)
     arg = func.args.args[0]
     if (
@@ -231,14 +231,14 @@ def _validate_test(test: str) -> None:
         ] if type(status) is int and status == 200:
             match body[:-1]:
                 case [] if _owner_get(result):
-                    return
+                    return func
                 case [ast.Assign(targets=[ast.Name(id=name)], value=get)] if (
                     isinstance(result, ast.Name)
                     and result.id == name
                     and name not in {"owner_client", "__debug__"}
                     and _owner_get(get)
                 ):
-                    return
+                    return func
     raise ContractError("Invalid positive regression test", code="validation-shape")
 
 
