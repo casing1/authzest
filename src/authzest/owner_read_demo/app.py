@@ -1,5 +1,6 @@
 """In-memory synthetic records with a trusted, in-process principal dependency."""
 
+from collections.abc import Callable
 from types import MappingProxyType
 from typing import Annotated, NamedTuple
 
@@ -29,6 +30,10 @@ def current_principal() -> str | None:
 
 
 def create_app() -> FastAPI:
+    return _app_with_rule(availability.available_to_owner)
+
+
+def _app_with_rule(available_to_owner: Callable[[str], bool]) -> FastAPI:
     app = FastAPI()
 
     @app.get("/records/{record_id}")
@@ -40,7 +45,7 @@ def create_app() -> FastAPI:
         record = _RECORDS.get(record_id)
         if record is None:
             raise HTTPException(status_code=404, detail="Record not found")
-        if record.owner != principal or not availability.available_to_owner(record.state):
+        if record.owner != principal or not available_to_owner(record.state):
             raise HTTPException(status_code=403, detail="Read denied")
         return {"id": record_id, "title": record.title}
 

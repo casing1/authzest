@@ -281,6 +281,21 @@ def codex_fixture(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("owner-read-rehearse")
+def owner_read_rehearse(
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Print the complete rehearsal result.")
+    ] = False,
+) -> None:
+    """Run the archived-note regression and seven controls on two maintained app variants."""
+    from authzest.cli_output import format_owner_read_rehearsal, json_output
+    from authzest.runner.owner_read_rehearsal import run_rehearsal
+
+    result = run_rehearsal()
+    typer.echo(json_output(result) if as_json else format_owner_read_rehearsal(result))
+    raise typer.Exit(code=result["exit_code"])
+
+
 @app.command("owner-read-suggest")
 def owner_read_suggest(
     model: Annotated[str, typer.Option(help="Exact Codex model for the owner-read suggestion.")],
