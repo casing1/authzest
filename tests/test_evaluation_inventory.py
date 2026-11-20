@@ -111,7 +111,10 @@ def test_only_inventoried_artifacts_have_explicit_lf_attributes():
         "runtime/generated_repair/images/locks/linux-arm64-T.txt",
         "runtime/generated_repair/images/manifest.json",
     ]
-    packaged_sources = ["src/authzest/owner_read_demo/availability.py"]
+    packaged_sources = [
+        "src/authzest/owner_read_demo/availability.py",
+        "src/authzest/owner_read_demo/positive_regression.py",
+    ]
     expected = sorted(
         [path, "text", "eol=lf"]
         for path in historical + reference + guest_assets + image_inputs + packaged_sources
