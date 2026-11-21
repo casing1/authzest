@@ -2,86 +2,75 @@
 
 [English](../../../guides/COURSE_DEMO.md) · [문서 목차](../INDEX.md) · [과제 제출 #85](https://github.com/casing1/authzest/issues/85)
 
-시연은 소스 커밋 [`c454628`](https://github.com/casing1/authzest/commit/c45462889fcbfa5b8354558336f6d4bd1540c27d)
-(패키지 메타데이터 `0.1.0a4`)과 이전에 기록한 소유권 예제 실행 한 건을 사용합니다.
-제출 목표는 2026년 11월 18일 전후입니다. 정확한 일시와 평가 기준은 과목 안내에서 확인하세요.
+시연에는 [`50706ff`](https://github.com/casing1/authzest/commit/50706ff28f0043497a04b411760e3b41b385b883)의 `0.1.0` 소스 후보를 사용합니다. 한 FastAPI 라우터가 두 경로에 등록되는 과정과 실행 전에 멈춘 워크플로를 대시보드가 어떻게 표시하는지 보여 줍니다. AI 수정 제안은 별도로 기록된 과거 실행을 인용합니다.
 
-## 설치하고 대시보드 열기
+## 발표 전 준비
 
-macOS 또는 Linux에서 Python 3.12와 Node.js 22.13 이상인 22.x 또는 Node.js 24를 사용합니다.
-기록된 설치를 재현하려면 표시한 리비전을 별도 디렉터리에 받습니다.
+macOS 또는 Linux에서 Python 3.12와 Node.js 22.13 이상인 22.x 버전 또는 Node.js 24를 사용합니다. 발표 전에 한 번 설치합니다. 대시보드는 편집 가능 모드로 설치한 소스와 빌드한 프런트엔드를 사용합니다. macOS arm64, Python 3.12.7, Node.js 24.11.0에서 이 경로를 확인했습니다.
 
 ```bash
 git clone https://github.com/casing1/authzest.git authzest-course
 cd authzest-course
-git switch --detach c45462889fcbfa5b8354558336f6d4bd1540c27d
+git switch --detach 50706ff28f0043497a04b411760e3b41b385b883
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -e '.[ui]'
-npm --prefix frontend ci
+npm --prefix frontend ci --ignore-scripts
 npm --prefix frontend run build
-.venv/bin/authzest scan examples/fastapi_inventory
-.venv/bin/authzest ui --workspace examples/fastapi_inventory
+.venv/bin/authzest --version
 ```
 
-[로컬 대시보드](http://127.0.0.1:8000)를 엽니다. 제공하는 목록 예제는 Python 파일 4개와
-라우트 등록 3개를 표시합니다. 새 설치 시연은 macOS arm64, Python 3.12.7, Node.js 24.11.0에서
-검증했습니다. Windows CI는 이식 가능한 CLI와 결과 계약을 검사합니다.
-자산 빌드와 가져오기 형식은 [결과 화면 안내](RESULT_VIEWER.md)를 참고하세요.
+`authzest 0.1.0`이 표시되는지 확인합니다. 이후 명령도 같은 저장소 디렉터리에서 실행합니다.
 
-## 기존 실행 기록 보여 주기
+## 1. 라우트가 등록되는 과정 보여 주기
 
-1. 정적 목록을 띄우고 소스의 선언을 보여 주는 화면이라고 설명합니다.
-2. 열람할 권한이 있는 최종 CLI 결과 JSON을 엽니다. 이전 기록은 `legacy-unversioned`로 표시됩니다.
-   해당 파일에는 가져올 수 있는 원본 소스와 선언이 없습니다.
-3. 생성 테스트, 제안 diff, 기록된 결정, 두 대조 요약과 `restored-before`를 보여 줍니다.
-   after 열은 복구하기 전에 검사했던 복사본의 관찰 결과입니다.
-4. 아래 예제로 터미널과 결과 화면에서 입력 거절을 보여 줍니다. 실행·적용·복구 행에 관찰값이 없는
-   이유를 설명합니다.
+```bash
+.venv/bin/authzest scan examples/fastapi_inventory
+.venv/bin/authzest scan examples/fastapi_inventory --json
+```
 
-결과 화면은 사용자가 고른 최대 512 KiB JSON을 가져와 `imported-unverified`로 표시합니다.
-저장된 기록을 열 때 모델이나 작업자를 호출하지 않습니다. 원본 결과 파일이 없으면 아래 집계 근거를
-제시하고 거절 기록을 대화형 시연에 사용합니다. 원본 캡처와 계정·런타임·경로 정보는 비공개로
-보관합니다.
+`GET /health`, `GET /v1/catalog/items`, `GET /v2/catalog/items`를 짚어 봅니다. 두 카탈로그 경로는 `app/routers/catalog.py`의 같은 함수를 가리킵니다. `app/main.py`의 두 `include_router` 선언에서 서로 다른 접두사를 붙였기 때문입니다. AuthZest는 예제 모듈을 불러오지 않고 소스의 선언을 읽습니다. JSON 리포트는 스키마 `1.2`이며 `python_files: 4`, `route_count: 3`, `analysis_status: bounded`, `codex_status: disabled`를 표시합니다. 라우트 선언만으로 실제 배포 환경에서 누가 접근할 수 있는지 확정할 수는 없습니다.
 
-이전 예제는 메모리 데이터와 시연용 행위자 헤더가 있는 관리형 FastAPI 소유권 사례 하나를 사용했습니다.
-시연용 헤더는 사용자 인증을 제공하지 않습니다. 대조 검사는 그 정책과 관리하는 유한한 대조 항목을
-다룹니다. 활성 실행 흐름에는 별도로 동결 바이너리가 아닌 POSIX 설치와 검토한 Linux 런타임 이미지가
-필요합니다. [생성 파일 흐름](GENERATED_FILE_WORKFLOW.md)에서 지원 범위와 승인 단계를 설명합니다.
+## 2. 화면에 띄울 워크플로 결과 준비하기
 
-## 실행 전 입력 거절 보여 주기
-
-아래 명령은 필수 런타임 프로필을 의도적으로 생략합니다. 모델 공유, 런타임 시작, workspace 변경 전에
-종료 코드 `2`로 끝납니다. 출력된 경로의 파일을 결과 화면에서 엽니다.
+다음 예제는 필수 런타임 프로필을 의도적으로 생략합니다. CLI는 모델에 자료를 보내거나 코드를 실행하기 전에 종료 코드 `2`를 반환합니다. 터미널에 출력되는 파일 경로를 브라우저에서 사용합니다.
 
 ```bash
 (
   umask 077
   demo_dir=$(mktemp -d) || exit 1
-  refusal_status=0
-  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json" || refusal_status=$?
-  if [ "$refusal_status" -ne 2 ]; then
-    printf 'Expected refusal exit 2, received %s\n' "$refusal_status" >&2
+  status_code=0
+  .venv/bin/authzest codex-generate --model course-demo --file-workflow --json > "$demo_dir/refused.json" || status_code=$?
+  if [ "$status_code" -ne 2 ]; then
+    printf 'Expected exit 2, received %s\n' "$status_code" >&2
     exit 1
   fi
   printf '%s\n' "$demo_dir/refused.json"
 )
 ```
 
-`invalid-input`, `not-run`, 어댑터 시도 0회와 before/after 관찰 없음이 표시됩니다.
-이식성 CI는 로컬 회귀 테스트 예제로 만료된 결정과 변경된 바이트를 덮어쓰지 않는 동작도 검사합니다.
-이 테스트 근거는 아래 실제 실행 관찰과 구분해 설명합니다.
+워크플로 JSON은 스키마 `1.0`입니다. 상태는 `invalid-input`, 모델 호출 시도는 `application_turn_attempts: 0`이며 실행과 패치 적용은 모두 `not-run`입니다.
+
+## 3. 로컬 대시보드 시연하기
+
+```bash
+.venv/bin/authzest ui --workspace examples/fastapi_inventory
+```
+
+터미널을 실행한 채 [로컬 대시보드](http://127.0.0.1:8000)를 엽니다.
+
+1. **Static inventory → Analyze repository**를 선택해 CLI와 같은 세 라우트를 보여 줍니다. 한국어 화면에서는 **정적 선언 목록 → 저장소 분석**입니다.
+2. **Workflow results**에서 `refused.json`을 골라 **Open result**를 누릅니다. 거절 상태와 비어 있는 before/after 관찰값을 보여 줍니다. 한국어 화면의 **워크플로 결과 → 결과 열기**는 최대 512 KiB의 워크플로 결과 JSON을 받습니다. 정적 스캔 결과는 별도 탭에서 확인합니다.
+3. 언어를 **한국어**로 바꾸면 화면 문구가 바뀌고 기록된 상태값은 그대로 표시됩니다. 가져온 기록의 출처 표시는 `imported-unverified`입니다. 파일을 열면 새 실행 없이 기록에 담긴 내용을 읽을 수 있습니다.
+
+발표가 끝나면 터미널에서 Ctrl-C로 서버를 종료합니다. [결과 화면 안내](RESULT_VIEWER.md)
 
 ## 인용할 검증 근거
 
-| 범위                                                                                                                                                              | 관찰과 한계                                                                                                                                                                                                                                                                                                       |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`34baebc`](https://github.com/casing1/authzest/commit/34baebc) 설치형 실행 기록, [#172 병합 `ad4dea7`](https://github.com/casing1/authzest/pull/172)과 같은 트리 | 실제 어댑터가 테스트와 소스 변경을 제안했습니다. 생성 테스트 종료 코드는 before 1, after 0이었습니다. 독립 대조는 각 단계의 기대 프로필에 대해 사례 17/17개와 요청 21/21개에 일치했습니다. 승인한 변경은 복사본에만 적용했고 복사본을 원래 바이트로 복구했습니다. 정리를 확인했고 checkout 바이트를 보존했습니다. |
-| [`c454628` / #173](https://github.com/casing1/authzest/pull/173) 로컬 화면                                                                                        | 브라우저에서 이전 실제 기록을 열었고, 별도로 버전 1.0 거절도 표시했습니다. 버전 1.0 성공과 소스 필드는 테스트 예제로 검증했습니다. 이 리비전의 새로운 버전 1.0 실제 성공 기록은 없습니다.                                                                                                                         |
-| [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577)와 [병합 CI](https://github.com/casing1/authzest/actions/runs/44276437537)                   | 검토한 PR에서 Python 테스트 8,712개와 Windows 테스트 3,037개가 통과했고 Windows 테스트 422개를 건너뛰었습니다. 병합 후 [CodeQL 분석](https://github.com/casing1/authzest/actions/runs/44276438312)을 포함한 검사 작업이 통과했습니다.                                                                             |
-| [독립 평가 #84](https://github.com/casing1/authzest/issues/84)                                                                                                    | 이 제출에서 인용할 독립 비교 근거는 확보되지 않았습니다. 기록한 단계는 한정된 흐름의 동작을 측정하며 접근제어 보장 여부는 불명입니다.                                                                                                                                                                             |
+| 주제              | 발표에서 설명할 근거                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 후보 설치와 UI    | 새로 설치한 CLI와 공개 alpha.4 태그 소스에서 업그레이드한 환경이 각각 13개 검사를 통과했습니다. 소스 설치 대시보드로 스키마 1.0 거절 기록과 정적 목록을 확인했습니다. [후보 PR #180](https://github.com/casing1/authzest/pull/180)                                                                                                                                                               |
+| 과거 AI 수정 제안 | `34baebc` 설치형 실행에서 모델이 테스트와 수정을 제안했습니다. 두 단계에서 독립 검사가 각 단계의 기대 결과와 일치했고 비공개 복사본을 복구했습니다. 발표에서는 과거 관찰로 인용합니다. 현재 후보의 새로운 전체 성공 기록은 미확인입니다. [당시 검증 근거](https://github.com/casing1/authzest/blob/c45462889fcbfa5b8354558336f6d4bd1540c27d/docs/i18n/ko/guides/COURSE_DEMO.md#인용할-검증-근거) |
+| 네이티브 패키지   | Linux x64, macOS arm64, Windows x64에서 정적 스캔·오프라인 미리보기 검사를 각각 52개 통과했습니다. GitHub Actions 산출물은 후보 검증용으로 빌드했습니다. [체크섬과 검증 실행](https://github.com/casing1/authzest/issues/150#issuecomment-7000856136)                                                                                                                                            |
+| 평가와 발행       | #84에서 AI 성능을 독립적으로 비교할 근거는 미확보 상태입니다. 개발 도구에 관한 판단은 `50706ff` 기준으로 기록했습니다. 이 시연을 검증할 당시 공개판은 alpha.4입니다. [평가 #84](https://github.com/casing1/authzest/issues/84) · [릴리스 체크리스트 #150](https://github.com/casing1/authzest/issues/150)                                                                                        |
 
-정식판 수용은 [#150](https://github.com/casing1/authzest/issues/150)에서 추적하며, 설치형 수용의 후속
-작업은 [#151](https://github.com/casing1/authzest/issues/151)과 [#152](https://github.com/casing1/authzest/issues/152)에
-남아 있습니다. 공개 alpha.4 산출물은 과거 릴리스 근거입니다. 후보별 도구 의존성에 관한
-[#89](https://github.com/casing1/authzest/issues/89)와 [#171](https://github.com/casing1/authzest/issues/171)은
-별도로 추적합니다.
+과거 워크플로 기록을 보여 줄 권한이 있으면 로컬에서 열어 당시의 제안, diff, 복구 결과를 설명할 수 있습니다. 버전이 없는 이전 기록은 `legacy-unversioned`로 표시되며 원본 소스 근거가 들어 있지 않습니다. 원본 파일 없이도 공개된 과거 요약으로 발표할 수 있습니다. 공유 슬라이드에는 비공개 기록과 로컬 경로를 싣지 않습니다.
