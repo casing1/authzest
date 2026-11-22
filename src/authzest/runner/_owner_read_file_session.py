@@ -1,6 +1,7 @@
 """Private owner-read coordination with a trusted, explicitly supplied phase dispatcher.
 
-This module has no CLI entry, transport, saved-plan importer or resume operation.
+This module coordinates the explicit CLI workflow through a trusted phase dispatcher.
+It has no saved-plan importer or resume operation.
 A supplied dispatcher is trusted host code. Detached observations alone do not grant
 execution or source-write authority. The operator must exclude concurrent same-user
 writers while a private copy is active.
@@ -22,6 +23,7 @@ from authzest.codex.owner_read_suggestion import (
     validate_owner_read_request,
     validate_owner_read_response,
 )
+from authzest.runner._generated_repair_session import GeneratedRepairSessionError, _deadline
 from authzest.runner._owner_read_copy_files import copy_supported, stage_private_copy
 from authzest.runner._owner_read_phase_result import (
     MAX_RESULT_BYTES,
@@ -51,11 +53,20 @@ class OwnerReadFileSession:
     ``inputs`` must rebuild the current invocation's request/proposal/diffs. The
     synchronous ``dispatcher`` receives captured bytes, current plan ID and a
     freshness guard. It must perform and clean up two isolated guests and return
-    the host validator's result. There is deliberately no production dispatcher
-    or public active CLI connection in this implementation increment.
+    the host validator's result. The explicit CLI workflow supplies the reviewed
+    Docker runtime and dispatcher.
     """
 
-    def __init__(self, *, sharing_id: str, inputs: Inputs, dispatcher: Callable, clock=monotonic):
+    def __init__(
+        self,
+        *,
+        sharing_id: str,
+        inputs: Inputs,
+        dispatcher: Callable,
+        clock=monotonic,
+        runtime_context=None,
+        runtime_guard=None,
+    ):
         if (
             type(sharing_id) is not str
             or not sharing_id.startswith("share-")
@@ -64,6 +75,14 @@ class OwnerReadFileSession:
             or inspect.iscoroutinefunction(dispatcher)
         ):
             raise ValueError("Expected current sharing identity and synchronous trusted dispatcher")
+        if runtime_context is not None and (
+            type(runtime_context) is not dict
+            or not callable(runtime_guard)
+            or inspect.iscoroutinefunction(runtime_guard)
+        ):
+            raise ValueError("Runtime context requires a synchronous pin guard")
+        self._runtime_context = json.loads(canonical(runtime_context))
+        self._runtime_guard = runtime_guard
         self._inputs = inputs
         self._dispatcher = dispatcher
         self._clock = clock
@@ -120,6 +139,8 @@ class OwnerReadFileSession:
         return now
 
     def _check(self, *, files=True):
+        if self._runtime_guard is not None and self._runtime_guard() is not None:
+            raise _Stop("runtime-changed")
         if canonical(self._read_inputs()) != canonical(self._current):
             raise _Stop("inputs-changed")
         if files and self._workspace is not None and self._workspace.snapshot() != self._snapshot:
@@ -132,6 +153,7 @@ class OwnerReadFileSession:
             "session_id": self._binding,
             "stage": stage,
             "installed_version": self._result["installed_version"],
+            "runtime": self._runtime_context,
             "inputs": self._current,
             "files": self._snapshot,
             "prior_stages": self._result["stages"],
@@ -154,9 +176,10 @@ class OwnerReadFileSession:
         payload = json.loads(canonical(payload))
         plan_id = "owner-read-stage-" + identity(payload)
         start = self._now()
-        deadline = start + _SECONDS
-        if not start < deadline or deadline - start > _SECONDS:
-            raise _Stop("clock-unconfirmed")
+        try:
+            deadline = _deadline(start, _SECONDS)
+        except GeneratedRepairSessionError:
+            raise _Stop("clock-unconfirmed") from None
         emit(json.dumps({**payload, "plan_id": plan_id}, ensure_ascii=True, indent=2))
         record = self._result["stages"][stage]
         record.update(status="awaiting-decision", plan_id=plan_id)

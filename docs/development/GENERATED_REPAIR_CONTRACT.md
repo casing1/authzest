@@ -168,9 +168,8 @@ tracked in [#152](https://github.com/casing1/authzest/issues/152). The host inte
 
 The private `OwnerReadFileSession` coordinates one current validated proposal through copy,
 before, exact diff, apply, after and restore decisions. It is available to a trusted host
-coordinator as an offline-tested backend. The public `owner-read-suggest --prepare-copy`
-continues to prepare the three inspection files. Connecting the two-guest runtime dispatcher
-and the public command remains part of #152.
+coordinator and is connected to `owner-read-suggest --file-workflow --runtime-config`.
+The public `owner-read-suggest --prepare-copy` prepares the three inspection files.
 
 Each stage displays the full current request, proposal, exact diffs, previous observations,
 private file identities and a session-bound plan ID. A decision is single-use and expires after
@@ -200,8 +199,65 @@ runtime dispatcher must also establish their origin, effective isolation and cle
 Temporary-file and fake-dispatcher tests cover the complete sequence, separate decisions and expiry,
 stale proposals, user edits, malformed or substituted evidence, independent-control mismatches,
 cleanup uncertainty and durable-write failures. These tests execute no proposed source or test code.
-The installed-candidate live generation, isolated execution, application and recovery demonstration
-remains pending.
+The complete CLI path has also been checked with a maintained proposal and four real isolated Linux
+guests. It observed the baseline assertion failure with 6/7 intended-policy matches, applied the exact
+change to a fresh copy, observed a passing regression with 7/7 matches, and restored the original
+source bytes. All four guests were removed. This proof uses a maintainer-authored adapter fixture.
+An installed-candidate proof with a real Codex-authored response uses its own current sharing
+and file-stage decisions. Retain its full evidence privately.
+
+### Running the approved copy workflow
+
+Use a POSIX Python installation and a reviewed, locally provisioned owner-read image. Docker Desktop
+or a rootful Linux Docker daemon must provide cgroup v2, seccomp, memory/swap/process/CPU limits and
+the fixed guest controls. The image build procedure appears above. The operator reviews the image
+contents and chooses its immutable ID. Runtime metadata comparison checks the declared configuration.
+Image provenance remains an operator trust input.
+
+Store the runtime JSON as a private, regular, single-link file with mode `0600`. All paths must be
+absolute and resolved. Parent directories must be owned by root or the current user and protected
+against group/other writes, with the usual sticky temporary-directory exception. On macOS,
+`/Applications` can be group-writable. A byte-identical copy of the reviewed Docker CLI in a private
+`0700` directory can supply `docker_executable`; record the copied file's SHA-256. The client must be
+executable and the Unix endpoint must refer to the reviewed local daemon.
+
+```json
+{
+  "schema_version": "1.0",
+  "docker_executable": "/ABSOLUTE/PRIVATE/docker",
+  "docker_sha256": "REVIEWED_64_CHARACTER_LOWERCASE_HEX",
+  "endpoint": "unix:///ABSOLUTE/LOCAL/docker.sock",
+  "daemon_id": "REVIEWED_LOCAL_DAEMON_ID",
+  "image_id": "sha256:REVIEWED_64_CHARACTER_LOWERCASE_HEX",
+  "platform": "linux/arm64"
+}
+```
+
+Replace the example values with the reviewed local values. `linux/amd64` is also supported. The
+workflow creates an empty private Docker configuration and passes a fixed environment to its CLI
+children. It pins and rechecks the runtime file, Docker executable and Unix socket. Runtime paths,
+metadata and captured logs stay outside the model request.
+
+```bash
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --preview-only
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --json
+```
+
+The offline preview displays the source-sharing request and full runtime review. The active command
+first requests a fresh `runtime` decision, then performs bounded read-only daemon/image preflight
+before requesting sharing approval. The current validated model response is the only proposal input.
+A `proposed-change` then presents separate copy, before, diff, apply, after and restore plans. Each
+plan includes the runtime pins, current artifact identities and previous observations. `cancel`
+stops the workflow and preserves any recovery requirement. `no-change`, `unknown` and `refused`
+finish without allocating a copy or starting guests.
+
+The human result shows before/after regression status, independent matches, file application,
+restoration and recovery. `--json` writes one final document on stdout; review packets and prompts
+use stderr. The result preserves the bounded phase captures and runtime observations. Privately
+retain that complete result and the reported copy/staging directories for inspection. Local
+filesystem and process-start operations have no universal wall-clock guarantee. A failed or
+interrupted cleanup retains uncertainty and refuses further source transitions.
 
 ## Offline input preview
 

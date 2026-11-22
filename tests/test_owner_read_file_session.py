@@ -549,3 +549,17 @@ def test_final_observation_interruption_still_closes_workspace(setup, monkeypatc
     assert flow._workspace._fd == -1
     assert value["workspace_state"] == "state-unconfirmed"
     assert value["recovery_required"] is True
+
+
+def test_fractional_deadline_rounds_earlier_and_cannot_extend_expiry(setup):
+    session, emit, approve, _, _, now, _, _ = setup
+    now[0] = 900.0000000000003
+
+    def answer_after_original_duration(prompt):
+        answer = approve(prompt)
+        now[0] += 300
+        return answer
+
+    value = session().run(emit=emit, read=answer_after_original_duration)
+    assert value["status"] == "expired"
+    assert value["copy"] is None and value["patch_application"] == "not-run"

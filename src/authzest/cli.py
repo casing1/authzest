@@ -303,6 +303,12 @@ def owner_read_suggest(
     prepare_copy: Annotated[
         bool, typer.Option(help="Review and stage a private baseline copy.")
     ] = False,
+    file_workflow: Annotated[
+        bool, typer.Option(help="Review and verify a repair in a fresh private copy.")
+    ] = False,
+    runtime_config: Annotated[
+        Path | None, typer.Option(help="Private reviewed owner-read Docker runtime configuration.")
+    ] = None,
     as_json: Annotated[
         bool, typer.Option("--json", help="Write the final JSON to stdout.")
     ] = False,
@@ -318,7 +324,13 @@ def owner_read_suggest(
     try:
         if preview_only:
             output.finish(
-                build_preview(model, timeout_seconds=timeout_seconds, prepare_copy=prepare_copy),
+                build_preview(
+                    model,
+                    timeout_seconds=timeout_seconds,
+                    prepare_copy=prepare_copy,
+                    file_workflow=file_workflow,
+                    runtime_config=runtime_config,
+                ),
                 preview=True,
             )
             return
@@ -329,6 +341,8 @@ def owner_read_suggest(
                 emit=output.emit,
                 read=output.read,
                 prepare_copy=prepare_copy,
+                file_workflow=file_workflow,
+                runtime_config=runtime_config,
             )
         )
     except (ContractError, KeyboardInterrupt, asyncio.CancelledError) as exc:
