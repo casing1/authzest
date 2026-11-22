@@ -4,6 +4,7 @@ import asyncio
 import builtins
 import hashlib
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -17,6 +18,8 @@ from authzest.owner_read_demo.checks import owner_read_controls
 from authzest.runner import _owner_read_copy_files as copies
 from authzest.runner import _owner_read_workflow as workflow
 from authzest.runner._owner_read_phase_result import validate_owner_read_phase
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="POSIX owner-read runtime workflow")
 
 SOURCE = 'def available_to_owner(state: str) -> bool:\n    return state in ("active", "archived")\n'
 TEST = (

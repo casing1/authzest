@@ -16,6 +16,8 @@ import pytest
 from authzest.runner import _owner_read_runtime as runtime
 from test_generated_repair_container_inspect import example
 
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="POSIX owner-read runtime workflow")
+
 
 @pytest.fixture(autouse=True)
 def no_execution_or_connections(monkeypatch):

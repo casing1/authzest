@@ -3,6 +3,7 @@
 import copy
 import hashlib
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -11,6 +12,8 @@ import pytest
 from authzest.codex.owner_read_suggestion import build_owner_read_request
 from authzest.owner_read_demo.checks import owner_read_controls
 from authzest.runner import _owner_read_docker_phase as module
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="POSIX owner-read runtime workflow")
 
 IMAGE = "sha256:" + "c" * 64
 SOURCE = 'def available_to_owner(state: str) -> bool:\n    return state in ("active", "archived")\n'

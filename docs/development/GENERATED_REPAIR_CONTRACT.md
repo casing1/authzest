@@ -203,7 +203,8 @@ The complete CLI path has also been checked with a maintained proposal and four 
 guests. It observed the baseline assertion failure with 6/7 intended-policy matches, applied the exact
 change to a fresh copy, observed a passing regression with 7/7 matches, and restored the original
 source bytes. All four guests were removed. This proof uses a maintainer-authored adapter fixture.
-A fresh installed-candidate proof with a real Codex-authored response remains pending.
+An installed-candidate proof with a real Codex-authored response uses its own current sharing
+and file-stage decisions. Retain its full evidence privately.
 
 ### Running the approved copy workflow
 
