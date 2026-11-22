@@ -17,7 +17,7 @@ export const messages = {
       "Sharing, decisions and execution stay in the CLI. Importing a result does not run code or change files.",
     importTitle: "Open a CLI result",
     importCopy:
-      "Choose the JSON saved with codex-generate --file-workflow --json. Only the selected content is sent to this local API for validation; it is not stored by the viewer.",
+      "Open the JSON saved by owner-read-suggest or codex-generate with --file-workflow --json. The selected content is sent to this local API for validation and kept only in the current view.",
     choose: "Result JSON · maximum 512 KiB",
     import: "Open result",
     importing: "Checking result…",
@@ -30,7 +30,7 @@ export const messages = {
       "Unable to open this result. Check that it is a supported workflow JSON and the local API is running.",
     tooLarge: "The file exceeds the 512 KiB import limit.",
     unsupported:
-      "Unsupported result kind or version. Use a generated file-workflow result, not a scan, preview or registered-template result.",
+      "Unsupported result kind or version. Open an owner-read suggestion or generated file-workflow result.",
     imported: "Imported record · authenticity not established",
     importedNote:
       "Format and content checks do not prove that a model, test or target ran. All displayed observations are claims in the chosen file, not a new check of the workspace.",
@@ -45,6 +45,7 @@ export const messages = {
     application: "Application history",
     copyState: "Current copy state in record",
     restoration: "Restoration",
+    recoveryRequired: "Recovery required",
     original: "Original checkout modified",
     unknown: "Unknown / not reported",
     yes: "Yes",
@@ -57,6 +58,10 @@ export const messages = {
     noPhase: "No phase receipt in this file. Execution is not established.",
     phaseStatus: "Phase status",
     testExit: "Generated test exit code",
+    regression: "Pytest regression",
+    httpStatus: "HTTP response status",
+    intendedCases: "Intended policy matches",
+    profileCases: "Expected profile matches",
     attempted: "Generated runtime attempted",
     cleanup: "Phase cleanup confirmed",
     profile: "Expected comparison profile",
@@ -65,9 +70,10 @@ export const messages = {
     cases: "Matching cases",
     requests: "Matching requests",
     sourceHash: "Application SHA-256",
+    ruleHash: "Rule SHA-256",
     testHash: "Test SHA-256",
     captures:
-      "Raw test output and per-request observations are not included in this export. Local log paths are never followed.",
+      "Raw test output and per-request observations are not included in this view. Local log paths are never followed.",
     source: "Source evidence",
     noSource:
       "Original source and declarations are unavailable in this record.",
@@ -136,7 +142,7 @@ export const messages = {
       "공유·결정·실행은 CLI에서 진행합니다. 결과를 열어도 코드를 실행하거나 파일을 바꾸지 않습니다.",
     importTitle: "CLI 결과 열기",
     importCopy:
-      "codex-generate --file-workflow --json으로 저장한 JSON을 선택하세요. 선택한 내용만 이 로컬 API에 보내 형식을 검사하며, 뷰어가 저장하지 않습니다.",
+      "owner-read-suggest 또는 codex-generate에서 --file-workflow --json으로 저장한 JSON을 선택하세요. 선택한 내용을 이 로컬 API에 보내 형식을 검사하고 현재 화면에서만 유지합니다.",
     choose: "결과 JSON · 최대 512 KiB",
     import: "결과 열기",
     importing: "결과 확인 중…",
@@ -149,7 +155,7 @@ export const messages = {
       "결과를 열지 못했습니다. 지원하는 워크플로 JSON인지, 로컬 API가 실행 중인지 확인하세요.",
     tooLarge: "파일이 512 KiB 가져오기 제한을 넘었습니다.",
     unsupported:
-      "지원하지 않는 결과 종류 또는 버전입니다. 스캔·미리보기·등록 템플릿 결과 대신 생성 파일 워크플로 결과를 선택하세요.",
+      "지원하지 않는 결과 종류 또는 버전입니다. 소유자 조회 제안 또는 생성 파일 워크플로 결과를 선택하세요.",
     imported: "가져온 기록 · 진위 미확립",
     importedNote:
       "형식과 내용 검사가 모델·테스트·대상 코드의 실행을 증명하지 않습니다. 표시된 관찰값은 선택한 파일의 기록이며 현재 workspace를 새로 검사한 결과가 아닙니다.",
@@ -164,6 +170,7 @@ export const messages = {
     application: "적용 이력",
     copyState: "기록된 현재 복사본 상태",
     restoration: "복구 상태",
+    recoveryRequired: "복구 필요",
     original: "원본 저장소 수정 여부",
     unknown: "불명 / 보고되지 않음",
     yes: "예",
@@ -177,6 +184,10 @@ export const messages = {
       "파일에 이 단계의 검사 기록이 없습니다. 실행을 확인할 수 없습니다.",
     phaseStatus: "검사 상태",
     testExit: "생성 테스트 종료 코드",
+    regression: "pytest 회귀 테스트",
+    httpStatus: "HTTP 응답 상태",
+    intendedCases: "의도한 정책 일치",
+    profileCases: "기대 프로필 일치 사례",
     attempted: "생성 코드 실행 시도",
     cleanup: "단계 정리 확인",
     profile: "대조 기준 프로필",
@@ -185,9 +196,10 @@ export const messages = {
     cases: "일치한 사례",
     requests: "일치한 요청",
     sourceHash: "앱 SHA-256",
+    ruleHash: "규칙 SHA-256",
     testHash: "테스트 SHA-256",
     captures:
-      "이 내보내기에는 테스트 원본 출력과 요청별 관찰값이 없습니다. 로컬 로그 경로를 따라 읽지 않습니다.",
+      "이 화면에는 테스트 원본 출력과 요청별 관찰값이 없습니다. 로컬 로그 경로를 따라 읽지 않습니다.",
     source: "소스 근거",
     noSource: "이 기록에 원본 소스와 선언 근거가 없습니다.",
     scenario: "관리 중인 사례",

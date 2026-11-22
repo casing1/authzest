@@ -7,8 +7,8 @@
 
 [Documentation index](../README.md) · [Generated file workflow](GENERATED_FILE_WORKFLOW.md)
 
-The source dashboard displays an explicitly selected generated-file workflow JSON and the existing
-static route inventory. It runs locally; website deployment is unnecessary. Sharing, decisions,
+The source dashboard displays an explicitly selected owner-read or generated-file workflow JSON and
+the existing static route inventory. It runs locally; website deployment is unnecessary. Sharing, decisions,
 generated-code execution, application and recovery remain in the CLI.
 
 ## Supported source installation
@@ -33,21 +33,39 @@ binaries are not advertised as complete active-workflow/UI installers.
 
 ## Import an existing result
 
-1. Prepare the final stdout JSON from an already completed
-   `codex-generate --file-workflow --json` invocation. Plans and interaction use stderr. When
-   separately running that effectful workflow, use a private output file with `umask 077` and
-   redirect only stdout. Viewing an existing result requires no new model request.
-2. Choose the workflow result file in the dashboard. A rejected import clears the previous result.
-   The English/Korean selector changes interface labels; source, diff and model text stay as recorded.
-3. Inspect the summary, stage decisions, generated test, exact diff, before/after comparisons,
-   failures and current copy/recovery state. A past after observation does not describe the current
-   restored-before file.
+1. Prepare the final stdout JSON from an `owner-read-suggest --file-workflow --runtime-config … --json`
+   invocation that you have already reviewed and run. Plans and interaction use stderr. Save stdout
+   in a private file with `umask 077`. Runtime preparation and the sharing, copy, before, diff, apply,
+   after and restore decisions are covered in the workflow contract. [Owner-read workflow contract](../development/GENERATED_REPAIR_CONTRACT.md#running-the-approved-copy-workflow)
+2. Choose that result file in the dashboard. A rejected import clears the previous result.
+   The English/Korean selector changes interface labels. Source, diff and model text stay as recorded.
+3. Inspect the summary, stage decisions, source, generated regression, exact diffs, before/after
+   comparisons and restoration or recovery requirements. The after column describes the tested copy
+   before restoration.
 
-Only `codex-generated-file-workflow` records are supported. New source CLI records declare
-`schema_version: "1.0"` and bound `source_evidence`. Older records without the top-level version are
-labeled `legacy-unversioned`; missing before source and declarations stay unavailable. Static scan
-JSON, registered-template results, previews and arbitrary JSON are not converted into genuine
-generation evidence.
+Opening a saved result uses the selected bytes and requires no new model request. A complete current
+owner-read result uses `kind: "owner-read-suggestion"` and `schema_version: "1.0"`. The viewer also
+accepts suggestion-only, refusal and incomplete records with their available observations. Before
+source and policy are shown when included in the selected record. Older owner-read records without
+that source evidence display an unavailable warning.
+
+The maintained archived-note case displays these expected values.
+
+| Phase  | Owner's archived note | Pytest regression        | Intended policy matches |
+| ------ | --------------------- | ------------------------ | ----------------------- |
+| Before | HTTP 403              | Assertion failed, exit 1 | 6/7                     |
+| After  | HTTP 200              | Passed, exit 0           | 7/7                     |
+
+The separate expected-profile count can be 7/7 in both phases. Before compares the observed defective
+baseline with its expected baseline responses. Intended-policy matches show how many of the seven
+observations satisfy the target policy. Check restoration and recovery state alongside these counts.
+A restored copy contains the original source bytes. A recovery-required record keeps that condition
+visible even when an earlier after observation passed.
+
+The older `codex-generated-file-workflow` import remains supported. Its version 1.0 records include
+bound `source_evidence`. Older records without the top-level version carry `legacy-unversioned` and
+leave missing before source and declarations unavailable. Static scan JSON, registered-template
+results, previews and arbitrary JSON have their own formats and are rejected by this workflow importer.
 
 ## Import boundary and interpretation
 

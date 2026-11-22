@@ -106,13 +106,52 @@ function PhaseCard({
   phase,
   title,
   language,
+  ownerRead,
 }: {
   phase: Phase | null;
   title: string;
   language: Language;
+  ownerRead: boolean;
 }) {
   const t = textFor(language);
   const comparison = phase?.comparison;
+  const facts: [string, unknown][] = [[t.phaseStatus, phase?.status]];
+  if (ownerRead) {
+    facts.push(
+      [t.httpStatus, phase?.response_status],
+      [t.regression, phase?.regression_status],
+    );
+  }
+  facts.push(
+    [t.testExit, phase?.test_exit_code],
+    [t.attempted, phase?.generated_runtime_attempted],
+    [t.cleanup, phase?.cleanup_confirmed],
+    [t.profile, comparison?.expected_profile],
+    [t.comparison, comparison?.comparison_status],
+    [t.matches, comparison?.matches_expected_profile],
+    [
+      ownerRead ? t.profileCases : t.cases,
+      comparison
+        ? `${comparison.matching_case_count} / ${comparison.case_count}`
+        : null,
+    ],
+  );
+  if (ownerRead) {
+    facts.push([
+      t.intendedCases,
+      comparison?.intended_match_count !== null &&
+      comparison?.intended_match_count !== undefined
+        ? `${comparison.intended_match_count} / ${comparison.case_count}`
+        : null,
+    ]);
+  } else {
+    facts.push([
+      t.requests,
+      comparison
+        ? `${comparison.matching_request_count} / ${comparison.request_count}`
+        : null,
+    ]);
+  }
   return (
     <article className="phase-card">
       <h3>{title}</h3>
@@ -120,36 +159,16 @@ function PhaseCard({
         <p className="muted">{t.noPhase}</p>
       ) : (
         <>
-          <Facts
-            language={language}
-            items={[
-              [t.phaseStatus, phase.status],
-              [t.testExit, phase.test_exit_code],
-              [t.attempted, phase.generated_runtime_attempted],
-              [t.cleanup, phase.cleanup_confirmed],
-              [t.profile, comparison?.expected_profile],
-              [t.comparison, comparison?.comparison_status],
-              [t.matches, comparison?.matches_expected_profile],
-              [
-                t.cases,
-                comparison
-                  ? `${comparison.matching_case_count} / ${comparison.case_count}`
-                  : null,
-              ],
-              [
-                t.requests,
-                comparison
-                  ? `${comparison.matching_request_count} / ${comparison.request_count}`
-                  : null,
-              ],
-            ]}
-          />
+          <Facts language={language} items={facts} />
           <details className="hash-details">
             <summary>SHA-256</summary>
             <Facts
               language={language}
               items={[
-                [t.sourceHash, phase.application_sha256],
+                [
+                  ownerRead ? t.ruleHash : t.sourceHash,
+                  phase.application_sha256,
+                ],
                 [t.testHash, phase.test_sha256],
               ]}
             />
@@ -185,6 +204,20 @@ export default function WorkflowResult({ view, language }: Props) {
     session = view.session,
     source = view.source_evidence,
     proposal = view.proposal;
+  const ownerRead = view.record_kind === "owner-read-suggestion";
+  const summaryFacts: [string, unknown][] = [
+    [t.workflow, summary.status],
+    [t.proposal, summary.proposal_status],
+    [t.exit, summary.exit_code],
+    [t.execution, summary.execution_status],
+    [t.application, summary.patch_application],
+    [t.copyState, summary.current_copy_state],
+    [t.restoration, summary.restoration_status],
+    [t.original, summary.original_checkout_modified],
+  ];
+  if (ownerRead || summary.recovery_required !== undefined) {
+    summaryFacts.push([t.recoveryRequired, summary.recovery_required]);
+  }
   return (
     <div className="workflow-result">
       <aside className="import-notice">
@@ -198,19 +231,7 @@ export default function WorkflowResult({ view, language }: Props) {
         </aside>
       ) : null}
       <Panel title={t.summary}>
-        <Facts
-          language={language}
-          items={[
-            [t.workflow, summary.status],
-            [t.proposal, summary.proposal_status],
-            [t.exit, summary.exit_code],
-            [t.execution, summary.execution_status],
-            [t.application, summary.patch_application],
-            [t.copyState, summary.current_copy_state],
-            [t.restoration, summary.restoration_status],
-            [t.original, summary.original_checkout_modified],
-          ]}
-        />
+        <Facts language={language} items={summaryFacts} />
         <FailureNotice
           failure={view.failure}
           title={t.errorTitle}
@@ -224,11 +245,13 @@ export default function WorkflowResult({ view, language }: Props) {
             title={t.before}
             phase={session?.checks.before ?? null}
             language={language}
+            ownerRead={ownerRead}
           />
           <PhaseCard
             title={t.after}
             phase={session?.checks.after ?? null}
             language={language}
+            ownerRead={ownerRead}
           />
         </div>
         <p className="footnote">{t.captures}</p>
@@ -257,15 +280,21 @@ export default function WorkflowResult({ view, language }: Props) {
               <summary>SHA-256</summary>
               <code>{source.source.sha256}</code>
             </details>
-            <h3>{t.declarations}</h3>
-            {source.declarations.map((item, index) => (
-              <details className="declaration" key={index}>
-                <summary>{visibleText(declarationTitle(item, index))}</summary>
-                <pre tabIndex={0}>
-                  {visibleText(JSON.stringify(item, null, 2))}
-                </pre>
-              </details>
-            ))}
+            {!ownerRead || source.declarations.length > 0 ? (
+              <>
+                <h3>{t.declarations}</h3>
+                {source.declarations.map((item, index) => (
+                  <details className="declaration" key={index}>
+                    <summary>
+                      {visibleText(declarationTitle(item, index))}
+                    </summary>
+                    <pre tabIndex={0}>
+                      {visibleText(JSON.stringify(item, null, 2))}
+                    </pre>
+                  </details>
+                ))}
+              </>
+            ) : null}
           </>
         ) : (
           <p className="muted">{t.noSource}</p>

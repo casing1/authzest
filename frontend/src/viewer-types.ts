@@ -9,6 +9,8 @@ export type Phase = {
   candidate: string | null;
   status: string | null;
   test_exit_code: number | null;
+  regression_status?: string | null;
+  response_status?: number | null;
   cleanup_confirmed: boolean | null;
   generated_runtime_attempted: boolean | null;
   application_sha256: string | null;
@@ -21,6 +23,7 @@ export type Phase = {
     matches_expected_profile: boolean | null;
     case_count: number;
     matching_case_count: number;
+    intended_match_count?: number | null;
     request_count: number;
     matching_request_count: number;
   } | null;
@@ -28,6 +31,7 @@ export type Phase = {
 export type WorkflowView = {
   schema_version: "1.0";
   kind: "authzest-workflow-view";
+  record_kind?: "owner-read-suggestion";
   record_version: "1.0" | "legacy-unversioned";
   provenance: "imported-unverified";
   assessment: {
@@ -46,6 +50,7 @@ export type WorkflowView = {
     applied: boolean | null;
     current_copy_state: string | null;
     restoration_status: string | null;
+    recovery_required?: boolean | null;
     original_checkout_modified: boolean | null;
   };
   source_evidence: {

@@ -57,3 +57,27 @@ def test_enforces_streamed_limit_even_when_content_length_is_forged():
 def test_rejects_duplicate_keys_without_echoing_uploaded_text():
     response = request(b'{"private-secret":1,"private-secret":2}')
     assert response.status_code == 400 and "private-secret" not in response.text
+
+
+def test_projects_owner_read_result_through_existing_read_only_api():
+    from test_owner_read_result_viewer import record as owner_record
+
+    response = request(json.dumps(owner_record(source=False)).encode())
+    assert response.status_code == 200
+    value = response.json()
+    assert value["record_kind"] == "owner-read-suggestion"
+    assert value["provenance"] == "imported-unverified"
+    assert value["availability"]["before_source"] is False
+    assert value["session"]["checks"]["before"]["comparison"]["intended_match_count"] == 6
+    assert value["session"]["checks"]["after"]["response_status"] == 200
+    assert "PRIVATE-DO-NOT" not in response.text
+
+
+def test_rejects_contradictory_owner_read_success_without_echoing_metadata():
+    from test_owner_read_result_viewer import record as owner_record
+
+    value = owner_record()
+    value["file_workflow"]["guest_cleanup_confirmed"] = False
+    response = request(json.dumps(value).encode())
+    assert response.status_code == 400
+    assert "PRIVATE-DO-NOT" not in response.text
