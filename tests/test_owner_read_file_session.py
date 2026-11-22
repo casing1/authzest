@@ -364,3 +364,65 @@ def test_dispatcher_edit_followed_by_exception_is_reported_as_current_uncertaint
     assert value["guest_cleanup_confirmed"] is None
     assert value["recovery_required"] is True
     assert changed[0].read_text() == "User edit during runtime\n"
+
+
+@pytest.mark.parametrize("exception", [False, True])
+def test_before_guest_cleanup_uncertainty_requires_recovery_without_a_source_change(
+    setup, exception
+):
+    session, emit, approve, plans, _, _, _, _ = setup
+
+    def dispatch(capture, *, guard):
+        if exception:
+            raise RuntimeError("Before guest cleanup unknown")
+        return evidence(capture, cleanup=False)
+
+    value = session(dispatch).run(emit=emit, read=approve)
+    assert value["status"] == ("dispatcher-failed" if exception else "before-failed")
+    assert value["stages"]["before"]["guest_dispatch_started"] is True
+    assert value["guest_cleanup_confirmed"] is (None if exception else False)
+    assert value["recovery_required"] is True
+    assert value["restoration_status"] == "not-needed"
+    assert value["patch_application"] == "not-run"
+    assert plans[-1]["stage"] == "before"
+
+
+def test_guard_expiry_inside_after_dispatch_cannot_be_treated_as_no_dispatch(setup):
+    session, emit, approve, plans, _, now, _, _ = setup
+
+    def dispatch(capture, *, guard):
+        if capture["phase"] == "after":
+            now[0] += 300
+            guard()
+        return evidence(capture)
+
+    value = session(dispatch).run(emit=emit, read=approve)
+    assert value["status"] == "expired"
+    assert value["stages"]["after"]["guest_dispatch_started"] is True
+    assert value["stages"]["after"]["status"] == "expired"
+    assert value["after"] is None and value["guest_cleanup_confirmed"] is None
+    assert value["recovery_required"] is True and value["restoration_status"] == "required"
+    assert value["stages"]["restore"]["status"] == "not-run"
+    assert plans[-1]["stage"] == "after"
+    assert (Path(value["copy"]["path"]) / "availability.py").read_text() == SOURCE
+
+
+def test_descriptor_cleanup_uncertainty_remains_recovery_required_after_restoration(
+    setup, monkeypatch
+):
+    from authzest.runner._owner_read_workspace import OwnerReadWorkspace
+
+    session, emit, approve, _, _, _, _, _ = setup
+    close = OwnerReadWorkspace.close
+
+    def uncertain_close(workspace):
+        close(workspace)
+        raise OSError("Descriptor closure unconfirmed")
+
+    monkeypatch.setattr(OwnerReadWorkspace, "close", uncertain_close)
+    value = session().run(emit=emit, read=approve)
+    assert value["status"] == "descriptor-cleanup-unconfirmed"
+    assert value["descriptor_cleanup_confirmed"] is False
+    assert value["recovery_required"] is True
+    assert value["restoration_status"] == "restored"
+    assert value["exit_code"] == 1

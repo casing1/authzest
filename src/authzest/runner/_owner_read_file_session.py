@@ -89,7 +89,9 @@ class OwnerReadFileSession:
             "request_id": self._current["request"]["request_id"],
             "sharing_id": sharing_id,
             "copy": None,
-            "stages": {stage: {"status": "not-run"} for stage in _STAGES},
+            "stages": {
+                stage: {"status": "not-run", "guest_dispatch_started": False} for stage in _STAGES
+            },
             "before": None,
             "after": None,
             "patch_application": "not-run",
@@ -192,8 +194,9 @@ class OwnerReadFileSession:
         }
         self._event(phase, {"status": "dispatch-intent", "plan_id": plan_id})
         guard()
-        self._result["stages"][phase]["status"] = "dispatched"
-        self._result["guest_cleanup_confirmed"] = None
+        self._result["stages"][phase].update(status="dispatched", guest_dispatch_started=True)
+        previous_recovery = self._result["recovery_required"]
+        self._result.update(guest_cleanup_confirmed=None, recovery_required=True)
         # An exception gives no evidence that the isolated guests were removed.
         observed = self._dispatcher(dict(capture), guard=guard)
         if (
@@ -230,6 +233,8 @@ class OwnerReadFileSession:
             raise _Stop("invalid-phase-result") from None
         self._result[phase] = value
         self._result["guest_cleanup_confirmed"] = value["cleanup_confirmed"]
+        if value["cleanup_confirmed"] is True:
+            self._result["recovery_required"] = previous_recovery
         self._check()
         self._event(
             phase,
@@ -309,13 +314,7 @@ class OwnerReadFileSession:
             except _Stop as exc:
                 result["status"] = exc.status
                 after = result["after"]
-                no_dispatch = after is None and result["stages"]["after"]["status"] in (
-                    "declined",
-                    "expired",
-                    "cancelled",
-                    "awaiting-decision",
-                    "not-run",
-                )
+                no_dispatch = not result["stages"]["after"]["guest_dispatch_started"]
                 if (after is not None and after["cleanup_confirmed"] is True) or no_dispatch:
                     self._restore(emit, read)
                 raise
@@ -366,6 +365,7 @@ class OwnerReadFileSession:
                     result.update(
                         status="descriptor-cleanup-unconfirmed",
                         descriptor_cleanup_confirmed=False,
+                        recovery_required=True,
                         exit_code=1,
                     )
         return json.loads(canonical(result))
