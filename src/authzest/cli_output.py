@@ -620,6 +620,33 @@ def format_owner_read_suggestion(value: dict) -> str:
         "Test execution: " + _display_value(value.get("execution_status")),
         "File application: " + _display_value(value.get("patch_application")),
     ]
+    workflow = value.get("file_workflow")
+    if workflow:
+        lines.extend(
+            [
+                "File workflow: " + _display_value(workflow.get("status")),
+                "Restoration: " + _display_value(workflow.get("restoration_status")),
+                "Recovery required: " + _display_value(workflow.get("recovery_required")),
+            ]
+        )
+        for stage in ("before", "after"):
+            phase = workflow.get(stage)
+            if phase:
+                regression = phase.get("regression") or {}
+                comparison = phase.get("comparison") or {}
+                lines.append(
+                    stage.title()
+                    + ": "
+                    + _display_value(phase.get("status"))
+                    + " / pytest "
+                    + _display_value(regression.get("status"))
+                    + " / independent checks "
+                    + _display_value(comparison.get("intended_matches"))
+                    + "/7"
+                )
+        retained = workflow.get("copy") or {}
+        if retained.get("path"):
+            lines.append("Retained directory: " + _display_value(retained["path"]))
     copy = value.get("copy")
     if copy:
         lines.append("Private copy: " + _display_value(copy["status"]))
@@ -702,6 +729,10 @@ class WorkflowOutput:
             # Small redacted errors retain stderr in human mode; explicit JSON
             # mode includes application failures in its single stdout result.
             typer.echo(json_output(value), err=error and not self.as_json)
+        elif preview and value.get("kind") == "owner-read-file-offline-preview":
+            typer.echo(format_sharing_preview(value["sharing_preview"]))
+            typer.echo(section("Reviewed local runtime", value["runtime_review"]))
+            typer.echo(section("Separate file decisions", value["stages"]))
         elif preview and value.get("kind") == "owner-read-copy-offline-preview":
             typer.echo(format_sharing_preview(value["sharing_preview"]))
             typer.echo(section("Private files and expected observations", value["local_copy"]))

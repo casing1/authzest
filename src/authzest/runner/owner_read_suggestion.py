@@ -67,10 +67,24 @@ def _preview(request: OwnerReadRequest, timeout_seconds: float, nonce: str) -> d
 
 
 def build_preview(
-    model: str, *, timeout_seconds: float = 120, prepare_copy: bool = False
+    model: str,
+    *,
+    timeout_seconds: float = 120,
+    prepare_copy: bool = False,
+    file_workflow: bool = False,
+    runtime_config=None,
 ) -> dict[str, Any]:
     """Build an offline, complete sharing preview for a new invocation."""
     sharing = _preview(build_owner_read_request(model), timeout_seconds, secrets.token_hex(16))
+    if file_workflow or runtime_config is not None:
+        from authzest.runner._owner_read_workflow import file_preview
+
+        return file_preview(
+            sharing,
+            file_workflow=file_workflow,
+            prepare_copy=prepare_copy,
+            runtime_config=runtime_config,
+        )
     if not prepare_copy:
         return sharing
     from authzest.runner.owner_read_copy import copy_spec
@@ -104,7 +118,7 @@ def _changes(request: OwnerReadRequest, proposal: dict[str, Any]) -> list[dict[s
     ]
 
 
-async def run_suggestion(
+async def _run_suggestion(
     model: str,
     *,
     timeout_seconds: float = 120,
@@ -112,6 +126,8 @@ async def run_suggestion(
     read: Callable[[str], str] = input,
     adapter_factory: Callable[..., Any] | None = None,
     prepare_copy: bool = False,
+    file_context=None,
+    progress=None,
 ) -> dict[str, Any]:
     preview = build_preview(model, timeout_seconds=timeout_seconds)
     emit(json.dumps(preview, ensure_ascii=True, indent=2, allow_nan=False))
@@ -133,6 +149,10 @@ async def run_suggestion(
         "patch_application": "not-run",
         "original_checkout_modified": False,
     }
+    if progress is not None:
+        progress["result"] = result
+    if file_context is not None:
+        result["file_workflow"] = {"status": "not-started", "recovery_required": False}
     if prepare_copy:
         from authzest.runner.owner_read_copy import copy_supported, prepare_current_copy
 
@@ -146,6 +166,8 @@ async def run_suggestion(
         answer = "cancel"
     if answer == "cancel":
         result.update(sharing_decision="cancel", status="cancelled")
+        if file_context is not None:
+            result["exit_code"] = 130
         return result
     if answer != f"share {preview['sharing_id']}":
         return result
@@ -162,6 +184,8 @@ async def run_suggestion(
         result.update(status="preview-changed", exit_code=1)
         return result
 
+    if file_context is not None:
+        file_context[0].check()
     stage = "adapter-setup"
     adapter = None
     try:
@@ -191,7 +215,7 @@ async def run_suggestion(
         result.update(status="suggestion-failed", exit_code=1, failure=failure)
         return result
     result.update(status=proposal["status"], proposal=proposal, diffs=diffs)
-    if prepare_copy and proposal["status"] == "proposed-change":
+    if (prepare_copy or file_context is not None) and proposal["status"] == "proposed-change":
 
         def current_plan_inputs():
             rebuilt = validate_owner_read_request(build_owner_read_request(model))
@@ -203,8 +227,72 @@ async def run_suggestion(
                 raise ContractError("Proposed diffs changed", code="validation-identity")
             return rebuilt, artifacts, exact_diffs
 
-        result["copy"] = prepare_current_copy(
-            sharing_id=preview["sharing_id"], inputs=current_plan_inputs, emit=emit, read=read
-        )
-        result["exit_code"] = result["copy"]["exit_code"]
+        if file_context is not None:
+            from authzest.runner._owner_read_file_session import OwnerReadFileSession
+
+            runtime, dispatcher = file_context
+            session = OwnerReadFileSession(
+                sharing_id=preview["sharing_id"],
+                inputs=current_plan_inputs,
+                dispatcher=dispatcher,
+                runtime_context=runtime.review_dict(),
+                runtime_guard=runtime.check,
+            )
+            observed = session.run(emit=emit, read=read)
+            result.update(
+                file_workflow=observed,
+                execution_status="completed"
+                if all(
+                    observed[stage] is not None and observed[stage]["status"] == "matched"
+                    for stage in ("before", "after")
+                )
+                else "partial"
+                if any(
+                    observed["stages"][stage]["guest_dispatch_started"]
+                    for stage in ("before", "after")
+                )
+                else "not-run",
+                patch_application=observed["patch_application"],
+                restoration_status=observed["restoration_status"],
+                exit_code=observed["exit_code"],
+            )
+        else:
+            result["copy"] = prepare_current_copy(
+                sharing_id=preview["sharing_id"], inputs=current_plan_inputs, emit=emit, read=read
+            )
+            result["exit_code"] = result["copy"]["exit_code"]
     return result
+
+
+async def run_suggestion(
+    model: str,
+    *,
+    timeout_seconds: float = 120,
+    emit: Callable[[str], Any] = print,
+    read: Callable[[str], str] = input,
+    adapter_factory: Callable[..., Any] | None = None,
+    prepare_copy: bool = False,
+    file_workflow: bool = False,
+    runtime_config=None,
+) -> dict[str, Any]:
+    if file_workflow or runtime_config is not None:
+        from authzest.runner._owner_read_workflow import run_file_workflow
+
+        return await run_file_workflow(
+            model,
+            timeout_seconds=timeout_seconds,
+            emit=emit,
+            read=read,
+            adapter_factory=adapter_factory,
+            prepare_copy=prepare_copy,
+            file_workflow=file_workflow,
+            runtime_config=runtime_config,
+        )
+    return await _run_suggestion(
+        model,
+        timeout_seconds=timeout_seconds,
+        emit=emit,
+        read=read,
+        adapter_factory=adapter_factory,
+        prepare_copy=prepare_copy,
+    )

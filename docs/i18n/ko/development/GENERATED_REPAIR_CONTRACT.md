@@ -157,8 +157,8 @@ Linux arm64 스모크 테스트에서 패키지의 테스트와 관리자가 작
 
 비공개 `OwnerReadFileSession`은 현재 검증된 제안 1개에 대해 복사본, before, 정확한 diff,
 적용, after, 복구 결정을 순서대로 조율합니다. 신뢰하는 호스트 조율기가 사용할 수 있는
-오프라인 검증 백엔드입니다. 공개 `owner-read-suggest --prepare-copy`는 검토용 파일 3개를
-준비합니다. 두 guest 런타임 dispatcher와 공개 명령 연결은 #152의 남은 작업입니다.
+백엔드이며 `owner-read-suggest --file-workflow --runtime-config`에 연결되어 있습니다.
+공개 `owner-read-suggest --prepare-copy`는 검토용 파일 3개를 준비합니다.
 
 각 단계는 현재 요청·제안·정확한 diff, 앞선 관찰 결과, 비공개 파일 식별자와 세션에 연결된
 계획 ID를 모두 표시합니다. 결정은 1회용이며 최대 300초 후 만료됩니다. 현재 입력을 다시
@@ -184,8 +184,61 @@ compare-and-swap을 제공하지 않으므로 같은 OS 계정의 동시 쓰기 
 
 임시 파일과 모의 dispatcher 테스트는 전체 순서, 개별 결정·만료, 오래된 제안, 사용자 편집,
 잘못되거나 바뀐 증거, 독립 검사 불일치, 정리 미확인과 durable 쓰기 실패를 다룹니다.
-이 테스트에서는 제안된 소스나 테스트 코드를 실행하지 않습니다. 설치 후보의 실제 생성,
-격리 실행, 적용과 복구 통합 시연은 남아 있습니다.
+이 회귀 테스트에서는 제안된 소스나 테스트 코드를 실행하지 않습니다. 별도로 유지보수자 작성
+제안과 실제 격리 Linux guest 4개를 사용해 CLI 전체 경로를 확인했습니다. 기준 단언 실패와
+정책 일치 6/7, 새 복사본의 정확한 diff 적용, 수정 후 회귀 통과와 7/7, 원래 소스 바이트 복구를
+확인하고 guest 4개를 모두 제거했습니다. 이 검증은 유지보수자가 작성한 adapter fixture를
+사용했습니다. 실제 Codex 응답으로 같은 설치 후보에서 수행하는 새 통합 시연은 남아 있습니다.
+
+### 승인형 복사본 흐름 실행
+
+POSIX Python 설치와 검토 후 로컬에 준비한 owner-read 이미지를 사용합니다. Docker Desktop 또는
+rootful Linux Docker는 cgroup v2, seccomp, 메모리·swap·프로세스·CPU 제한과 고정 guest 제어를
+제공해야 합니다. 이미지 빌드 절차는 위에 있습니다. 운영자가 이미지 내용을 검토하고 불변 ID를
+선택합니다. 런타임 메타데이터 대조는 선언한 설정을 확인하며 이미지 출처는 운영자가 신뢰하는
+입력입니다.
+
+런타임 JSON은 `0600` 권한의 비공개 일반 파일로 저장하고 하드 링크를 사용하지 않습니다.
+경로는 모두 절대 경로이며 심볼릭 링크를 해소한 값이어야 합니다. 상위 디렉터리는 root 또는
+현재 사용자 소유이며 group/other 쓰기를 차단합니다. 일반적인 sticky 임시 디렉터리는 예외입니다.
+macOS의 `/Applications`는 group 쓰기가 허용될 수 있습니다. 검토한 Docker CLI와 바이트가
+동일한 사본을 비공개 `0700` 디렉터리에 두고 그 경로와 SHA-256을 지정할 수 있습니다. CLI는
+실행 가능해야 하며 Unix endpoint는 검토한 로컬 daemon을 가리켜야 합니다.
+
+```json
+{
+  "schema_version": "1.0",
+  "docker_executable": "/ABSOLUTE/PRIVATE/docker",
+  "docker_sha256": "REVIEWED_64_CHARACTER_LOWERCASE_HEX",
+  "endpoint": "unix:///ABSOLUTE/LOCAL/docker.sock",
+  "daemon_id": "REVIEWED_LOCAL_DAEMON_ID",
+  "image_id": "sha256:REVIEWED_64_CHARACTER_LOWERCASE_HEX",
+  "platform": "linux/arm64"
+}
+```
+
+예시 값을 검토한 로컬 값으로 바꿉니다. `linux/amd64`도 지원합니다. 흐름은 비어 있는 비공개
+Docker 설정을 만들고 CLI 자식에게 고정 환경을 전달합니다. 런타임 파일, Docker 실행 파일과
+Unix socket을 고정하고 재확인합니다. 런타임 경로·메타데이터·수집 로그는 모델 요청에 포함되지 않습니다.
+
+```bash
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --preview-only
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json
+authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --json
+```
+
+오프라인 미리보기는 공유 요청과 전체 런타임 검토 자료를 표시합니다. 실제 명령은 새 `runtime`
+결정을 받은 뒤 제한된 읽기 전용 daemon·이미지 준비 검사를 수행하고 공유 승인을 요청합니다.
+현재 호출에서 검증한 모델 응답만 제안 입력으로 사용합니다. `proposed-change`이면 복사본,
+before, diff, 적용, after, 복구 계획을 각각 제시합니다. 각 계획은 런타임 고정 정보, 현재
+파일 식별자와 앞선 관찰 결과를 포함합니다. `cancel`은 즉시 중단하고 복구 필요 상태를 보존합니다.
+`no-change`, `unknown`, `refused`는 복사본이나 guest 생성 없이 종료합니다.
+
+사람용 결과는 전후 회귀 상태, 독립 일치 수, 적용·복구·복구 필요 상태를 표시합니다. `--json`은
+stdout에 최종 문서 하나를 쓰고 검토 자료와 프롬프트는 stderr로 보냅니다. 한도 내 단계 출력과
+런타임 관찰 결과를 보존합니다. 전체 결과와 출력에 표시한 복사본·staging 디렉터리는 비공개로
+보관해 점검할 수 있습니다. 로컬 파일시스템·프로세스 기동에는 보편적인 전체 시간 상한이 없습니다.
+정리 실패·중단은 불확실성을 보존하며 후속 소스 전환을 거절합니다.
 
 ## 오프라인 입력 미리보기
 

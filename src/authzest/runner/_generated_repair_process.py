@@ -62,6 +62,8 @@ class _State:
     cleanup_confirmed: bool = False
     group_absent: bool = False
     close_uncertain: bool = False
+    input_stream: object = None
+    input_closed: bool = False
 
 
 class ProcessPool:
@@ -219,11 +221,19 @@ class ProcessPool:
             self._busy = False
 
     def start(
-        self, argv, env, deadline: float, label: str, *, cwd: str | None = None
+        self,
+        argv,
+        env,
+        deadline: float,
+        label: str,
+        *,
+        cwd: str | None = None,
+        input_bytes: bytes | None = None,
     ) -> ProcessHandle:
         """Spawn exactly supplied data; command policy belongs to the caller."""
         self._enter()
         state = None
+        failure = None
         try:
             deadline = self._deadline(deadline)
             if (
@@ -246,6 +256,10 @@ class ProcessPool:
                 )
                 or sum(len(key) + len(value.encode()) for key, value in env.items()) > 65_536
                 or (cwd is not None and (type(cwd) is not str or not os.path.isabs(cwd)))
+                or (
+                    input_bytes is not None
+                    and (type(input_bytes) is not bytes or len(input_bytes) > 512)
+                )
                 or type(label) is not str
                 or re.fullmatch(r"[A-Za-z0-9_.-]{1,64}", label) is None
                 or len(self._states) >= 64
@@ -260,7 +274,7 @@ class ProcessPool:
             state.process = subprocess.Popen(
                 list(argv),
                 env=dict(env),
-                stdin=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL if input_bytes is None else subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=False,
@@ -269,6 +283,8 @@ class ProcessPool:
                 **({"cwd": cwd} if cwd is not None else {}),
             )
             process = state.process
+            if input_bytes is not None:
+                state.input_stream = process.stdin
             if type(process.pid) is not int or process.pid <= 0:
                 self._raise("invalid-child-handle", state)
             for name in ("stdout", "stderr"):
@@ -276,17 +292,70 @@ class ProcessPool:
                 state.streams[name] = stream
                 os.set_blocking(stream.fileno(), False)
                 self._selector.register(stream, selectors.EVENT_READ, (state, name))
+            if input_bytes is not None:
+                self._write_input(state, input_bytes, deadline)
             self._deadline(deadline)
             return handle
-        except ProcessError:
+        except ProcessError as error:
+            failure = error
             raise
-        except Exception:
+        except Exception as error:
+            failure = error
             self._raise("process-start-failed", state)
         except BaseException as error:
+            failure = error
             self._cancel(error)
             raise
         finally:
-            self._busy = False
+            try:
+                if state is not None:
+                    self._close_input(state)
+            except BaseException:
+                if failure is None:
+                    raise
+            finally:
+                self._busy = False
+
+    def _close_input(self, state: _State) -> None:
+        if state.input_stream is None or state.input_closed:
+            return
+        try:
+            state.input_stream.close()
+            state.input_closed = True
+        except BaseException:
+            state.close_uncertain = True
+            self._record("input-pipe-cleanup-unconfirmed", state)
+            raise
+
+    def _write_input(self, state: _State, data: bytes, deadline: float) -> None:
+        # At most POSIX's minimum PIPE_BUF enters a fresh empty pipe. Nonblocking
+        # writes still refuse unavailable capacity instead of waiting for a reader.
+        failure = None
+        try:
+            descriptor = state.input_stream.fileno()
+            os.set_blocking(descriptor, False)
+            remaining = memoryview(data)
+            while remaining:
+                self._deadline(deadline)
+                try:
+                    written = os.write(descriptor, remaining)
+                except InterruptedError:
+                    continue
+                if type(written) is not int or not 0 < written <= len(remaining):
+                    self._raise("process-input-incomplete", state)
+                remaining = remaining[written:]
+            self._deadline(deadline)
+        except BaseException as exc:
+            failure = exc
+            if isinstance(exc, Exception) and not isinstance(exc, ProcessError):
+                self._record("process-input-failed", state)
+            raise
+        finally:
+            try:
+                self._close_input(state)
+            except BaseException:
+                if failure is None:
+                    raise
 
     def _close_stream(self, state: _State, name: str) -> None:
         if name in state.closed:
@@ -438,6 +507,10 @@ class ProcessPool:
                 except BaseException as error:
                     failed(error, "group-signal-failed", state)
             for state in self._states:
+                try:
+                    self._close_input(state)
+                except BaseException as error:
+                    failed(error, "input-pipe-cleanup-unconfirmed", state)
                 for name in ("stdout", "stderr"):
                     try:
                         self._close_stream(state, name)
@@ -463,6 +536,7 @@ class ProcessPool:
                         state.process.returncode is not None
                         and state.group_absent
                         and state.closed == {"stdout", "stderr"}
+                        and (state.input_stream is None or state.input_closed)
                         and not state.close_uncertain
                     )
                     unresolved |= state.process.returncode is None or not state.group_absent
