@@ -287,7 +287,8 @@ class OwnerReadFileSession:
             result["copy"] = copied
             result["stages"]["copy"]["status"] = copied["status"]
             if copied["status"] != "prepared":
-                raise _Stop("copy-incomplete")
+                result["recovery_required"] = copied.get("path") is not None
+                raise _Stop("cancelled" if copied.get("interrupted") else "copy-incomplete")
             self._workspace = OwnerReadWorkspace(
                 copied,
                 baseline,

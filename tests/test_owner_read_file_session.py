@@ -478,3 +478,28 @@ def test_interrupted_apply_intent_preserves_workspace_failure_metadata(setup, mo
     assert value["workspace_failure"]["source_replace_attempted"] is False
     assert value["workspace_failure"]["source_replaced"] is False
     assert value["descriptor_cleanup_confirmed"] is True
+
+
+@pytest.mark.parametrize("interrupted", [False, True])
+def test_incomplete_copy_preserves_partial_recovery_and_cancellation(
+    setup, monkeypatch, interrupted
+):
+    from authzest.runner import _owner_read_file_session as module
+
+    session, emit, approve, plans, calls, _, _, _ = setup
+    original = module.stage_private_copy
+
+    def partial(*args, **kwargs):
+        value = original(*args, **kwargs)
+        value.update(status="incomplete", interrupted=interrupted, exit_code=1)
+        return value
+
+    monkeypatch.setattr(module, "stage_private_copy", partial)
+    value = session().run(emit=emit, read=approve)
+    assert value["status"] == ("cancelled" if interrupted else "copy-incomplete")
+    assert value["exit_code"] == (130 if interrupted else 1)
+    assert value["recovery_required"] is True
+    assert value["copy"]["status"] == "incomplete"
+    assert value["copy"]["files"] and value["copy"]["path"] is not None
+    assert calls == [] and plans[-1]["stage"] == "copy"
+    assert not (Path(value["copy"]["path"]) / "record.json").exists()
