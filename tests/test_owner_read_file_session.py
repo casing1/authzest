@@ -428,7 +428,10 @@ def test_descriptor_cleanup_uncertainty_remains_recovery_required_after_restorat
     assert value["exit_code"] == 1
 
 
-def test_interrupted_initial_journal_retains_partial_file_and_adoption_failure(setup, monkeypatch):
+@pytest.mark.parametrize("interruption", [KeyboardInterrupt, SystemExit])
+def test_interrupted_initial_journal_retains_partial_file_and_adoption_failure(
+    setup, monkeypatch, interruption
+):
     import os
 
     from authzest.runner._owner_read_workspace import OwnerReadWorkspace
@@ -446,7 +449,7 @@ def test_interrupted_initial_journal_retains_partial_file_and_adoption_failure(s
             os.write(descriptor, b"{")
         finally:
             os.close(descriptor)
-        raise KeyboardInterrupt
+        raise interruption
 
     monkeypatch.setattr(OwnerReadWorkspace, "_create", interrupted_create)
     value = session().run(emit=emit, read=approve)
@@ -503,3 +506,46 @@ def test_incomplete_copy_preserves_partial_recovery_and_cancellation(
     assert value["copy"]["files"] and value["copy"]["path"] is not None
     assert calls == [] and plans[-1]["stage"] == "copy"
     assert not (Path(value["copy"]["path"]) / "record.json").exists()
+
+
+def test_explicit_cancel_after_application_stops_without_a_restore_prompt(setup):
+    session, emit, approve, plans, _, _, _, _ = setup
+
+    def read(prompt):
+        return "cancel" if plans[-1]["stage"] == "after" else approve(prompt)
+
+    value = session().run(emit=emit, read=read)
+    assert value["status"] == "cancelled" and value["exit_code"] == 130
+    assert value["recovery_required"] is True
+    assert value["restoration_status"] == "required"
+    assert value["stages"]["restore"]["status"] == "not-run"
+    assert plans[-1]["stage"] == "after"
+
+
+@pytest.mark.parametrize("interruption", [KeyboardInterrupt, SystemExit])
+def test_final_observation_interruption_still_closes_workspace(setup, monkeypatch, interruption):
+    from authzest.runner._owner_read_workspace import OwnerReadWorkspace
+
+    session, emit, approve, _, _, _, _, _ = setup
+    flow = session()
+    restore = flow._restore
+    snapshot = OwnerReadWorkspace.snapshot
+    armed = [False]
+
+    def restore_and_arm(*args):
+        restore(*args)
+        armed[0] = True
+
+    def final_snapshot(workspace):
+        if armed[0]:
+            raise interruption
+        return snapshot(workspace)
+
+    monkeypatch.setattr(flow, "_restore", restore_and_arm)
+    monkeypatch.setattr(OwnerReadWorkspace, "snapshot", final_snapshot)
+    value = flow.run(emit=emit, read=approve)
+    assert value["status"] == "cancelled" and value["exit_code"] == 130
+    assert value["descriptor_cleanup_confirmed"] is True
+    assert flow._workspace._fd == -1
+    assert value["workspace_state"] == "state-unconfirmed"
+    assert value["recovery_required"] is True

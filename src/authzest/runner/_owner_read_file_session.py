@@ -328,6 +328,8 @@ class OwnerReadFileSession:
                 self._phase("after", plan_id, guard)
             except _Stop as exc:
                 result["status"] = exc.status
+                if exc.status == "cancelled":
+                    raise
                 after = result["after"]
                 no_dispatch = not result["stages"]["after"]["guest_dispatch_started"]
                 if (after is not None and after["cleanup_confirmed"] is True) or no_dispatch:
@@ -340,7 +342,7 @@ class OwnerReadFileSession:
             result["exit_code"] = 130 if exc.status == "cancelled" else 1
             if exc.status == "declined" and result["patch_application"] == "not-run":
                 result["exit_code"] = 0
-        except (EOFError, KeyboardInterrupt) as exc:
+        except (EOFError, KeyboardInterrupt, SystemExit) as exc:
             result.update(status="cancelled", exit_code=130)
             failure = getattr(exc, "owner_read_workspace_error", None)
             if type(failure) is OwnerReadWorkspaceError:
@@ -358,22 +360,32 @@ class OwnerReadFileSession:
                 if stage_record["status"] in ("awaiting-decision", "approved", "dispatched"):
                     stage_record.update(status="unconfirmed", reason=result["status"])
             if self._workspace is not None:
+                interrupted_snapshot = False
                 try:
-                    self._snapshot = self._workspace.snapshot()
-                except OwnerReadWorkspaceError:
-                    result["recovery_required"] = True
-                    if result["status"] == "completed":
-                        result.update(status="state-unconfirmed", exit_code=1)
-                result["last_verified_workspace"] = self._snapshot
-                result["workspace_state"] = self._workspace.state
-                try:
-                    self._workspace.close()
-                    result["descriptor_cleanup_confirmed"] = True
-                except OSError:
-                    result.update(
-                        status="descriptor-cleanup-unconfirmed",
-                        descriptor_cleanup_confirmed=False,
-                        recovery_required=True,
-                        exit_code=1,
+                    try:
+                        self._snapshot = self._workspace.snapshot()
+                    except OwnerReadWorkspaceError:
+                        result["recovery_required"] = True
+                        if result["status"] == "completed":
+                            result.update(status="state-unconfirmed", exit_code=1)
+                    except (KeyboardInterrupt, SystemExit):
+                        interrupted_snapshot = True
+                        result.update(status="cancelled", exit_code=130, recovery_required=True)
+                finally:
+                    result["last_verified_workspace"] = self._snapshot
+                    result["workspace_state"] = (
+                        "state-unconfirmed" if interrupted_snapshot else self._workspace.state
                     )
+                    try:
+                        self._workspace.close()
+                        result["descriptor_cleanup_confirmed"] = True
+                    except (OSError, KeyboardInterrupt, SystemExit) as exc:
+                        result.update(
+                            status="descriptor-cleanup-unconfirmed",
+                            descriptor_cleanup_confirmed=False,
+                            recovery_required=True,
+                            exit_code=130
+                            if isinstance(exc, (KeyboardInterrupt, SystemExit))
+                            else 1,
+                        )
         return json.loads(canonical(result))
