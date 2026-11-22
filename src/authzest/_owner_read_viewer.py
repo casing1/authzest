@@ -39,7 +39,11 @@ def _digest(text):
 
 def _code(value):
     value = _text(value, limit=4096, nullable=False)
-    if not value or not value.isascii() or any(ord(char) < 32 and char != "\n" for char in value):
+    if (
+        not value
+        or not value.isascii()
+        or any(not char.isprintable() and char not in "\n\t" for char in value)
+    ):
         _bad()
     return value
 
@@ -325,6 +329,23 @@ def _session(data, proposal):
             _bad()
     if application == "applied-to-copy" and proposal is None:
         _bad()
+    observation_unconfirmed = data.get("runtime_observations_status") == "unconfirmed"
+    observation_recovery = (
+        observation_unconfirmed
+        and data.get("failure") is None
+        and type(data.get("exit_code")) is int
+        and (
+            data.get("status") == "runtime-observations-unconfirmed"
+            and data["exit_code"] == 1
+            and runtime_cleanup is True
+            or data.get("status") == "cancelled"
+            and data["exit_code"] == 130
+            and runtime_cleanup is True
+            or data.get("status") == "runtime-descriptor-cleanup-unconfirmed"
+            and data["exit_code"] == 1
+            and runtime_cleanup is False
+        )
+    )
     if status == "completed" and (
         set(stages) != set(_STAGES)
         or proposal is None
@@ -341,7 +362,9 @@ def _session(data, proposal):
         or application != "applied-to-copy"
         or restoration != "restored"
         or value.get("workspace_state") != "restored-before"
-        or recovery is not False
+        or recovery is not observation_recovery
+        or observation_unconfirmed
+        and not observation_recovery
         or descriptor_cleanup is not True
         or guest_cleanup is not True
         or value.get("original_checkout_modified") is not False
@@ -420,6 +443,10 @@ def preview_owner_read_result(data):
         "approval or a security verdict.",
         "Raw runtime metadata, phase captures and account information are omitted from this view.",
     ]
+    if data.get("runtime_observations_status") == "unconfirmed":
+        warnings.append("Runtime observation collection is unconfirmed.")
+    if runtime_cleanup is False:
+        warnings.append("Runtime profile descriptor cleanup is unconfirmed.")
     if source is None:
         warnings.append(
             "Original source evidence is absent; the source diff cannot be independently rebuilt."

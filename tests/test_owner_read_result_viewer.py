@@ -509,3 +509,107 @@ def test_large_projected_owner_field_is_still_rejected():
     data["proposal"]["source"] = "A" * 70000
     with pytest.raises(ResultViewError):
         preview_workflow_result(encoded(data))
+
+
+def test_producer_accepted_tab_indented_source_and_test_can_be_imported():
+    import asyncio
+
+    from authzest.runner.owner_read_suggestion import run_suggestion
+
+    source = AFTER.replace("\n    ", "\n\t")
+    test = TEST.replace("\n    ", "\n\t")
+    previews = []
+
+    class Adapter:
+        async def suggest_owner_read(self, request):
+            return {
+                "request_id": request.request_id,
+                "status": "proposed-change",
+                "rationale": "Scripted producer response using supported tab indentation.",
+                "source": source,
+                "test": test,
+            }
+
+    value = asyncio.run(
+        run_suggestion(
+            "offline-tab-view",
+            emit=lambda text: previews.append(json.loads(text)),
+            read=lambda _: "share " + previews[-1]["sharing_id"],
+            adapter_factory=lambda **_: Adapter(),
+        )
+    )
+    assert value["status"] == "proposed-change"
+    assert value["proposal"]["source"] == source and value["proposal"]["test"] == test
+    view = preview_workflow_result(encoded(value))
+    assert view["proposal"]["after_source"]["text"] == source
+    assert view["proposal"]["test"]["text"] == test
+    assert view["provenance"] == "imported-unverified"
+
+
+@pytest.mark.parametrize("control", ["\r", "\x00", "\x1b", "\x7f"])
+def test_unsupported_source_controls_remain_rejected(control):
+    value = record()
+    value["proposal"]["source"] += control
+    with pytest.raises(ResultViewError):
+        preview_workflow_result(encoded(value))
+
+
+@pytest.mark.parametrize(
+    "status,code,cleanup",
+    [
+        ("runtime-observations-unconfirmed", 1, True),
+        ("cancelled", 130, True),
+        ("runtime-descriptor-cleanup-unconfirmed", 1, False),
+    ],
+)
+def test_observation_retention_failure_preserves_completed_phases_and_recovery(
+    status, code, cleanup
+):
+    value = record()
+    value.update(
+        status=status,
+        exit_code=code,
+        runtime_observations_status="unconfirmed",
+        runtime_descriptor_cleanup_confirmed=cleanup,
+    )
+    value["file_workflow"]["recovery_required"] = True
+    view = preview_workflow_result(encoded(value))
+    assert view["summary"]["status"] == status and view["summary"]["exit_code"] == code
+    assert view["summary"]["recovery_required"] is True
+    assert view["summary"]["restoration_status"] == "restored"
+    assert view["session"]["status"] == "completed"
+    assert all(
+        view["session"]["checks"][name]["status"] == "matched" for name in ("before", "after")
+    )
+    assert "Runtime observation collection is unconfirmed." in view["warnings"]
+    assert ("Runtime profile descriptor cleanup is unconfirmed." in view["warnings"]) is (
+        cleanup is False
+    )
+    assert view["session"]["verified_fix"] is False
+    assert "PRIVATE-DO-NOT" not in json.dumps(view)
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"runtime_observations_status": None},
+        {"status": "proposed-change"},
+        {"status": "cancelled", "exit_code": 1},
+        {"status": "runtime-observations-unconfirmed", "exit_code": 130},
+        {"runtime_descriptor_cleanup_confirmed": False},
+        {"runtime_descriptor_cleanup_confirmed": None},
+        {"exit_code": True},
+        {"failure": "unexpected-error"},
+    ],
+)
+def test_completed_recovery_exception_requires_the_exact_outer_failure_state(changes):
+    value = record()
+    value.update(
+        status="runtime-observations-unconfirmed",
+        exit_code=1,
+        runtime_observations_status="unconfirmed",
+    )
+    value["file_workflow"]["recovery_required"] = True
+    value.update(changes)
+    with pytest.raises(ResultViewError):
+        preview_workflow_result(encoded(value))
