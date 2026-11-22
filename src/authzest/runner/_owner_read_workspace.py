@@ -260,7 +260,7 @@ class OwnerReadWorkspace:
                 for name, value in (self._tracked | self._temps).items()
                 if name != _RECORD
             },
-            "execution_status": "not-run",
+            "execution_status": "not-observed-by-workspace",
             "source_application": "applied-copy-only"
             if state in {"applied-after", "restored-before"}
             else "unknown"

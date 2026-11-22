@@ -339,7 +339,28 @@ def test_journal_failure_exposes_current_uncertainty_and_retains_source(setup, m
     assert value["recovery_required"] is True
     assert value["workspace_state"] == "state-unconfirmed"
     assert value["workspace_failure"]["stage"] == "record-event-before"
-    assert value["last_verified_workspace"]["state"] == "ready-before"
+    assert value["last_verified_workspace"]["state"] == "state-unconfirmed"
     assert value["descriptor_cleanup_confirmed"] is True
     assert value["guest_cleanup_confirmed"] is None
     assert value["patch_application"] == "not-run"
+
+
+def test_dispatcher_edit_followed_by_exception_is_reported_as_current_uncertainty(setup):
+    session, emit, approve, plans, _, _, _, _ = setup
+    changed = []
+
+    def dispatch(capture, *, guard):
+        if capture["phase"] == "after":
+            path = Path(plans[-1]["files"]["path"]) / "availability.py"
+            path.write_text("User edit during runtime\n")
+            changed.append(path)
+            raise RuntimeError("Dispatcher cleanup unknown")
+        return evidence(capture)
+
+    value = session(dispatch).run(emit=emit, read=approve)
+    assert value["status"] == "dispatcher-failed"
+    assert value["workspace_state"] == "state-unconfirmed"
+    assert value["last_verified_workspace"]["state"] == "applied-after"
+    assert value["guest_cleanup_confirmed"] is None
+    assert value["recovery_required"] is True
+    assert changed[0].read_text() == "User edit during runtime\n"

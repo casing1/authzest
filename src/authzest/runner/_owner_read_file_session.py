@@ -351,6 +351,12 @@ class OwnerReadFileSession:
                 if stage_record["status"] in ("awaiting-decision", "approved", "dispatched"):
                     stage_record.update(status="unconfirmed", reason=result["status"])
             if self._workspace is not None:
+                try:
+                    self._snapshot = self._workspace.snapshot()
+                except OwnerReadWorkspaceError:
+                    result["recovery_required"] = True
+                    if result["status"] == "completed":
+                        result.update(status="state-unconfirmed", exit_code=1)
                 result["last_verified_workspace"] = self._snapshot
                 result["workspace_state"] = self._workspace.state
                 try:
