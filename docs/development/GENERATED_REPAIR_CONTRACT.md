@@ -7,7 +7,7 @@
 
 [Documentation index](../README.md)
 
-## Status — 2026-11-20 KST
+## Status — 2026-11-22 KST
 
 [#151](https://github.com/casing1/authzest/issues/151), under the
 [course-release scope](https://github.com/casing1/authzest/issues/150), connects the offline
@@ -163,6 +163,45 @@ tracked in [#152](https://github.com/casing1/authzest/issues/152). The host inte
 - Record a missing response, expired decision, changed file, timeout, truncated output or unconfirmed
   cleanup at the affected stage. Preserve user edits. Report restoration only after confirming the
   original source bytes and staged test state. The original checkout stays outside these operations.
+
+### Private session implementation
+
+The private `OwnerReadFileSession` coordinates one current validated proposal through copy,
+before, exact diff, apply, after and restore decisions. It is available to a trusted host
+coordinator as an offline-tested backend. The public `owner-read-suggest --prepare-copy`
+continues to prepare the three inspection files. Connecting the two-guest runtime dispatcher
+and the public command remains part of #152.
+
+Each stage displays the full current request, proposal, exact diffs, previous observations,
+private file identities and a session-bound plan ID. A decision is single-use and expires after
+at most 300 seconds. The session rechecks the current inputs and checks time after validation.
+A successful baseline needs the specific archived-owner assertion failure and all seven baseline
+responses. Application and restoration each require their own decision. A failed after comparison
+can offer a separate restoration decision when both guests have confirmed cleanup and the copy
+still matches the reviewed state. Unconfirmed guest cleanup preserves a recovery-required result.
+
+`OwnerReadWorkspace` adopts only the freshly prepared copy and adds `record.json`. It verifies
+the private directory, all three artifacts, file identities, permissions, link counts and bounded
+bytes before every transition. A durable pending-operation journal precedes each source replacement.
+The final journal is written after source readback and directory synchronization. A journal or
+replacement failure retains the files and reports uncertainty. User edits, changed paths, symlinks,
+extra files and changed staged test or proposal bytes refuse a write. Restoration confirms the
+creation-time baseline bytes while preserving the staged regression test. Concurrent writers under
+the same OS account must be excluded because atomic rename does not provide compare-and-swap.
+
+The phase comparator validates two supplied guest captures with matching source/test hashes and
+current phase-plan identity. It checks the inner pytest lifecycle and exact HTTP response, then
+compares the independent observations. Both guest outputs share a 256 KiB allowance. Their bounded
+stdout and stderr are retained as base64 in the detached result. The journal retains observation
+hashes and small stage metadata. The caller must retain the complete final result for the private
+evidence record. Supplied capture validation establishes consistency of observations. A production
+runtime dispatcher must also establish their origin, effective isolation and cleanup.
+
+Temporary-file and fake-dispatcher tests cover the complete sequence, separate decisions and expiry,
+stale proposals, user edits, malformed or substituted evidence, independent-control mismatches,
+cleanup uncertainty and durable-write failures. These tests execute no proposed source or test code.
+The installed-candidate live generation, isolated execution, application and recovery demonstration
+remains pending.
 
 ## Offline input preview
 
