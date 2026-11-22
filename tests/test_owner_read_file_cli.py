@@ -186,7 +186,7 @@ def dialogue(monkeypatch, tmp_path):
 def test_public_cli_single_json_full_workflow_is_restored(dialogue):
     _, events, calls, runtimes, previews, _ = dialogue
     result = CliRunner().invoke(app, [*ARGS, "--json"])
-    assert result.exit_code == 0, result.exception
+    assert result.exit_code == 0, (result.exception, result.stdout)
     value = json.loads(result.stdout)
     assert events == ["preflight", "provider", "before", "after"]
     assert len(calls) == 1 and value["application_turn_attempts"] == 1
@@ -219,7 +219,7 @@ def test_public_cli_single_json_full_workflow_is_restored(dialogue):
 
 def test_human_summary_shows_observation_and_recovery(dialogue):
     result = CliRunner().invoke(app, ARGS)
-    assert result.exit_code == 0, result.exception
+    assert result.exit_code == 0, (result.exception, result.stdout)
     assert "File workflow: completed" in result.stdout
     assert "Restoration: restored" in result.stdout
     assert "independent checks 6/7" in result.stdout
@@ -288,7 +288,7 @@ def test_provider_cancellation_keeps_attempt_and_runtime_evidence(dialogue):
 def test_offline_preview_has_runtime_and_sharing_without_prompts_or_preflight(dialogue):
     _, events, calls, runtimes, _, parent = dialogue
     result = CliRunner().invoke(app, [*ARGS, "--preview-only", "--json"])
-    assert result.exit_code == 0, result.exception
+    assert result.exit_code == 0, (result.exception, result.stdout)
     value = json.loads(result.stdout)
     assert value["kind"] == "owner-read-file-offline-preview"
     assert value["status"] == "preview-only" and value["runtime_review"]
@@ -376,3 +376,20 @@ def test_runtime_observation_interruption_still_closes_profile(dialogue, monkeyp
     assert value["file_workflow"]["restoration_status"] == "restored"
     assert value["file_workflow"]["recovery_required"] is True
     assert value["runtime_descriptor_cleanup_confirmed"] is True and runtimes[0].closed
+
+
+def test_fractional_runner_clock_keeps_current_approvals_usable(dialogue, monkeypatch):
+    from authzest.runner import _owner_read_file_session as sessions
+
+    original = sessions.OwnerReadFileSession
+
+    def session_with_fractional_clock(**kwargs):
+        return original(**kwargs, clock=lambda: 900.0000000000003)
+
+    monkeypatch.setattr(sessions, "OwnerReadFileSession", session_with_fractional_clock)
+    result = CliRunner().invoke(app, [*ARGS, "--json"])
+    assert result.exit_code == 0, result.stdout
+    value = json.loads(result.stdout)
+    assert value["file_workflow"]["status"] == "completed"
+    assert value["file_workflow"]["restoration_status"] == "restored"
+    assert value["file_workflow"]["recovery_required"] is False

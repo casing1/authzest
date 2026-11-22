@@ -23,6 +23,7 @@ from authzest.codex.owner_read_suggestion import (
     validate_owner_read_request,
     validate_owner_read_response,
 )
+from authzest.runner._generated_repair_session import GeneratedRepairSessionError, _deadline
 from authzest.runner._owner_read_copy_files import copy_supported, stage_private_copy
 from authzest.runner._owner_read_phase_result import (
     MAX_RESULT_BYTES,
@@ -175,9 +176,10 @@ class OwnerReadFileSession:
         payload = json.loads(canonical(payload))
         plan_id = "owner-read-stage-" + identity(payload)
         start = self._now()
-        deadline = start + _SECONDS
-        if not start < deadline or deadline - start > _SECONDS:
-            raise _Stop("clock-unconfirmed")
+        try:
+            deadline = _deadline(start, _SECONDS)
+        except GeneratedRepairSessionError:
+            raise _Stop("clock-unconfirmed") from None
         emit(json.dumps({**payload, "plan_id": plan_id}, ensure_ascii=True, indent=2))
         record = self._result["stages"][stage]
         record.update(status="awaiting-decision", plan_id=plan_id)
