@@ -117,6 +117,14 @@ def _decode(raw: bytes) -> dict:
         data = json.loads(
             raw.decode("utf-8"), object_pairs_hook=_unique_pairs, parse_constant=_reject_constant
         )
+        # Owner-read results may retain larger base64 transport captures that the
+        # projection drops. The upload budget still bounds every such string;
+        # displayed fields retain their narrower contract checks below.
+        string_limit = (
+            MAX_RESULT_BYTES
+            if type(data) is dict and data.get("kind") == "owner-read-suggestion"
+            else 65_536
+        )
         pending, count = [(data, 0)], 0
         while pending:
             item, depth = pending.pop()
@@ -133,7 +141,7 @@ def _decode(raw: bytes) -> dict:
                     _bad()
                 pending.extend((child, depth + 1) for child in item)
             elif type(item) is str:
-                _text(item, limit=65_536, nullable=False)
+                _text(item, limit=string_limit, nullable=False)
             elif type(item) is float and not math.isfinite(item):
                 _bad()
         return _object(data)
@@ -495,6 +503,10 @@ def _session(data: dict, proposal: dict | None) -> dict | None:
 def preview_workflow_result(raw: bytes) -> dict:
     """Validate display consistency, then discard private paths/account metadata."""
     data = _decode(raw)
+    if data.get("kind") == "owner-read-suggestion":
+        from authzest._owner_read_viewer import preview_owner_read_result
+
+        return preview_owner_read_result(data)
     if data.get("kind") != "codex-generated-file-workflow":
         _bad()
     version = data.get("schema_version", "legacy-unversioned")

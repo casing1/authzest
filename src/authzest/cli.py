@@ -349,6 +349,7 @@ def owner_read_suggest(
         cancelled = not isinstance(exc, ContractError)
         result = {
             "kind": "owner-read-suggestion",
+            "schema_version": "1.0",
             "status": "cancelled" if cancelled else "invalid-input",
             "exit_code": 130 if cancelled else 2,
             "detail": "Interrupted."
