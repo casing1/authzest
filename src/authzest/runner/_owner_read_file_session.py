@@ -253,6 +253,20 @@ class OwnerReadFileSession:
         self._result.update(restoration_status="restored", recovery_required=False)
         self._result["stages"]["restore"].update(status="restored", plan_id=plan_id)
 
+    def _workspace_failure(self, exc):
+        result = self._result
+        result["workspace_failure"] = {
+            "path": str(exc.path) if exc.path is not None else None,
+            "state": exc.state,
+            "stage": exc.stage,
+            "source_replace_attempted": exc.source_replace_attempted,
+            "source_replaced": exc.source_replaced,
+        }
+        if exc.descriptor_cleanup_confirmed is not None:
+            result["descriptor_cleanup_confirmed"] = exc.descriptor_cleanup_confirmed
+        if exc.recovery_required:
+            result["recovery_required"] = True
+
     def run(self, *, emit=print, read=input):
         if self._used:
             raise ValueError("An owner-read file session cannot run twice")
@@ -325,21 +339,14 @@ class OwnerReadFileSession:
             result["exit_code"] = 130 if exc.status == "cancelled" else 1
             if exc.status == "declined" and result["patch_application"] == "not-run":
                 result["exit_code"] = 0
-        except (EOFError, KeyboardInterrupt):
+        except (EOFError, KeyboardInterrupt) as exc:
             result.update(status="cancelled", exit_code=130)
+            failure = getattr(exc, "owner_read_workspace_error", None)
+            if type(failure) is OwnerReadWorkspaceError:
+                self._workspace_failure(failure)
         except OwnerReadWorkspaceError as exc:
             result.update(status="state-unconfirmed", exit_code=1)
-            result["workspace_failure"] = {
-                "path": str(exc.path) if exc.path is not None else None,
-                "state": exc.state,
-                "stage": exc.stage,
-                "source_replace_attempted": exc.source_replace_attempted,
-                "source_replaced": exc.source_replaced,
-            }
-            if exc.descriptor_cleanup_confirmed is not None:
-                result["descriptor_cleanup_confirmed"] = exc.descriptor_cleanup_confirmed
-            if exc.recovery_required:
-                result["recovery_required"] = True
+            self._workspace_failure(exc)
         except (ContractError, OSError, ValueError):
             result.update(status="state-unconfirmed", exit_code=1)
         except Exception:

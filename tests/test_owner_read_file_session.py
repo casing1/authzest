@@ -426,3 +426,55 @@ def test_descriptor_cleanup_uncertainty_remains_recovery_required_after_restorat
     assert value["recovery_required"] is True
     assert value["restoration_status"] == "restored"
     assert value["exit_code"] == 1
+
+
+def test_interrupted_initial_journal_retains_partial_file_and_adoption_failure(setup, monkeypatch):
+    import os
+
+    from authzest.runner._owner_read_workspace import OwnerReadWorkspace
+
+    session, emit, approve, _, _, _, _, _ = setup
+    original_create = OwnerReadWorkspace._create
+
+    def interrupted_create(workspace, name, data):
+        if name != "record.json":
+            return original_create(workspace, name, data)
+        descriptor = os.open(
+            name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600, dir_fd=workspace._fd
+        )
+        try:
+            os.write(descriptor, b"{")
+        finally:
+            os.close(descriptor)
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(OwnerReadWorkspace, "_create", interrupted_create)
+    value = session().run(emit=emit, read=approve)
+    assert value["status"] == "cancelled" and value["exit_code"] == 130
+    assert value["recovery_required"] is True
+    assert value["workspace_failure"]["stage"] == "create-initial-record"
+    assert value["workspace_failure"]["state"] == "state-unconfirmed"
+    assert value["descriptor_cleanup_confirmed"] is True
+    assert value["patch_application"] == "not-run"
+    assert (Path(value["copy"]["path"]) / "record.json").read_bytes() == b"{"
+
+
+def test_interrupted_apply_intent_preserves_workspace_failure_metadata(setup, monkeypatch):
+    from authzest.runner._owner_read_workspace import OwnerReadWorkspace
+
+    session, emit, approve, _, _, _, _, _ = setup
+    persist = OwnerReadWorkspace._persist
+
+    def interrupted_intent(workspace, state, *, pending=None):
+        persist(workspace, state, pending=pending)
+        if pending == "apply":
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr(OwnerReadWorkspace, "_persist", interrupted_intent)
+    value = session().run(emit=emit, read=approve)
+    assert value["status"] == "cancelled" and value["exit_code"] == 130
+    assert value["recovery_required"] is True
+    assert value["workspace_failure"]["stage"] == "persist-apply-intent"
+    assert value["workspace_failure"]["source_replace_attempted"] is False
+    assert value["workspace_failure"]["source_replaced"] is False
+    assert value["descriptor_cleanup_confirmed"] is True
