@@ -16,9 +16,12 @@ context and returns a proposed regression test, replacement source and host-deri
 not create a copy, execute the project or correct the original checkout. The packaged owner-read GUI
 and its fixed workers remain separate; they are not an external-project execution fallback.
 
-This slice adds **only the pure S1 copy-plan API** below and this proposed design. No new CLI flag,
-workspace/session opener, filesystem write, decision issuer, worker, image or GUI action is enabled.
-Design review does not approve concrete case expectations, runtime images, source sharing or execution.
+S1 below remains an inert metadata contract. The separate
+[S2 file-session API](../reference/REPOSITORY_FILE_SESSION.md) now implements live origin capture and
+fresh private copy/diff/apply/restore decisions, checked using owned inert temporary files and fake
+clocks/failures. No CLI/GUI operator, saved-workspace opener, target execution or original write is
+enabled. The runtime/interface sections below remain proposed. Design/source review does not approve
+concrete case expectations, runtime images, source sharing or execution.
 Stable publication remains held for actual external-project completion under #150–152/#189.
 
 ## S1: inert copy-plan contract
@@ -193,9 +196,10 @@ of original drift. No original-write API is implemented in this slice.
 
 ## Incremental delivery
 
-1. **S1, this slice:** inert metadata plans, pure tamper/path/budget tests, paired design and normal CI.
-2. **S2:** fresh private workspace and exact apply/restore using temporary files and fake peers first;
-   no runtime boundary. Add durable-failure and private-edit tests before real file decisions.
+1. **S1:** inert metadata plans, pure tamper/path/budget tests and paired design, delivered in #203.
+2. **S2, current file API:** fresh private workspace and exact apply/restore with owned inert temporary
+   files, fake clocks and failure peers; no runtime/operator boundary. Keep actual project operation
+   and installed live acceptance pending; see #204 and the source API reference.
 3. **S3:** separate external runtime, test interface and independent-case codec; test with fake
    processes/Engine peers before reviewed images or actual external execution.
 4. **S4:** explicit CLI file workflow and installed, separately scoped real external before/after/
