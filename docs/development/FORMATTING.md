@@ -38,6 +38,20 @@ the compiled frontend HTML, JavaScript, and CSS. Their archive inventory shows n
 for those artifacts. Individual editor settings, extension versions, and direct tool calls require
 separate evidence. The alpha.4 disposition applies to the published prerelease.
 
+### Final-source preflight — 2026-11-23 KST
+
+At source `80b574d`, the lock, guarded formatter and reviewed configuration bytes still match the
+prior assessment. [#197](https://github.com/casing1/authzest/issues/197) records fresh installed-tool
+and three-platform native archive checks. No separately packaged Prettier/picomatch or frontend
+node_modules entry was found in those selected inventories. This is not an exhaustive binary audit.
+The GitHub withdrawal/CVE publication disagreement remains; no inspected fixed picomatch release
+was available. The earlier `50706ff` decision does not transfer to a new candidate.
+
+The [final decision snapshot](../releases/0.1.0-READINESS.md) proposes retaining the warning and
+tracking development-tool availability exposure under #89/#171. Exact-candidate human disposition
+is **pending**. Direct editor/API/CLI use and changed or concurrently modified checkouts remain
+outside the documented guard assumptions. This entry neither accepts risk nor certifies user editors.
+
 ## Commands
 
 Install the committed frontend dependencies, then run from the repository root:

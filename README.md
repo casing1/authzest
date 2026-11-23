@@ -16,11 +16,12 @@ dashboard. Inspect source declarations offline, or use Codex to propose a defens
 and a repair for the maintained owner's archived-note scenario. Review each step before checking,
 changing and restoring a private copy.
 
-**This README describes the current source.** Its package version is `0.1.0`; the course stable
-release is still being prepared. The latest published release is
-[v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4), dated 2026-11-05 KST.
-That prerelease predates the current GUI and newly generated owner-read repair workflow.
-[Release readiness](docs/releases/RELEASING.md) · [Changelog](CHANGELOG.md)
+**This README describes the 0.1.0 source scope.** The package version is `0.1.0`; package metadata
+alone does not establish publication. Check [GitHub Releases](https://github.com/casing1/authzest/releases)
+for available tags, files and checksums. The earlier
+[v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4), published 2026-11-05 KST,
+predates the current GUI and newly generated owner-read repair workflow.
+[0.1.0 notes](docs/releases/0.1.0.md) · [Final readiness](docs/releases/0.1.0-READINESS.md) · [Changelog](CHANGELOG.md)
 
 ## What you can do
 
@@ -128,11 +129,11 @@ private JSON capture and existing registered-template tools, use the
 
 ## Installation scope
 
-| Route                                            | Supported use                                                                                                                                  |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Editable source plus UI extra and frontend build | Current dashboard; active owner-read GUI/CLI on supported POSIX systems with the reviewed runtime.                                             |
-| Regular wheel or source-installed pipx CLI       | CLI commands. Built dashboard assets are not bundled; use the editable checkout route for the GUI.                                             |
-| Published alpha.4 standalone binaries            | Experimental static scan/offline previews from that tag. They do not include the current source GUI or provide current active-workflow parity. |
+| Route                                            | Supported use                                                                                                                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Editable source plus UI extra and frontend build | Current dashboard; active owner-read GUI/CLI on supported POSIX systems with the reviewed runtime.                                               |
+| Regular wheel or source-installed pipx CLI       | CLI commands. Built dashboard assets are not bundled; use the editable checkout route for the GUI.                                               |
+| Tag-specific standalone executables              | Experimental static scan/offline previews. Check the selected tag's notes for dashboard availability; active owner-read GUI/CLI requires source. |
 
 See [GitHub Releases](https://github.com/casing1/authzest/releases) for published files and checksums.
 The executables are unsigned and not notarized. Current-source native builds and their recorded

@@ -13,6 +13,10 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 [로컬 워크플로 안내](guides/RESULT_VIEWER.md)를 참고하세요. [과제 시연](guides/COURSE_DEMO.md)은
 GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계도 유지합니다.
 
+최종 소스 사전검증과 미결 관리자 판단은 [0.1.0 준비 상태](releases/0.1.0-READINESS.md),
+예정된 지원 제품은 [릴리스 노트](releases/0.1.0.md)에서 확인하세요.
+이 문서 자체는 발행이나 새 활성 실행을 입증하지 않습니다.
+
 ## 현재 작업
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
@@ -332,6 +336,8 @@ docs/
 | 기여와 커밋 규칙                                   | [Contributing](../../../CONTRIBUTING.md)                                         | [기여 안내](CONTRIBUTING.md)                                                 |
 | 필수 검사와 브랜치 보호                            | [Branch rules](../../development/BRANCH_RULES.md)                                | [브랜치 규칙](development/BRANCH_RULES.md)                                   |
 | guard를 적용한 저장소 포맷                         | [Formatting](../../development/FORMATTING.md)                                    | [포맷 검사](development/FORMATTING.md)                                       |
+| 0.1.0 지원 제품과 설치 경로                        | [0.1.0 notes](../../releases/0.1.0.md)                                           | [0.1.0 노트](releases/0.1.0.md)                                              |
+| 정확한 소스 사전검증과 미결 관리자 판단            | [0.1.0 readiness](../../releases/0.1.0-READINESS.md)                             | [0.1.0 준비 상태](releases/0.1.0-READINESS.md)                               |
 | 버전·바이너리·릴리스 검사                          | [Releasing](../../releases/RELEASING.md)                                         | [릴리스 가이드](releases/RELEASING.md)                                       |
 | 출시·미출시 변경                                   | [Changelog](../../../CHANGELOG.md)                                               | [변경 이력](CHANGELOG.md)                                                    |
 | 비공개 신고와 안전한 사용 정책                     | [Security](../../../SECURITY.md)                                                 | [보안 정책](SECURITY.md)                                                     |

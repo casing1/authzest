@@ -5,6 +5,39 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
+## Final 0.1.0 handoff preparation — 2026-11-23 KST
+
+The [proposed release notes](0.1.0.md) describe the bounded delivery. The
+[readiness packet](0.1.0-READINESS.md) separates observed evidence from pending maintainer decisions.
+Both are preparation documents: stable publication and final-candidate risk acceptance are pending.
+The latest public release remains
+[`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
+
+[Preflight #197](https://github.com/casing1/authzest/issues/197) is complete for source
+[`80b574d`](https://github.com/casing1/authzest/commit/80b574dfa8a4d29c7fcd7320e7ddf78b3139d2a0),
+not for a later documentation merge or release tag:
+
+- [Main CI](https://github.com/casing1/authzest/actions/runs/45107230299) and
+  [CodeQL](https://github.com/casing1/authzest/actions/runs/45107229581) passed.
+- On one macOS arm64/Python 3.12 host, fresh candidate installation, genuine published alpha.4
+  installation and its ordinary upgrade to the candidate each passed 13 offline CLI checks: 39 total.
+  Installed source and package-record checks covered the noneditable CLI wheel, which contains no
+  frontend assets.
+- A separate editable source UI install, locked frontend build and seven read-only browser checks
+  covered the inventory, result import/refusal, English/Korean rendering and inactive controls.
+  They did not exercise the active repair flow.
+- [Native preview](https://github.com/casing1/authzest/actions/runs/45111054819) passed all seven jobs.
+  Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 packaged and 13
+  fresh-download offline scan/preview checks. These seven-day test artifacts are not release assets.
+
+This preflight made no new actual model call or product guest execution. It does not satisfy the
+existing final-candidate active end-to-end gate. That gate remains pending: either obtain a fresh
+actual installed-candidate run, or have the maintainer explicitly accept combined evidence and
+approve a change to the existing criterion with its limits recorded in the readiness packet.
+Neither choice has been made by this document. The final source, tooling disposition, tag pipeline
+and public-download verification remain separate gates; later source or artifact identities must be
+reviewed in their own right.
+
 ## Release validation budget and UI coverage — 2026-11-23 KST
 
 The release workflow's `validate` job has a finite **45-minute** limit. At
@@ -45,7 +78,8 @@ retain their original source and scope.
   for one maintained FastAPI scenario. A historical installed run at `34baebc` recorded a
   model-authored test and repair, independent comparisons, and restoration. See the
   [course evidence](../guides/COURSE_DEMO.md#evidence-to-cite). The installed workflow on the final candidate
-  still needs its own end-to-end evidence in the current result format.
+  still needs its own end-to-end evidence in the current result format, unless the maintainer explicitly
+  changes that criterion through the pending decision described above.
 - [#153](https://github.com/casing1/authzest/issues/153) delivered the local read-only result viewer.
   [#85](https://github.com/casing1/authzest/issues/85) has a bilingual [course walkthrough](../guides/COURSE_DEMO.md).
   The final candidate still needs installation/demo evidence and a check that all four READMEs match its scope.
@@ -497,6 +531,7 @@ checking a local build.
 
    cd frontend
    npm ci
+   npm test
    npm run lint
    npm run format:check
    npm run build

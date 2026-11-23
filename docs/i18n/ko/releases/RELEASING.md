@@ -5,6 +5,37 @@
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
+## 정식 0.1.0 최종 인계 준비 — 2026-11-23 KST
+
+[릴리스 노트 초안](0.1.0.md)은 한정된 전달 범위를 설명합니다.
+[준비 상태 자료](0.1.0-READINESS.md)는 확인한 근거와 관리자의 미결 결정을 구분합니다.
+두 문서는 준비 자료이며 정식판 발행과 최종 후보의 위험 수용은 아직 미결입니다. 최신 공개판은
+[`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다.
+
+[사전 검증 #197](https://github.com/casing1/authzest/issues/197)은 소스
+[`80b574d`](https://github.com/casing1/authzest/commit/80b574dfa8a4d29c7fcd7320e7ddf78b3139d2a0)에
+대해 완료했습니다. 이후 문서 병합이나 릴리스 태그를 검증한 기록은 아닙니다.
+
+- [Main CI](https://github.com/casing1/authzest/actions/runs/45107230299)와
+  [CodeQL](https://github.com/casing1/authzest/actions/runs/45107229581)이 통과했습니다.
+- macOS arm64/Python 3.12 호스트 한 대에서 후보 신규 설치, 실제 공개 alpha.4 설치 및 같은 환경에서
+  후보로의 일반 업그레이드가 오프라인 CLI 검사 13개씩, 총 39개를 통과했습니다. 설치 소스와 패키지
+  기록 검사는 비편집 CLI wheel을 대상으로 했으며 이 wheel에는 frontend 자산이 없습니다.
+- 별도의 편집 가능 소스 UI 설치, 잠금 파일 기반 frontend 빌드 및 읽기 전용 브라우저 검사 7개로
+  인벤토리, 결과 가져오기와 거절, 영한 표시 및 비활성 작업 제어를 확인했습니다.
+  능동 수정 흐름을 실행한 검사는 아닙니다.
+- [Native preview](https://github.com/casing1/authzest/actions/runs/45111054819)의 작업 7개가 모두
+  통과했습니다. Linux x64, macOS arm64, Windows x64 각각 선택/이동 26개, 패키지 13개,
+  새 다운로드 13개의 오프라인 scan/preview 검사를 통과했습니다. 7일 보관 테스트 산출물이며
+  릴리스 배포 파일이 아닙니다.
+
+이 사전 검증에는 새로운 실제 모델 호출이나 제품 guest 실행이 없습니다. 기존 최종 후보의 능동 전체
+흐름 검증 조건을 충족하지는 않습니다. 이 조건은 미결이며 두 선택이 남았습니다. 설치한 새 후보에서
+실제 전체 흐름을 검증하거나, 관리자가 종합 근거를 명시적으로 수용하고 한계를 준비 상태 자료에 기록해
+기존 기준의 변경을 승인해야 합니다. 이 문서는 어느 선택도 결정하지 않습니다. 최종 소스, 도구 의존성
+판단, 태그 파이프라인과 공개 다운로드 확인도 별도 조건으로 유지합니다. 이후 소스나 산출물의 식별자는
+각각 별도로 검토해야 합니다.
+
 ## 릴리스 검증 시간과 UI 검사 — 2026-11-23 KST
 
 릴리스 워크플로의 `validate` 작업에는 유한한 **45분** 제한을 적용합니다.
@@ -43,7 +74,8 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
   소스 CLI에 관리 대상 FastAPI 사례 하나의 생성, 개별 승인 검사, 복사본 적용과 복구가 구현됐습니다.
   `34baebc`의 설치형 실행은 모델 작성 테스트와 수정, 독립 대조 검사 및 복구를 기록했습니다.
   [과제 시연 근거](../guides/COURSE_DEMO.md)를 참고하세요. 최종 후보에는 현재 결과 형식으로
-  설치형 전체 흐름을 확인한 별도 근거가 필요합니다.
+  설치형 전체 흐름을 확인한 별도 근거가 필요합니다. 위의 미결 결정에서 관리자가 해당 기준의 변경을
+  명시적으로 승인하는 경우는 별도로 기록합니다.
 - [#153](https://github.com/casing1/authzest/issues/153)의 로컬 읽기 전용 결과 화면을 완료했습니다.
   [#85](https://github.com/casing1/authzest/issues/85)의 [영한 시연 안내](../guides/COURSE_DEMO.md)도
   작성했습니다. 최종 후보에서 설치·시연을 대조하고 네 언어 README의 범위를 확인해야 합니다.
@@ -469,6 +501,7 @@ Windows에서는 Git Bash로 실행하고, 로컬 빌드를 확인할 때 `.exe`
 
    cd frontend
    npm ci
+   npm test
    npm run lint
    npm run format:check
    npm run build
