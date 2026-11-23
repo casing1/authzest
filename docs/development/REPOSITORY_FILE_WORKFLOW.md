@@ -71,7 +71,11 @@ generated-test path has never been inspected: a `/dev/null` test diff asserts on
 artifact. Exclusive destination creation must establish absence in the fresh copy; it cannot establish
 absence in the original project.
 
-Before copying, recapture all selected original inputs with the existing no-follow bounded loader,
+The future live-origin capture must retain root/selected-file identities (or held descriptors) from
+the initial local workflow review alongside its captured bytes, then compare them immediately before
+copy. The existing content-only loader closes descriptors; a saved request, plan or `RepositoryInput`
+cannot reconstruct this identity baseline or establish continuity since an earlier capture.
+Before copying, recapture all selected original inputs with the no-follow bounded loader,
 compare exact bytes and the current local root/file identities, and refuse changed inputs. Bind the
 new private root, files and immutable evidence to a live current-process handle. Neither a content
 hash nor the old `RepositoryInput.root` alone provides that live binding. No hostile-writer atomic
@@ -80,7 +84,10 @@ the failure; do not adopt them later by opening saved JSON.
 
 After copying, operations check private identities and frozen bytes. Edits to the **original** must
 not prevent recovery of the independent private copy. Edits to private source, test, snapshots or
-journal block writes rather than being overwritten. Original-project application has its own later
+journal block writes rather than being overwritten. The live handle retains the last self-committed
+journal bytes/identity/state and advances them only after durable readback. Saved JSON never restores
+that authority; an uncertain journal failure reports recovery-required, without automatic restore.
+Original-project application has its own later
 freshness gate below.
 
 ## Current decisions and recoverable writes
@@ -98,8 +105,9 @@ the exact generated test and evidence. Refuse unsupported durability/metadata se
 commit/readback/journal step preserves actual known state, poisons further ordinary mutations and
 reports `recovery-required` when needed; never claim rollback just because a rename was attempted.
 
-Restore checks the current private after bytes against the original captured before snapshot and
-restores only that source. It does not erase user edits, test artifacts, evidence or historical after
+Restore separately checks that current private source equals the accepted after bytes and that the
+before snapshot equals the captured before bytes, then replaces only that source with before.
+It does not erase user edits, test artifacts, evidence or historical after
 results. Final output distinguishes current source bytes from a historical passing after observation.
 Runtime failure and file state are separate: a failed after check may permit separately reviewed
 restore only when identities and actual bytes are known. Unknown state never becomes success.
