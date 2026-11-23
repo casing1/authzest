@@ -20,7 +20,8 @@ S1 below remains an inert metadata contract. The separate
 [S2 file-session API](../reference/REPOSITORY_FILE_SESSION.md) now implements live origin capture and
 fresh private copy/diff/apply/restore decisions, checked using owned inert temporary files and fake
 clocks/failures. No CLI/GUI operator, saved-workspace opener, target execution or original write is
-enabled. The runtime/interface sections below remain proposed. Design/source review does not approve
+enabled. The [S3 interface/case contracts](../reference/REPOSITORY_VERIFICATION.md) implement pure
+declarations and supplied comparisons; the actual runtime sections below remain proposed. Design/source review does not approve
 concrete case expectations, runtime images, source sharing or execution.
 Stable publication remains held for actual external-project completion under #150–152/#189.
 
@@ -128,8 +129,8 @@ path, reject factories and do not discover entrypoints. Lifespan is disabled. Da
 project dependency installation, external identity providers and real credentials are unsupported.
 An unavailable import, fixture or setup requirement stops as unsupported, without a synthetic fallback.
 
-The current proposal schema `1.0` makes no runnable-fixture promise. Before exposing an opt-in file
-workflow, define a separate versioned request contract with a model-visible `test_interface`: explicit
+The current proposal schema `1.0` makes no runnable-fixture promise. The separate pure `1.1` request
+contract now defines a model-visible `test_interface`: explicit
 entry source/import root/app attribute, trusted `client` fixture and lifespan disabled. Bind it to the
 full prompt/request identity and keep independent case expectations private to the host. Preserve
 the current `1.0` proposal-only default; do not turn saved `1.0` results into write/run authority.
@@ -200,8 +201,10 @@ of original drift. No original-write API is implemented in this slice.
 2. **S2, current file API:** fresh private workspace and exact apply/restore with owned inert temporary
    files, fake clocks and failure peers; no runtime/operator boundary. Keep actual project operation
    and installed live acceptance pending; see #204 and the source API reference.
-3. **S3:** separate external runtime, test interface and independent-case codec; test with fake
-   processes/Engine peers before reviewed images or actual external execution.
+3. **S3:** pure versioned test interface, independent-case codec and supplied comparison are available
+   under #206. Separate external runtime, raw HTTP observer and sealed staging still need fake
+   process/Engine tests before reviewed images or actual external execution. Current v1.0 transport
+   and file APIs do not accept the new v1.1 type.
 4. **S4:** explicit CLI file workflow and installed, separately scoped real external before/after/
    recovery acceptance. Retain proposal-only defaults and complete readable/JSON results.
 5. **S5:** reviewed original-project final application/recovery, with fresh original inputs and an

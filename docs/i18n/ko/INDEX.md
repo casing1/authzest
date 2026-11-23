@@ -22,6 +22,9 @@ GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계�
 별도의 [S2 파일 세션 Python API](reference/REPOSITORY_FILE_SESSION.md)는 최초 입력 식별자와 정확한
 비공개 복사·diff·적용·복구 결정을 관리합니다. 검증은 직접 관리하는 비활성 임시 파일 기반이며 외부
 CLI/GUI 조작 흐름과 런타임 검사는 미완료입니다.
+[S3 인터페이스·제공 자료 비교 계약](reference/REPOSITORY_VERIFICATION.md)은 명시적 진입점, 호스트 전용 사례와
+선언한 before/after/test 식별자를 결합합니다. 순수 데이터 API이며 실행기·수용한 런타임 근거나
+v1.1 전송·파일 조작 흐름 지원이 아닙니다.
 
 이전 [0.1.0 준비 상태](releases/0.1.0-READINESS.md)와 [릴리스 노트](releases/0.1.0.md)는
 각각 기록된 범위와 미결 결정을 보존합니다. 발행이나 외부 프로젝트 종단간 수용을 입증하지 않습니다.
@@ -322,6 +325,7 @@ docs/
 | 외부 선택 파일 소스·정책 제안 CLI                  | [Repository proposals](../../guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](guides/REPOSITORY_PROPOSALS.md)                           |
 | 외부 복사·독립 검증·복구 설계                      | [Repository file workflow](../../development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)               |
 | 외부 live-origin·비공개 파일 세션 API (S2)         | [Repository file sessions](../../reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](reference/REPOSITORY_FILE_SESSION.md)                |
+| 외부 테스트 인터페이스·제공 자료 검증 계약 (S3)    | [Repository verification](../../reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](reference/REPOSITORY_VERIFICATION.md)                       |
 | 생성 PoC/테스트 계약과 선택형 Codex 요청           | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)        |
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |

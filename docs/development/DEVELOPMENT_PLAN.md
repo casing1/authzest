@@ -18,8 +18,11 @@ adds the [external file-workflow design](REPOSITORY_FILE_WORKFLOW.md) and a pure
 S1 enables no copy, execution or source write. [#204](https://github.com/casing1/authzest/issues/204)
 adds a separate [S2 source API](../reference/REPOSITORY_FILE_SESSION.md) for live origin identities,
 fresh private copies and exact local diff/apply/restore decisions, verified with owned inert files
-and injected failures. The next implementation is the separate external test/runtime interface and
-independent before/after cases, followed by the CLI operator and installed external acceptance. Original-project
+and injected failures. [#206](https://github.com/casing1/authzest/issues/206) adds the separate pure
+[test-interface/case and supplied-comparison contracts](../reference/REPOSITORY_VERIFICATION.md).
+Next implement sealed staging, separate T/A/B execution and raw HTTP observation, then connect current
+live results to the CLI operator and installed external acceptance. No supplied comparison authorizes
+execution or file application. Original-project
 final correction requires a separate current-state check and user decision; private-copy success is
 not product completion. Connect the GUI only after the shared engine supports it. Installed/live external acceptance
 and a new final-candidate decision precede release. The previous readiness packet is historical and

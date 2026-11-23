@@ -23,6 +23,9 @@ API specify the next boundary. They create no files or runtime decisions; origin
 remains an explicit later completion gate. A separate [S2 file-session Python API](reference/REPOSITORY_FILE_SESSION.md)
 now owns live input identities and exact private copy/diff/apply/restore decisions. Its verification
 uses owned inert temporary files; the external CLI/GUI operator and runtime checks are still pending.
+The [S3 interface and supplied-comparison contracts](reference/REPOSITORY_VERIFICATION.md) now bind
+explicit entrypoints, host-only cases and declared before/after/test identities. They are pure data
+APIs, not an executor, accepted runtime evidence or v1.1 transport/file-operator support.
 
 The earlier [0.1.0 readiness snapshot](releases/0.1.0-READINESS.md) and
 [release notes](releases/0.1.0.md) retain their recorded scope and pending decisions.
@@ -342,6 +345,7 @@ docs/
 | External selected-file source/policy proposal CLI                       | [Repository proposals](guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](i18n/ko/guides/REPOSITORY_PROPOSALS.md)                           |
 | External copy, independent verification and recovery design             | [Repository file workflow](development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](i18n/ko/development/REPOSITORY_FILE_WORKFLOW.md)               |
 | External live-origin and private file-session API (S2)                  | [Repository file sessions](reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](i18n/ko/reference/REPOSITORY_FILE_SESSION.md)                |
+| External test interface and supplied verification contracts (S3)        | [Repository verification](reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](i18n/ko/reference/REPOSITORY_VERIFICATION.md)                       |
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |
