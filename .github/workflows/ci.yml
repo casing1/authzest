@@ -40,6 +40,8 @@ jobs:
         run: python -m pytest tests/test_generated_repair_controls.py
       - name: Check inert external-copy contracts without target filesystem access
         run: python -m pytest tests/test_repository_copy_plan.py
+      - name: Check pure external interfaces and supplied verification contracts
+        run: python -m pytest tests/test_repository_test_interface.py tests/test_repository_cases.py tests/test_repository_verification.py tests/test_repository_verification_failures.py
       - name: Check external private file decisions with owned inert temporary files
         run: python -m pytest tests/test_repository_origin.py tests/test_repository_files.py tests/test_repository_file_session.py tests/test_repository_session_failures.py
       - name: Check private workspace in a fresh Python interpreter
@@ -120,6 +122,10 @@ jobs:
           tests/test_generated_repair_scenario.py
           tests/test_generated_repair.py
           tests/test_repository_copy_plan.py
+          tests/test_repository_test_interface.py
+          tests/test_repository_cases.py
+          tests/test_repository_verification.py
+          tests/test_repository_verification_failures.py
           tests/test_generated_repair_controls.py
           tests/test_generated_repair_verification.py
           tests/test_generated_repair_workspace.py

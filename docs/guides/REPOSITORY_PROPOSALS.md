@@ -122,6 +122,9 @@ to the original project.
 The separate [S2 Python file-session API](../reference/REPOSITORY_FILE_SESSION.md) now implements
 owned private file transitions with offline tests. This command does not invoke it; external runtime,
 operator and GUI integration remain pending.
+The [S3 v1.1 interface/case comparison contract](../reference/REPOSITORY_VERIFICATION.md) is also a
+separate pure API. This command continues to use v1.0; supplied comparison data cannot enable writes
+or establish actual execution.
 
 ## Verification boundary
 

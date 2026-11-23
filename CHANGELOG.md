@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Pure external test-interface request `1.1`, host-only independent cases, declared material bindings
+  and supplied-frame comparisons. Keep v1.0 defaults unchanged, project request-only observer schedules,
+  preserve every planned case on invalid input and keep all comparison outcomes unverified. No model,
+  transport, target/guest execution, file-operator connection or write authority is added.
+  [#206](https://github.com/casing1/authzest/issues/206)
+
 - External private file-session Python API: retain initial origin descriptors/identities, review
   current one-use copy/diff/apply/restore plans, materialize only a fresh private selected-source tree
   and preserve partial writes/recovery-required outcomes. Exact journal self-commit checks and final

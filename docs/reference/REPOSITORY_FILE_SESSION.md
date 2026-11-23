@@ -107,8 +107,10 @@ Tests use owned inert temporary files, synthetic proposals, fake clocks and inje
 Source/test bytes deliberately include top-level exceptions and are never imported, collected or run.
 This is offline implementation evidence, not an actual user-project run or installed live acceptance.
 
-Next are the separate external test interface/runtime and human-reviewed independent before/after
-cases, followed by the CLI operator, current installed external acceptance, explicit original-project
+The [S3 test interface/case codecs](REPOSITORY_VERIFICATION.md) now provide pure declarations and
+supplied comparisons, which are not accepted as live evidence or decisions by this API.
+Next are the separate external runtime and human-reviewed independent before/after case acceptance,
+followed by the CLI operator, current installed external acceptance, explicit original-project
 final correction and GUI integration. #152/#150 remain open; no version/tag, risk acceptance or release
 is granted by S2 delivery. Original generated-test absence remains uninspected, and final original
 test/source placement requires its own later current-state design and decision.
