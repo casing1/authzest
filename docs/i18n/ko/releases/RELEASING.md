@@ -30,6 +30,15 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다.
 11월 18일은 과제 제출 예상일이었습니다. 정식판 준비 상태는 아래 검사 결과에 따릅니다.
 
+**현재 소스 갱신 — 2026-11-23 KST:** [#190](https://github.com/casing1/authzest/pull/190)에
+명시적 owner-read 작업 GUI를 추가했고 [#192](https://github.com/casing1/authzest/pull/192)에서
+종료된 세션의 반복 조회를 중단합니다. [뷰어 안내](../guides/RESULT_VIEWER.md)와
+[과제 시연](../guides/COURSE_DEMO.md)은 CLI/GUI 공유 엔진·별도의 현재 결정·JSON 다운로드를
+설명합니다. 네 언어 README는 이 소스 경로를 공개 alpha.4 및 일반 CLI/네이티브 설치와 구분합니다.
+구현·문서 갱신이며 정확한 최종 후보에는 여전히 별도
+근거 검토·설치/산출물 검사·도구 의존성 판단·발행 조건이 필요합니다. 아래 날짜별 기록은 당시 소스와
+범위를 유지합니다.
+
 - [#151](https://github.com/casing1/authzest/issues/151)과 [#152](https://github.com/casing1/authzest/issues/152):
   소스 CLI에 관리 대상 FastAPI 사례 하나의 생성, 개별 승인 검사, 복사본 적용과 복구가 구현됐습니다.
   `34baebc`의 설치형 실행은 모델 작성 테스트와 수정, 독립 대조 검사 및 복구를 기록했습니다.

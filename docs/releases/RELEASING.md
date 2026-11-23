@@ -30,6 +30,16 @@ uses package version `0.1.0`. Its [changelog](../../CHANGELOG.md) records the pr
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
 November 18 was an approximate course submission date. Readiness depends on the outstanding checks below.
 
+**Current source update — 2026-11-23 KST:** [#190](https://github.com/casing1/authzest/pull/190)
+adds the explicit owner-read operator GUI and [#192](https://github.com/casing1/authzest/pull/192)
+stops terminal-session polling. The [viewer guide](../guides/RESULT_VIEWER.md) and
+[course walkthrough](../guides/COURSE_DEMO.md) describe the shared CLI/GUI engine, separate current
+decisions and JSON download. The four READMEs now distinguish this source route from published
+alpha.4 and plain CLI/native installations. These are implementation/documentation updates;
+the exact final candidate still needs its own evidence review,
+installation/artifact checks, tooling disposition and publication gates. The dated entries below
+retain their original source and scope.
+
 - [#151](https://github.com/casing1/authzest/issues/151) and [#152](https://github.com/casing1/authzest/issues/152):
   The source CLI implements generation, separately decided checks and copy-only application/recovery
   for one maintained FastAPI scenario. A historical installed run at `34baebc` recorded a

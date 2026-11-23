@@ -2,41 +2,122 @@
 
 [한국어](../i18n/ko/guides/COURSE_DEMO.md) · [Documentation](../README.md) · [Course delivery #85](https://github.com/casing1/authzest/issues/85)
 
-The current demonstration follows the synthetic owner's archived-note workflow. Show the saved CLI
-result in the local dashboard, then explain the proposed change, the before/after observations and
-the restoration state. Use the same checkout and saved result throughout the demonstration.
-Prepare the reviewed Docker image, private runtime configuration and individual decisions through
-the workflow contract. [Workflow contract](../development/GENERATED_REPAIR_CONTRACT.md#running-the-approved-copy-workflow)
+Use the local AI workspace to present the maintained owner's archived-note scenario: review a new
+regression test and rule change, inspect the before/after observations, and confirm restoration.
+The GUI and CLI use the same owner-read engine and separate current decisions. Use the same
+checkout throughout the demonstration and download its result before starting another run.
+
+This guide describes current source functionality. Source package version `0.1.0` is preparation for
+the course release; the latest published release remains
+[alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4). Public delivery and mock tests
+are not acceptance of a new installed candidate. Keep the historical evidence below tied to its
+recorded source and provenance.
 
 ## Current owner-read demonstration
 
-Build and start the local UI from the checkout used for the demonstration.
+### Prepare the source installation
+
+Active AI controls require a POSIX non-frozen, editable source checkout, Python 3.12, the UI extra
+and built frontend assets. Use Node.js 22.13 or later in the 22.x line, or Node.js 24.
+Wheels and standalone scan/preview binaries are not complete active-GUI installers.
+Run from the repository root:
 
 ```bash
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -e '.[ui]'
 npm --prefix frontend ci
 npm --prefix frontend run build
+.venv/bin/authzest scan examples/fastapi_inventory
+```
+
+The inventory example contains four Python files and three route registrations. This is static
+source evidence. The GUI's workspace selects only the static scan root; it does not select an
+arbitrary repository for AI repair. The AI workflow uses the packaged synthetic archived-note
+source and policy.
+
+Prepare and review the local Docker image and private runtime configuration through the
+[owner-read workflow contract](../development/GENERATED_REPAIR_CONTRACT.md#running-the-approved-copy-workflow).
+Keep the reviewed Docker runtime running. Existing Codex ChatGPT login is reused; no API-key form
+or new OAuth login page is provided. The current adapter requires a trusted Codex CLI `0.153.0`.
+Runtime/source sharing and execution have their own current
+plans and decisions.
+
+### Open the active GUI
+
+Replace the placeholder with the absolute path of your reviewed private runtime configuration.
+The default address is numeric loopback `127.0.0.1:8000`; this mode requires one process and no reload.
+
+```bash
+.venv/bin/authzest ui --workspace examples/fastapi_inventory --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json
+```
+
+Open the **complete private AI workspace URL printed in the terminal in a new browser tab**.
+Its `authzest-ai` fragment carries a fresh launch capability; the page removes it and keeps it only
+in memory. Keep this URL private and omit it from recordings. A plain dashboard URL grants no
+active controls. After a page refresh, reopen the complete launch URL; restarting the server creates
+a different capability. Use the built same-origin dashboard, not the Vite development proxy.
+
+### Present the decisions and result
+
+1. In **AI repair**, optionally check existing login and CLI compatibility, then enter the exact
+   reviewed model identifier and prepare a run. Coarse login status does not establish model access.
+2. Review the complete current runtime plan, then its separate source-sharing preview. Preparing a
+   run alone does not approve either step.
+3. Review and enter each displayed exact phrase in order:
+   `runtime → share → copy → before → diff → apply → after → restore`. Each decision is fresh,
+   single-use and expires within the original maximum 300 seconds. There is no advance approval or
+   old-decision replay. Decline a step when its current plan is not acceptable.
+4. Show the source and declared policy, model-authored regression test and proposed replacement,
+   and host-derived exact source/test diffs. Explain the bounded host activity; it is not raw Codex
+   logs or a stream of model tokens.
+5. Compare the recorded checks and recovery in the table below. Inspect the semantic outcome,
+   application state, cleanup and restoration rather than treating a finished host job as a fix.
+6. Use **Download result JSON**. Find it in the browser download list, or use the browser's download
+   settings to choose a familiar private folder. Save it before another run replaces the result or
+   the server is closed. The API accepts no server save path.
+
+| Phase  | Owner's archived note | Generated regression     | Intended policy matches |
+| ------ | --------------------- | ------------------------ | ----------------------- |
+| Before | HTTP 403              | Assertion failed, exit 1 | 6/7                     |
+| After  | HTTP 200              | Passed, exit 0           | 7/7                     |
+
+These are the maintained scenario's expected values, not prefilled observations for a new run.
+Expected-profile matches can be 7/7 in both phases because the baseline profile expects its false
+denial. Intended-policy matches show the correction from 6/7 to 7/7. The after column describes the
+copy before restoration; verify `restored-before` and that recovery is not required. Unknown,
+declined, not-run, failed and recovery-required records retain their available evidence and state.
+
+Session polling stops after `finished` or `failed`; active, waiting and stopping states still update.
+Starting a new active run resumes updates. Closing the browser does not stop the worker. Stop is
+cooperative and may leave an applied copy requiring recovery; it does not approve restoration.
+When the core offers a separate restore plan, review and decide it separately. The current launch
+link can reconnect to the current in-memory run without extending its decisions. Importing a saved
+result or restarting the server cannot replay a decision or resume an old file session.
+
+### Read-only display or CLI alternative
+
+For static scanning and importing an existing result, start the ordinary read-only dashboard:
+
+```bash
 .venv/bin/authzest ui --workspace examples/fastapi_inventory
 ```
 
-Use Python 3.12 and Node.js 22.13 or later in the 22.x line, or Node.js 24. Open
-[the local dashboard](http://127.0.0.1:8000). The packaged inventory example supplies four Python files
-and three route registrations. The workspace selects the static inventory root. Workflow import
-uses the bytes of the result file you select.
+Select a final JSON you are authorized to view. Import supports `owner-read-suggestion` version 1.0
+and the historical generated-file format below, up to **512 KiB**. The local API labels the display
+`imported-unverified`: it shows the record's claims and reads no referenced runtime, copy or log
+paths. The active GUI's final download can be up to **4 MiB**, so not every downloadable result can
+be reimported. Keep full JSON and raw captures private. [Result viewer guide](RESULT_VIEWER.md)
 
-If you already have a result you are authorized to view, select its final JSON in the dashboard.
-Prepare a new result by reviewing the complete offline preview for your exact model and private
-runtime configuration.
+The CLI offers the same owner-read engine. Review its complete offline preview first:
 
 ```bash
 .venv/bin/authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --preview-only
 ```
 
-After reviewing that scope, the following command runs the interactive workflow and saves its final
-stdout JSON in a fresh private directory. Runtime and sharing prompts, followed by copy, before,
-exact diff, apply, after and restore decisions, use stderr. Replace the model and runtime path with
-the values you reviewed. Keep the terminal open for those decisions.
+After reviewing that scope, this command runs the interactive workflow and prints the location of
+its final stdout JSON. Replace the model and runtime path with the reviewed values. Keep the
+terminal open: runtime, sharing and all six file-stage plans/prompts use stderr and need their own
+current decisions.
 
 ```bash
 (
@@ -49,29 +130,20 @@ the values you reviewed. Keep the terminal open for those decisions.
 )
 ```
 
-Walk through the imported result in this order.
+### Evidence and presentation limits
 
-1. The suggestion summary, source evidence when available, generated regression and exact source/test diffs.
-2. The six file-stage decisions and the source application state.
-3. Before HTTP 403, the failed regression assertion and intended-policy matches of 6/7.
-4. After HTTP 200, the passing regression and intended-policy matches of 7/7.
-5. Restoration and recovery-required state. The after column records the copy before restoration.
+[#190](https://github.com/casing1/authzest/pull/190) delivers the opt-in GUI and
+[#192](https://github.com/casing1/authzest/pull/192) stops terminal-state polling. Their offline and
+mocked checks cover the UI bridge; they do not establish a new actual model/guest observation or
+stable acceptance. Use only invocation evidence you are authorized to present, with its own source
+revision, provenance and limits. Never publish private launch URLs, account details, raw logs or
+local result/copy paths in a screen recording.
 
-Expected-profile matches can be 7/7 in each phase because each phase has its own expected responses.
-Intended-policy matches show the correction from 6/7 to 7/7. Unknown, declined, not-run, failed and
-recovery-required records retain their available evidence and state.
-
-The public maintained-fixture proof used a maintainer-authored proposal and four real isolated Linux
-guests. It observed the expected before
-assertion failure, applied the exact change only to a fresh copy, observed the passing after test
-and all seven intended controls, restored the original source bytes and removed all four guests.
-A submission's own saved result should carry the provenance and limits of that invocation. [Maintained-fixture proof #187](https://github.com/casing1/authzest/pull/187)
-
-The viewer supports `owner-read-suggestion` version 1.0 and the historical generated-file format below.
-It accepts a selected file up to 512 KiB, projects it through the local API and labels it
-`imported-unverified`. It displays the record's claims. It reads no referenced runtime, copy or log
-paths. Keep the full JSON and raw captures private. The [result viewer guide](RESULT_VIEWER.md)
-explains source availability, omitted fields and import limits.
+The public maintained-fixture proof used a maintainer-authored proposal and four real isolated
+Linux guests. It observed the expected before assertion failure, applied the exact change only to
+a fresh copy, observed the passing after test and all seven intended controls, restored the original
+source bytes and removed all four guests. This proof is separate from model generation and GUI
+acceptance. [Maintained-fixture proof #187](https://github.com/casing1/authzest/pull/187)
 
 ## Historical alpha.4 walkthrough
 

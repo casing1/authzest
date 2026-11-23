@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../../assets/authzest-banner.png" alt="AuthZest — ソースコード認識型の認可テスト" width="100%">
+  <img src="../../assets/authzest-banner.png" alt="AuthZest — ソースコードに基づく認可テスト" width="100%">
 </p>
 
 <p align="center">
@@ -11,244 +11,136 @@
 
 # AuthZest
 
-AuthZest は、FastAPI アプリケーションのソースコードに基づいてアクセス制御を分析するための、
-インストール可能な CLI 中心のオープンソースプロジェクトです。現在の Python コアは対象の
-アプリケーションを import・実行せずにルートを収集します。中核となる製品目標は、Codex によるレビューと
-防御的テスト・パッチの提案、ユーザーの承認または拒否、承認された変更のみの適用、別途承認された
-隔離環境での検証と変更記録です。一般の FastAPI リポジトリ向けの新しい PoC 生成や、モデルによる
-修正ソースの新規生成は未実装です。alpha.3 には明示的に選択する
-所有 fixture のフローを含み、ソース CLI で実際の草案・適用・ランタイム検査・復元の確認が1回成功しました。静的スキャンは
-引き続きオフラインで動作します。
+AuthZest は、Python CLI とローカル Web ダッシュボードを備えた、FastAPI の認可テスト用
+オープンソースプロジェクトです。ソースの宣言をオフラインで調べるほか、管理対象である
+所有者のアーカイブ済みノートのシナリオについて、Codex に防御的な回帰テストと修正を提案させます。
+非公開コピーの検査・変更・復元は、各段階を確認してから進めます。
 
-ソース版の React ダッシュボードは静的スキャン結果と明示的に読み込んだワークフロー記録を表示します。
-承認と実行は CLI が担当し、Web サイトのデプロイは不要です。対応するソースインストールと
-読み込み制限は[ローカル結果ビューアーの英語ガイド](../../guides/RESULT_VIEWER.md)を参照してください。
+**この README は現在のソースを説明しています。** パッケージのバージョンは `0.1.0` で、
+授業提出用の安定版は準備中です。最新の公開リリースは、2026-11-05 KST 付の
+[v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) です。
+このプレリリースには、現在の GUI と、新しく生成したコードによる所有者読み取り修正フローは含まれません。
+[リリース準備状況](../../releases/RELEASING.md) · [変更履歴](../../../CHANGELOG.md)
 
-> [!NOTE]
-> **授業提出用の安定版 `0.1.0` は準備中です。** 公開済みの alpha.4 は登録済みテンプレートの選択に
-> 対応します。現在のソースは、アプリファイル一つと明示的なインメモリポリシーを持つ FastAPI の
-> オブジェクト所有権シナリオ一つを対象とします。CLI が生成・コピーの検査・復元を担い、
-> ローカルビューアーで保存した結果を確認できます。ソースからのインストール手順と検証範囲は
-> [授業デモガイド（英語）](../../guides/COURSE_DEMO.md)に記載しています。
-> 残りのリリース条件は [#150](https://github.com/casing1/authzest/issues/150) で追跡します。
+## できること
 
-> [!IMPORTANT]
-> **最新の公開リリース:**
-> [v0.1.0-alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) は 2026-11-05 KST に公開されました。
-> 正確なタグのソースは
-> `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`、Python パッケージ `0.1.0a4`、レポートスキーマ `1.2` です。
-> [タグ workflow 41957416243](https://github.com/casing1/authzest/actions/runs/41957416243) の attempt 2 は、
-> 公開を含む全 8 ジョブに合格し、公開ファイル 6 個をダウンロードして検証しました。
-> 正確なコミットと検証結果は[変更履歴](../../../CHANGELOG.md)と[リリース記録](../../releases/RELEASING.md)を
-> 確認してください。`main` の checkout は、このタグより先に進んでいる場合があります。
-> まだアルファ段階のツールであり、完成した脆弱性スキャナーや一般リポジトリの修正フローではありません。
+| 機能                           | 現在のソースの動作                                                                                                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ソースの静的スキャン           | 対象アプリを import・実行せず、対応する FastAPI/router の宣言・プレフィックス・依存関係を検出します。ソース位置、診断、部分解析の状態を確認できます。                                                                    |
+| AI の提案                      | 同梱の正確なソースとポリシーをプレビューしてから、既存の Codex アダプターを通じて、新しい防御的テストと、アプリファイル一つの利用可否ルールの修正を依頼します。変更なし・不明も有効な結果です。                          |
+| 段階ごとに確認するコピーフロー | runtime・共有・コピー・before・diff・適用・after・復元をそれぞれ確認します。生成した回帰テストと管理対象の対照検査 7 件を、レビュー済みのネットワーク無効 Linux guest で実行します。適用先は新しい非公開コピーのみです。 |
+| ローカル GUI                   | 同じ所有者読み取りエンジンを使い、現在の確認文を入力して各段階を進めます。生成コード・diff・before/after・復旧状態を確認し、完全な JSON をダウンロードできます。通常起動では静的ルート一覧と保存結果を表示します。       |
 
-> [!NOTE]
-> **一般的な修正エンジンではない限定範囲:** alpha.4 は読みやすい CLI と所有者ポリシーの推薦フローを
-> 含みます。能動的な `codex-owner-repair --file-workflow` には POSIX non-frozen Python ソースの
-> インストールが必要です。native バイナリは静的スキャンとオフラインプレビューに対応し、この能動的な
-> ファイルフローには非対応です。授業提出用の安定版範囲 (#150) を優先します。独立評価 (#84) は
-> 別途未完了のまま維持し、授業デモの固定 (#85) では結果または未取得の根拠を明示します。#130 で追跡する
-> alpha.4 後のソース変更は、偽サーバーの完成したテストログを原子的に公開します。テスト harness の
-> 信頼性変更であり、運用 Codex の修正や新たな実 AI 受け入れではありません。公開済み alpha.4 の
-> タグと配布物は不変です。タグ attempt 1 は JSONL テスト harness の読み取り競合 1 件で失敗し、4,923 件合格・1 件失敗でした。
-> ソースを変更しない再実行は合格しましたが、初回合格や修正完了ではありません。#89 の残存リスクは
-> **公開済みの alpha.4 に限り**受容されました。
-> [alpha.4 のリスク判断記録](../../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst)を参照してください。
+AI フローの対象は **管理対象の合成シナリオ一つ**です。静的スキャン用に選択したリポジトリが、
+自動的に Codex に送信されたり修正されたりすることはありません。一般リポジトリの修正や任意の
+アプリケーションの実行は対応範囲外です。[フローの契約](../../development/GENERATED_REPAIR_CONTRACT.md)
 
-> [!WARNING]
-> **開発ツール。** 公開済みの alpha.4 に対する警告は引き続き適用されます。その Prettier は悪意ある
-> EditorConfig により停止または失敗する可能性があります。現在のソースは Prettier 3.10.1 を使用します。
-> 同梱の brace-expansion 5.0.12 は [#89](https://github.com/casing1/authzest/issues/89) の
-> 3 件のアドバイザリで示される修正版の要件を満たします。[ガード付き整形コマンド](../../development/FORMATTING.md)を使用してください。
-> 整形ツールの直接実行やエディター・API 連携にはガードが適用されません。
-> GitHub は [picomatch #171](https://github.com/casing1/authzest/issues/171) のアドバイザリを取り下げました。
-> CVE の原本では引き続き公開済みと表示されています。
+## クイックスタート：ローカルダッシュボード
 
-## 現在のソースが対応する機能
-
-- 静的に生成された `FastAPI`・`APIRouter` 所有オブジェクトと、対応範囲内の import 別名の認識
-- Python [所有者ケース検討/固定計画 API](../../reference/OWNER_CASE_PLAN.md) は、
-  正確なモデル草案と呼び出し元の未検討/承認/変更/拒否記録を結び付け、内蔵ポリシーの計画を
-  表示します。記録された正確な期待値 10 件は 2026-10-09 KST に個別承認され、元のモデル作成履歴は
-  保持されます。新しい CLI はなく、オフライン計画は実行不可・not-run・認可 unknown です。
-  個別の[固定ポリシー検査 API](../../reference/OWNER_POLICY_CHECK.md) は #80 の範囲で、提供状況は
-  [PR #97](https://github.com/casing1/authzest/pull/97) で追跡します。期待値の検討は実行・共有・パッチの権限を与えません。
-  その後、個別承認された旧 recipe `1.0` の macOS arm64 ソース検査 1 回で期待値 10 件が一致しました。新しい AI 呼び出しは
-  なく、認可は unknown です。
-  Windows・frozen バイナリや endpoint 認可の受け入れ検証ではありません。その後、新たに個別承認された
-  recipe `1.1` ソース検査も `e037986` で期待値 10 件が一致しました。二つの 1 回限りの承認は消費済みです。
-  そのチェック時点では最終 head の CI・レビュー・提供は別の gate で、その後の結果は PR #97 で追跡します。
-- 文字列リテラルの HTTP ルート検出と、対応するルーター・登録 prefix の合成
-- リポジトリ内の絶対・相対ルーター import の接続と、元ファイル・行番号の保持
-- `scan` コマンドによる読みやすい形式または JSON のレポート
-- オフラインの [`authzest generation-preview`](../../development/GENERATED_REPAIR_CONTRACT.md)
-  （`--json` は任意）は固定入力だけを表示します。ソースの `codex-generate --model EXPLICIT_MODEL` は
-  移植可能な `--preview-only`、または正確な新規リクエストの共有同意後に POSIX アダプターを一度呼び出します。
-  既定ではファイルを実行せず、検証済み提案とホスト計算のソース/テスト diff を表示します。
-  明示的な `--file-workflow --runtime-profile PATH` は個別に判断する非公開コピーの before 検査、
-  正確な diff/適用、新しい after 検査、復元を追加します。
-  [生成ファイルのワークフロー](../../guides/GENERATED_FILE_WORKFLOW.md)を参照してください。
-  現在の検討済みイメージと対応カーネル制御が必要です。ポリシーレビューと安定版の受け入れは
-  #151/#152 で追跡します。`X-Demo-Actor` ヘッダーは合成アクターを選びます。読み取り専用の
-  結果 UI は [PR #173](https://github.com/casing1/authzest/pull/173) でソースにマージされました。
-- alpha.4 では `codex-owner-review`・`codex-owner-repair`・`codex-fixture`・`fixture-demo` を読みやすく
-  表示します。`--json` は最終結果一つを stdout に出し、完全な同意プレビューと質問は stderr に
-  出します。オフラインの `--preview-only --json` は owner-review または owner-repair の完全なプレビュー一つを返します。
-  スクリプトは JSON を明示的に選び、フィールド・記録された判断・個別承認は変わりません。
-  unknown は合格ではありません。[出力と移行の契約](../../guides/CODEX_OWNER_REVIEW.md#interpret-the-result)を
-  参照してください。公開済み alpha.3 の表示は変更せず、GUI や新しい提供者/実行権限は追加しません
-- 読み取り専用 [`authzest proposal-preview`](../../guides/PROPOSAL_PREVIEW.md) を提供：
-  対応 POSIX システムで bundle の正確な diff・根拠・期待結果を表示し、承認や実行は行わない
-- [`authzest proposal-check`](../../guides/PROPOSAL_CHECK.md) で、対応範囲内の変更前後の
-  ソース snapshot と宣言の期待値を比較する。ソースは実行せず、ポリシーの意図は評価しない。
-  一致しても認可を保証するものではない
-- [`authzest review-demo`](../../guides/REVIEW_DEMO.md) は、メモリ内の mock 例一つで
-  正確な diff・宣言の比較結果・文章のみのテスト草案をまとめて表示し、`--json` にも対応する。
-  入力ファイル・プロバイダー・適用・実行はなく、実行時の認可検査ではない
-- ソース checkout に[所有者限定レポートポリシー例](../../guides/OWNER_POLICY.md)を追加：純粋な
-  所有者・scope ポリシー、独立した開発用単体テスト、別途スキャンする FastAPI 参照を提供する。
-  実際の認証・endpoint の実行時テスト・新しい製品実行モードではない
-- [`authzest codex-owner-review`](../../guides/CODEX_OWNER_REVIEW.md) を提供：すべての
-  対応 OS で入力全体をオフラインで確認でき、正確な共有同意後、対応 POSIX システムで同梱の
-  所有者ポリシー snapshot 二つを Codex が読み取り専用でレビューする。出力は未レビューの
-  防御的テストケース草案であり、実行済みテストやパッチではない。過去2回の失敗後、新たに
-  承認された2026-10-01の試行は約74秒で `draft-ready` を返し、回答1件とケース10件が
-  host検証を通過した。限定的なプロバイダー受け入れ検証であり、期待値の承認やendpoint検証
-  ではない。次の試行には新たな承認が必要で、公開済みalpha.3は変更しない
-- [`authzest codex-owner-repair`](../../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) を提供：
-  対応 OS で共有内容全体をオフラインで確認でき、明示的な共有同意後、対応 POSIX システムで
-  バージョン固定 App Server による試行を 1 回行う。候補は `before` または `after`、結果は
-  `registered-change`・`no-change`・`unknown`。登録済みテンプレートの選択からホストが
-  1 ファイルの diff を導出し、任意の置換コードは生成しない。2026-10-28 の個別承認された
-  実連携 1 回で登録済みテンプレートが選択され、その承認は消費済み。既定は推薦のみで、適用・復元・ポリシー実行は行わない
-- 別の[登録済み修正ポリシー検査 Python API](../../reference/OWNER_POLICY_REPAIR_CHECK.md) を提供：
-  POSIX の Python ソースモードのみで、before/after の対照条件にはそれぞれ新たな個別承認が必要。
-  過去の承認済み実行では、想定どおり before の 2 件の不一致と after の 8 件の一致を観測した。
-  適用ファイルの検証ではない。この対照 API は下記のファイルフローとは別で、CLI/UI を追加しない
-- [所有ファイル修正ソース API](../../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst) を提供。
-  2026-10-29 KST、main `fb90c46` でコピーから取得した before の検査、正確な diff の受け入れ、
-  適用、取得した after の検査、復元をそれぞれ範囲を限定した承認の下で実施した。
-  Before は期待値 6/8 件に一致し、`non-owner` と `exact-owner-no-normalization` の意図した
-  過剰な許可 2 件を観測、after は 8/8 件に一致した。両検査は終了 `0`、後処理確認済みで、
-  ファイル・証拠も確認済み。最終状態は `restored-before`、generation `3` で記録を保持した。
-  以前の推薦を再検証し、新たな AI 呼び出しは行っていない。受け入れ検証は macOS/Python
-  `3.12.7` の POSIX non-frozen API のみで、HTTP 認可や新しいインストール済み CLI フローの受け入れ検証ではない。
-  その時点では #81/#35 全体と別途のリリース条件は未完了だった。alpha.3 は不変
-- 明示的な [`codex-owner-repair --file-workflow` オプション](../../guides/OWNER_FILE_WORKFLOW.md)を提供。
-  今回検証された推薦から新しい所有コピー、before 検査、正確な diff の受け入れ、適用、after 検査、
-  復元へ進み、それぞれ個別の同意が必要。オプション自体は承認ではなく、`--preview-only` は引き続き
-  共有入力のみを表示する。人向け出力は段階別の状態と 8 ケースの観察を分離し、`--json` は最終文書一つを保つ。
-  CI とコード/セキュリティレビューを経て、PR #120 の `a0ae879` でソースの提供を完了した。
-  以前のインストール済み推薦試行 2 回はコピー確認の期限切れ、または before worker の拒否で停止し、
-  2 回目の stdout 収集は不完全だった。その後、新たに個別承認した `c868152` のインストールを
-  macOS/Python `3.12.7` の 1 台で **2026-10-30 KST** に実行した。実際の推薦 1 回、
-  新しい非公開コピー 1 個、before の 6/8 一致、正確な diff の受け入れ・適用、実際の適用バイトの
-  after の 8/8 一致、正確な before バイトへの復元まで完了した（`restored-before`、generation `3`）。
-  完全な最終 stdout JSON と stderr ログは非公開で保持し、元の checkout は clean のままだった。
-  [限定されたインストール済みフローの記録](../../guides/OWNER_FILE_ACCEPTANCE.md)を参照。
-  管理者は **2026-11-02 KST** に、登録済みの合成ポリシー対・8 ケース・Codex によるテンプレート
-  選択・POSIX ソース CLI に限定した中核フローを受け入れた。上記の実行記録と既存のオフライン
-  拒否・ユーザー編集・復元テストに基づく判断であり、新たな実環境での実行ではない。最終状態の文書は
-  [PR #123](https://github.com/casing1/authzest/pull/123) の `ee49f5a` で通常マージされ、この限定された
-  中核範囲で #82 → #81 → #35 を順に終了した。#84 と #85 は独立した未完了項目で、
-  #83 の公開リリース検証記録は別である。#89 のリスク判断は公開済みの alpha.4 に限って適用された。
-  Windows/frozen での能動的なファイル実行は
-  引き続き未対応で、公開済み alpha.3 とレポートスキーマは不変
-- [`authzest fixture-demo`](../../guides/FIXTURE_DEMO.md) を提供：対応 POSIX システムで、
-  同梱のオフライン mock によるコピー適用・固定ソース検査・復元を個別に判断して体験できる。
-  Codex・アカウント・ネットワーク・fixture ソース実行は不要で、公開済み alpha.3 は変更しない
-- 既存の JSON フィールドを保持し、スキーマ `1.2`、構造化された診断、bounded/partial 状態と、
-  元の宣言・app・`include_router` の根拠を伴う区別可能な登録 ID を追加
-- ルートに直接宣言された `Depends`・`Security`、ソース位置と既知の scopes を収集。
-  通常の依存性注入を認証や認可と判断しない
-- 対応する app・router・`include_router` の依存関係宣言を各登録の適用文脈に結び付け、
-  ルート直接宣言のリストと元のソース位置を別々に保持
-- 静的スキャン用ローカル API・ダッシュボード、環境診断、独立した実行ファイルのパッケージング
-- ソースと POSIX バイナリの [Codex fixture コマンド](../../guides/CODEX_FIXTURE.md)：明示的な共有、バージョン固定
-  App Server、新しいコピー限定の正確な diff 承認。一つの fixture の実連携確認は成功済み
-- 個別に承認するソース設定検査を既定とし、この AST 検査では fixture のソースを実行しない
-- 明示的な [`--runtime-check`](../../guides/RUNTIME_VERIFICATION.md) は固定した所有 fixture のみを対象とし、
-  同梱コードを実行して `app.debug` とメモリ内 ASGI `GET /health` を確認する。
-  オプションの選択自体は実行承認ではありません。限定的な実ソース環境の受け入れ検証と alpha.3 の公開検査は合格しました
-
-対応するデコレーターは `get`、`post`、`put`、`patch`、`delete`、`options`、`head` です。
-静的解析の対応範囲は限定され、未解決のルート宣言は省略される場合があります。
-対応するルートで依存関係の根拠が未解決の場合、ルートは診断とともにレポートに残ります。
-構造化された診断は一部の未解決ケースとソース/読み取りエラーを扱いますが、すべての未対応パターンを
-網羅するものではありません。空のレポートや `bounded` 状態は endpoint の不在やアクセス制御の安全性を
-証明しません。[パーサーの対応範囲](../../reference/PARSER_SCOPE.md)と[レポート仕様](../../reference/REPORT_CONTRACT.md)を参照してください。
-入れ子の依存関係グラフ、認証・認可の分類とセキュリティ finding は未実装です。
-適用文脈の根拠はソース上の文脈であり、実行時の依存関係の順序や保護を保証しません。
-
-`scan` は Codex adapter を無効にしたローカル静的解析を行います。Codex を呼び出さず、API key や
-ChatGPT へのログインも不要です。別コマンドの `doctor` は、後述のとおりインストール済み Codex CLI を
-呼び出す場合があります。
-
-## ソースから CLI をインストール
-
-最初に Python 3.12 以降と [pipx](https://pipx.pypa.io/latest/how-to/install-pipx.html) を用意してください。
-開発の基準は Python 3.12 です。次のコマンドは
-PyPI のパッケージではなく、現在のリポジトリソースを独立した pipx 環境にインストールします。
+現在のダッシュボードには editable ソース checkout を使います。以下は macOS または Linux 向けで、
+Python 3.12 と、Node.js 22.x 系の 22.13 以降または Node.js 24、および npm が必要です。
 
 ```bash
 git clone https://github.com/casing1/authzest.git
 cd authzest
-pipx install --python 3.12 .
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -e '.[ui]'
+npm --prefix frontend ci
+npm --prefix frontend run build
+.venv/bin/authzest scan examples/fastapi_inventory
+.venv/bin/authzest ui --workspace examples/fastapi_inventory
+```
 
+[ローカルダッシュボード](http://127.0.0.1:8000)を開きます。この起動は読み取り専用です。
+例の Python ファイル 4 個と GET 登録 3 件を調べるか、保存したフローの JSON を選択します。
+Web サイトのデプロイは不要です。コマンドは clone したディレクトリから実行してください。
+`.venv` と `frontend` はその中にあります。Ctrl-C でサーバーを停止します。
+フロントエンドのソースを変更した後は再ビルドしてください。
+
+## GUI で AI による修正を実行する
+
+このモードには、POSIX の non-frozen ソースインストール、既存の Codex ChatGPT ログイン、
+信頼できる Codex CLI `0.153.0`、レビュー済みの owner-read Docker ランタイム設定とイメージが必要です。
+アダプターは CLI のバージョンを固定して確認します。起動前に
+[ランタイムの準備](../../development/GENERATED_REPAIR_CONTRACT.md#running-the-approved-copy-workflow)を
+行ってください。以下の設定パスは、非公開の絶対パスに置き換えるための例です。
+
+```bash
+.venv/bin/authzest ui --workspace examples/fastapi_inventory --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json
+```
+
+1. ターミナルに表示された **非公開 AI ワークスペース URL 全体**を **新しいブラウザータブ**で開きます。
+   最初の URL に `authzest-ai` フラグメントを含めてください。ページはこれを URL から除去し、
+   接続権限をメモリ内だけに保持します。ページを再読み込みした場合は完全な起動 URL を開き直します。
+   サーバーを再起動すると新しい URL が発行されます。
+2. AI 修正画面で、必要に応じて既存のログインを確認し、アクセス可能なモデルの正確な識別子を入力します。
+   実行の準備を開始すると runtime 計画が表示されます。この操作だけでは共有を承認しません。
+3. 現在の完全な計画を確認し、その段階の正確な確認文を入力します。順序は **runtime → share → copy
+   → before → diff → apply → after → restore** です。各決定は別々で、一度だけ使え、有効期限があります。
+4. 生成した回帰テスト、ソース変更、正確な diff、観測結果、復元状態を確認します。
+   ホストの活動欄はフローの段階を示すもので、Codex のトークン配信やアカウントの生ログではありません。
+5. 次の実行を開始したりサーバーを終了したりする前に、ブラウザーのダウンロード設定で結果 JSON の
+   保存先を確認します。使い慣れた非公開フォルダーを選ぶか、ダウンロード一覧で保存場所を探してください。
+   必要な復旧ファイルも保持します。完了・失敗した実行のセッション反復取得は停止し、
+   新しい実行が始まると更新を再開します。
+
+管理対象のケースでは、次の比較を想定しています。
+
+| 段階   | 所有者によるアーカイブ済みノートの読み取り | 生成した回帰テスト | 意図したポリシーとの一致 |
+| ------ | ------------------------------------------ | ------------------ | ------------------------ |
+| Before | HTTP 403、誤った拒否                       | assertion が失敗   | 6/7                      |
+| After  | HTTP 200                                   | 合格               | 7/7                      |
+
+これは fixture で意図したデモを示しており、新しいモデル応答の結果を保証するものではありません。
+別の期待プロファイルとの一致数は、両段階とも 7/7 になる場合があります。復元と後処理も確認してください。
+前のテストが合格していても、復旧が必要な状態は解消されません。適用後にキャンセルすると、変更済みの
+非公開コピーが残る場合があり、自動では復元されません。元の checkout のバイト列は、このフローの
+書き込み対象に含まれません。
+
+能動モードは数値ループバック `127.0.0.1`、単一プロセス、reload なしで動作します。通常のダッシュボードへの
+アクセス、保存 JSON、Vite 開発プロキシからは実行権限を得られません。workspace は静的スキャンのルートだけを
+選択します。[GUI ガイド](../../guides/RESULT_VIEWER.md) · [授業デモガイド](../../guides/COURSE_DEMO.md)
+
+## CLI を使う場合
+
+CLI のみを使う場合は Python 3.12 と pipx をインストールし、ソース checkout から実行します。
+
+```bash
+pipx install --python 3.12 .
 authzest --help
 authzest scan /path/to/fastapi-project
 authzest scan /path/to/fastapi-project --json
 authzest scan /path/to/fastapi-project --json --strict
 ```
 
-`/path/to/fastapi-project` を実際のプロジェクトディレクトリに置き換えてください。コマンドが PATH に
-見つからない場合は `pipx ensurepath` を実行し、新しいターミナルを開きます。pipx でインストールした
-CLI を使うために、プロジェクトの venv を有効にする必要はありません。
-例では Python 3.12 を選択します。対応する別のインタープリターを使う場合は、`--python` の後の
-`3.12` をそのバージョンまたは実行ファイルのパスに置き換えてください。
+例のパスを置き換えてください。必要なら `pipx ensurepath` を実行し、ターミナルを開き直します。
+静的スキャンには Codex は不要です。部分レポートを返した場合の終了コードは通常 0 ですが、
+`--strict` では既知の部分解析を 1 とし、不正な入力では 2 になります。これは実行状態であり、
+セキュリティ上の判定ではありません。
 
-既定では部分的な解析でもレポートを返せば終了コードは 0 です。`--strict` を付けると、既知の部分解析では
-レポートを出力したうえで 1 を返します。無効なリポジトリ入力には 2 を返します。
-これらは解析の実行状態を示すコードであり、セキュリティの判定ではありません。
-
-このソースインストールを更新するには、未コミットの変更がない `authzest` checkout の `main` で実行します。
+クイックスタートで作成した editable の `.venv` から、所有者読み取り CLI でリクエスト全体を
+プレビューできます。この操作は共有や実行をしません。
 
 ```bash
-git pull --ff-only
-pipx install --force .
+.venv/bin/authzest owner-read-suggest --model EXPLICIT_MODEL --file-workflow --runtime-config /ABSOLUTE/PRIVATE/runtime.json --preview-only
 ```
 
-[ソースインストール CLI の事前検証記録](../../releases/RELEASING.md#source-installed-cli-preflight)には、
-過去の `1d0ebb8` の同一バージョン置き換えを別途保持しています。2026-11-05 KST、macOS/Python 3.12
-の 1 台の一時的な pipx 環境で、新しい `b5f3eb8` 候補のインストールが 13/13 件、実際の alpha.3
-`99be6f5` / `0.1.0a3` から同じ pipx venv 内の `b5f3eb8` / `0.1.0a4` への置き換え後も 13/13 件に
-合格しました。Noneditable のインストール元とインストール済みパッケージファイルのバイトを確認しました。
-他の OS・クリーンな利用者端末・native インストーラー・UI の対応を立証するものではありません。
-この検査では AI 呼び出し・ポリシー worker・能動的なファイルフローは実行しておらず、
-以前の `c868152` の所有ファイルフローの観察とは別です。
+`EXPLICIT_MODEL` と runtime パスをレビュー済みの値に置き換えます。対話型 CLI の実行、
+非公開 JSON の保存、既存の登録済みテンプレートツールについては、
+[授業ガイド](../../guides/COURSE_DEMO.md)と[コマンドガイド](../../README.md)を参照してください。
 
-最終ソース `090002d` は 2026-11-05 KST に別途検査しました。1 台の macOS/Python 3.12 環境で
-新規インストールと実際の alpha.3 → alpha.4 置き換えが、それぞれオフラインのインストール済み CLI
-検査 13/13 件に合格し、noneditable の出所とパッケージのバイトを確認しました。現在のソース UI の
-インストール手順とその検証記録は [授業デモガイド（英語）](../../guides/COURSE_DEMO.md)を参照してください。
+## インストール経路と対応範囲
 
-ビルド済みファイルについては[独立した実行ファイル](#独立した実行ファイル)を参照してください。
-`ui` extra は Python backend の依存関係をインストールしますが、通常の wheel・pipx インストールに
-ビルド済みダッシュボードのアセットは含めません。任意のダッシュボードには、以下の editable ソース環境を使います。
+| 経路                                                      | 対応する用途                                                                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| editable ソースと UI extra、フロントエンドのビルド        | 現在のダッシュボード。対応する POSIX システムとレビュー済み runtime では、能動的な owner-read GUI/CLI も利用できます。          |
+| 通常の wheel またはソースから pipx でインストールした CLI | CLI コマンド。ビルド済みダッシュボードの資産は同梱されないため、GUI には editable checkout を使います。                         |
+| 公開済み alpha.4 の単体バイナリ                           | そのタグの実験的な静的スキャン・オフラインプレビュー。現在のソース GUI は含まれず、現在の能動フローと同等の機能は提供しません。 |
 
-## 同梱のサンプルを試す
-
-リポジトリルートから、現在のソースのインストールで同梱のローカル fixture をスキャンします。
-
-```bash
-authzest scan examples/fastapi_inventory
-authzest scan examples/fastapi_inventory --json
-```
-
-Python ファイル 4 個と `GET` ルート 3 個(`/health`、`/v1/catalog/items`、`/v2/catalog/items`)が得られます。
-これは脆弱性の検出ではなく、静的な探索と同じルーターの繰り返し登録を示すサンプルです。
-fixture の構成と期待する根拠は[サンプルガイド](../../guides/EXAMPLES.md)を参照してください。
+公開ファイルとチェックサムは [GitHub Releases](https://github.com/casing1/authzest/releases)を参照してください。
+実行ファイルには署名も notarization もありません。現在のソースの native ビルドと、記録されたプラットフォーム検査は
+[リリースガイド](../../releases/RELEASING.md)に記載しています。過去の検査は後の候補を認証するものではありません。
+PyPI や npm への公開は、このリリース手順に含まれていません。
 
 ## CLI 診断
 
@@ -258,16 +150,13 @@ authzest doctor
 authzest doctor --json
 ```
 
-`doctor` は Python の実行環境を確認します。PATH 上に `codex` が見つかると、`codex --version` と
-`codex login status` も subprocess として実行します。AI スキャンを開始したり、認証情報ファイルを
-直接読んだりはしません。Codex やログインがなくても警告にとどまり、静的スキャンは利用できます。
-ログイン成功は AI スキャンやデータ共有への同意を意味しません。別の
-[Codex fixture コマンド](../../guides/CODEX_FIXTURE.md) は明示的な共有承認を要求し、所有 fixture のみを扱います。
+診断は Python と、PATH 上に Codex があればそのバージョン・ログイン状態を確認します。
+モデルへのリクエストは開始しません。ログインだけでソース共有やファイル操作の各段階を承認することはできません。
+Codex がなくても静的スキャンは利用できます。
 
 ## 開発環境
 
-clone したリポジトリのルートで実行してください。例は macOS/Linux shell 向けです。Windows PowerShell
-では `py -3.12 -m venv .venv` で venv を作成し、`.venv\Scripts\Activate.ps1` で有効にします。
+リポジトリのルートで開発環境を作成します。
 
 ```bash
 python3.12 -m venv .venv
@@ -275,216 +164,48 @@ source .venv/bin/activate
 python -m pip install -e '.[dev]'
 ```
 
-editable インストールはこの checkout を使い、`dev` extra には任意の backend 依存関係も含まれます。
-Node.js/npm は frontend の作業、ドキュメントの検証、ダッシュボードを含むビルドに必要です。
-CI は Node.js 22 を使います。
-
-## 任意のローカルダッシュボード
-
-以下は静的スキャンとワークフロー結果の読み取り専用インポートに対応したソース版ダッシュボードの手順です。
-既存の最終 JSON を選択して表示します。追加の AI 呼び出しや段階の実行は行いません。
-
-editable 開発環境を準備した後、リポジトリルートからダッシュボードをビルド・起動します。
-
-```bash
-npm --prefix frontend ci
-npm --prefix frontend run build
-authzest ui --workspace /path/to/fastapi-project --host 127.0.0.1 --port 8000
-```
-
-[http://127.0.0.1:8000](http://127.0.0.1:8000) を開いてください。editable backend は checkout 内の
-`frontend/dist` を参照します。ビルドがない場合、`/` にはダッシュボードではなく API の案内が表示されます。
-
-ダッシュボードは未実行・空の結果・部分的なスキャンを区別し、構造化された診断と parse-error の詳細を表示します。
-再スキャンに失敗すると前の結果を消去します。これらは収集状態であり、アクセス制御の判定ではありません。
-
-frontend 開発時は、venv が有効なターミナルで
-`authzest ui --workspace /path/to/fastapi-project --reload` を実行し、リポジトリルートの別ターミナルで
-`npm --prefix frontend run dev` を実行してください。[http://localhost:5173](http://localhost:5173) を
-開くと、Vite が `/api` と `/health` をポート 8000 に転送します。
-
-ローカルサーバーは `GET /health`、`GET /api/health`、`POST /api/scans` と、`/docs` の API ドキュメントを
-提供します。スキャン endpoint は必ずサーバー起動時に選択した workspace を使い、リクエスト本文で別の
-パスを選ぶことはできません。直接の CLI スキャンはローカルユーザーが指定したパスを使います。
-任意のサーバーは loopback アドレスで実行してください。
+Windows PowerShell での移植可能な CLI 開発には、`py -3.12 -m venv .venv` と
+`.venv\Scripts\Activate.ps1` を使います。能動的な owner-read 実行と操作用 GUI は、POSIX ソース版のみの対応です。
 
 ## 検証
 
-開発 venv を有効にして実行します。
+開発環境を有効にした状態で実行します。
 
 ```bash
 python -m pytest
 ruff check .
 ruff format --check .
-```
-
-frontend を変更した場合は、以下も実行してください。
-
-```bash
 npm --prefix frontend ci
+npm --prefix frontend test
 npm --prefix frontend run lint
 npm --prefix frontend run format:check
 npm --prefix frontend run build
-```
-
-ドキュメントを変更した場合は、上記の frontend 依存関係をインストールしてからリポジトリルートで実行します。
-
-```bash
 node --test scripts/check_docs.test.mjs
-node --test scripts/format.test.mjs
 node scripts/check_docs.mjs
 node scripts/format.mjs markdown --check
 ```
 
-検査ツールはドキュメントの実行例を実行せず、翻訳ペア、ローカルリンク、コマンドの一致を確認します。
-整形コマンドは Git が追跡する Markdown が対象なので、新しいガイドは最終確認の前に staging に含めてください。
-[整形ガイド（英語）](../../development/FORMATTING.md)で、書き込みコマンド、維持するルート
-EditorConfig、およびガードの制限を確認してください。
+文書の検査は、サンプルを実行せずにリンク・翻訳間のコマンド・シェル構文を確認します。
+[ガード付き整形コマンド](../../development/FORMATTING.md)を使ってください。開発ツールのアドバイザリと
+候補ごとの判断は [#89](https://github.com/casing1/authzest/issues/89) と
+[#171](https://github.com/casing1/authzest/issues/171) で追跡しています。エディター・API で直接整形する経路は
+ラッパーの対象外です。
 
-## 独立した実行ファイル
+## アーキテクチャと関連文書
 
-[alpha.4 リリース](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) は Linux x64、
-macOS arm64、Windows x64 の実行ファイルと SHA-256 manifest、静的一覧・読みやすい出力・所有者
-レビュー/修正のオフラインプレビューを提供します。タグ workflow attempt 2 の全 8 ジョブが合格しました。
-各プラットフォームは選択/移動 26 件・パッケージ 13 件・新規ダウンロード 13 件のスキャン/プレビューと、
-固定 runtime parent 検査 2/1/1 件に合格しました（POSIX は AFTER debug/health のみ、Windows は明示的な非対応）。
-公開ファイル 6 個のバイトが attempt 2 成果物と GitHub API SHA-256 に一致し、checksum sidecar 3 個も
-バイナリに一致しました。移動した公開 macOS バイナリは Python `-I -S` の標準ライブラリ制御プログラムで
-スキャン/プレビュー 13 件・固定 runtime 1 件に合格しました。Codex・対象・パッチは使っていません。
-公開・公開ダウンロードの検証は完了し、文書の提供は [#83](https://github.com/casing1/authzest/issues/83) で
-追跡します。[公開検証記録](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)と
-[リリースガイド](../../releases/RELEASING.md)を参照してください。
-GUI インストーラーではなく独立した CLI プログラムであり、
-ビルド済みバイナリの実行に Python や Node.js のインストールは不要です。POSIX バイナリには
-所有 fixture のフローとランタイム依存関係も含まれます。Codex は独自のログインを使う別の信頼できる
-インストールが必要で、ソース共有と各変更・検査は個別に承認します。Windows の fixture 適用・
-ランタイム検査は非対応であり、ランタイム検査の合格を意味しません。
+Python コア、parser/analyzer、Codex アダプター、runner、表示層を分離しています。
+Typer CLI と FastAPI/React UI は共通のコアフローを使います。UI の変更自体が、新たな実行権限や
+ソース共有権限を与えるわけではありません。
 
-OS/アーキテクチャに合うファイルと `.sha256` manifest をダウンロードし、実行前に
-[チェックサムと実行の手順](../../releases/RELEASING.md#verify-and-recover)に従ってください。
-過去の alpha.3 では、3 プラットフォームの CI ビルドと新しいジョブでの成果物 smoke 検査が成功し、公開ファイル6個を
-ダウンロードして検査済み成果物と照合しました。公開 macOS バイナリも Python `-I -S` の標準
-ライブラリ制御プログラムでプロジェクト依存関係を import せず、ローカルのスキャン・ランタイム smoke に合格しました。これらのパッケージ検査では
-実際の Codex 呼び出しは行っていません。一般ユーザーの機器での
-クリーンインストール・アップグレードや、すべての OS バージョンとの互換性は未確認です。署名・公証は
-されていないため、OS が未確認の発行元について警告する場合があります。
+- [文書目次](../../README.md)：コマンドの契約、セットアップ、参照 API。
+- [開発計画](../../development/DEVELOPMENT_PLAN.md)：現在の範囲と過去の実装記録。
+- [授業デモガイド](../../guides/COURSE_DEMO.md)：GUI、CLI、保存結果の提示。
+- [貢献ガイド](../../../CONTRIBUTING.md)：意味のあるコミット、テスト、ラベル、ブランチルール。
+- [セキュリティポリシー](../../../SECURITY.md)：報告方法と対応するレビュー範囲。
+- [MIT ライセンス](../../../LICENSE)。
 
-現在のソースの native パッケージには静的スキャンとオフラインの所有者プレビューを含みますが、
-能動的な `codex-owner-repair --file-workflow` は含みません。この経路には POSIX non-frozen の
-Python ソースインストールが必要です。2026-11-05 KST の [native プレビュー実行 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368)、
-attempt 1 は正確なソース `b5f3eb81d318e94c5e400ec52e78f1550e13f931` で 7/7 ジョブに合格しました。
-Linux x64・macOS arm64・Windows x64 のそれぞれで、選択・移動 26 件、パッケージ 13 件、同じ OS の
-新規ダウンロード 13 件の検査に合格しました。バイナリ・チェックサム manifest の 3 組もローカルに
-ダウンロードしてすべて照合し、ローカルでのバイナリ実行は行っていません。これはスキャン・プレビューの
-証拠であり、UI・ランタイム・AI・ポリシー worker・能動的なファイルフローの受け入れではありません。
-このソースだけに結び付いた観察で、後続の文書マージは新たに検査した候補ではありません。
-これは過去の事前検証であり、alpha.4 の公開ダウンロード検証記録ではありません。
-
-正確な alpha.4 ソース `090002d` は別途
-[非公開のリリース事前検証 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082) で
-7 ジョブに合格し、公開はスキップされました。パッケージの runtime 検査は POSIX の固定所有 AFTER
-fixture の debug/health のみで、Windows は明示的な非対応動作を検査します。全体の回帰検査は
-保守対象の BEFORE/AFTER fixture も実行し、任意のリポジトリは実行しません。タグ公開と公開ファイルは
-リリースガイドの別の観察です。UI の受け入れ、利用者端末でのインストール/更新、署名/公証、native の
-能動的な所有ファイルフローの対応を立証するものではありません。
-
-現在のソースをローカルでビルドするには、開発 venv を有効にし、リポジトリルートから実行します。
-
-```bash
-python -m pip install -e '.[build]'
-npm --prefix frontend ci
-npm --prefix frontend run build
-python -m PyInstaller --clean --noconfirm authzest.spec
-./dist/authzest --help
-```
-
-Windows の出力は `dist\authzest.exe` です。PyInstaller は `frontend/dist` が存在する場合に同梱します。
-タグの検証、checksum、公開手順については[リリースガイド](../../releases/RELEASING.md)を参照してください。
-
-## プロジェクト構成
-
-```text
-src/authzest/
-├── analyzer/   # リポジトリ解析と集約
-├── parser/     # AST ルート・import の解決
-├── runner/     # 共通のスキャン実行フロー
-├── codex/      # オフライン契約と opt-in 所有 fixture adapter; scan はオフライン
-├── cli.py      # Typer コマンドラインインターフェース
-├── api/        # 任意の FastAPI 接続層
-└── models.py   # コアのレポートデータ
-tests/          # 回帰テスト
-frontend/       # 静的スキャンと読み取り専用ワークフロー結果のローカル画面
-docs/           # ガイド、翻訳、アセット
-scripts/        # リリース補助ツール
-.github/        # CI/リリース workflow とコントリビューションのテンプレート
-```
-
-CLI と任意の API・UI は同じコアを使います。コア解析は Web サーバー、React、特定の AI provider に
-依存してはいけません。
-
-## ロードマップとコントリビューション
-
-- [ドキュメント索引](../../README.md) — 英語のガイドと韓国語訳
-- [開発チェックリスト](../../development/DEVELOPMENT_PLAN.md)と[ロードマップ issue #1](https://github.com/casing1/authzest/issues/1)
-- [モデルと評価の方針](../../development/MODEL_STRATEGY.md)
-- [コントリビューションとコミットのルール](../../../CONTRIBUTING.md)
-
-範囲を定めたタスクを issue で追跡し、短期間のブランチで開発して、意味のあるコミットと検証を含む PR を
-作成してください。保護された `main` は Python、frontend、CodeQL のチェックを要求します。自由テーマの
-既存の開発 7 週間には完了済みの作業を含みます。新しい 7 週間は開始せず、提出見込みの
-2026-11-18 より前の試験・提出の余裕を保持します。
-[#32](https://github.com/casing1/authzest/issues/32) のレポート・根拠の基盤と
-[#28](https://github.com/casing1/authzest/issues/28)・[#29](https://github.com/casing1/authzest/issues/29) の
-ルート直接・継承宣言の根拠は alpha.2 に含まれます。
-リリース準備・公開 [#39](https://github.com/casing1/authzest/issues/39) は完了しました。
-後続の [alpha.3 チェックポイント](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)も公開・検証済みです。
-現在のソースと次の作業は以下のとおりです。
-
-1. ソースに実装済み: [#33: 根拠に結び付いたオフライン AI 契約・mock・評価](https://github.com/casing1/authzest/issues/33)。
-2. 受け入れた限定的な中核範囲で終了: [#35: Codex 提案・正確な diff の承認・承認済みパッチの適用・隔離検証](https://github.com/casing1/authzest/issues/35)。
-3. 同梱されたソース専用の能動的なフロー: [#82: 読みやすいインストール型 CLI 統合](https://github.com/casing1/authzest/issues/82)に
-   opt-in のファイルフローとオフラインテストを PR #120 で提供しました。個別承認した 1 台の
-   インストール済み正常系で、推薦から適用ファイルの検査・復元まで観測しました。管理者は
-   2026-11-02 KST に[限定された中核フローと既存のオフライン証拠](../../guides/OWNER_FILE_ACCEPTANCE.md)を
-   受け入れました。新たな実環境での実行や一般リポジトリの修正の受け入れではありません。最終状態の
-   文書は PR #123（`ee49f5a`）で通常マージされ、この範囲で #82 → #81 → #35 を順に終了しました。
-4. ソースのテスト harness 安定化の提供は [#130](https://github.com/casing1/authzest/issues/130)で追跡します。
-   次は [#150 授業提出用完成版](https://github.com/casing1/authzest/issues/150)の実際の生成 #151 →
-   承認済みコピーの検証/復元 #152 → ローカル結果 UI #153 →
-   [#85 再現可能なデモ・授業提出の証拠](https://github.com/casing1/authzest/issues/85)です。
-   [#84 独立評価](https://github.com/casing1/authzest/issues/84)は別途未完了のまま維持し、比較の根拠が
-   なければ明示します。中核の提供より比較実行基盤の拡張を優先しません。
-   [#83 の正確なリリース/公開ファイル検証記録](https://github.com/casing1/authzest/issues/83)は別に保持します。
-   安定版のレビューでは [#89](https://github.com/casing1/authzest/issues/89) と
-   [#171](https://github.com/casing1/authzest/issues/171) を別々に追跡します。
-   限定した `0.1.0` 安定版には実際の生成フロー・UI・デモ・回帰/インストール検証と新たなリスク判断が必要です。
-
-[オフライン基盤](../../reference/AI_CONTRACT.md) は alpha.3 の fixture コマンドが使う契約を提供します。
-評価スクリプトとデータセットは checkout 専用のままです。上記の限定された中核フローの受け入れは、
-一般の FastAPI 向け PoC 生成やモデルによる修正ソースの新規生成の実装を意味しません。
-#35 の最初の段階である [#46 のオフライン提案・判断契約](../../reference/PROPOSAL_CONTRACT.md) はソースに実装済みです。
-diff のプレビューと模擬承認の検査を提供しますが、ファイルへの適用や検証の実行は行いません。
-後続の [#48 コピー専用適用デモ](../../guides/FIXTURE_APPLICATION.md) は、新しい POSIX fixture コピーで
-明示的な端末承認と競合を確認する復元を提供します。元の checkout は変更せず、実際の AI 呼び出しや
-検証は実行しない checkout 専用スクリプトです。コピー helper は alpha.3 の製品コマンドでも使います。
-後続の [#50 Codex fixture 段階](../../guides/CODEX_FIXTURE.md) は明示的な共有承認後にモデル草案を
-一度要求し、適用と復元は別途判断します。`42ff108` で一つの所有 fixture の実際の草案・コピー適用・
-復元の確認が1回成功し、元の内容は保持されました。承認文はユーザーの許可に基づき assistant が
-入力したもので、独立した人間のレビューではありません。この過去の実行ではランタイム検証を
-行っていません。これらの製品機能は alpha.2 ではなく alpha.3 に含まれます。#52 は適用と復元の間に、別途承認する
-既知のハッシュに固定したソースの AST 設定検査を制限付き子プロセスで行う選択肢を追加します。対象ソースを実行せず、
-新たな実モデルの証拠や、セキュリティ修正の有効性が検証済みという主張も追加しません。
-#54 は `--runtime-check` で[所有 fixture のランタイム計画](../../guides/RUNTIME_VERIFICATION.md)を追加します。
-別途の正確な検証確認、制限付き worker、任意の依存パッケージを使い、自動インストールは行いません。
-限定的な実ソース環境の受け入れ検証に合格し、alpha.3 の公開ファイルも別のリリース検査に合格しました。
-一般リポジトリの AI レビューは未実装です。その後の限定された中核フローの受け入れは、任意の
-リポジトリや新規生成された修正ソースまで範囲を広げるものではありません。
-6 ケース・3 モードの mock 評価はモデル性能ではなく契約を検証します。AI 支援が結果を改善するかは実証済みの利点ではなく、評価すべき
-仮説です。コアは provider や特定の GPT モデルがなくても役立つものにします。
-最終デモは自ら所有・管理する fixture を対象とし、データ共有・パッチ・実行を別々に許可します。
-脆弱性を悪用する PoC の生成、自律的な攻撃フロー、任意のリポジトリの実行は対象外です。
-
-## ライセンスとセキュリティ
-
-AuthZest は [MIT License](../../../LICENSE) を採用しています。脆弱性は公開 issue ではなく、
-[セキュリティポリシー](../../../SECURITY.md)に記載された非公開の手順で報告してください。
+静的な宣言、与えられたポリシー、有限のテスト結果は、それぞれ異なる根拠です。診断と
+不明・未実行・拒否・失敗の状態は表示に残ります。AuthZest は一般的な認可の保証、
+本番環境の隔離、測定済みのモデル優位性を立証するものではありません。独立比較は
+[#84](https://github.com/casing1/authzest/issues/84)、授業用安定版の提供は
+[#150](https://github.com/casing1/authzest/issues/150) で追跡しています。

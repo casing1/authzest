@@ -7,22 +7,34 @@
 
 AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. 설치는 프로젝트 README에서 시작하고,
 스캔으로 무엇을 알 수 있는지와 알 수 없는지는 파서 범위를 확인하세요.
-로컬 대시보드는 정적 목록과 사용자가 가져온 워크플로 결과를 표시하며 웹사이트 배포가 필요하지 않습니다.
-소스 설치·영한 UI·제한된 가져오기·미인증 기록의 한계는 [로컬 결과 화면](guides/RESULT_VIEWER.md)을
-참고하세요.
-[과제 시연](guides/COURSE_DEMO.md)에서 설치, 저장된 기록의 시연 순서, 근거의 한계를 확인할 수 있습니다.
+로컬 대시보드는 정적 목록과 선택한 워크플로 기록을 표시합니다. 명시적으로 활성화한 AI 작업 공간은
+기존 owner-read 엔진에 현재 GUI 결정을 연결하며 일반 실행은 읽기 전용입니다. 웹사이트 배포는
+필요하지 않습니다. 소스 설치·영한 UI·활성 모드 요건과 가져오기 제한은
+[로컬 워크플로 안내](guides/RESULT_VIEWER.md)를 참고하세요. [과제 시연](guides/COURSE_DEMO.md)은
+GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계도 유지합니다.
 
 ## 현재 작업
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
 → [#152 승인형 복사본 before/after·복구](https://github.com/casing1/authzest/issues/152)
-→ [#153 읽기 전용 로컬 결과 UI](https://github.com/casing1/authzest/issues/153)
-→ [#85 설치/문서/시연](https://github.com/casing1/authzest/issues/85) 순서입니다. PR #173에서
-로컬 결과 화면을 구현해 #153을 닫았습니다. 생성 및 검증 수용은 #151·#152에 남아 있습니다.
-CLI에서 승인하고 실행합니다. 릴리스 범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 참고하세요.
+→ [#153 결과 화면](https://github.com/casing1/authzest/issues/153)과
+[#189 로컬 대화형 GUI](https://github.com/casing1/authzest/issues/189)
+→ [#85 설치/문서/시연](https://github.com/casing1/authzest/issues/85) 순서입니다. PR #173에서 읽기 전용
+결과 화면을 구현했고 [#190](https://github.com/casing1/authzest/pull/190)에서 선택형 GUI 결정을,
+[#192](https://github.com/casing1/authzest/pull/192)에서 실행 종료 후 반복 조회 중단을 추가했습니다.
+CLI와 활성 GUI는 같은 owner-read 엔진을 사용합니다. 생성·검증 및 정확한 후보의 릴리스 수용은
+#150–152에서 추적합니다. 범위는 [개발 계획](development/DEVELOPMENT_PLAN.md)을 참고하세요.
 
-[생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)은 제한된 비공개 runtime-profile loader와 새
+현재 소유자 조회 시연은 패키지에 포함된 합성 보관 노트 사례 하나, 새로 제안한 회귀 테스트와 규칙
+파일 하나, 유지보수자가 관리하는 독립 정책 대조 7개를 사용합니다. 활성 GUI에는 동결 바이너리가 아닌
+POSIX 편집 가능 소스 설치, 빌드한 UI 자산, 기존 Codex 로그인과 검토한 비공개 Docker 런타임 설정이
+필요합니다. 새 비공개 복사본에만 쓰며 정적 workspace 선택으로 임의 저장소 수정이 활성화되지는
+않습니다. [로컬 워크플로 안내](guides/RESULT_VIEWER.md)에 따라 전체 현재 계획과 런타임·공유·복사·
+before·diff·적용·after·복구의 별도 결정을 검토합니다. 소스 패키지 버전 `0.1.0`은 릴리스 준비 상태이며
+발행을 뜻하지 않습니다. 공개 alpha.4와 최종 후보 조건은 구분합니다.
+
+별도의 [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)은 제한된 비공개 runtime-profile loader와 새
 로컬 검토를 현재 생성에 연결하고 복사·before·정확한 diff/적용·after·복구를 각각 결정합니다.
 기본 생성 명령은 제안 전용이며 기본 [세션](development/GENERATED_REPAIR_SESSION.md)은 비활성
 before 준비를 유지합니다.
@@ -198,7 +210,7 @@ before 6/8 일치, 정확한 diff 수용·적용, 실제 적용 바이트의 aft
 새로 작성한 수정 소스는 미구현입니다. 이 소유 파일 수용은 여러 플랫폼/native 수용이 아니며
 Windows/frozen의 활성 파일 실행은 여전히 지원하지 않습니다. UI·#80·공개 alpha.3·리포트 스키마는 그대로입니다.
 정답 검토는 실제 실행 동의나 인증된 승인 증표가
-아닙니다. 현재 대시보드는 정적 목록 화면이고 AI 검토/승인 뷰어는 아닙니다.
+아닙니다. 당시 대시보드는 정적 목록 화면이었으며 AI 검토/승인 기능을 제공하지 않았습니다.
 이후 별도 승인한 과거 recipe `1.0` macOS arm64 소스 검사 1회에서 예상값 10개가 모두 일치했습니다.
 [제한된 관찰 기록](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을 참고하세요.
 새 AI 호출 없이 인가는 unknown입니다. 이후 새 별도 승인한 recipe `1.1` 소스 검사도 `e037986`에서
@@ -305,7 +317,7 @@ docs/
 | 고정 로컬 Engine 메타데이터                        | [Runtime metadata](../../development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | 고정한 빌드 전 guest 이미지 입력                   | [Image inputs](../../development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](development/GENERATED_REPAIR_IMAGES.md)                |
 | 승인형 생성 복사/검사/적용/복구 CLI                | [Generated file workflow](../../guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)                          |
-| 읽기 전용 로컬 워크플로 결과 화면                  | [Result viewer](../../guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](guides/RESULT_VIEWER.md)                                    |
+| 로컬 결과 화면과 선택형 소유자 조회 GUI            | [Result viewer](../../guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](guides/RESULT_VIEWER.md)                                    |
 | 과제용 설치, 저장된 기록 시연, 근거 범위           | [Course demo](../../guides/COURSE_DEMO.md)                                       | [과제 시연](guides/COURSE_DEMO.md)                                           |
 | 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
@@ -400,9 +412,10 @@ Python `-I -S`의 표준 라이브러리 제어 프로그램으로 프로젝트 
 [#33](https://github.com/casing1/authzest/issues/33)의 오프라인 기반은 소스에 구현됐고
 [#35](https://github.com/casing1/authzest/issues/35)는 수용한 제한 범위 핵심을 완료했습니다.
 소스 테스트 harness 안정화 전달은 [#130](https://github.com/casing1/authzest/issues/130)에서 추적합니다.
-[#150 과제 완성형 정식판](https://github.com/casing1/authzest/issues/150)의 로컬 결과 화면은 #153에서
-구현했습니다. #85의 시연 순서와 남은 #151·#152 수용 작업은 [과제 시연](guides/COURSE_DEMO.md)을
-참고하세요.
+[#150 과제 완성형 정식판](https://github.com/casing1/authzest/issues/150)의 읽기 전용 결과 화면은
+#153에서 구현했고 #189/#190에서 명시적 로컬 owner-read GUI를 추가했습니다. #85의 설치, 현재 GUI
+결정, JSON 다운로드, CLI 대안과 남은 #151·#152의 정확한 후보 수용 작업은
+[과제 시연](guides/COURSE_DEMO.md)을 참고하세요.
 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 별도로 열어 두며 미확보 비교 근거를
 명시합니다. 결과를 꾸미거나 조용히 완료 처리하지 않습니다.
 
