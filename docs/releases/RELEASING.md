@@ -5,6 +5,24 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
+## Release validation budget and UI coverage — 2026-11-23 KST
+
+The release workflow's `validate` job has a finite **45-minute** limit. At
+[#192](https://github.com/casing1/authzest/pull/192), the Python regression jobs took
+[21m15s on push](https://github.com/casing1/authzest/actions/runs/45097500525/job/137440474832)
+and [20m54s on the PR](https://github.com/casing1/authzest/actions/runs/45097543260/job/137440610504),
+exceeding the previous 20-minute release-validation limit before its remaining checks.
+
+After `npm ci`, validation runs `npm test` from `frontend`. This includes the existing result-viewer
+and AI-repair interface tests, which use rendered components and mocked API replies. They do not
+call a model or execute a product guest. Dependency, lint, formatting and documentation checks remain.
+
+Builds still depend on successful validation, fresh-download checks still depend on builds, and
+publication still requires all three jobs and a release tag. Tag/version and current-main checks,
+job permissions and artifact smoke checks are unchanged. [#193](https://github.com/casing1/authzest/issues/193)
+tracks this preparation; passing PR checks does not establish a new native build, candidate
+acceptance or published release. Use the exact-candidate gates below before publication.
+
 ## Stable 0.1.0 readiness — 2026-11-19 KST
 
 [#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. The candidate

@@ -5,6 +5,24 @@
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
+## 릴리스 검증 시간과 UI 검사 — 2026-11-23 KST
+
+릴리스 워크플로의 `validate` 작업에는 유한한 **45분** 제한을 적용합니다.
+[#192](https://github.com/casing1/authzest/pull/192)의 Python 회귀 검사는
+[push에서 21분 15초](https://github.com/casing1/authzest/actions/runs/45097500525/job/137440474832),
+[PR에서 20분 54초](https://github.com/casing1/authzest/actions/runs/45097543260/job/137440610504)가
+걸렸습니다. 나머지 검사를 실행하기 전부터 기존 릴리스 검증 제한인 20분을 넘었습니다.
+
+`npm ci` 이후 `frontend`에서 `npm test`를 실행합니다. 기존 결과 뷰어·AI 수정 화면의 컴포넌트 표시와
+모의 API 응답 검사를 포함하며 모델 호출이나 제품 guest 실행은 하지 않습니다. 의존성·lint·포맷·문서
+검사는 유지합니다.
+
+빌드는 검증 성공에, 새 다운로드 검사는 빌드에 계속 의존하며 발행은 세 작업 성공과 릴리스 태그가
+필요합니다. 태그/버전·현재 main 대조, 작업 권한과 산출물 smoke 검사도 유지합니다.
+[#193](https://github.com/casing1/authzest/issues/193)에서 이 준비를 추적합니다. PR 검사 통과가 새
+네이티브 빌드·후보 수용·릴리스 발행을 뜻하지는 않습니다. 발행 전에는 아래의 정확한 후보별 조건을
+확인합니다.
+
 ## 정식 0.1.0 준비 상태 — 2026-11-19 KST
 
 [#150](https://github.com/casing1/authzest/issues/150)에서 과제용 정식판을 추적합니다. 후보 패키지
