@@ -17,6 +17,8 @@ GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계�
 [저장소 제안 CLI](guides/REPOSITORY_PROPOSALS.md)는 명시적으로 선택한 외부 소스·정책·문맥을
 읽어 Codex에 제안만 요청합니다. 외부 프로젝트의 실행·복사본 적용/복구·GUI 연동은 후속 작업이며
 현재 활성 GUI는 내장 사례를 사용합니다.
+[외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)와 순수 S1 복사 계획 API는 다음 경계를
+명세합니다. 파일이나 실행 결정을 만들지 않으며 원본 프로젝트 수정은 이후의 명시적 완료 조건입니다.
 
 이전 [0.1.0 준비 상태](releases/0.1.0-READINESS.md)와 [릴리스 노트](releases/0.1.0.md)는
 각각 기록된 범위와 미결 결정을 보존합니다. 발행이나 외부 프로젝트 종단간 수용을 입증하지 않습니다.
@@ -101,7 +103,8 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 
 [#84 독립 평가](https://github.com/casing1/authzest/issues/84)는 7개 미완료 기준과 미확보 근거를
 보존하며 계속 열어 둡니다. 비교/실행기 확대가 핵심을 밀어내지 않도록 제품 완성 뒤로 옮깁니다.
-로컬 결과 UI는 출시 필수이며 범용 저장소·추가 adapter·호스팅 배포는 이번 과제 범위 밖입니다.
+로컬 결과 UI는 출시 필수입니다. 외부 선택 소스 지원은 현재 계획을 따르며 추가 adapter·호스팅 배포는
+이번 과제 범위 밖입니다.
 
 ### 보조 오프라인 평가 기반
 
@@ -314,6 +317,7 @@ docs/
 | 테스트 전용 소유 정책 수정 쌍 (제안)               | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)   |
 | 소유 정책 개선 설계 (제안)                         | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | 외부 선택 파일 소스·정책 제안 CLI                  | [Repository proposals](../../guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](guides/REPOSITORY_PROPOSALS.md)                           |
+| 외부 복사·독립 검증·복구 설계                      | [Repository file workflow](../../development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)               |
 | 생성 PoC/테스트 계약과 선택형 Codex 요청           | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)        |
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |
