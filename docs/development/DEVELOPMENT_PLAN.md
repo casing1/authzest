@@ -7,6 +7,17 @@
 
 [Documentation index](../README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
 
+## External-project correction — 2026-11-23 KST
+
+Stable publication is on hold. The maintainer clarified that using the tool on a different FastAPI
+folder is a core requirement; the packaged demonstration alone does not finish the product.
+[#200](https://github.com/casing1/authzest/issues/200) first implements selected external-source,
+policy and context capture → exact sharing preview → unexecuted defensive test/repair proposals.
+Then design and verify approved new-copy application, before/after and recovery for that external
+scope; connect the GUI only after the shared engine supports it. Installed/live external acceptance
+and a new final-candidate decision precede release. The previous readiness packet is historical and
+was not accepted; it does not authorize risk acceptance or publication.
+
 ## Product direction
 
 Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The course-release

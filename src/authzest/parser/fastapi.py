@@ -70,17 +70,38 @@ class _ImportResolver(Protocol):
     def attribute(self, module: _ModuleRef, name: str) -> Binding | None: ...
 
 
+class ParseBudgetExceeded(ValueError):
+    """A caller-selected source inventory budget was exhausted, without source text."""
+
+
 @dataclass(slots=True)
 class _Registrations:
     entries: list[tuple[_Owner, Route]] = field(default_factory=list)
     diagnostics: list[Diagnostic] = field(default_factory=list)
+    max_registrations: int | None = None
+    max_diagnostics: int | None = None
+
+    def __post_init__(self) -> None:
+        for maximum in (self.max_registrations, self.max_diagnostics):
+            if maximum is not None and (type(maximum) is not int or maximum <= 0):
+                raise ValueError("Parse budgets must be positive integers or None")
+
+    def require_registration_capacity(self, count: int = 1) -> None:
+        if (
+            self.max_registrations is not None
+            and len(self.entries) + count > self.max_registrations
+        ):
+            raise ParseBudgetExceeded("Source registration budget exceeded")
 
     def diagnose(self, code: str, message: str, path: Path, node: ast.AST) -> None:
         diagnostic = Diagnostic(code=code, message=message, location=_location(path, node))
         if diagnostic not in self.diagnostics:
+            if self.max_diagnostics is not None and len(self.diagnostics) >= self.max_diagnostics:
+                raise ParseBudgetExceeded("Source diagnostic budget exceeded")
             self.diagnostics.append(diagnostic)
 
     def add(self, owner: _Owner, route: Route) -> None:
+        self.require_registration_capacity()
         owner.routes.append(route)
         self.entries.append((owner, route))
 
@@ -305,9 +326,22 @@ class FastAPIRouteParser:
             )
         return self.parse_tree(tree, path)
 
-    def parse_tree(self, tree: ast.Module, path: Path) -> ParseResult:
-        """Inventory an already parsed module AST without source, import or filesystem I/O."""
-        registrations = _Registrations()
+    def parse_tree(
+        self,
+        tree: ast.Module,
+        path: Path,
+        *,
+        max_registrations: int | None = None,
+        max_diagnostics: int | None = None,
+    ) -> ParseResult:
+        """Inventory an AST, optionally bounding creation; defaults preserve ordinary scans.
+
+        Registrations count direct declarations and intermediate router copies, not
+        just the final visible routes. No source, import or filesystem I/O occurs.
+        """
+        registrations = _Registrations(
+            max_registrations=max_registrations, max_diagnostics=max_diagnostics
+        )
         self._parse_body(tree.body, {}, path, registrations)
         return ParseResult(
             routes=registrations.result(), diagnostics=tuple(registrations.diagnostics)
@@ -710,6 +744,10 @@ class FastAPIRouteParser:
             if descendant not in seen:
                 seen.add(descendant)
                 pending.extend(descendant.children)
+        # Refuse a whole composition before extending the owner graph or allocating
+        # copied registrations/routes. Small ASTs can otherwise double routes at
+        # each include layer, long before a caller can inspect the final result.
+        registrations.require_registration_capacity(len(child.routes))
         parent.children.add(child)
         include_dependencies = FastAPIRouteParser._dependency_collector(
             bindings, registrations, file_path, resolver
@@ -813,6 +851,7 @@ class FastAPIRouteParser:
             )
             return None
 
+        registrations.require_registration_capacity()
         return owner, Route(
             path=owner.prefix + route_path.value,
             methods=(method.upper(),),

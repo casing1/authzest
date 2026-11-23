@@ -386,6 +386,58 @@ def format_generated_file_offline_preview(value: dict) -> str:
     )
 
 
+def format_repository_suggestion(value: dict) -> str:
+    """Keep external proposals readable while escaping every untrusted text line."""
+    evidence = value.get("source_evidence") or {}
+    selection = evidence.get("selection") or {}
+    proposal = value.get("proposal") or {}
+    preview = value.get("proposal_preview") or {}
+    parts = [
+        "External repository proposal",
+        "Untrusted source/test suggestions; not executed, applied or verified.",
+        section(
+            "Summary",
+            {
+                "status": value.get("status"),
+                "model": value.get("model"),
+                "source": selection.get("source"),
+                "policy": selection.get("policy"),
+                "context_files": selection.get("contexts"),
+                "sharing_decision": value.get("sharing_decision"),
+                "local_adapter_calls": value.get("application_turn_attempts"),
+                "proposal_status": proposal.get("status"),
+                "execution": value.get("execution_status"),
+                "application": value.get("patch_application"),
+            },
+        ),
+    ]
+    if value.get("detail"):
+        parts.append(_payload_block("Detail", value["detail"]))
+    if proposal:
+        parts.append(_payload_block("Model rationale (unverified)", proposal.get("rationale")))
+        for key in ("assumptions", "uncertainties", "limitations"):
+            parts.append(_explanation_block(key.capitalize(), proposal.get(key)))
+    for change in preview.get("changes", []):
+        parts.append(
+            section(
+                "Proposed artifact identity",
+                {
+                    key: change.get(key)
+                    for key in ("path", "before_sha256", "after_sha256", "basis")
+                },
+            )
+        )
+        parts.append(_payload_block("Exact proposed diff (not applied)", change.get("diff")))
+    if value.get("failure"):
+        parts.append(section("Redacted failure", value["failure"]))
+    parts.append(
+        "Proposed test paths are artifact labels; existing test files were not inspected. "
+        "Use --json for complete selected-source evidence and proposal data. "
+        "The current GUI does not import this external-proposal result kind."
+    )
+    return "\n\n".join(parts)
+
+
 def format_sharing_preview(value: dict) -> str:
     scope = {
         key: value[key]
@@ -686,6 +738,7 @@ class WorkflowOutput:
             "codex-generated-repair-sharing-preview",
             "codex-fixture-sharing-preview",
             "owner-read-sharing-preview",
+            "repository-sharing-preview",
         ):
             typer.echo(format_sharing_preview(value))
         elif isinstance(value, dict) and value.get("kind") in (
@@ -723,7 +776,9 @@ class WorkflowOutput:
         return input()
 
     def finish(self, value: dict, *, error: bool = False, preview: bool = False) -> None:
-        if not self.as_json and value.get("kind") == "owner-read-suggestion":
+        if not self.as_json and value.get("kind") == "repository-suggestion":
+            typer.echo(format_repository_suggestion(value), err=error)
+        elif not self.as_json and value.get("kind") == "owner-read-suggestion":
             typer.echo(format_owner_read_suggestion(value), err=error)
         elif self.as_json or error:
             # Small redacted errors retain stderr in human mode; explicit JSON

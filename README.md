@@ -23,6 +23,12 @@ for available tags, files and checksums. The earlier
 predates the current GUI and newly generated owner-read repair workflow.
 [0.1.0 notes](docs/releases/0.1.0.md) · [Final readiness](docs/releases/0.1.0-READINESS.md) · [Changelog](CHANGELOG.md)
 
+**Stable publication is on hold while external-project support is completed.** The source now adds
+`repo-suggest` for an external folder's explicitly selected Python source, policy and optional
+context. This CLI stage returns unexecuted test/repair proposals and exact diffs. External-copy
+application, before/after execution and GUI integration remain follow-up work; the active GUI below
+still uses the packaged scenario. [External-project guide](docs/guides/REPOSITORY_PROPOSALS.md)
+
 ## What you can do
 
 | Feature                | Current source behavior                                                                                                                                                                                                              |

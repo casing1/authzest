@@ -2,6 +2,11 @@
 
 [문서](../INDEX.md) · [English](../../../releases/RELEASING.md) · 한국어
 
+> **발행 보류 — 2026-11-23 KST.** 사용자는 이전 합성 사례 한정 발행 제안을 수용하지 않았습니다.
+> [#200](https://github.com/casing1/authzest/issues/200)의 외부 프로젝트 제안과 후속 복사본 검증·GUI
+> 연결을 우선합니다. 아래 날짜별 자료는 당시 범위를 보존한 기록이며 현재 외부 프로젝트 수용·위험
+> 수용·발행 권한이 아닙니다.
+
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 

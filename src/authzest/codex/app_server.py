@@ -1,4 +1,4 @@
-"""Version-scoped, opt-in Codex stdio transport for fixed packaged requests only.
+"""Version-scoped, opt-in Codex stdio transport for explicitly validated requests.
 
 The Codex installation and its managed authentication are trusted dependencies.
 This is not a general agent launcher or a sandbox for an untrusted executable.
@@ -58,6 +58,12 @@ from authzest.codex.owner_read_suggestion import (
     OwnerReadRequest,
     validate_owner_read_request,
     validate_owner_read_response,
+)
+from authzest.codex.repository_proposal import (
+    REPOSITORY_HOST_INSTRUCTIONS,
+    RepositoryProposalRequest,
+    validate_repository_request,
+    validate_repository_response,
 )
 
 _ReviewT = TypeVar("_ReviewT")
@@ -175,9 +181,26 @@ def _environment() -> dict[str, str]:
     }
 
 
-def _arguments(executable: str, disabled_servers: tuple[str, ...]) -> list[str]:
+def _host_instructions(repository_proposal: bool) -> str:
+    """Select one host-owned instruction set, never caller-supplied instructions."""
+    if type(repository_proposal) is not bool:
+        raise AppServerError("Unsupported Codex request context", code="configuration-rejected")
+    return REPOSITORY_HOST_INSTRUCTIONS if repository_proposal else BASE_INSTRUCTIONS
+
+
+def _configuration(*, repository_proposal: bool = False) -> dict[str, Any]:
+    # Keep every existing packaged request's effective configuration unchanged.
+    return {**CONFIG, "developer_instructions": _host_instructions(repository_proposal)}
+
+
+def _arguments(
+    executable: str,
+    disabled_servers: tuple[str, ...],
+    *,
+    repository_proposal: bool = False,
+) -> list[str]:
     args = [executable]
-    for key, value in CONFIG.items():
+    for key, value in _configuration(repository_proposal=repository_proposal).items():
         args.extend(("-c", f"{key}={canonical(value)}"))
     for name in disabled_servers:
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", name):
@@ -252,6 +275,7 @@ class _Session:
         *,
         on_stage: Callable[[str], None] | None = None,
         on_turn_attempt: Callable[[], None] | None = None,
+        repository_proposal: bool = False,
     ):
         self.process = process
         self.sequence = 0
@@ -266,6 +290,7 @@ class _Session:
         self.request_method: str | None = None
         self.on_stage = on_stage
         self.on_turn_attempt = on_turn_attempt
+        self.host_instructions = _host_instructions(repository_proposal)
 
     def check_retry(self, params: dict[str, Any]) -> None:
         if (
@@ -356,7 +381,7 @@ class _Session:
             type(mode_settings) is not dict
             or mode_settings.get("model") != expected["model"]
             or mode_settings.get("reasoning_effort") not in (None, expected["effort"])
-            or mode_settings.get("developer_instructions") not in (None, BASE_INSTRUCTIONS)
+            or mode_settings.get("developer_instructions") not in (None, self.host_instructions)
         ):
             raise AppServerError("Unexpected Codex collaboration context")
         # serviceTier is the persistent thread tier, not serviceTierForTurn.
@@ -486,7 +511,12 @@ class _Session:
         return result["config"]
 
 
-def _check_config(config: dict[str, Any], *, require_disabled_mcp: bool) -> tuple[str, ...]:
+def _check_config(
+    config: dict[str, Any],
+    *,
+    require_disabled_mcp: bool,
+    repository_proposal: bool = False,
+) -> tuple[str, ...]:
     # Absence/null means no explicit model endpoint override. Reject all other
     # values, including empty strings and official URLs, for this narrow workflow.
     if config.get("openai_base_url") is not None:
@@ -494,7 +524,7 @@ def _check_config(config: dict[str, Any], *, require_disabled_mcp: bool) -> tupl
             "A model endpoint override is unsupported for ChatGPT login",
             code="configuration-rejected",
         )
-    for path, expected in CONFIG.items():
+    for path, expected in _configuration(repository_proposal=repository_proposal).items():
         value: Any = config
         for part in path.split("."):
             value = value.get(part) if isinstance(value, dict) else None
@@ -825,6 +855,25 @@ class CodexAppServerAdapter:
             lambda raw, _usage: validate_owner_read_response(raw, checked),
         )
 
+    async def suggest_repository(self, request: RepositoryProposalRequest) -> dict[str, Any]:
+        """Propose inert source/test data from the exact reviewed external snapshot."""
+        self._begin_request(detailed_validation=True)
+        try:
+            if type(request) is not RepositoryProposalRequest:
+                raise ContractError("Unexpected repository request type", code="validation-shape")
+            checked = validate_repository_request(request)
+            self._check_sharing(checked)
+            payload = checked.to_dict()
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
+        return await self._turn(
+            checked,
+            payload["prompt"],
+            payload["output_schema"],
+            lambda raw, _usage: validate_repository_response(raw, checked),
+        )
+
     def _check_sharing(
         self,
         request: (
@@ -832,6 +881,7 @@ class CodexAppServerAdapter:
             | OwnerPolicyRepairTransportRequest
             | GeneratedRepairTransportRequest
             | OwnerReadRequest
+            | RepositoryProposalRequest
         ),
     ) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
@@ -846,6 +896,7 @@ class CodexAppServerAdapter:
             | OwnerPolicyRepairTransportRequest
             | GeneratedRepairTransportRequest
             | OwnerReadRequest
+            | RepositoryProposalRequest
         ),
         prompt: str,
         schema: dict[str, Any],
@@ -854,6 +905,8 @@ class CodexAppServerAdapter:
         # Only the explicitly guarded public entry points supply prompts/schema.
         # Recheck the sharing gate here before consuming this single-use transport.
         self._check_sharing(request)
+        repository_proposal = type(request) is RepositoryProposalRequest
+        host_instructions = _host_instructions(repository_proposal)
         self.consumed = True
         deadline = asyncio.timeout(self.timeout_seconds)
         try:
@@ -865,26 +918,45 @@ class CodexAppServerAdapter:
                     # No thread is created by discovery. Empty TOML maps merge, so enumerate
                     # inherited MCP names without logging settings, then disable each on restart.
                     async with _process(
-                        _arguments(self.executable, ()), cwd, on_failure=self._record_failure
+                        _arguments(self.executable, (), repository_proposal=repository_proposal),
+                        cwd,
+                        on_failure=self._record_failure,
                     ) as process:
-                        discovery = _Session(process, on_stage=self._set_stage)
+                        discovery = _Session(
+                            process,
+                            on_stage=self._set_stage,
+                            repository_proposal=repository_proposal,
+                        )
                         config = await discovery.initialize()
-                        servers = _check_config(config, require_disabled_mcp=False)
+                        servers = _check_config(
+                            config,
+                            require_disabled_mcp=False,
+                            repository_proposal=repository_proposal,
+                        )
                         self._stage = "cleanup"
                     self._stage = "startup"
                     async with _process(
-                        _arguments(self.executable, servers), cwd, on_failure=self._record_failure
+                        _arguments(
+                            self.executable, servers, repository_proposal=repository_proposal
+                        ),
+                        cwd,
+                        on_failure=self._record_failure,
                     ) as process:
                         session = _Session(
                             process,
                             on_stage=self._set_stage,
                             on_turn_attempt=self._mark_turn_attempt,
+                            repository_proposal=repository_proposal,
                         )
                         session.total_bytes = discovery.total_bytes
                         session.events = discovery.events
                         session.warnings_seen = discovery.warnings_seen
                         config = await session.initialize()
-                        _check_config(config, require_disabled_mcp=True)
+                        _check_config(
+                            config,
+                            require_disabled_mcp=True,
+                            repository_proposal=repository_proposal,
+                        )
                         remote = await session.request("remoteControl/status/read", {})
                         if remote.get("status") != "disabled":
                             raise AppServerError(
@@ -925,8 +997,8 @@ class CodexAppServerAdapter:
                                 "runtimeWorkspaceRoots": [],
                                 "sandbox": "read-only",
                                 "approvalPolicy": "on-request",
-                                "baseInstructions": BASE_INSTRUCTIONS,
-                                "developerInstructions": BASE_INSTRUCTIONS,
+                                "baseInstructions": host_instructions,
+                                "developerInstructions": host_instructions,
                                 "experimentalRawEvents": False,
                             },
                         )
