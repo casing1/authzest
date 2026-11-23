@@ -227,6 +227,8 @@ export default function RepairPanel({ language, health, token }: Props) {
   const commandEpoch = useRef(0);
   const commandBusy = useRef(false);
   const commandAbort = useRef<AbortController | null>(null);
+  const shouldPoll =
+    error !== "authError" && (run === null || activeRepair(run) || !connected);
   const accept = useCallback((value: RepairRun | null, epoch: number) => {
     if (!alive.current || epoch !== commandEpoch.current) return;
     setRun((previous) =>
@@ -249,7 +251,7 @@ export default function RepairPanel({ language, health, token }: Props) {
     };
   }, []);
   useEffect(() => {
-    if (!token || health !== "online") return;
+    if (!token || health !== "online" || !shouldPoll) return;
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const controller = new AbortController();
@@ -286,9 +288,9 @@ export default function RepairPanel({ language, health, token }: Props) {
       controller.abort();
       clearTimeout(timer);
     };
-  }, [token, health, accept]);
+  }, [token, health, accept, shouldPoll]);
 
-  async function perform(command: Command) {
+  async function perform(command: Command, resyncOnFailure = false) {
     if (commandBusy.current || !token || health !== "online" || !connected)
       return;
     commandBusy.current = true;
@@ -309,6 +311,22 @@ export default function RepairPanel({ language, health, token }: Props) {
         setError(key);
         if (key === "connectedError" || key === "authError")
           setConnected(false);
+        if (resyncOnFailure && key !== "authError") {
+          // A lost start response may still leave a new run on the server.
+          // Read its state once; never retry the start request.
+          try {
+            accept(await getRepairSession(token, controller.signal), epoch);
+          } catch (resyncError) {
+            if (
+              alive.current &&
+              !controller.signal.aborted &&
+              epoch === commandEpoch.current
+            ) {
+              setConnected(false);
+              if (errorText(resyncError) === "authError") setError("authError");
+            }
+          }
+        }
       }
     } finally {
       commandBusy.current = false;
@@ -318,8 +336,10 @@ export default function RepairPanel({ language, health, token }: Props) {
   function begin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!token || activeRepair(run)) return;
-    void perform(async (signal, epoch) =>
-      accept(await startRepair(token, model.trim(), signal), epoch),
+    void perform(
+      async (signal, epoch) =>
+        accept(await startRepair(token, model.trim(), signal), epoch),
+      true,
     );
   }
   function decide(value: string) {

@@ -69,8 +69,13 @@ run. Restarting the server invalidates that capability and does not resume old o
    it does not replace the result with success or erase the bounded downloadable JSON.
 
 The controller admits one current run and retains one finished result. A new run can replace only
-a run whose owned worker has ended. Download an available result before starting another. Polling does not approve decisions,
-and closing a browser does not stop or restart its worker. The current plan is bounded to 2 MiB,
+a run whose owned worker has ended. Download an available result before starting another. Session
+polling stops when the page receives `finished` or `failed` and resumes for a new active run.
+Running, waiting for a decision and stopping still receive updates. Reopening the AI tab reads the
+current session again. If a start response is lost or conflicts, the page checks the session once
+without retrying the start. A connection failure can resume read-only session checks until the
+connection recovers; an authorization failure stops them. Polling does not approve decisions, and closing a browser does not
+stop or restart its worker. The current plan is bounded to 2 MiB,
 the final JSON to 4 MiB and activity to 256 events. Saved-result import below has a separate 512 KiB
 limit, so a larger downloadable result is not guaranteed to reimport through that route.
 
