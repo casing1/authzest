@@ -7,24 +7,36 @@
 
 AuthZest is an installable, CLI-first FastAPI source-analysis project. Start with the project README
 for installation, then use the parser scope to understand what a scan does and does not establish.
-The local dashboard shows static inventory and explicitly imported workflow results without website
-deployment. See the [local result viewer](guides/RESULT_VIEWER.md) for the source-install route,
-English/Korean interface, bounded import and unverified-record limits.
-The [course demo](guides/COURSE_DEMO.md) brings installation, the recorded walkthrough and evidence
-limits together.
+The local dashboard displays static inventory and selected workflow records. An explicitly enabled
+AI workspace also connects the existing owner-read engine to current GUI decisions; ordinary launches
+remain read-only. No website deployment is needed. See the
+[local workflow guide](guides/RESULT_VIEWER.md) for source installation, the English/Korean interface,
+active-mode requirements and import limits. The [course demo](guides/COURSE_DEMO.md) leads with the
+GUI workflow and retains CLI and saved-result alternatives with their evidence limits.
 
 ## Current work
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
 → [#152 approved-copy before/after and recovery](https://github.com/casing1/authzest/issues/152)
-→ [#153 local read-only results UI](https://github.com/casing1/authzest/issues/153)
+→ [#153 result viewer](https://github.com/casing1/authzest/issues/153) and
+[#189 interactive local GUI](https://github.com/casing1/authzest/issues/189)
 → [#85 installation/docs/demo](https://github.com/casing1/authzest/issues/85). PR #173 delivered the
-local viewer and closed #153. Generation and verification acceptance remain open under #151 and #152.
-The CLI handles decisions and execution. The [development plan](development/DEVELOPMENT_PLAN.md)
-defines the release scope.
+read-only viewer; [#190](https://github.com/casing1/authzest/pull/190) adds opt-in GUI decisions and
+[#192](https://github.com/casing1/authzest/pull/192) stops polling after a run ends. The CLI and active
+GUI share the owner-read engine. Generation, verification and exact-candidate release acceptance
+remain tracked under #150–152. The [development plan](development/DEVELOPMENT_PLAN.md) defines the scope.
 
-The [generated file workflow](guides/GENERATED_FILE_WORKFLOW.md) now connects a bounded private
+The current owner-read demonstration uses one packaged synthetic archived-note scenario, a newly
+proposed regression and one rule file, and seven maintained independent policy controls. Active GUI
+use requires a non-frozen POSIX editable source installation, built UI assets, existing Codex login
+and a reviewed private Docker runtime configuration. It writes only a new private copy; the static
+workspace selector does not enable arbitrary-repository repair. Review the complete current plans
+and separate runtime, sharing, copy, before, diff, apply, after and restore decisions through the
+[local workflow guide](guides/RESULT_VIEWER.md). Source package version `0.1.0` is release preparation,
+not publication; public alpha.4 and final-candidate gates remain distinct.
+
+The separate [generated file workflow](guides/GENERATED_FILE_WORKFLOW.md) connects a bounded private
 runtime-profile loader and fresh local review to current generation, then separate copy, before,
 exact diff/application, after and restore decisions. The default generation command is proposal-only;
 the default [session](development/GENERATED_REPAIR_SESSION.md) retains disabled before preparation.
@@ -212,8 +224,8 @@ New PoC generation and model-generated repair source for general FastAPI reposit
 unimplemented. This owned-file acceptance is not cross-platform/native acceptance; Windows/frozen
 active file execution remains unsupported.
 The UI, #80, published alpha.3 and report schema are unchanged.
-Label review is not actual execution consent or an authenticated receipt. The current dashboard
-displays static inventory; it is not an AI review/approval viewer.
+Label review is not actual execution consent or an authenticated receipt. The dashboard at that
+checkpoint displayed static inventory; it did not provide AI review/approval controls.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
 see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
 It made no new AI call, leaves authorization unknown and consumes only that one approved run.
@@ -324,7 +336,7 @@ docs/
 | Fixed local Engine metadata                                             | [Runtime metadata](development/GENERATED_REPAIR_PREFLIGHT.md)              | [런타임 메타데이터](i18n/ko/development/GENERATED_REPAIR_PREFLIGHT.md)               |
 | Pinned unbuilt guest-image inputs                                       | [Image inputs](development/GENERATED_REPAIR_IMAGES.md)                     | [빌드 전 이미지 입력](i18n/ko/development/GENERATED_REPAIR_IMAGES.md)                |
 | Approved generated copy/check/apply/restore CLI                         | [Generated file workflow](guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](i18n/ko/guides/GENERATED_FILE_WORKFLOW.md)                          |
-| Read-only local workflow result viewer                                  | [Result viewer](guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](i18n/ko/guides/RESULT_VIEWER.md)                                    |
+| Local workflow viewer and opt-in owner-read GUI                         | [Result viewer](guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](i18n/ko/guides/RESULT_VIEWER.md)                                    |
 | Course installation, recorded demo and evidence limits                  | [Course demo](guides/COURSE_DEMO.md)                                       | [과제 시연](i18n/ko/guides/COURSE_DEMO.md)                                           |
 | Internal generated T → A/B executor                                     | [Private phase](development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](i18n/ko/development/GENERATED_REPAIR_PHASE.md)                  |
 | Packaged offline fixture walkthrough                                    | [Fixture demo](guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](i18n/ko/guides/FIXTURE_DEMO.md)                              |
@@ -420,9 +432,10 @@ three-platform artifacts, and validation limits. Compare the changelog and commi
 [#33](https://github.com/casing1/authzest/issues/33) is implemented in source, and
 [#35](https://github.com/casing1/authzest/issues/35) is complete for the accepted bounded core.
 Source test-harness stability delivery is tracked in [#130](https://github.com/casing1/authzest/issues/130).
-For [#150 course-complete stable](https://github.com/casing1/authzest/issues/150), the viewer is
-implemented in #153. See the [course demo](guides/COURSE_DEMO.md) for the #85 walkthrough and the
-remaining #151/#152 acceptance work.
+For [#150 course-complete stable](https://github.com/casing1/authzest/issues/150), #153 delivered the
+read-only viewer and #189/#190 add the explicit local owner-read GUI. See the
+[course demo](guides/COURSE_DEMO.md) for #85 installation, current GUI decisions, JSON download, CLI
+alternatives and the remaining #151/#152 exact-candidate acceptance work.
 [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) remains separately open;
 its missing comparative evidence must be explicit, not invented or silently completed.
 

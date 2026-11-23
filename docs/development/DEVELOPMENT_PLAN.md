@@ -24,8 +24,9 @@ imports grant no execution authority. Evidence-assisted value remains a hypothes
 
 ## Interactive course workflow — 2026-11-23 KST
 
-[#189](https://github.com/casing1/authzest/issues/189) adds an opt-in local GUI for the existing
-owner-read flow. A fresh loopback launch capability, Host/Origin checks and one current run protect
+[#190](https://github.com/casing1/authzest/pull/190) delivered the opt-in local GUI tracked in
+[#189](https://github.com/casing1/authzest/issues/189) for the existing owner-read flow. A fresh
+loopback launch capability, Host/Origin checks and one current run protect
 the new HTTP boundary. The user reviews complete current plans and types the separate runtime,
 sharing, copy, before, diff, apply, after and restore decisions. Bounded host activity and the existing
 result projection make progress and recovery visible; the browser can download the complete result.
@@ -33,8 +34,18 @@ Existing Codex login diagnostics expose coarse readiness, not account credential
 
 This extends the initial read-only UI scope below; it preserves the single maintained scenario,
 POSIX source restriction and copy-only writes. The [English/Korean design](GENERATED_REPAIR_CONTRACT.md)
-precedes offline controller, API and UI regression implementation. This delivery does not claim a
-new live model/guest observation, final-candidate acceptance or stable publication.
+precedes offline controller, API and UI regression implementation. [#192](https://github.com/casing1/authzest/pull/192)
+stops repeated reads after a terminal run while preserving new-run and connection recovery updates.
+The [course guide](../guides/COURSE_DEMO.md) now leads with this GUI and retains the CLI alternative.
+Source implementation and mock checks remain distinct from exact-candidate acceptance and publication.
+
+The remaining release work is to reconcile the final supported scope and version-bound acceptance
+evidence, check a fresh installation and the advertised distribution routes, obtain the current
+candidate's tooling disposition, and verify the immutable tag/build/public downloads through #150
+and #85. [#194](https://github.com/casing1/authzest/pull/194) gives release validation a finite
+45-minute budget and includes the existing UI tests. The four READMEs describe the current source
+separately from published alpha.4. General repository repair and comparative model claims remain
+outside this delivery; no product-acceptance issue is completed merely by this documentation update.
 
 ## Course-release priorities — 2026-11-12 KST
 
@@ -345,10 +356,11 @@ Historical records live in the [changelog](../../CHANGELOG.md), linked issues/PR
 | Owned-file CLI (#82 / PR #120)                  | POSIX non-frozen source only; installed happy path at `c868152` on one macOS/Python 3.12.7 host: before 6/8, exact diff/apply, actual applied-after 8/8, restored before / generation 3; bounded acceptance delivered through PR #123 |
 
 The accepted historical core uses one registered synthetic policy pair, eight reviewed cases and Codex
-template selection. The new single-scenario generation contract/adapter has offline/mocked coverage,
-not actual-generation acceptance; generated-code verification remains unimplemented under #152.
-General repositories remain out of scope. The historical acceptance is not independent evaluation
-or HTTP/authentication/DB enforcement.
+template selection. Later source delivery adds the separate maintained owner-read generation and
+approved copy-check/apply/restore engine described in the [workflow contract](GENERATED_REPAIR_CONTRACT.md),
+with seven maintained controls and the opt-in GUI above. Source implementation is no longer pending;
+final-candidate acceptance remains under #150/#152. General repositories remain out of scope.
+The historical acceptance is not independent evaluation or HTTP/authentication/DB enforcement.
 
 The recorded owner review at `9257bd7` took about 74 seconds. On 2026-10-09 KST the maintainer
 explicitly approved that exact envelope's ten labels: two allow and eight deny; see the separate
@@ -570,15 +582,15 @@ failed/not-run/unknown distinctly and preserve originals and later user edits.
 
 The seven **development** weeks agreed on 2026-09-10 include work already done; this audit does not
 start a fresh seven-week plan. The original remaining-calendar estimate is historical, not a current
-submission date. The maintainer estimates submission around **2026-11-18**, not a confirmed fixed
-deadline. The missed November 4 alpha.4 target and earlier November 12–13 stable target are historical,
+submission date. The last recorded approximate submission date was **2026-11-18**; it is a historical
+estimate, not a currently confirmed deadline. The missed November 4 alpha.4 target and earlier November 12–13 stable target are historical,
 not current promises. The published alpha.4 receipt remains unchanged. Work in this gate order and
 retain time before submission for exams, fixes, recording/report preparation and rehearsal:
 
 | Order       | Work / gate                                                                                                                                                                                                             |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First       | Freeze the one-scenario generation contract and new execution design (#151/#152), then implement without assuming permission for real model calls or generated-code execution.                                          |
-| Next        | Obtain separately approved observations of the generated PoC/repair workflow and independent controls; deliver the local result UI (#153) and reproducible instructions in parallel where contracts are stable.         |
+| First       | Reconcile the implemented one-scenario generation/execution contract (#151/#152), current CLI/GUI documentation and exact-candidate acceptance criteria. Identify remaining evidence gaps.                              |
+| Next        | Review version-bound generation/test/diff/apply/independent-control/restoration evidence together with the delivered UI and reproducible walkthrough. Address the identified acceptance gaps.                           |
 | Candidate   | Complete #85's demo/minimum evidence and README translations, exact-source regressions/install/artifact checks including #130, and fresh #89 stable-candidate disposition. State unavailable #84 measurements honestly. |
 | Publication | Select a stable version/tag and publish only after candidate findings, demonstrated required scope and release/public-download gates pass. There is no automatic date-based promotion of alpha.4.                       |
 
@@ -593,7 +605,7 @@ Additional live model use, source sharing and active file stages still require t
 
 General nested dependency/callable interpretation, broad authentication/security classification,
 multi-file/existing-checkout repair transactions, arbitrary repositories/apps/unrestricted generated-code
-execution, additional adapters, cloud deployment, GUI execution/approval controls and signing/notarization
+execution, additional adapters, cloud deployment, arbitrary-repository GUI execution and signing/notarization
 remain deferred. This does not defer #151's one-file patch plus generated test, #152's specifically
 approved isolated execution, or #153's local results UI. Open a separately justified issue before
 expanding that scope. The static parser

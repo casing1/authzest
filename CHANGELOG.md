@@ -14,9 +14,28 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- An opt-in local owner-read operator GUI, enabled with `authzest ui --ai-runtime-config PATH`.
+  It reuses the CLI engine, existing Codex login and separate current runtime/share/copy/before/diff/
+  apply/after/restore decisions. It displays the complete plan, source/test/diff, bounded host activity,
+  before/after and recovery, with authenticated JSON download. The supported target remains the
+  maintained archived-note scenario on a POSIX non-frozen source installation. [PR #190](https://github.com/casing1/authzest/pull/190)
+
+### Fixed
+
+- Stop repeated GUI session reads after an accepted finished/failed run. Resume for a new active
+  run or recoverable connection failure, retain results/download and resynchronize an ambiguous
+  start without replaying its mutation. [PR #192](https://github.com/casing1/authzest/pull/192)
+- Increase the finite release-validation budget to 45 minutes and include the existing frontend
+  tests after locked dependency installation. Tag, permission, artifact and publication gates remain.
+  [PR #194](https://github.com/casing1/authzest/pull/194)
+
 ## [0.1.0] - 2026-11-19
 
 This date records preparation of the course release candidate.
+The entries below include earlier implementation checkpoints; their version and acceptance statements
+belong to those checkpoints. Later current-source changes appear under Unreleased above.
 
 ### Highlights since alpha.4
 
