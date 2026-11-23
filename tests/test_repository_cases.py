@@ -181,7 +181,11 @@ def test_invalid_metadata_and_versions(key, value):
         ("policy_sha256", True),
         ("interface_id", "other-" + "0" * 64),
         ("interface_id", "repository-test-interface-" + "g" * 64),
-        ("interface_id", "repository-test-interface-" + "0" * 10_000),
+        pytest.param(
+            "interface_id",
+            "repository-test-interface-" + "0" * 10_000,
+            id="oversize-interface-id",
+        ),
         ("source_path", "../main.py"),
         ("source_path", "/main.py"),
         ("policy_path", ".env"),

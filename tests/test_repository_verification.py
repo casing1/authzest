@@ -269,7 +269,17 @@ def test_malformed_or_mismatched_frames_make_every_planned_case_invalid(mutation
 
 
 @pytest.mark.parametrize(
-    "raw", ["not-json-private-sentinel", "{}", "[]", "null", '"secret"', " " * 65537]
+    "raw",
+    [
+        pytest.param("not-json-private-sentinel", id="malformed-json"),
+        pytest.param("{}", id="empty-object"),
+        pytest.param("[]", id="array"),
+        pytest.param("null", id="null"),
+        pytest.param('"secret"', id="string"),
+        # pytest exports node IDs in PYTEST_CURRENT_TEST; keep large inputs out of it
+        # so the full byte-budget check can also run within Windows' environment limit.
+        pytest.param(" " * 65537, id="over-byte-budget"),
+    ],
 )
 def test_invalid_json_shape_and_byte_budget_are_redacted_and_preserve_all_cases(raw):
     args = plan_inputs()
