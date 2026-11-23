@@ -20,7 +20,9 @@ policy and context for proposal-only Codex review. Execution, copy application/r
 integration for external projects remain follow-up work; the current active GUI uses the packaged case.
 The [external file-workflow design](development/REPOSITORY_FILE_WORKFLOW.md) and inert S1 copy-plan
 API specify the next boundary. They create no files or runtime decisions; original-project correction
-remains an explicit later completion gate.
+remains an explicit later completion gate. A separate [S2 file-session Python API](reference/REPOSITORY_FILE_SESSION.md)
+now owns live input identities and exact private copy/diff/apply/restore decisions. Its verification
+uses owned inert temporary files; the external CLI/GUI operator and runtime checks are still pending.
 
 The earlier [0.1.0 readiness snapshot](releases/0.1.0-READINESS.md) and
 [release notes](releases/0.1.0.md) retain their recorded scope and pending decisions.
@@ -339,6 +341,7 @@ docs/
 | Owned policy improvement design (proposed)                              | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | External selected-file source/policy proposal CLI                       | [Repository proposals](guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](i18n/ko/guides/REPOSITORY_PROPOSALS.md)                           |
 | External copy, independent verification and recovery design             | [Repository file workflow](development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](i18n/ko/development/REPOSITORY_FILE_WORKFLOW.md)               |
+| External live-origin and private file-session API (S2)                  | [Repository file sessions](reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](i18n/ko/reference/REPOSITORY_FILE_SESSION.md)                |
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |

@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- External private file-session Python API: retain initial origin descriptors/identities, review
+  current one-use copy/diff/apply/restore plans, materialize only a fresh private selected-source tree
+  and preserve partial writes/recovery-required outcomes. Exact journal self-commit checks and final
+  expiry guards refuse edits, stale input and replay. Coverage uses owned inert files and injected
+  failures; no external CLI/GUI operator, runtime, original-project write or actual live acceptance.
+  [#204](https://github.com/casing1/authzest/issues/204)
+
 - Pure external `RepositoryCopyPlan` API: bind current validated request/response identities to
   selected-source material hashes, exact diff identities and a bounded private layout. Reject path
   collisions and metadata tampering without reading or creating files, issuing decisions or running

@@ -112,6 +112,8 @@ JSON에는 선택한 소스·정책과 생성 코드가 들어 있으므로 비�
 승인한 적용, 격리한 before/after 실행·복구와 GUI 연동은 후속 작업입니다.
 [외부 파일 흐름 설계](../development/REPOSITORY_FILE_WORKFLOW.md)가 다음 단계를 정의합니다.
 S1 Python API는 메타데이터만 준비하며 해당 동작이나 원본 프로젝트의 최종 쓰기를 활성화하지 않습니다.
+별도의 [S2 Python 파일 세션 API](../reference/REPOSITORY_FILE_SESSION.md)는 비공개 파일 전환을 구현하고
+오프라인으로 검사합니다. 이 명령은 해당 API를 호출하지 않으며 외부 런타임·조작 흐름·GUI 연결은 미완료입니다.
 
 ## 검증 경계
 

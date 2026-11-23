@@ -119,6 +119,9 @@ integration remain follow-up work.
 The [external file-workflow design](../development/REPOSITORY_FILE_WORKFLOW.md) defines the next
 steps. Its S1 Python API prepares only metadata; it does not enable those operations or final writes
 to the original project.
+The separate [S2 Python file-session API](../reference/REPOSITORY_FILE_SESSION.md) now implements
+owned private file transitions with offline tests. This command does not invoke it; external runtime,
+operator and GUI integration remain pending.
 
 ## Verification boundary
 

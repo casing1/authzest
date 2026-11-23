@@ -15,8 +15,11 @@ folder is a core requirement; the packaged demonstration alone does not finish t
 policy and context capture → exact sharing preview → unexecuted defensive test/repair proposals in
 [#201](https://github.com/casing1/authzest/pull/201). [#202](https://github.com/casing1/authzest/issues/202)
 adds the [external file-workflow design](REPOSITORY_FILE_WORKFLOW.md) and a pure metadata-only copy plan.
-It enables no copy, execution or source write. Next implement a fresh private workspace and exact
-apply/restore with offline tests, then independent external before/after verification. Original-project
+S1 enables no copy, execution or source write. [#204](https://github.com/casing1/authzest/issues/204)
+adds a separate [S2 source API](../reference/REPOSITORY_FILE_SESSION.md) for live origin identities,
+fresh private copies and exact local diff/apply/restore decisions, verified with owned inert files
+and injected failures. The next implementation is the separate external test/runtime interface and
+independent before/after cases, followed by the CLI operator and installed external acceptance. Original-project
 final correction requires a separate current-state check and user decision; private-copy success is
 not product completion. Connect the GUI only after the shared engine supports it. Installed/live external acceptance
 and a new final-candidate decision precede release. The previous readiness packet is historical and
