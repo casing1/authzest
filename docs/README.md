@@ -18,6 +18,9 @@ GUI workflow and retains CLI and saved-result alternatives with their evidence l
 [repository proposal CLI](guides/REPOSITORY_PROPOSALS.md) reads explicitly selected external source,
 policy and context for proposal-only Codex review. Execution, copy application/recovery and GUI
 integration for external projects remain follow-up work; the current active GUI uses the packaged case.
+The [external file-workflow design](development/REPOSITORY_FILE_WORKFLOW.md) and inert S1 copy-plan
+API specify the next boundary. They create no files or runtime decisions; original-project correction
+remains an explicit later completion gate.
 
 The earlier [0.1.0 readiness snapshot](releases/0.1.0-READINESS.md) and
 [release notes](releases/0.1.0.md) retain their recorded scope and pending decisions.
@@ -106,7 +109,8 @@ tracked in that issue. Published alpha.4 bytes and its historical failed first a
 [#84 independent evaluation](https://github.com/casing1/authzest/issues/84) stays open with its seven
 pending criteria and honest unavailable-evidence limits. Broader comparison/executor expansion now
 follows core delivery, rather than displacing it. The local results UI is a release requirement;
-general repositories, extra adapters and hosted deployment remain outside this course slice.
+external selected-source delivery follows the current plan, while extra adapters and hosted deployment
+remain outside this course slice.
 
 ### Supporting offline evaluation foundation
 
@@ -334,6 +338,7 @@ docs/
 | Test-only owner-policy repair pair (proposed)                           | [Repair-pair design](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)   |
 | Owned policy improvement design (proposed)                              | [Improvement design](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](i18n/ko/development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | External selected-file source/policy proposal CLI                       | [Repository proposals](guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](i18n/ko/guides/REPOSITORY_PROPOSALS.md)                           |
+| External copy, independent verification and recovery design             | [Repository file workflow](development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](i18n/ko/development/REPOSITORY_FILE_WORKFLOW.md)               |
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |

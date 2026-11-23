@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Pure external `RepositoryCopyPlan` API: bind current validated request/response identities to
+  selected-source material hashes, exact diff identities and a bounded private layout. Reject path
+  collisions and metadata tampering without reading or creating files, issuing decisions or running
+  code. The paired [file-workflow design](docs/development/REPOSITORY_FILE_WORKFLOW.md) keeps external
+  execution, private apply/restore, original-project correction and GUI/live acceptance as later gates.
+  [#202](https://github.com/casing1/authzest/issues/202)
+
 - External-project proposal CLI: `repo-suggest` captures one explicitly selected Python repair
   target, a policy document and up to four selected Python context files; derives static evidence
   from those bytes; previews the complete request and requires a fresh, expiring sharing decision.

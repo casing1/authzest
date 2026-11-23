@@ -11,19 +11,25 @@
 
 Stable publication is on hold. The maintainer clarified that using the tool on a different FastAPI
 folder is a core requirement; the packaged demonstration alone does not finish the product.
-[#200](https://github.com/casing1/authzest/issues/200) first implements selected external-source,
-policy and context capture → exact sharing preview → unexecuted defensive test/repair proposals.
-Then design and verify approved new-copy application, before/after and recovery for that external
-scope; connect the GUI only after the shared engine supports it. Installed/live external acceptance
+[#200](https://github.com/casing1/authzest/issues/200) delivered selected external-source,
+policy and context capture → exact sharing preview → unexecuted defensive test/repair proposals in
+[#201](https://github.com/casing1/authzest/pull/201). [#202](https://github.com/casing1/authzest/issues/202)
+adds the [external file-workflow design](REPOSITORY_FILE_WORKFLOW.md) and a pure metadata-only copy plan.
+It enables no copy, execution or source write. Next implement a fresh private workspace and exact
+apply/restore with offline tests, then independent external before/after verification. Original-project
+final correction requires a separate current-state check and user decision; private-copy success is
+not product completion. Connect the GUI only after the shared engine supports it. Installed/live external acceptance
 and a new final-candidate decision precede release. The previous readiness packet is historical and
 was not accepted; it does not authorize risk acceptance or publication.
 
 ## Product direction
 
-Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The course-release
-deliverable is one maintained, owned access-control scenario: source evidence → newly generated
+Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The current course-release
+goal includes explicitly selected external FastAPI source, initially bounded to self-contained apps
+and one repair-source file, with a maintained scenario as a reproducible control: source evidence → newly generated
 defensive PoC/regression test → AI-authored repair or valid no-change/unknown → exact-diff approve/decline
-→ approved new-copy application → separately approved before/after checks → inspectable recovery.
+→ approved new-copy application → separately approved before/after checks → inspectable recovery
+→ explicit final original-project correction. External execution/application and that final write are pending.
 Codex is a core goal, not an optional explanation add-on. Keep deterministic scan useful without an AI account.
 
 Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The local API
@@ -34,6 +40,9 @@ imports grant no execution authority. Evidence-assisted value remains a hypothes
 [model strategy](MODEL_STRATEGY.md).
 
 ## Interactive course workflow — 2026-11-23 KST
+
+This and the following release-handoff sections record the packaged-case checkpoint. The external
+requirement above supersedes their former demo-only completion scope and release order.
 
 [#190](https://github.com/casing1/authzest/pull/190) delivered the opt-in local GUI tracked in
 [#189](https://github.com/casing1/authzest/issues/189) for the existing owner-read flow. A fresh

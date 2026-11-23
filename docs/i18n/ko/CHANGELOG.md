@@ -16,6 +16,12 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 순수 외부 `RepositoryCopyPlan` API: 현재 검증한 요청·응답 식별자를 선택 소스 바이트 해시,
+  정확한 diff 식별자와 제한된 비공개 배치에 결합합니다. 파일 읽기·생성, 결정 발급, 코드 실행 없이
+  경로 충돌과 메타데이터 변조를 거부합니다. 영한 [파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)는
+  외부 실행·비공개 적용/복구·원본 최종 수정·GUI/실제 수용을 이후 조건으로 유지합니다.
+  [#202](https://github.com/casing1/authzest/issues/202)
+
 - 외부 프로젝트 제안 CLI `repo-suggest`: 명시한 Python 수정 대상 하나·정책 문서·Python 문맥
   최대 4개를 캡처하고 그 바이트에서 정적 근거를 만듭니다. 전체 요청 미리보기와 새 만료형 공유
   결정을 요구합니다. 별도 Codex 요청·adapter 진입점으로 미실행 테스트·소스·정확한 diff를 반환합니다.

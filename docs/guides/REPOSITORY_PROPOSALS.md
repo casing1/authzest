@@ -116,6 +116,9 @@ The JSON includes selected source/policy and generated code; treat it as private
 Do not import it into the current GUI expecting the owner-read apply/check/restore flow. External
 private-copy staging, approved application, isolated before/after execution, restoration and GUI
 integration remain follow-up work.
+The [external file-workflow design](../development/REPOSITORY_FILE_WORKFLOW.md) defines the next
+steps. Its S1 Python API prepares only metadata; it does not enable those operations or final writes
+to the original project.
 
 ## Verification boundary
 
