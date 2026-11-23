@@ -6,6 +6,7 @@ from hashlib import sha256
 from types import SimpleNamespace
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from authzest.analyzer import repository_input
@@ -409,8 +410,18 @@ def test_cli_eof_cancels_without_account_use(project, monkeypatch):
     assert json.loads(result.stdout)["status"] == "cancelled"
 
 
-def test_cli_help_distinguishes_external_proposals_from_execution():
-    result = CliRunner().invoke(app, ["repo-suggest", "--help"])
+@pytest.mark.parametrize("colored", [False, True])
+def test_cli_help_distinguishes_external_proposals_from_execution(monkeypatch, colored):
+    import typer.rich_utils
+
+    # Model both a plain terminal and CI's forced Rich styling, independently of
+    # this host's NO_COLOR / terminal defaults. Styling can split option names.
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.setattr(typer.rich_utils, "FORCE_TERMINAL", colored)
+    result = CliRunner().invoke(app, ["repo-suggest", "--help"], color=True)
     assert result.exit_code == 0
-    assert "external" in result.stdout and "unexecuted" in result.stdout
-    assert "--context" in result.stdout and "--preview-only" in result.stdout
+    assert ("\x1b[" in result.stdout) is colored
+    text = unstyle(result.stdout)
+    assert "external" in text and "unexecuted" in text
+    assert "--context" in text and "--preview-only" in text
