@@ -16,7 +16,7 @@ This is an architecture-backed review guide, not a completed security audit, a f
 or proof that a fix is effective. It models AuthZest itself, not the access-control policy of
 a FastAPI application being analyzed.
 The baseline was checked with an independent, offline architecture review; that is not audit coverage.
-The result-import boundary notes below describe the current source addition; they do not refresh
+The result-import and opt-in interactive boundary notes below describe current source additions; they do not refresh
 the historical baseline review or establish security acceptance of the complete application.
 
 The supported product is a local, single-operator, CLI-first source analyzer. Ordinary scans
@@ -26,6 +26,35 @@ unverified data. Import adds no browser approval or execution authority. A separ
 fixture after approval, accepts only its exact debug-setting replacement, and offers independent
 copy-application, verification, and restoration decisions. General repository AI, generated
 regression-test execution, and edits to an existing checkout are not supported by that workflow.
+
+### Current interactive owner-read boundary — 23 November 2026
+
+[#189](https://github.com/casing1/authzest/issues/189) adds an explicitly enabled local GUI for the
+existing owner-read engine, separate from the default read-only API and the historical fixture above.
+`--ai-runtime-config` fixes the private reviewed runtime at server startup. Active mode requires
+numeric loopback, one app instance and no reload. It accepts no request-selected repository, profile,
+executable, source/proposal or server save path. The fixed source scenario, copy-only writes,
+independent guest controls and fresh runtime/sharing/file-stage decisions remain in the engine.
+
+The launch token is a 256-bit local capability carried once in a private URL fragment, removed by
+the browser and retained only in memory. Every `/api/ai` route requires its header and matching
+Host/port. Mutation also requires exact Origin and bounded JSON; a supplied GET Origin must match.
+There is no permissive CORS or Vite-origin exception. This local capability does not attest human
+identity or plan review and adds no tenant or public-hosting support.
+
+The controller allows one current run and one outstanding single-use prompt. A decision binds the
+current run/prompt and exact answer while preserving the core's original deadlines and rechecks.
+Polling exposes bounded host activity and full current plans. Final projection and authenticated
+JSON download remain distinct from execution proof; imported records cannot authorize or resume a
+run. Account diagnostics expose coarse readiness only. No account tokens or raw provider logs are
+streamed. The [interactive contract](../development/GENERATED_REPAIR_CONTRACT.md) documents bounds,
+shutdown, cooperative cancellation and recovery-required states. A running worker retains its lease
+until it actually finishes; stopping after application does not approve restoration.
+
+This is implementation boundary documentation, not a new scan, verified finding, risk acceptance,
+image provenance assessment or installed live-model/guest receipt. The historical baseline and its
+source anchors remain unchanged. Review any reachable cross-origin capability disclosure, unintended
+sharing/decision, replay or premature worker release against the actual new route and its consumers.
 
 ### Components and inspected source
 
@@ -122,9 +151,11 @@ The runtime execution boundary is at [_runtime_worker:107](../../src/authzest/ru
   replacement are not compare-and-swap against such an actor. Local source scans likewise are not an
   immutable filesystem snapshot. Their aggregate file/byte/time budget needs a separate review before
   unattended use on hostile repositories; the Codex/worker limits do not bound static scanning.
-- The API has no authentication, tenant isolation or explicit origin/Host protection in create_app.
-  Keep it local and operator-controlled. Public/shared deployment is unsupported; browser-to-loopback
-  abuse needs a concrete reachable request/read path before it is treated as a vulnerability.
+- The ordinary read-only API has no application authentication or tenant isolation. The explicitly
+  enabled `/api/ai` boundary adds a launch capability and Host/Origin controls described above; it
+  does not retrofit a tenant boundary onto the existing routes. Keep the whole service local and
+  operator-controlled. Public/shared deployment is unsupported; browser-to-loopback abuse needs a
+  concrete reachable request/read path before it is treated as a vulnerability.
 - Read-only result import accepts selected JSON bytes at `POST /api/results/preview`, not a file path.
   The local API streams at most 512 KiB and applies bounded JSON depth/item/text and supported-record
   checks in [`preview_workflow_result`](../../src/authzest/result_viewer.py); it does not store the

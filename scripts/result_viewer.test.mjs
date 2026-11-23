@@ -15,7 +15,7 @@ const { renderToStaticMarkup } = require("react-dom/server");
 fs.mkdirSync(path.join(frontend, "node_modules/.tmp"), { recursive: true });
 const build = fs.mkdtempSync(path.join(frontend, "node_modules/.tmp/viewer-tests-"));
 after(() => fs.rmSync(build, { recursive: true, force: true }));
-for (const name of ["viewer-types.ts", "viewer-text.ts", "WorkflowResult.tsx", "ResultViewer.tsx", "ScanPanel.tsx", "App.tsx"]) {
+for (const name of ["viewer-types.ts", "viewer-text.ts", "WorkflowResult.tsx", "ResultViewer.tsx", "ScanPanel.tsx", "repair-types.ts", "repair-text.ts", "repair-client.ts", "RepairPanel.tsx", "App.tsx"]) {
   const output = ts.transpileModule(fs.readFileSync(path.join(frontend, "src", name), "utf8"), {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX },
   });

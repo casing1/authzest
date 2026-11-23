@@ -3,11 +3,20 @@ import type { Health, Language } from "./viewer-types.js";
 import { textFor } from "./viewer-text.js";
 import ResultViewer from "./ResultViewer.js";
 import ScanPanel from "./ScanPanel.js";
+import RepairPanel from "./RepairPanel.js";
+import { repairMessages } from "./repair-text.js";
 
-export default function App() {
+export default function App({
+  initialAIToken = null,
+}: {
+  initialAIToken?: string | null;
+}) {
+  const [aiToken] = useState(initialAIToken);
   const [health, setHealth] = useState<Health>("checking");
   const [language, setLanguage] = useState<Language>("en");
-  const [page, setPage] = useState<"results" | "scan">("results");
+  const [page, setPage] = useState<"results" | "scan" | "repair">(
+    initialAIToken ? "repair" : "results",
+  );
   const t = textFor(language);
   useEffect(() => {
     const controller = new AbortController();
@@ -27,7 +36,17 @@ export default function App() {
   return (
     <main className="shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="AuthZest">
+        <a
+          className="brand"
+          href="/"
+          aria-label="AuthZest"
+          onClick={(event) => {
+            if (aiToken) {
+              event.preventDefault();
+              setPage("repair");
+            }
+          }}
+        >
           <span className="brand-mark">AZ</span>
           <span>AuthZest</span>
         </a>
@@ -52,6 +71,13 @@ export default function App() {
       >
         <button
           type="button"
+          aria-pressed={page === "repair"}
+          onClick={() => setPage("repair")}
+        >
+          {repairMessages[language].tab}
+        </button>
+        <button
+          type="button"
           aria-pressed={page === "results"}
           onClick={() => setPage("results")}
         >
@@ -65,7 +91,9 @@ export default function App() {
           {t.scan}
         </button>
       </nav>
-      {page === "results" ? (
+      {page === "repair" ? (
+        <RepairPanel language={language} health={health} token={aiToken} />
+      ) : page === "results" ? (
         <>
           <section className="hero">
             <p className="eyebrow">{t.eyebrow}</p>
@@ -77,7 +105,10 @@ export default function App() {
       ) : (
         <ScanPanel language={language} health={health} />
       )}
-      <footer>AuthZest · {t.readOnly}</footer>
+      <footer>
+        AuthZest ·{" "}
+        {page === "repair" ? repairMessages[language].workspace : t.readOnly}
+      </footer>
     </main>
   );
 }
