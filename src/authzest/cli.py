@@ -898,6 +898,10 @@ def ui(
             resolve_path=True,
         ),
     ] = None,
+    ai_runtime_config: Annotated[
+        Path | None,
+        typer.Option(help="Enable local AI repair using this absolute private runtime config."),
+    ] = None,
 ) -> None:
     """Run the optional local dashboard without deploying a website."""
     try:
@@ -911,6 +915,55 @@ def ui(
 
     resolved_workspace = (workspace or Path.cwd()).expanduser().resolve()
     os.environ["AUTHZEST_SCAN_ROOT"] = str(resolved_workspace)
+    if ai_runtime_config is not None:
+        import secrets
+        import sys
+
+        if (
+            host != "127.0.0.1"
+            or reload
+            or not 1 <= port <= 65535
+            or os.name != "posix"
+            or getattr(sys, "frozen", False)
+        ):
+            typer.echo(
+                "AI repair requires a POSIX source install, host 127.0.0.1, a fixed port, "
+                "and reload disabled.",
+                err=True,
+            )
+            raise typer.Exit(code=2)
+
+        from authzest.api._owner_read_controller import OwnerReadUIController
+        from authzest.api.app import create_app
+        from authzest.runner._owner_read_runtime import OwnerReadRuntime, OwnerReadRuntimeError
+
+        try:
+            # Pin/load local configuration only. No daemon/model invocation at startup.
+            with OwnerReadRuntime(ai_runtime_config):
+                pass
+        except (OwnerReadRuntimeError, OSError):
+            typer.echo("The private AI runtime configuration is unavailable.", err=True)
+            raise typer.Exit(code=2) from None
+
+        token = secrets.token_urlsafe(32)
+        origin = f"http://127.0.0.1:{port}"
+        controller = OwnerReadUIController(ai_runtime_config)
+        application = create_app(
+            scan_root=resolved_workspace,
+            ai_controller=controller,
+            ai_origin=origin,
+            ai_token=token,
+        )
+        typer.echo(f"AuthZest local server: {origin}")
+        typer.echo(f"Private AI workspace: {origin}/#authzest-ai={token}")
+        typer.echo("Keep this launch URL private. Each action still requires its current decision.")
+        typer.echo(f"Scan workspace: {resolved_workspace}")
+        try:
+            uvicorn.run(application, host=host, port=port, reload=False, workers=1)
+        finally:
+            if not controller.close():
+                typer.echo("AI cleanup is unconfirmed; inspect the retained copy.", err=True)
+        return
 
     typer.echo(f"AuthZest local server: http://{host}:{port}")
     typer.echo(f"API docs: http://{host}:{port}/docs")

@@ -322,3 +322,100 @@ assistant가 작성한 정책은 **유지관리자 검토 대기** 상태입니�
 최종 JSON을 읽기 전용으로 표시합니다. 공유와 실행 단계 결정은 CLI에서 처리합니다. 어댑터는
 [Codex App Server 문서](https://learn.chatgpt.com/docs/app-server)에서 설명하는 현재 turn의
 `outputSchema` 필드를 사용합니다.
+
+## 명시적으로 켜는 로컬 AI 흐름 설계 — 2026년 11월 23일
+
+[#189](https://github.com/casing1/authzest/issues/189)는 기존 owner-read 엔진을 로컬 대화형 GUI에
+연결합니다. 이 절은 구현 전 검토용 설계이며 새 실제 모델 호출·생성 산출물 실행·패치 적용·릴리스
+수용을 허용하지 않습니다. 앞선 실제 호출 1회 승인은 소비됐습니다. 개발에는 임시 파일·고정 응답
+어댑터·모의 phase를 사용하며 새 실제 수용 검증은 별도로 범위를 정한 권한이 필요합니다.
+
+### 실행과 요청 경계
+
+일반 `authzest ui`와 기본 ASGI 앱은 읽기 전용을 유지합니다. 운영자는
+`authzest ui --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json`으로 새 경로를 명시적으로 켭니다.
+런타임 경로는 서버 시작 때 선택하고 기존 owner-read 로더로 검증합니다. 활성 모드는 숫자형
+loopback `127.0.0.1`, 앱 인스턴스 하나만 허용하며 reload·다중 worker를 허용하지 않습니다.
+기존 POSIX non-frozen 소스 설치와 고정 owner-read 시나리오를 지원합니다. 요청으로 소스·런타임·실행
+파일 경로, shell 명령, 대체 코드, 저장된 제안이나 기존 복사본을 고를 수 없습니다.
+
+실행기는 새 256비트 capability 토큰을 만듭니다. 로컬 실행 URL은 `authzest-ai` URL fragment에만
+토큰을 담습니다. 브라우저는 fragment를 즉시 지우고 토큰을 메모리에만 유지하며 모든 `/api/ai`
+요청의 `X-AuthZest-Token`에 넣습니다. query string·cookie·영구 브라우저 저장소·정적 파일·일반 응답과
+로그 메타데이터에는 토큰을 넣지 않습니다. 실행 URL은 비공개입니다. 서버 종료·재시작은 capability를
+무효화하며 토큰은 사람의 신원이나 실제 계획 검토를 입증하지 않습니다.
+
+모든 활성 요청은 설정한 숫자형 Host·포트와 맞아야 하며 토큰을 상수 시간 비교로 확인합니다.
+상태를 바꾸는 요청에는 정확히 같은 Origin과 제한된 JSON 본문이 필요하며 cross-origin·`null`
+Origin·다른 Host를 거절합니다. 같은 출처의 브라우저 fetch는 GET의 Origin을 생략할 수 있으므로 GET은
+생략을 허용하지만, 있으면 일치해야 하고 토큰은 항상 필요합니다. 넓은 CORS 예외나 Vite 개발 출처
+예외는 없습니다. 활성 응답에는 no-store와 브라우저 framing·referrer·content-type 보호를 적용합니다.
+기본 페이지 열기·health·정적 스캔·결과 가져오기는 Codex나 Docker를 실행하지 않습니다.
+
+### 조정기와 결정
+
+조정기 하나가 현재 실행 하나를 소유하고 완료 결과 하나를 유지합니다. 자체 event loop가 있는
+소유 thread에서 기존 `run_suggestion` 파일 흐름을 실행합니다. core 어댑터·런타임 준비 검사·소스
+문법·독립 대조군·workspace·복구 로직이 계속 실행 권한을 담당합니다. 연결 계층은 엔진의 기존
+`emit`·`read` 인터페이스를 제공합니다.
+
+출력 패킷은 현재 계획 전체로 보존합니다. 대기 중인 결정은 새 서버 prompt ID, 단계, 질문, 전체 계획과
+남은 시간을 포함합니다. 클라이언트는 그 prompt ID와 직접 입력한 정확한 답을 보냅니다. 서버는
+일치하는 현재 질문을 원자적으로 한 번만 소비합니다. 중복·과거·다른 실행·불일치·과도한 크기의 결정을
+거절합니다. 브라우저가 계획·예상 정답을 제공하거나 미래 단계를 미리 승인하거나 원래 최대 300초를
+늘리거나 core의 파일·해시·런타임·시간 재검사를 우회할 수 없습니다. 자동 승인이나 가져온 JSON으로
+흐름을 이어가는 기능은 없습니다.
+
+런타임 검토·공유·복사본·before·정확한 diff·적용·after·복구는 각각 현재 결정으로 유지합니다.
+실행 시작은 공유나 후속 단계 승인이 아닙니다. 조정 작업 완료는 엔진이 반환했다는 뜻이며 제안·대조·
+정리·복구 상태가 기록된 결과를 결정합니다. no-change·unknown·refused는 새 복사본 없이도 유효합니다.
+
+### 로컬 API 계약
+
+아래 경로는 모두 `/api/ai` 아래에 있으며 활성 실행 capability가 필요합니다.
+
+| 메서드 | 경로                       | 본문 또는 결과                                                                                      |
+| ------ | -------------------------- | --------------------------------------------------------------------------------------------------- |
+| GET    | `/session`                 | `{ "run": snapshot_or_null }`                                                                       |
+| POST   | `/runs`                    | `{ "model": exact_model, "timeout_seconds": value }` → snapshot, timeout은 선택 사항이며 최대 120초 |
+| GET    | `/runs/{run_id}`           | 현재 snapshot                                                                                       |
+| POST   | `/runs/{run_id}/decisions` | `{ "prompt_id": current_id, "answer": typed_text }`                                                 |
+| POST   | `/runs/{run_id}/cancel`    | `{}` → 중단 요청 상태                                                                               |
+| GET    | `/runs/{run_id}/result`    | 준비되면 전체 최종 JSON 첨부 파일                                                                   |
+| POST   | `/diagnostics`             | `{}` → 간략한 버전·로그인 준비 상태만 반환                                                          |
+
+snapshot은 `run_id`, 단조 증가하는 `revision`, `state`, `events`, `pending`, `view`, `view_error`,
+`result_available`, `failure`, `cancel_requested`를 포함합니다. 상태는 `running`, `waiting`,
+`stopping`, `finished`, `failed` 중 하나입니다. event는 `sequence`, `stage`, `status`를 포함합니다.
+`pending`은 null 또는 `prompt_id`, `stage`, `prompt`, `plan`, `remaining_seconds`를 포함합니다.
+polling은 제한된 호스트 활동을 표시하며 모델 토큰 스트림이나 제공자·계정 원본 로그를 꾸미지 않습니다.
+
+조정기는 현재 계획 전체를 2 MiB, 최종 결과를 4 MiB, 활동 event를 256개로 제한합니다. 승인할 계획을
+잘라내지 않으며 다른 실행을 받으려고 활성 실행을 제거하지 않습니다. 소유 worker가 끝난 실행만 교체할 수 있습니다.
+최종 화면은 기존 읽기 전용 projection을 재사용합니다. projection 실패는 `view_error`로 표시하고 성공
+화면을 만들지 않습니다. 제한 안의 전체 결과는 인증한 다운로드 경로로 유지합니다. 브라우저는 인증한
+fetch와 Blob으로 첨부 파일을 받아 다운로드 query string에 토큰을 넣지 않습니다. API는 임의 서버 저장
+경로를 받지 않습니다. 가져온 기록은 실행을 재개하지 못합니다.
+
+진단은 기존 제한된 검사로 신뢰하는 로컬 Codex 설치를 확인할 수 있지만 authenticated·unauthenticated·
+unknown과 버전 준비 상태만 반환합니다. 명령 원본 출력·이메일·계정 식별자·자격정보·인증 파일은 반환하지
+않습니다. 기존 Codex ChatGPT 로그인을 사용하며 API key 입력 양식이나 OAuth 로그인 endpoint를
+새로 추가하지 않습니다.
+
+### 중단·종료·검증
+
+중단은 중단 요청을 기록하고 대기 중인 read를 `cancel`로 깨웁니다. 소스 작업 도중 소유 thread를 강제
+종료하지 않습니다. 실행 중인 모델 호출이나 동기 guest phase는 다음 안전 지점까지 기존 제한 시간·
+정리를 기다려야 할 수 있습니다. `stopping`은 프로세스가 이미 종료됐다는 뜻이 아닙니다. worker가 실제로
+끝날 때까지 활성 실행 점유를 유지합니다.
+
+브라우저 종료·새로고침은 질문을 승인하거나 새 실행을 만들지 않습니다. 결정의 원래 만료 시간은
+유지됩니다. 복사본 적용 후 중단되면 복구 필요 상태가 남을 수 있습니다. 적용 후 `cancel`은 복구 결정
+없이 중단합니다. after 검사를 빈 답으로 거절하면 기록된 상태가 허용하는 경우 core가 별도의 새 복구
+결정을 제시할 수 있습니다. 그 결정 없이 자동 복구하지 않습니다. 서버 종료는 협력적 중단을 요청하고
+소유 worker·정리 상태를 처리합니다. 미완료·버려진 작업을
+성공으로 표시하거나 활성 점유를 조용히 해제하지 않습니다.
+
+오프라인 회귀는 명시적 실행 활성화, Host·Origin·토큰·content-type 검사, 중복 실행, 정확한 현재 결정,
+재사용·만료, 연결 끊김, 중단·정리 불확실성, 복구, 전체 모의 엔진 흐름, JSON 다운로드와 영한 화면을
+검사합니다. 새 생성 소스·테스트를 실행하지 않으며 실제 Codex·Docker guest를 호출하지 않습니다.

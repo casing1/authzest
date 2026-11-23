@@ -371,6 +371,93 @@ h1 {
   }
 }
 
+/* The active operator view reuses the result viewer's inert code and fact panels. */
+.repair-scope {
+  align-items: flex-start;
+}
+.repair-scope .tag {
+  white-space: normal;
+}
+.repair-start {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+.repair-start label,
+.repair-decision label {
+  display: block;
+  color: #bed6c7;
+  font-size: 13px;
+}
+.repair-start input,
+.repair-decision textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #345042;
+  border-radius: 7px;
+  padding: 12px;
+  background: #07140d;
+  color: #e2efe7;
+  font:
+    13px/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+.repair-start input:focus,
+.repair-decision textarea:focus {
+  outline: 2px solid #69d5a0;
+  outline-offset: 2px;
+}
+.repair-start button {
+  justify-self: start;
+}
+.repair-connection .muted,
+.repair-decision > p {
+  line-height: 1.75;
+}
+.repair-deadline {
+  color: #c9daa7;
+}
+.repair-phrase {
+  margin: 12px 0 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.repair-decision textarea {
+  margin-top: 10px;
+  resize: vertical;
+}
+.repair-activity {
+  margin-top: 20px;
+}
+.repair-activity > p {
+  margin: 10px 14px;
+  line-height: 1.7;
+}
+.repair-activity ol {
+  max-height: 300px;
+  overflow: auto;
+  padding: 0 15px 0 38px;
+}
+.repair-activity li {
+  padding: 9px 0;
+  color: #b7cbbf;
+  line-height: 1.6;
+}
+.repair-activity li span {
+  display: inline-block;
+  min-width: 140px;
+  margin-right: 12px;
+}
+.repair-activity li code {
+  color: #8ddcb0;
+  overflow-wrap: anywhere;
+}
+.repair-progress .recorded-error h3 {
+  margin-top: 4px;
+}
+
 /* Local result review: content stays selectable and scrollable at narrow widths. */
 .header-controls,
 .form-actions,

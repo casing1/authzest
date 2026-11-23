@@ -16,9 +16,25 @@ defensive PoC/regression test → AI-authored repair or valid no-change/unknown 
 Codex is a core goal, not an optional explanation add-on. Keep deterministic scan useful without an AI account.
 
 Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The local API
-and React dashboard display static inventory and imported workflow results. The CLI handles execution
-and approval. Evidence-assisted value remains a hypothesis to measure. See the
+and React dashboard display static inventory and imported workflow results by default. The CLI and
+the explicit local GUI mode share the owner-read execution engine and separate current decisions.
+The GUI is enabled only with a startup-bound private runtime configuration; ordinary browsing and
+imports grant no execution authority. Evidence-assisted value remains a hypothesis to measure. See the
 [model strategy](MODEL_STRATEGY.md).
+
+## Interactive course workflow — 2026-11-23 KST
+
+[#189](https://github.com/casing1/authzest/issues/189) adds an opt-in local GUI for the existing
+owner-read flow. A fresh loopback launch capability, Host/Origin checks and one current run protect
+the new HTTP boundary. The user reviews complete current plans and types the separate runtime,
+sharing, copy, before, diff, apply, after and restore decisions. Bounded host activity and the existing
+result projection make progress and recovery visible; the browser can download the complete result.
+Existing Codex login diagnostics expose coarse readiness, not account credentials or a new OAuth UI.
+
+This extends the initial read-only UI scope below; it preserves the single maintained scenario,
+POSIX source restriction and copy-only writes. The [English/Korean design](GENERATED_REPAIR_CONTRACT.md)
+precedes offline controller, API and UI regression implementation. This delivery does not claim a
+new live model/guest observation, final-candidate acceptance or stable publication.
 
 ## Course-release priorities — 2026-11-12 KST
 
@@ -26,12 +42,12 @@ and approval. Evidence-assisted value remains a hypothesis to measure. See the
 supersedes earlier benchmark-first, optional-UI and template-only completion targets; it does not alter
 historical receipts. The accepted registered-template flow is a foundation, not completion of this target.
 
-| Priority                                                          | Required delivery                                                                                                                                                                                                                                                                                                                                                                            |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — [#151](https://github.com/casing1/authzest/issues/151)        | One maintained FastAPI object-ownership scenario with explicit policy and in-memory data; generate a new defensive test and an AI-authored patch to one application source file. Do not offer the registered after-template as a repair choice or relabel template selection as generation.                                                                                                  |
-| 2 — [#152](https://github.com/casing1/authzest/issues/152)        | Design and implement separately approved, isolated before/after checks of the reviewed generated test and independent owner/non-owner/anonymous/normal-use controls appropriate to the scenario. Apply only the reviewed exact diff to a new copy, refuse stale or user-edited input, and retain refusal, failure and restore evidence. A model-authored test alone does not prove a repair. |
-| 3 — [#153](https://github.com/casing1/authzest/issues/153)        | Use the local React UI to display actual scan, PoC/test, diff, before/after and recovery results, including failed/not-run/unknown states. Keep initial execution and approvals in the CLI; no cloud deployment is required.                                                                                                                                                                 |
-| 4 — [#85](https://github.com/casing1/authzest/issues/85) and #150 | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
+| Priority                                                                                                           | Required delivery                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — [#151](https://github.com/casing1/authzest/issues/151)                                                         | One maintained FastAPI object-ownership scenario with explicit policy and in-memory data; generate a new defensive test and an AI-authored patch to one application source file. Do not offer the registered after-template as a repair choice or relabel template selection as generation.                                                                                                  |
+| 2 — [#152](https://github.com/casing1/authzest/issues/152)                                                         | Design and implement separately approved, isolated before/after checks of the reviewed generated test and independent owner/non-owner/anonymous/normal-use controls appropriate to the scenario. Apply only the reviewed exact diff to a new copy, refuse stale or user-edited input, and retain refusal, failure and restore evidence. A model-authored test alone does not prove a repair. |
+| 3 — [#153](https://github.com/casing1/authzest/issues/153), [#189](https://github.com/casing1/authzest/issues/189) | Display scan, PoC/test, diff, before/after and recovery honestly. Preserve the default read-only route and add the explicit local owner-read GUI using the same engine and separate decisions. Failed/not-run/unknown and recovery states remain visible; no cloud deployment is required.                                                                                                   |
+| 4 — [#85](https://github.com/casing1/authzest/issues/85) and #150                                                  | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
 
 The [release readiness record](../releases/RELEASING.md) tracks what shipped and what still needs
 final-candidate evidence. Active stages and source sharing require the current decisions described in the

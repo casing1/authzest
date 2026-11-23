@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import asyncio
+import logging
 import os
 import sys
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -25,12 +28,46 @@ def _default_scan_root() -> Path:
     return Path(configured_root) if configured_root else Path.cwd()
 
 
-def create_app(frontend_dist: Path | None = None, scan_root: Path | None = None) -> FastAPI:
+def create_app(
+    frontend_dist: Path | None = None,
+    scan_root: Path | None = None,
+    *,
+    ai_controller=None,
+    ai_origin: str | None = None,
+    ai_token: str | None = None,
+    ai_diagnostics=None,
+) -> FastAPI:
+    if ai_controller is None and any(
+        value is not None for value in (ai_origin, ai_token, ai_diagnostics)
+    ):
+        raise ValueError("AI transport options require an explicit controller")
+
+    @asynccontextmanager
+    async def lifespan(_application):
+        try:
+            yield
+        finally:
+            if ai_controller is not None and not await asyncio.to_thread(ai_controller.close):
+                logging.getLogger(__name__).warning(
+                    "AI worker cleanup is unconfirmed; the retained copy may require inspection."
+                )
+
     application = FastAPI(
         title="AuthZest API",
         version=__version__,
         description="Local API for source-aware FastAPI authorization analysis.",
+        lifespan=lifespan,
     )
+    if ai_controller is not None:
+        from authzest.api._ai_routes import install_ai_routes
+
+        install_ai_routes(
+            application,
+            ai_controller,
+            origin=ai_origin,
+            token=ai_token,
+            diagnostics=ai_diagnostics,
+        )
     runner = ScanRunner()
     resolved_scan_root = (scan_root or _default_scan_root()).expanduser().resolve()
     if not resolved_scan_root.is_dir():

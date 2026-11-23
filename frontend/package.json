@@ -6,7 +6,7 @@
     "minimatch": "11.0.1"
   },
   "scripts": {
-    "test": "node --test ../scripts/result_viewer.test.mjs",
+    "test": "node --test ../scripts/result_viewer.test.mjs ../scripts/repair_panel.test.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

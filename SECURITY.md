@@ -64,9 +64,33 @@ The [repository threat model](docs/reference/threat-model.md) documents inspecte
 assets, trust boundaries, assumptions, and review hypotheses. It is not a completed audit or a blanket
 finding-suppression list. The authorization policy of an analyzed application is a separate input.
 
-The optional local API scans the workspace selected at server startup; requests cannot choose a new
-path. The CLI UI defaults to loopback. No application authentication or tenant isolation is implemented,
-so keep the service local and operator-controlled rather than treating it as a public/shared service.
+The ordinary local API scans the workspace selected at server startup and displays imported results;
+requests cannot choose a new path. Its existing read-only routes provide no application authentication
+or tenant isolation. Keep the service local and operator-controlled.
+
+The separate `authzest ui --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json` mode connects one
+maintained owner-read scenario to the existing generated-repair engine. Active operation is disabled
+by default. This POSIX source mode requires numeric loopback, one application instance and no reload.
+The operator fixes the private runtime configuration at launch. Every `/api/ai` request requires the
+fresh launch capability and exact Host/port checks; mutation additionally requires matching Origin
+and JSON. The private launch URL carries its token in a fragment, which the browser removes and
+retains only in memory. It is not a general user-login or tenant boundary.
+
+Each current runtime, sharing, copy, before, diff, apply, after and restore plan retains a separate
+typed decision and the engine's expiry, exact-input and file-state rechecks. A model response or
+imported result cannot approve a new operation. Cancellation is cooperative and can leave a copy
+requiring recovery after application; it must not silently restore, erase uncertain cleanup or release
+the active slot before the owned worker ends. The browser can download its bounded final JSON,
+without choosing a server filesystem destination. The GUI uses the existing Codex ChatGPT login and
+only coarse login diagnostics; no OAuth tokens, raw account output or auth files enter its API.
+See the [local workflow guide](docs/guides/RESULT_VIEWER.md) and
+[interactive design](docs/development/GENERATED_REPAIR_CONTRACT.md).
+
+Review reachable browser-to-local request paths that could disclose plans, consume model usage or
+issue an unintended file-stage decision. The synthetic target does not exempt the HTTP controller,
+request gates or copy/guest consumers from security review. These boundaries add no accepted risk,
+finding exclusion, completed audit or general repository execution support.
+
 Private fixture copies and their records are retained for inspection; file-state checks and atomic
 replacement are not isolation from hostile concurrent same-user writers.
 
@@ -74,6 +98,8 @@ replacement are not isolation from hostile concurrent same-user writers.
 
 - Network requests and external process execution must remain disabled by default.
 - Local API endpoints must not turn a caller-controlled path into unrestricted filesystem access.
+- Opt-in active requests must preserve launch capability, Host/Origin checks and one-shot current
+  decisions; importing a result must remain read-only.
 - Findings must include evidence and distinguish confirmed, suspected, and unknown states.
 - Security controls require regression tests before merge.
 - Secrets and personal information must never be committed to the repository.

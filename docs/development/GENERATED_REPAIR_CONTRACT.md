@@ -341,3 +341,109 @@ The [local viewer](../guides/RESULT_VIEWER.md) from
 [#153](https://github.com/casing1/authzest/issues/153) displays the final JSON read-only. The CLI
 owns sharing and stage decisions. The adapter uses the current-turn `outputSchema` field described
 in the [Codex App Server documentation](https://learn.chatgpt.com/docs/app-server).
+
+## Opt-in local AI workflow design — 23 November 2026
+
+[#189](https://github.com/casing1/authzest/issues/189) connects the existing owner-read engine to a
+local interactive GUI. This section is the design for implementation review. It grants no new live
+model call, generated-artifact execution, patch application, or release acceptance. Earlier one-turn
+live approval is consumed. Development uses temporary files, scripted adapters and mocked phases;
+new live acceptance requires separately bounded authority.
+
+### Launch and request boundary
+
+The ordinary `authzest ui` and the default ASGI application remain read-only. An operator explicitly
+enables the new route with `authzest ui --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json`.
+The runtime path is selected at server startup and validated by the existing owner-read loader.
+Active mode accepts only numeric loopback `127.0.0.1`, one application instance and no reload or
+multiple workers. It supports the existing POSIX non-frozen source installation and the fixed
+owner-read scenario. Requests cannot select source files, runtime paths, executable paths, shell
+commands, replacement code, saved proposals, or an existing copy.
+
+The launcher creates a fresh 256-bit capability token. Its local launch URL carries the token only
+in the `authzest-ai` URL fragment. The browser removes that fragment immediately and keeps the token
+in memory, sending it as `X-AuthZest-Token` on every `/api/ai` request. It is absent from query strings,
+cookies, persistent browser storage, static assets and ordinary response/log metadata. The launch
+URL is private. Closing or restarting the server invalidates the capability; it does not identify a
+human or attest that someone read a plan.
+
+Every active request must match the configured numeric Host and port and the launch token using a
+constant-time comparison. Mutating requests require the exact same Origin and a bounded JSON body;
+cross-origin, `null` Origin and mismatched Host requests are refused. A GET may omit Origin, as
+same-origin browser fetches commonly do, but any supplied Origin must match and the token remains
+mandatory. There is no permissive CORS exception or Vite development-origin exception. Active
+responses use no-store and browser framing/referrer/content-type protections. Default page loading,
+health, static scans and result imports do not invoke Codex or Docker.
+
+### Controller and decisions
+
+One controller owns one current run and retains one finished result. It runs the existing
+`run_suggestion` file workflow in an owned thread with its own event loop. The core adapter,
+runtime preflight, source grammar, independent controls, workspace and restore machinery remain the
+execution authority. The bridge supplies the engine's existing `emit` and `read` interfaces.
+
+An emitted packet is retained as the complete current plan. A pending decision contains a fresh
+server prompt ID, stage, prompt text, complete plan and remaining time. The client submits that
+prompt ID and the exact typed answer. The server consumes a matching current prompt atomically once.
+Duplicate, stale, cross-run, mismatched and oversized decisions are refused. The browser cannot
+replace the plan, supply an expected answer, approve future stages, extend the original maximum
+300 seconds, or bypass the core's file, hash, runtime and deadline rechecks. There is no automatic
+approval or continuation from an imported JSON record.
+
+Runtime review, sharing, copy, before, exact diff, apply, after and restore remain separate current
+decisions. Starting a run does not approve sharing or any later stage. A completed controller job
+only means the engine returned; proposal, comparison, cleanup and recovery statuses determine the
+recorded outcome. No-change, unknown and refused proposals remain valid without a new copy.
+
+### Local API contract
+
+All routes below are under `/api/ai` and require the active launch capability.
+
+| Method | Route                      | Body or result                                                                                               |
+| ------ | -------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| GET    | `/session`                 | `{ "run": snapshot_or_null }`                                                                                |
+| POST   | `/runs`                    | `{ "model": exact_model, "timeout_seconds": value }` → snapshot; timeout is optional and at most 120 seconds |
+| GET    | `/runs/{run_id}`           | Current snapshot                                                                                             |
+| POST   | `/runs/{run_id}/decisions` | `{ "prompt_id": current_id, "answer": typed_text }`                                                          |
+| POST   | `/runs/{run_id}/cancel`    | `{}` → stop-request state                                                                                    |
+| GET    | `/runs/{run_id}/result`    | Complete final JSON attachment when available                                                                |
+| POST   | `/diagnostics`             | `{}` → coarse version/login readiness only                                                                   |
+
+A snapshot contains `run_id`, monotonically increasing `revision`, `state`, `events`, `pending`,
+`view`, `view_error`, `result_available`, `failure` and `cancel_requested`. State is one of `running`,
+`waiting`, `stopping`, `finished` or `failed`. Events contain `sequence`, `stage` and `status`.
+`pending` is null or contains `prompt_id`, `stage`, `prompt`, `plan` and `remaining_seconds`.
+Polling shows bounded host activity, not an invented model token stream or raw provider/account logs.
+
+The controller bounds a complete current plan to 2 MiB, the final result to 4 MiB and activity events
+to 256. It never truncates a plan into something approvable or evicts an active run to admit another.
+Only a run whose owned worker has ended can be replaced. The final display reuses the existing read-only projection;
+projection failure is reported through `view_error`, with no fabricated successful view. A complete
+bounded result remains available through the authenticated download route. The browser obtains the
+attachment through authenticated fetch and a Blob, so no token appears in a download query string.
+The API accepts no arbitrary server-side save path. Imported records cannot resume a run.
+
+Diagnostics may inspect the trusted local Codex installation with the existing bounded check, but
+return only authenticated/unauthenticated/unknown and version readiness. Raw command output, email,
+account identifiers, credentials and auth files are not returned. The workflow uses the existing
+Codex ChatGPT login. This design adds no API-key form or OAuth login endpoint.
+
+### Cancellation, shutdown and verification
+
+Cancellation latches a stop request and wakes a pending read with `cancel`. It never kills an owned
+thread midway through a source operation. A running model call or synchronous guest phase may need
+its existing timeout and cleanup before the next safe checkpoint. `stopping` does not mean the
+processes have already ended. The active lease remains held until the worker actually finishes.
+
+Closing or reloading a browser neither approves a prompt nor starts another run. Decisions retain
+their original deadline. An interruption after copy application can retain recovery-required state;
+`cancel` after application stops without a restore decision. Declining the after check with an empty
+answer can offer the core's separate, fresh restore decision when the recorded state permits it.
+The bridge never restores automatically without that decision. Server shutdown requests
+cooperative stopping and accounts for the owned worker and cleanup. An unfinished or abandoned
+operation cannot be reported as successful or silently release the active slot.
+
+Offline regressions cover launch opt-in, Host/Origin/token/content-type enforcement, overlapping
+starts, exact current decisions, replay/expiry, disconnects, cancellation and uncertain cleanup,
+recovery, complete mocked engine flow, JSON download and English/Korean rendering. These checks
+execute no newly generated source or test and make no real Codex or Docker guest call.
