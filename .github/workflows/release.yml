@@ -16,7 +16,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
         with:
@@ -46,6 +46,9 @@ jobs:
       - run: ruff format --check .
       - run: pytest
       - run: npm ci
+        working-directory: frontend
+      - name: Test result viewer and AI repair interface
+        run: npm test
         working-directory: frontend
       - name: Test frontend dependency resolution and source-map compatibility
         run: node --test scripts/frontend_dependencies.test.mjs
