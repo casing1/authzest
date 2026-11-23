@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- External runtime foundation: fresh live copy checkpoints, separate sealed T/A selected inputs,
+  explicit guest bootstrap/client fixture and bounded scheduled-GET observation. Add separate
+  unexecuted create plans and pinned source/recipe declarations, with inert-file and fake-peer tests.
+  This does not start an image, run a project, activate CLI/GUI execution or correct the original.
+  [#208](https://github.com/casing1/authzest/issues/208)
+
 - Pure external test-interface request `1.1`, host-only independent cases, declared material bindings
   and supplied-frame comparisons. Keep v1.0 defaults unchanged, project request-only observer schedules,
   preserve every planned case on invalid input and keep all comparison outcomes unverified. No model,

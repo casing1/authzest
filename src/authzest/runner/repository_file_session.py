@@ -79,6 +79,37 @@ class RepositoryFileDecision:
     nonce: str
 
 
+@dataclass(frozen=True, slots=True)
+class _RepositoryRuntimeCheckpoint:
+    """Same-session live read binding, never a saved-result or execution capability."""
+
+    phase: str
+    session_id: str
+    revision: int
+    private_root: Path
+    root_identity: tuple[int, ...]
+    file_identities: tuple[tuple[str, tuple[int, ...]], ...]
+    request: RepositoryProposalRequest
+    _response_json: str
+    materials: tuple[tuple[str, bytes], ...]
+    test_path: str
+    test_bytes: bytes
+    journal_bytes: bytes
+
+    @property
+    def response(self) -> dict:
+        return decode(self._response_json)
+
+    def __copy__(self):
+        raise TypeError("Live runtime checkpoints cannot be copied")
+
+    def __deepcopy__(self, memo):
+        raise TypeError("Live runtime checkpoints cannot be copied")
+
+    def __reduce__(self):
+        raise TypeError("Live runtime checkpoints cannot be serialized")
+
+
 def _hash(data: bytes) -> str:
     return sha256(data).hexdigest()
 
@@ -128,6 +159,7 @@ class RepositoryFileSession:
         self._cleanup = "not-requested"
         self._revision = 0
         self._last_clock = None
+        self._runtime_checkpoint = None
         self._history: list[dict] = []
         selection = checked.to_dict()["selection"]
         proposal = response["proposal"]
@@ -211,6 +243,116 @@ class RepositoryFileSession:
             raise RepositorySessionError("A current live decision is required")
         if self._now() >= self._expires:
             self._expired()
+
+    def _read_runtime_checkpoint(self, phase: str) -> _RepositoryRuntimeCheckpoint:
+        expected_state = {"before": "copied-before", "after": "applied-after"}
+        if (
+            type(phase) is not str
+            or phase not in expected_state
+            or self._state != expected_state[phase]
+            or type(self._files) is not RepositoryFiles
+            or self._pending is not None
+            or self._decision is not None
+            or self._consumed
+            or self._expires is not None
+            or self._failure is not None
+            or self._cleanup == "unconfirmed"
+        ):
+            raise RepositorySessionError("A quiescent current before/after copy is required")
+        try:
+            self._files.verify()
+            selection = self._request.to_dict()["selection"]
+            source = self._after if phase == "after" else self._before
+            selected = (selection["files"][0], *selection["files"][2:])
+            materials = []
+            for item in selected:
+                path = item["path"]
+                content = self._files.read("project/" + path)
+                expected = source if path == selection["source"] else item["text"].encode()
+                if content != expected:
+                    raise RepositorySessionError("Selected private bytes differ")
+                materials.append((path, content))
+            test_path = self._response["proposal"]["test_path"]
+            test_bytes = self._files.read("project/" + test_path)
+            if (
+                test_bytes != self._test
+                or self._files.read("evidence/test.txt") != self._test
+                or self._files.read("evidence/source.before") != self._before
+                or self._files.read("evidence/source.after") != self._after
+            ):
+                raise RepositorySessionError("Private artifacts differ from current proposal")
+            journal_bytes = self._files.read("record.json")
+            journal = decode(journal_bytes.decode("utf-8"))
+            if any(
+                journal.get(key) != value
+                for key, value in {
+                    "session_id": self._session_id,
+                    "request_id": self._request.request_id,
+                    "copy_plan_id": self._copy_plan.plan_id,
+                    "revision": self._revision,
+                    "state": self._state,
+                    "pending_operation": None,
+                }.items()
+            ):
+                raise RepositorySessionError("Private journal is not the current completed state")
+            checkpoint = _RepositoryRuntimeCheckpoint(
+                phase=phase,
+                session_id=self._session_id,
+                revision=self._revision,
+                private_root=self._files.path,
+                root_identity=self._files.root_identity,
+                file_identities=tuple(
+                    (name, tuple(value)) for name, value in sorted(self._files.identities.items())
+                ),
+                request=self._request,
+                _response_json=canonical(self._response),
+                materials=tuple(materials),
+                test_path=test_path,
+                test_bytes=test_bytes,
+                journal_bytes=journal_bytes,
+            )
+            self._files.verify()
+            return checkpoint
+        except BaseException as exc:
+            self._state = "recovery-required"
+            self._failure = {"step": "runtime-checkpoint", "status": "input-integrity-unconfirmed"}
+            if not isinstance(exc, Exception):
+                exc.repository_session_result = self.result()
+                raise
+            raise RepositorySessionError(
+                "Current private checkpoint integrity is unconfirmed"
+            ) from None
+
+    def _capture_runtime_checkpoint(self, phase: str) -> _RepositoryRuntimeCheckpoint:
+        """Freshly read all current bytes; T/A may share the same unchanged binding.
+
+        This internal bridge performs no writes, decisions, import or execution.
+        The old constructor and all ordinary file decisions remain v1.0-only.
+        """
+        self._enter()
+        try:
+            fresh = self._read_runtime_checkpoint(phase)
+            if self._runtime_checkpoint != fresh:
+                self._runtime_checkpoint = fresh
+            return self._runtime_checkpoint
+        finally:
+            self._busy = False
+
+    def _recheck_runtime_checkpoint(self, checkpoint: _RepositoryRuntimeCheckpoint) -> None:
+        """Recheck only this session's exact issued object against the live copy."""
+        self._enter()
+        try:
+            if (
+                type(checkpoint) is not _RepositoryRuntimeCheckpoint
+                or checkpoint is not self._runtime_checkpoint
+            ):
+                raise RepositorySessionError("Only the current issued live checkpoint is accepted")
+            if self._read_runtime_checkpoint(checkpoint.phase) != checkpoint:
+                raise RepositorySessionError(
+                    "Runtime checkpoint differs from current private state"
+                )
+        finally:
+            self._busy = False
 
     def _expired(self) -> None:
         self._state = "recovery-required" if self._files else "refused"

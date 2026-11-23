@@ -26,6 +26,10 @@ uses owned inert temporary files; the external CLI/GUI operator and runtime chec
 The [S3 interface and supplied-comparison contracts](reference/REPOSITORY_VERIFICATION.md) now bind
 explicit entrypoints, host-only cases and declared before/after/test identities. They are pure data
 APIs, not an executor, accepted runtime evidence or v1.1 transport/file-operator support.
+The separate [external runtime foundation](reference/REPOSITORY_RUNTIME.md) now provides sealed
+selected inputs, T/A/B entry source, bounded HTTP primitives and unexecuted pinned create plans.
+Owned inert files and fake peers verify that source; images, direct live phase coordination and the
+external CLI/GUI operator remain pending.
 
 The earlier [0.1.0 readiness snapshot](releases/0.1.0-READINESS.md) and
 [release notes](releases/0.1.0.md) retain their recorded scope and pending decisions.
@@ -346,6 +350,7 @@ docs/
 | External copy, independent verification and recovery design             | [Repository file workflow](development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](i18n/ko/development/REPOSITORY_FILE_WORKFLOW.md)               |
 | External live-origin and private file-session API (S2)                  | [Repository file sessions](reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](i18n/ko/reference/REPOSITORY_FILE_SESSION.md)                |
 | External test interface and supplied verification contracts (S3)        | [Repository verification](reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](i18n/ko/reference/REPOSITORY_VERIFICATION.md)                       |
+| External sealed inputs and runtime foundation                           | [Repository runtime](reference/REPOSITORY_RUNTIME.md)                      | [외부 런타임 기반](i18n/ko/reference/REPOSITORY_RUNTIME.md)                          |
 | Generated PoC/test contract and opt-in Codex request                    | [Generated repair contract](development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](i18n/ko/development/GENERATED_REPAIR_CONTRACT.md)        |
 | Generated repair offline controls, preview and disabled executor        | [Verification foundation](development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md) |
 | Generated repair private-copy byte I/O and retained bookkeeping         | [Private workspace](development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md)      |

@@ -1,0 +1,150 @@
+{
+  "base_reference": "runtime/generated_repair/images/manifest.json",
+  "base_reference_sha256": "e0c3339143457ae9c57b50e5bf61b77440a4a2e872e4f8b34105d0306743b4e5",
+  "contents_verified": false,
+  "image_ids": null,
+  "kind": "repository-image-inputs",
+  "roles": {
+    "A": {
+      "asset_sources": {
+        "_guest_common.py": "runtime/repository/_guest_common.py",
+        "_repository_manifest.py": "src/authzest/runner/_repository_manifest.py",
+        "app_launcher.py": "runtime/repository/app_launcher.py"
+      },
+      "assets": {
+        "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+        "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+        "app_launcher.py": "cb1539f447a8820c466c585c6537e6cee5e284e19bab24e2d5b880c1d4e843b1"
+      },
+      "platforms": {
+        "linux/amd64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+            "app_launcher.py": "cb1539f447a8820c466c585c6537e6cee5e284e19bab24e2d5b880c1d4e843b1"
+          },
+          "base_manifest_sha256": "0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-amd64-A.txt",
+          "dependency_lock_sha256": "d5e47e336f638d33f90d8241f76ebe58cecb45d7e910ce9d7fe487efd8e636bb",
+          "dockerfile": "dockerfiles/linux-amd64-A.Dockerfile",
+          "dockerfile_sha256": "f78c44769313fdccbb1edc26d8e442071477dea2dfa564e793c8825f138a0307",
+          "kind": "repository-image-recipe",
+          "platform": "linux/amd64",
+          "recipe_sha256": "df8e83abc10908cdc980271110fc4858f89a042eedb5afa4c26dd0436a69eddd",
+          "role": "A"
+        },
+        "linux/arm64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+            "app_launcher.py": "cb1539f447a8820c466c585c6537e6cee5e284e19bab24e2d5b880c1d4e843b1"
+          },
+          "base_manifest_sha256": "df540bfd30bd380e89a349611ce42aa67bcb542d58c047706616eb6ba2f86a1b",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-arm64-A.txt",
+          "dependency_lock_sha256": "4fe83c082c5db3d478c0b40f39d626b3c687182d0c28efd818d5cffea93699b8",
+          "dockerfile": "dockerfiles/linux-arm64-A.Dockerfile",
+          "dockerfile_sha256": "4f081b9989821fdeeb123a6b731cecadb815d42ccb3015133b293bdea3888a46",
+          "kind": "repository-image-recipe",
+          "platform": "linux/arm64",
+          "recipe_sha256": "7001ddb5f6fc8a36d9fb29aacdb969b15943990742f80bd765d920c954672ddc",
+          "role": "A"
+        }
+      }
+    },
+    "B": {
+      "asset_sources": {
+        "_guest_common.py": "runtime/repository/_guest_common.py",
+        "relay_launcher.py": "runtime/repository/relay_launcher.py",
+        "repository_http.py": "src/authzest/runner/_repository_http.py"
+      },
+      "assets": {
+        "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+        "relay_launcher.py": "a62d1ff4466563a399e663a67157f55dac6bd718f178a1255034cdef556e0fbf",
+        "repository_http.py": "497c3b09a6a51911c3695e9b9ffdbed0384d02e43c24d631bc1d7773eb123dbf"
+      },
+      "platforms": {
+        "linux/amd64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "relay_launcher.py": "a62d1ff4466563a399e663a67157f55dac6bd718f178a1255034cdef556e0fbf",
+            "repository_http.py": "497c3b09a6a51911c3695e9b9ffdbed0384d02e43c24d631bc1d7773eb123dbf"
+          },
+          "base_manifest_sha256": "0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-amd64-B.txt",
+          "dependency_lock_sha256": "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e",
+          "dockerfile": "dockerfiles/linux-amd64-B.Dockerfile",
+          "dockerfile_sha256": "e4ceb6fdd2463ec4f85de853091a02aa72d3e3b3082ee50229aae2bfb0bf21d9",
+          "kind": "repository-image-recipe",
+          "platform": "linux/amd64",
+          "recipe_sha256": "0ec59587c8b42cc3728c13ed5d67018024107f25488d7fc86755ad24128914ef",
+          "role": "B"
+        },
+        "linux/arm64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "relay_launcher.py": "a62d1ff4466563a399e663a67157f55dac6bd718f178a1255034cdef556e0fbf",
+            "repository_http.py": "497c3b09a6a51911c3695e9b9ffdbed0384d02e43c24d631bc1d7773eb123dbf"
+          },
+          "base_manifest_sha256": "df540bfd30bd380e89a349611ce42aa67bcb542d58c047706616eb6ba2f86a1b",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-arm64-B.txt",
+          "dependency_lock_sha256": "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e",
+          "dockerfile": "dockerfiles/linux-arm64-B.Dockerfile",
+          "dockerfile_sha256": "bba559d67aeec0a9369555d5f767a86766b6480eeb08a3df730c4d04694f3659",
+          "kind": "repository-image-recipe",
+          "platform": "linux/arm64",
+          "recipe_sha256": "e49c8e4dd0b794d6e26af2367eb3b813ec78c5e110b5bd1bbe93fc4e77e684d9",
+          "role": "B"
+        }
+      }
+    },
+    "T": {
+      "asset_sources": {
+        "_guest_common.py": "runtime/repository/_guest_common.py",
+        "_repository_manifest.py": "src/authzest/runner/_repository_manifest.py",
+        "test_launcher.py": "runtime/repository/test_launcher.py"
+      },
+      "assets": {
+        "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+        "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+        "test_launcher.py": "cde96e9a6a8f847fa21d495a186f3c4ed26d87f607d437886e19e314511f5422"
+      },
+      "platforms": {
+        "linux/amd64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+            "test_launcher.py": "cde96e9a6a8f847fa21d495a186f3c4ed26d87f607d437886e19e314511f5422"
+          },
+          "base_manifest_sha256": "0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-amd64-T.txt",
+          "dependency_lock_sha256": "8f87350f05c065015a9f2c7633aee604afc31c6d02cc96459b6fcd09520718fc",
+          "dockerfile": "dockerfiles/linux-amd64-T.Dockerfile",
+          "dockerfile_sha256": "28efa4ed58be077fc5a21e8ff9e0372bb81e1f2699956f7329e1101554e88f74",
+          "kind": "repository-image-recipe",
+          "platform": "linux/amd64",
+          "recipe_sha256": "6d10cb02133f0b741bd9a3ad94bc92831f2afd21e4f766c35ea129bab509b2d4",
+          "role": "T"
+        },
+        "linux/arm64": {
+          "assets": {
+            "_guest_common.py": "2ae13fe5b7a80d931256e8f81b23f5a31a7d39337d736764f11d7ab9d2b5aa5b",
+            "_repository_manifest.py": "17de5d1e01a0faeefa573631b7bffd48fb1f14b714ea67ad6b12b90cde2a42b5",
+            "test_launcher.py": "cde96e9a6a8f847fa21d495a186f3c4ed26d87f607d437886e19e314511f5422"
+          },
+          "base_manifest_sha256": "df540bfd30bd380e89a349611ce42aa67bcb542d58c047706616eb6ba2f86a1b",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-arm64-T.txt",
+          "dependency_lock_sha256": "e2a56894eeff0a0ef1433ec9eecf99e75339e52e92f9fe39ea9e015618f030cf",
+          "dockerfile": "dockerfiles/linux-arm64-T.Dockerfile",
+          "dockerfile_sha256": "f0b3033ffef84f6e240c74b45334d40289564ef251a1a0a3eda286252b4853a9",
+          "kind": "repository-image-recipe",
+          "platform": "linux/arm64",
+          "recipe_sha256": "8bce064f8930cdce97bc0a0dfd7f759fb131bb10a4fe7b86701d08d2593e3337",
+          "role": "T"
+        }
+      }
+    }
+  },
+  "runtime_ready": false,
+  "schema_version": "1.0",
+  "status": "declared-not-built"
+}

@@ -124,8 +124,10 @@ pytest labels and cleanup; this does not reproduce a defect or establish a verif
 
 ## Remaining product work
 
-Separate T/A/B launchers, sealed selected-byte staging, raw HTTP observation, reviewed runtime images,
-limits and directly returned live phase results remain unimplemented for external projects. Then bind
+The separate [runtime foundation](REPOSITORY_RUNTIME.md) now implements sealed selected-byte staging,
+T/A/B entry source, bounded raw HTTP capture and static create plans, checked with inert files and
+fake peers. Images remain unbuilt/unreviewed and directly returned live external phase results are
+still pending. Then bind
 the CLI operator to those live results and S2 decisions, verify a bounded installed external flow,
 implement separately reviewed original-project final correction and connect the shared GUI engine.
 #152/#150 stay open. No account use, actual external-project run, risk acceptance, tag or release is

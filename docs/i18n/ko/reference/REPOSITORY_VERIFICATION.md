@@ -125,8 +125,9 @@ authorization `unknown`, `verified_fix: false`, `live_evidence: false`, `writes_
 
 ## 남은 제품 작업
 
-외부 프로젝트용 별도 T/A/B launcher, sealed 선택 바이트 staging, raw HTTP 관찰, 검토한 런타임
-이미지·제한과 직접 반환하는 live phase 결과는 미구현입니다. 이후 CLI 조작 흐름을 그 live 결과와
+별도 [런타임 기반](REPOSITORY_RUNTIME.md)은 봉인한 선택 바이트 staging, T/A/B 진입점 소스, 제한된
+raw HTTP 캡처와 정적 생성 계획을 구현하고 비활성 파일·가짜 peer로 검사합니다. 이미지 빌드·수용과
+직접 반환하는 실제 외부 phase 결과는 미완료입니다. 이후 CLI 조작 흐름을 그 live 결과와
 S2 결정에 결합하고, 제한된 설치형 외부 흐름을 검증하고, 별도로 검토한 원본 프로젝트 최종 수정을
 구현하고 공통 GUI 엔진에 연결합니다. #152/#150은 계속 열어 둡니다. 이 순수 계약이 계정 사용,
 실제 외부 프로젝트 실행, 위험 수용, tag나 릴리스를 승인하거나 입증하지는 않습니다.

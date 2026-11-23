@@ -125,6 +125,9 @@ operator and GUI integration remain pending.
 The [S3 v1.1 interface/case comparison contract](../reference/REPOSITORY_VERIFICATION.md) is also a
 separate pure API. This command continues to use v1.0; supplied comparison data cannot enable writes
 or establish actual execution.
+The [runtime foundation](../reference/REPOSITORY_RUNTIME.md) adds a separate internal checkpoint,
+sealed inputs and fake-tested guest/HTTP source. Its static create plans and unbuilt recipes do not
+activate this command's execution or file workflow.
 
 ## Verification boundary
 
