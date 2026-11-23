@@ -13,9 +13,13 @@ AuthZest는 설치형·CLI 중심 FastAPI 소스 분석 프로젝트입니다. �
 [로컬 워크플로 안내](guides/RESULT_VIEWER.md)를 참고하세요. [과제 시연](guides/COURSE_DEMO.md)은
 GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계도 유지합니다.
 
-최종 소스 사전검증과 미결 관리자 판단은 [0.1.0 준비 상태](releases/0.1.0-READINESS.md),
-예정된 지원 제품은 [릴리스 노트](releases/0.1.0.md)에서 확인하세요.
-이 문서 자체는 발행이나 새 활성 실행을 입증하지 않습니다.
+**외부 프로젝트 지원을 정식 발행보다 먼저 진행합니다.** 새
+[저장소 제안 CLI](guides/REPOSITORY_PROPOSALS.md)는 명시적으로 선택한 외부 소스·정책·문맥을
+읽어 Codex에 제안만 요청합니다. 외부 프로젝트의 실행·복사본 적용/복구·GUI 연동은 후속 작업이며
+현재 활성 GUI는 내장 사례를 사용합니다.
+
+이전 [0.1.0 준비 상태](releases/0.1.0-READINESS.md)와 [릴리스 노트](releases/0.1.0.md)는
+각각 기록된 범위와 미결 결정을 보존합니다. 발행이나 외부 프로젝트 종단간 수용을 입증하지 않습니다.
 
 ## 현재 작업
 
@@ -309,6 +313,7 @@ docs/
 | 전용 수정 정책 고정 검사 (과거 설계)               | [Repair-check design](../../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)     | [수정 정책 고정 검사 설계](development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md)  |
 | 테스트 전용 소유 정책 수정 쌍 (제안)               | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)   |
 | 소유 정책 개선 설계 (제안)                         | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
+| 외부 선택 파일 소스·정책 제안 CLI                  | [Repository proposals](../../guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](guides/REPOSITORY_PROPOSALS.md)                           |
 | 생성 PoC/테스트 계약과 선택형 Codex 요청           | [Generated repair contract](../../development/GENERATED_REPAIR_CONTRACT.md)      | [생성 PoC/테스트·수정 계약](development/GENERATED_REPAIR_CONTRACT.md)        |
 | 생성 수정 오프라인 대조군·미리보기·비활성 executor | [Verification foundation](../../development/GENERATED_REPAIR_VERIFICATION.md)    | [생성 수정 오프라인 검증 기반](development/GENERATED_REPAIR_VERIFICATION.md) |
 | 생성 수정 비공개 복사본 바이트 I/O·기록 보존       | [Private workspace](../../development/GENERATED_REPAIR_WORKSPACE.md)             | [생성 수정 비공개 파일 기반](development/GENERATED_REPAIR_WORKSPACE.md)      |

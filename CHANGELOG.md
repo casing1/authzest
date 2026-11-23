@@ -14,7 +14,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
-No additional changes are recorded after the prepared 0.1.0 notes below.
+### Added
+
+- External-project proposal CLI: `repo-suggest` captures one explicitly selected Python repair
+  target, a policy document and up to four selected Python context files; derives static evidence
+  from those bytes; previews the complete request and requires a fresh, expiring sharing decision.
+  It uses a separate Codex request/adapter entry and returns unexecuted tests, source and exact
+  diffs. No external copy application, runtime verification or GUI integration is delivered by this
+  slice. Verification uses offline/mocked/trusted fake peers, not a new actual model run.
+  [#200](https://github.com/casing1/authzest/issues/200)
+- Readable proposal output, single-JSON mode and bilingual external-project usage guidance.
+  Stable publication is held pending actual external-project completion and new candidate review.
 
 ## [0.1.0] - 2026-11-23
 

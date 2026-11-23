@@ -22,6 +22,11 @@ AuthZest는 Python CLI와 로컬 웹 대시보드를 제공하는 FastAPI 접근
 수정 코드 생성 흐름이 추가되기 전의 버전입니다.
 [0.1.0 안내](releases/0.1.0.md) · [최종 준비 상태](releases/0.1.0-READINESS.md) · [변경 이력](CHANGELOG.md)
 
+**외부 프로젝트 지원을 완성할 때까지 정식 발행을 보류합니다.** 현재 소스에 추가한
+`repo-suggest`는 외부 폴더에서 명시한 Python 소스·정책·선택 문맥으로 미실행 테스트·수정 제안과
+정확한 diff를 반환하는 CLI 단계입니다. 외부 복사본 적용·전후 실행 검사·GUI 연결은 후속이며,
+아래 활성 GUI는 여전히 내장 사례를 사용합니다. [외부 프로젝트 안내](guides/REPOSITORY_PROPOSALS.md)
+
 ## 사용할 수 있는 기능
 
 | 기능               | 현재 소스의 동작                                                                                                                                                                                        |

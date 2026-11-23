@@ -296,6 +296,79 @@ def owner_read_rehearse(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("repo-suggest")
+def repository_suggest(
+    path: Annotated[Path, typer.Argument(help="External FastAPI project root (real POSIX path).")],
+    source: Annotated[str, typer.Option(help="Selected editable Python file, relative to root.")],
+    policy: Annotated[str, typer.Option(help="Selected UTF-8 .md/.txt policy, relative to root.")],
+    model: Annotated[str, typer.Option(help="Exact Codex model identifier; no fallback.")],
+    context: Annotated[
+        list[str] | None,
+        typer.Option("--context", help="Selected related Python file; repeat at most four times."),
+    ] = None,
+    preview_only: Annotated[
+        bool, typer.Option(help="Read selected files and preview offline; no account use.")
+    ] = False,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Write one final JSON to stdout.")
+    ] = False,
+    timeout_seconds: Annotated[
+        float, typer.Option(help="Single adapter timeout in seconds, up to 120.")
+    ] = 120,
+) -> None:
+    """Propose an unexecuted defensive test and one-file repair for selected external source."""
+    from authzest.analyzer.repository_input import RepositoryInputError
+    from authzest.codex.contracts import ContractError
+    from authzest.runner.repository_suggestion import (
+        build_repository_sharing_preview,
+        run_repository_suggestion,
+    )
+
+    output = WorkflowOutput(as_json)
+    try:
+        if preview_only:
+            output.finish(
+                build_repository_sharing_preview(
+                    path,
+                    source,
+                    policy,
+                    model,
+                    contexts=tuple(context or ()),
+                    timeout_seconds=timeout_seconds,
+                ),
+                preview=True,
+            )
+            return
+        result = asyncio.run(
+            run_repository_suggestion(
+                path,
+                source,
+                policy,
+                model,
+                contexts=tuple(context or ()),
+                timeout_seconds=timeout_seconds,
+                emit=output.emit,
+                read=output.read,
+            )
+        )
+    except (RepositoryInputError, ContractError, KeyboardInterrupt, asyncio.CancelledError) as exc:
+        cancelled = isinstance(exc, (KeyboardInterrupt, asyncio.CancelledError))
+        result = {
+            "schema_version": "1.0",
+            "kind": "repository-suggestion",
+            "status": "cancelled" if cancelled else "invalid-input",
+            "exit_code": 130 if cancelled else 2,
+            "detail": "Interrupted."
+            if cancelled
+            else ("Check explicit files, POSIX non-frozen installation, model and input limits."),
+            "execution_status": "not-run",
+            "patch_application": "not-run",
+            "restoration_status": "not-run",
+        }
+    output.finish(result, error=result["exit_code"] != 0)
+    raise typer.Exit(code=result["exit_code"])
+
+
 @app.command("owner-read-suggest")
 def owner_read_suggest(
     model: Annotated[str, typer.Option(help="Exact Codex model for the owner-read suggestion.")],

@@ -58,6 +58,23 @@ secret detection or redaction for arbitrary repositories. General repository AI 
 execution remain unsupported by this live workflow. Its timeout and application-attempt limits are
 not hard limits on provider-internal retries, tokens, or spending; missing usage remains unknown.
 
+The separate source-only `authzest repo-suggest` command accepts an explicit external root,
+one Python repair target, a user-provided policy document and at most four selected Python context
+files. It captures bounded regular UTF-8 files without symlink traversal or automatic discovery,
+parses those exact bytes, and shows the complete prompt/schema/source before a fresh typed sharing
+decision. The decision expires after 300 seconds; every selected input is compared again before one
+adapter call. Existing authentication remains managed by the trusted Codex installation.
+
+Selected source/policy, comments and model output are untrusted data. Explicit selection is not
+secret detection; the operator must inspect the full sharing preview. Request IDs bind content,
+not human identity. Generated tests/source and host-derived diffs remain inert; structural AST
+validation proves neither executable tests nor policy correctness. This command supplies no copy,
+application, execution or GUI authority. Review unintended file disclosure, scope substitution,
+stale sharing and reachable generated-code execution as real boundary failures; the external
+source is not exempt because older workflows used synthetic fixtures. There is no new finding
+exclusion, accepted risk or live validation receipt. See the
+[external-project guide](docs/guides/REPOSITORY_PROPOSALS.md).
+
 ## Threat model and current boundaries
 
 The [repository threat model](docs/reference/threat-model.md) documents inspected source, protected
