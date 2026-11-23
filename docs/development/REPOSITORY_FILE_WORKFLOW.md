@@ -21,7 +21,9 @@ S1 below remains an inert metadata contract. The separate
 fresh private copy/diff/apply/restore decisions, checked using owned inert temporary files and fake
 clocks/failures. No CLI/GUI operator, saved-workspace opener, target execution or original write is
 enabled. The [S3 interface/case contracts](../reference/REPOSITORY_VERIFICATION.md) implement pure
-declarations and supplied comparisons; the actual runtime sections below remain proposed. Design/source review does not approve
+declarations and supplied comparisons. The separate [runtime foundation](../reference/REPOSITORY_RUNTIME.md)
+implements sealed staging, guest entry source, bounded HTTP primitives and stopped-create data with
+owned inert files/fake peers; actual image/runtime acceptance below remains pending. Design/source review does not approve
 concrete case expectations, runtime images, source sharing or execution.
 Stable publication remains held for actual external-project completion under #150–152/#189.
 
@@ -202,8 +204,9 @@ of original drift. No original-write API is implemented in this slice.
    files, fake clocks and failure peers; no runtime/operator boundary. Keep actual project operation
    and installed live acceptance pending; see #204 and the source API reference.
 3. **S3:** pure versioned test interface, independent-case codec and supplied comparison are available
-   under #206. Separate external runtime, raw HTTP observer and sealed staging still need fake
-   process/Engine tests before reviewed images or actual external execution. Current v1.0 transport
+   under #206. #208 adds sealed staging, separate T/A/B source, raw HTTP primitives and static pinned
+   profiles checked with fake peers. Images, direct live host coordination and runtime acceptance
+   remain pending before actual external execution. Current v1.0 transport
    and file APIs do not accept the new v1.1 type.
 4. **S4:** explicit CLI file workflow and installed, separately scoped real external before/after/
    recovery acceptance. Retain proposal-only defaults and complete readable/JSON results.

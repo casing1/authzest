@@ -109,6 +109,9 @@ This is offline implementation evidence, not an actual user-project run or insta
 
 The [S3 test interface/case codecs](REPOSITORY_VERIFICATION.md) now provide pure declarations and
 supplied comparisons, which are not accepted as live evidence or decisions by this API.
+The separate [runtime foundation](REPOSITORY_RUNTIME.md) uses internal fresh read/recheck hooks for
+quiescent before/after copies. These bind actual private bytes without accepting saved checkpoints,
+changing v1.0 construction or adding a runtime/operator decision.
 Next are the separate external runtime and human-reviewed independent before/after case acceptance,
 followed by the CLI operator, current installed external acceptance, explicit original-project
 final correction and GUI integration. #152/#150 remain open; no version/tag, risk acceptance or release

@@ -116,6 +116,9 @@ S1 Python API는 메타데이터만 준비하며 해당 동작이나 원본 프�
 오프라인으로 검사합니다. 이 명령은 해당 API를 호출하지 않으며 외부 런타임·조작 흐름·GUI 연결은 미완료입니다.
 [S3 v1.1 인터페이스·사례 비교 계약](../reference/REPOSITORY_VERIFICATION.md)도 별도 순수 API입니다.
 이 명령은 계속 v1.0을 사용하며 제공된 비교 자료로 쓰기를 켜거나 실제 실행을 입증할 수 없습니다.
+[런타임 기반](../reference/REPOSITORY_RUNTIME.md)은 별도 내부 checkpoint·봉인 입력과 모의 검사한
+guest/HTTP 소스를 추가합니다. 정적 생성 계획과 미빌드 recipe로 이 명령의 실행·파일 흐름을
+활성화하지 않습니다.
 
 ## 검증 경계
 

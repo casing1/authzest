@@ -19,8 +19,10 @@
 diff·적용·복구 결정을 다루는 별도 [S2 소스 API](../reference/REPOSITORY_FILE_SESSION.md)를 추가하고
 직접 관리하는 비활성 파일·주입한 실패로 검증합니다. [#206](https://github.com/casing1/authzest/issues/206)은
 별도의 순수 [테스트 인터페이스·사례·제공 자료 비교 계약](../reference/REPOSITORY_VERIFICATION.md)을 추가합니다.
-다음은 sealed staging·별도 T/A/B 실행·raw HTTP 관찰 구현이며 이후 현재 실제 결과에 묶인 CLI 조작
-흐름·설치형 외부 수용을 연결합니다. 제공 자료 비교는 실행·파일 적용을 허용하지 않습니다.
+[#208](https://github.com/casing1/authzest/issues/208)은 봉인한 선택 입력·별도 T/A/B 진입점 소스·제한된
+HTTP 캡처·미실행 pin 생성 계획을 다루는 [오프라인 런타임 기반](../reference/REPOSITORY_RUNTIME.md)을
+추가합니다. 다음은 새 이미지 검토·빌드와 직접 반환하는 현재 실제 phase 결과에 묶인 CLI 조작 흐름·
+설치형 외부 수용입니다. 제공 자료 비교와 정적 생성 계획은 실행·파일 적용을 허용하지 않습니다.
 원본의 최종 수정에는 별도의 현재 상태 확인과 사용자 결정이 필요하며 복사본 성공만으로 제품을
 완료하지 않습니다. 공통 엔진 지원 후 GUI에 연결합니다. 외부 설치형·실제 검증과 새로운 최종 후보 판단이 발행보다 먼저입니다.
 이전 준비 자료는 수용되지 않은 과거 제안이며 위험 수용·발행을 허용하지 않습니다.

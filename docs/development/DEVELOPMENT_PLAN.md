@@ -20,8 +20,11 @@ adds a separate [S2 source API](../reference/REPOSITORY_FILE_SESSION.md) for liv
 fresh private copies and exact local diff/apply/restore decisions, verified with owned inert files
 and injected failures. [#206](https://github.com/casing1/authzest/issues/206) adds the separate pure
 [test-interface/case and supplied-comparison contracts](../reference/REPOSITORY_VERIFICATION.md).
-Next implement sealed staging, separate T/A/B execution and raw HTTP observation, then connect current
-live results to the CLI operator and installed external acceptance. No supplied comparison authorizes
+[#208](https://github.com/casing1/authzest/issues/208) adds the
+[offline runtime foundation](../reference/REPOSITORY_RUNTIME.md): sealed selected inputs, separate
+T/A/B entry source, bounded HTTP capture and unexecuted pinned create plans. Next review/build the
+new images and connect directly returned live phase results to the CLI operator and installed
+external acceptance. No supplied comparison or static create plan authorizes
 execution or file application. Original-project
 final correction requires a separate current-state check and user decision; private-copy success is
 not product completion. Connect the GUI only after the shared engine supports it. Installed/live external acceptance
