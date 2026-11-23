@@ -14,6 +14,10 @@ remain read-only. No website deployment is needed. See the
 active-mode requirements and import limits. The [course demo](guides/COURSE_DEMO.md) leads with the
 GUI workflow and retains CLI and saved-result alternatives with their evidence limits.
 
+Final source-preflight results and pending maintainer decisions are summarized in the
+[0.1.0 readiness snapshot](releases/0.1.0-READINESS.md); the [release notes](releases/0.1.0.md)
+describe the intended supported product. These documents do not establish publication or new active execution.
+
 ## Current work
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
@@ -351,6 +355,8 @@ docs/
 | Contributions and commit conventions                                    | [Contributing](../CONTRIBUTING.md)                                         | [기여 안내](i18n/ko/CONTRIBUTING.md)                                                 |
 | Required checks and branch protection                                   | [Branch rules](development/BRANCH_RULES.md)                                | [브랜치 규칙](i18n/ko/development/BRANCH_RULES.md)                                   |
 | Guarded repository formatting                                           | [Formatting](development/FORMATTING.md)                                    | [포맷 검사](i18n/ko/development/FORMATTING.md)                                       |
+| 0.1.0 supported product and installation routes                         | [0.1.0 notes](releases/0.1.0.md)                                           | [0.1.0 노트](i18n/ko/releases/0.1.0.md)                                              |
+| Exact-source preflight and pending maintainer decisions                 | [0.1.0 readiness](releases/0.1.0-READINESS.md)                             | [0.1.0 준비 상태](i18n/ko/releases/0.1.0-READINESS.md)                               |
 | Versions, binaries, and release checks                                  | [Releasing](releases/RELEASING.md)                                         | [릴리스 가이드](i18n/ko/releases/RELEASING.md)                                       |
 | Released and unreleased changes                                         | [Changelog](../CHANGELOG.md)                                               | [변경 이력](i18n/ko/CHANGELOG.md)                                                    |
 | Private reporting and safe-use policy                                   | [Security](../SECURITY.md)                                                 | [보안 정책](i18n/ko/SECURITY.md)                                                     |

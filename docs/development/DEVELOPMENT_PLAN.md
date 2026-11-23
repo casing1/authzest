@@ -47,6 +47,16 @@ and #85. [#194](https://github.com/casing1/authzest/pull/194) gives release vali
 separately from published alpha.4. General repository repair and comparative model claims remain
 outside this delivery; no product-acceptance issue is completed merely by this documentation update.
 
+## Final release handoff — 2026-11-23 KST
+
+[#197](https://github.com/casing1/authzest/issues/197) completes the source `80b574d` installation/upgrade,
+read-only UI and three-platform native preflight. [#198](https://github.com/casing1/authzest/issues/198)
+prepares final notes and the [maintainer decision snapshot](../releases/0.1.0-READINESS.md).
+The next gates are scope/evidence acceptance (including whether to retain the actual final-candidate
+demo requirement), current-candidate tooling disposition, then authorized tag/build/public downloads.
+These are pending decisions; the preflight is not a new active end-to-end model/guest run.
+Do not expand parser/benchmark scope or close product issues in place of recording those decisions.
+
 ## Course-release priorities — 2026-11-12 KST
 
 [#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. This order
