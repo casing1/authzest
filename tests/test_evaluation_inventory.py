@@ -115,9 +115,30 @@ def test_only_inventoried_artifacts_have_explicit_lf_attributes():
         "src/authzest/owner_read_demo/availability.py",
         "src/authzest/owner_read_demo/positive_regression.py",
     ]
+    # #208 adds a separate byte-inventoried domain; historical pins stay unchanged.
+    repository_inputs = [
+        "runtime/repository/_guest_common.py",
+        "runtime/repository/app_launcher.py",
+        "runtime/repository/relay_launcher.py",
+        "runtime/repository/test_launcher.py",
+        "runtime/repository/images/dockerfiles/linux-amd64-A.Dockerfile",
+        "runtime/repository/images/dockerfiles/linux-amd64-B.Dockerfile",
+        "runtime/repository/images/dockerfiles/linux-amd64-T.Dockerfile",
+        "runtime/repository/images/dockerfiles/linux-arm64-A.Dockerfile",
+        "runtime/repository/images/dockerfiles/linux-arm64-B.Dockerfile",
+        "runtime/repository/images/dockerfiles/linux-arm64-T.Dockerfile",
+        "runtime/repository/images/manifest.json",
+        "src/authzest/runner/_repository_http.py",
+        "src/authzest/runner/_repository_manifest.py",
+    ]
     expected = sorted(
         [path, "text", "eol=lf"]
-        for path in historical + reference + guest_assets + image_inputs + packaged_sources
+        for path in historical
+        + reference
+        + guest_assets
+        + image_inputs
+        + packaged_sources
+        + repository_inputs
     )
     lines = (root / ".gitattributes").read_text(encoding="utf-8").splitlines()
     actual = sorted(
