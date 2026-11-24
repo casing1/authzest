@@ -23,8 +23,9 @@ This is a scope decision, not implemented HTTP-only runtime authority or product
 runtime/operator integration and original writes remain unfinished. The delivered S1/S2/S3 contracts
 and T/A/B foundation below retain their exact behavior and identities. The earlier T/pytest and active
 external GUI completion plan is preserved as broader work, not a current release blocker. A distinct
-HTTP-only contract and implementation are still needed; do not fabricate T results or silently adopt
-old saved data. No model call, guest execution, source write, risk acceptance or publication is enabled.
+HTTP proposal/case/image and [private-file/checkpoint APIs](../reference/REPOSITORY_HTTP_FILES.md)
+are delivered separately; do not fabricate T results or silently adopt old saved data. Their private
+file decisions do not approve model/guest execution, original writes, risk acceptance or publication.
 
 ## Status and delivery boundary
 
@@ -139,8 +140,9 @@ restore only when identities and actual bytes are known. Unknown state never bec
 ## Proposed external runtime interface
 
 This section preserves the earlier T/A/B design and the contracts behind the delivered foundation.
-Its generated-test/pytest requirements are not the frozen HTTP-only release target; that separate
-contract is pending. The isolation, freshness and evidence protections remain design constraints.
+Its generated-test/pytest requirements are not the frozen HTTP-only release target. The separate
+HTTP source APIs above are delivered; direct execution/operator integration remains pending. The
+isolation, freshness and evidence protections remain design constraints.
 
 External Python is untrusted. Keep the fixed owned workers and existing registries unchanged; create
 a separate versioned runtime contract instead of accepting arbitrary paths in a packaged worker.

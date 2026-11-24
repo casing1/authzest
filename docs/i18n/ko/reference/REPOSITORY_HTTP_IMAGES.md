@@ -85,8 +85,8 @@ runtime 동작을 입증하지 않습니다.
 
 ## 다음 연결
 
-구체적인 이미지 빌드·검사와 실제 이미지 수용은 미완료입니다. 새 HTTP 전용 파일 checkpoint,
-봉인한 A 입력, Engine·중지 container 검사, 직접 before/after phase와
-copy/diff/apply/restore CLI 조작 연결이 후속입니다. 원본 최종 승인·백업·동시 편집 거부·복구는
+[HTTP 비공개 파일 API](REPOSITORY_HTTP_FILES.md)는 현재 소스 전용 복사 결정·checkpoint를 A 봉인
+입력에 결합합니다. 구체적인 이미지 빌드·검사와 실제 이미지 수용, Engine·중지 container 검사,
+직접 before/after phase와 CLI 조작 연결은 미완료입니다. 원본 최종 승인·백업·동시 편집 거부·복구는
 #152/#150의 필수 조건입니다. 이 오프라인 도구는 실제 생성·설치형 전체 수용·저장 결과 표시나
 릴리스 기준을 완료하지 않습니다.
