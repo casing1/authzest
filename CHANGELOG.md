@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- HTTP-only A/B image input and wheel checks, fresh minimal private contexts and bounded inert
+  rootfs comparisons. Bind the pinned base/dependency data and new guest/recipe bytes without
+  changing old validators. No image build, Engine/runtime activation or original-file correction.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP-only independent case/plan/supplied-phase contracts, exact model-PoC correspondence and
   request-only bounded observation. Add source-only A/B manifest/create plans, guest source and
   arm64 image-input declarations, checked with inert files/fake streams and kernel/tool peers.

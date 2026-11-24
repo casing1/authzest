@@ -29,6 +29,15 @@ features for 0.1.0. No source sharing, runtime activation, risk acceptance or pu
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
 
+## HTTP A/B image preparation — offline delivery
+
+The [HTTP image helpers](../reference/REPOSITORY_HTTP_IMAGES.md) validate the exact referenced
+base/dependency and new guest/recipe bytes, copy only selected opaque wheels and maintained inputs
+into a fresh private minimal context, and compare supplied inert rootfs catalogs. Old source assets
+and image validators remain unchanged. Synthetic ZIP/TAR and owned-file regressions do not establish
+a built image or effective runtime acceptance. Fresh HTTP file checkpoints/staging, Engine/direct
+phases, the CLI operator and final original application/recovery remain required.
+
 ## HTTP policy and A/B preparation — offline delivery
 
 The [HTTP verification APIs](../reference/REPOSITORY_HTTP_VERIFICATION.md) bind the model's exact

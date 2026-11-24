@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- HTTP 전용 A/B 이미지 입력·wheel 검사, 새 최소 비공개 context와 제한된 비활성 rootfs 비교를
+  추가합니다. 기존 검증기를 유지하고 고정 base·의존성·새 guest/recipe 바이트를 결합합니다.
+  이미지 빌드·Engine/runtime 활성화·원본 최종 수정은 포함하지 않습니다.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP 전용 독립 사례·계획·제공 phase 계약, 정확한 모델 PoC 대응과 요청 전용 제한 관찰을 추가합니다.
   소스 전용 A/B manifest·생성 계획·guest 소스·arm64 이미지 입력 선언을 비활성 파일·가짜
   stream/kernel/도구로 검사합니다. 이미지는 미빌드이며 Engine·대상·live staging/조작 흐름·원본

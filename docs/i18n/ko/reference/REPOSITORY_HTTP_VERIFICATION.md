@@ -104,7 +104,8 @@ mount 없음과 제한된 임시 저장소를 선언합니다. phase 공유 40�
 
 ## 남은 연결
 
-결정적인 보존 이미지 context·실제 내용 검사, 새 HTTP 전용 비공개 파일 checkpoint·봉인 staging,
+[HTTP 이미지 도구](REPOSITORY_HTTP_IMAGES.md)는 관리 입력·보존 최소 context·제공된 비활성 export
+비교를 추가했습니다. 실제 이미지/내용 수용, 새 HTTP 전용 비공개 파일 checkpoint·봉인 staging,
 Engine·중지 container 검사, 직접 host phase와 승인형 copy/before/diff/apply/after/restore 조작 흐름은
 미완료입니다. 기존 파일 세션은 pytest 산출물을 요구하므로 가짜 테스트 필드로 수용할 수 없습니다.
 원본 최종 적용·백업·편집 충돌 거부·복구는 #152/#150의 필수 조건입니다. 설치형 실제 수용과 저장 결과
