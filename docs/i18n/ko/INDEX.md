@@ -15,8 +15,8 @@ GUI 흐름을 먼저 설명하고 CLI·저장 결과 대안과 근거의 한계�
 
 **외부 프로젝트 지원을 정식 발행보다 먼저 진행합니다.** 새
 [저장소 제안 CLI](guides/REPOSITORY_PROPOSALS.md)는 명시적으로 선택한 외부 소스·정책·문맥을
-읽어 Codex에 제안만 요청합니다. 외부 프로젝트의 실행·복사본 적용/복구·GUI 연동은 후속 작업이며
-현재 활성 GUI는 내장 사례를 사용합니다.
+읽어 Codex에 제안만 요청합니다. 외부 프로젝트의 실행·복사본 적용/복구는 미완료이며
+활성 외부 GUI는 후속 버전으로 미룹니다. 현재 활성 GUI는 내장 사례를 사용합니다.
 [외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)와 순수 S1 복사 계획 API는 다음 경계를
 명세합니다. 파일이나 실행 결정을 만들지 않으며 원본 프로젝트 수정은 이후의 명시적 완료 조건입니다.
 별도의 [S2 파일 세션 Python API](reference/REPOSITORY_FILE_SESSION.md)는 최초 입력 식별자와 정확한
@@ -32,7 +32,16 @@ HTTP 처리·미실행 pin 생성 계획을 제공합니다. 비활성 소유 �
 이전 [0.1.0 준비 상태](releases/0.1.0-READINESS.md)와 [릴리스 노트](releases/0.1.0.md)는
 각각 기록된 범위와 미결 결정을 보존합니다. 발행이나 외부 프로젝트 종단간 수용을 입증하지 않습니다.
 
-## 현재 작업
+## 0.1.0 범위 확정 — 2026-11-24 KST
+
+[확정 범위와 완료 기준](development/0.1.0-SCOPE.md)이 현재 과제 목표입니다. 외부 단일 파일의
+GET 객체 소유권 인가, 새 HTTP PoC·수정 생성, 독립 전후 검사와 승인한 원본 적용·복구를 완성합니다.
+외부 GUI는 저장 결과 열람으로 한정하고 활성 GUI·외부 생성 pytest 실행은 후속으로 미룹니다.
+이 목표는 아직 구현·실제 수용이 완료된 기능 목록이 아닙니다. 12월 1일 완성 목표와
+12월 6일 23:59 Asia/Seoul 공식 마감은 구분합니다. 아래 내장 사례와 T/A/B 설명은 현재 구현·과거
+전달 기록이며 새 HTTP 전용 흐름의 완료 근거가 아닙니다.
+
+## 내장 사례 전달 기록
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
 정식판을 추적합니다. [#151 실제 PoC/테스트·수정 생성](https://github.com/casing1/authzest/issues/151)
@@ -304,6 +313,7 @@ docs/
 | -------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | 프로젝트 소개와 설치                               | [README](../../../README.md)                                                     | [프로젝트 소개](README.md)                                                   |
 | 문서 목차                                          | [Index](../../README.md)                                                         | [문서 목차](INDEX.md)                                                        |
+| 확정한 0.1.0 범위와 제출 조건                      | [Course scope](../../development/0.1.0-SCOPE.md)                                 | [과제 범위](development/0.1.0-SCOPE.md)                                      |
 | 개발 방향과 TODO 순서                              | [Development plan](../../development/DEVELOPMENT_PLAN.md)                        | [개발 계획](development/DEVELOPMENT_PLAN.md)                                 |
 | 지원 소스 구문과 한계                              | [Parser scope](../../reference/PARSER_SCOPE.md)                                  | [파서 범위](reference/PARSER_SCOPE.md)                                       |
 | 유지하는 소스 전용 CLI 데모                        | [Examples](../../guides/EXAMPLES.md)                                             | [예제](guides/EXAMPLES.md)                                                   |

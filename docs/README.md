@@ -16,8 +16,8 @@ GUI workflow and retains CLI and saved-result alternatives with their evidence l
 
 **External-project support now precedes stable publication.** The new
 [repository proposal CLI](guides/REPOSITORY_PROPOSALS.md) reads explicitly selected external source,
-policy and context for proposal-only Codex review. Execution, copy application/recovery and GUI
-integration for external projects remain follow-up work; the current active GUI uses the packaged case.
+policy and context for proposal-only Codex review. External execution and copy application/recovery
+remain unfinished; active external GUI is deferred. The current active GUI uses the packaged case.
 The [external file-workflow design](development/REPOSITORY_FILE_WORKFLOW.md) and inert S1 copy-plan
 API specify the next boundary. They create no files or runtime decisions; original-project correction
 remains an explicit later completion gate. A separate [S2 file-session Python API](reference/REPOSITORY_FILE_SESSION.md)
@@ -35,7 +35,17 @@ The earlier [0.1.0 readiness snapshot](releases/0.1.0-READINESS.md) and
 [release notes](releases/0.1.0.md) retain their recorded scope and pending decisions.
 They do not establish publication or external-project end-to-end acceptance.
 
-## Current work
+## 0.1.0 scope freeze — 2026-11-24 KST
+
+The [frozen scope and completion criteria](development/0.1.0-SCOPE.md) govern the current course target:
+external single-file GET object-ownership authorization, new HTTP PoC/repair generation, independent
+before/after checks and approved original application/recovery. External GUI scope is saved-result
+viewing; active external GUI and external generated-pytest execution are deferred. This is a target, not a list
+of completed external features. December 1 is the completion target; December 6 at 23:59 Asia/Seoul
+is the official deadline. Packaged-case and T/A/B details below describe delivered or historical work,
+not completion of the new HTTP-only path.
+
+## Packaged-case delivery record
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
 stable release: [#151 genuine PoC/test and repair generation](https://github.com/casing1/authzest/issues/151)
@@ -325,6 +335,7 @@ docs/
 | ----------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | Project overview and installation                                       | [README](../README.md)                                                     | [프로젝트 소개](i18n/ko/README.md)                                                   |
 | Documentation index                                                     | [Index](README.md)                                                         | [문서 목차](i18n/ko/INDEX.md)                                                        |
+| Frozen 0.1.0 scope and submission gates                                 | [Course scope](development/0.1.0-SCOPE.md)                                 | [과제 범위](i18n/ko/development/0.1.0-SCOPE.md)                                      |
 | Development direction and TODO order                                    | [Development plan](development/DEVELOPMENT_PLAN.md)                        | [개발 계획](i18n/ko/development/DEVELOPMENT_PLAN.md)                                 |
 | Supported source syntax and limitations                                 | [Parser scope](reference/PARSER_SCOPE.md)                                  | [파서 범위](i18n/ko/reference/PARSER_SCOPE.md)                                       |
 | Maintained source-only CLI demo                                         | [Examples](guides/EXAMPLES.md)                                             | [예제](i18n/ko/guides/EXAMPLES.md)                                                   |

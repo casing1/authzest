@@ -9,6 +9,23 @@
 [#202](https://github.com/casing1/authzest/issues/202) ·
 [#152](https://github.com/casing1/authzest/issues/152)
 
+## Current release scope — 2026-11-24 KST
+
+The frozen [0.1.0 scope](0.1.0-SCOPE.md) targets one explicitly selected, self-contained external
+FastAPI file, GET object ownership and an explicit policy. Newly model-authored bounded HTTP PoC
+data and repair source, independent host-held expectations and A/B before/after observations are
+the target; generated Python/pytest execution in this external mode is deferred. Anonymous-policy
+checks are not general authentication assurance. Final approved original-file application, backup, concurrent-edit refusal
+and recovery remain required. Initial active support is macOS arm64 Python source installation with
+Docker Desktop; CLI operation and external saved-result GUI viewing are the targets.
+
+This is a scope decision, not implemented HTTP-only runtime authority or product acceptance. External
+runtime/operator integration and original writes remain unfinished. The delivered S1/S2/S3 contracts
+and T/A/B foundation below retain their exact behavior and identities. The earlier T/pytest and active
+external GUI completion plan is preserved as broader work, not a current release blocker. A distinct
+HTTP-only contract and implementation are still needed; do not fabricate T results or silently adopt
+old saved data. No model call, guest execution, source write, risk acceptance or publication is enabled.
+
 ## Status and delivery boundary
 
 The current `repo-suggest` command captures explicitly selected external Python source, policy and
@@ -25,7 +42,8 @@ declarations and supplied comparisons. The separate [runtime foundation](../refe
 implements sealed staging, guest entry source, bounded HTTP primitives and stopped-create data with
 owned inert files/fake peers; actual image/runtime acceptance below remains pending. Design/source review does not approve
 concrete case expectations, runtime images, source sharing or execution.
-Stable publication remains held for actual external-project completion under #150–152/#189.
+Stable publication remains held for completion of the frozen external-project scope under #150–152;
+active external GUI work from the earlier #189 plan is deferred.
 
 ## S1: inert copy-plan contract
 
@@ -120,6 +138,10 @@ restore only when identities and actual bytes are known. Unknown state never bec
 
 ## Proposed external runtime interface
 
+This section preserves the earlier T/A/B design and the contracts behind the delivered foundation.
+Its generated-test/pytest requirements are not the frozen HTTP-only release target; that separate
+contract is pending. The isolation, freshness and evidence protections remain design constraints.
+
 External Python is untrusted. Keep the fixed owned workers and existing registries unchanged; create
 a separate versioned runtime contract instead of accepting arbitrary paths in a packaged worker.
 Do not import, collect or install target code on the host.
@@ -163,6 +185,11 @@ wall-clock guarantee; these controls are not escape-proof isolation. Concrete im
 
 ## Independent cases and honest before/after gates
 
+The case policy and separation of model output from independent expectations remain applicable.
+The T-specific assertion/pytest gates below describe the earlier design only. The frozen HTTP-only
+path must establish reproduction and repair from bounded HTTP observations against reviewed host-held
+expectations, with no claim that generated pytest ran or passed.
+
 Maintain 4–8 human-reviewed cases, at most one GET each and one designated regression. Record
 authorship, policy assumptions, role setup and expected **before and after** observations separately
 from model output. Cover authenticated normal use, non-owner denial and anonymous denial where
@@ -198,6 +225,10 @@ does not inspect that path or authorize either write. Private recovery stays ava
 of original drift. No original-write API is implemented in this slice.
 
 ## Incremental delivery
+
+This list preserves the earlier slices and delivered source facts. The current course target is the
+HTTP-only CLI flow plus saved-result viewing defined above; T execution and active external GUI
+integration are deferred, not implied by completed foundations.
 
 1. **S1:** inert metadata plans, pure tamper/path/budget tests and paired design, delivered in #203.
 2. **S2, current file API:** fresh private workspace and exact apply/restore with owned inert temporary
