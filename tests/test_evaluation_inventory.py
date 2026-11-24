@@ -131,6 +131,17 @@ def test_only_inventoried_artifacts_have_explicit_lf_attributes():
         "src/authzest/runner/_repository_http.py",
         "src/authzest/runner/_repository_manifest.py",
     ]
+    # HTTP-only inputs have their own byte domain; earlier inventories are unchanged.
+    repository_http_inputs = [
+        "runtime/repository_http/_guest_common.py",
+        "runtime/repository_http/app_launcher.py",
+        "runtime/repository_http/relay_launcher.py",
+        "runtime/repository_http/images/Dockerfile.linux-arm64-A",
+        "runtime/repository_http/images/Dockerfile.linux-arm64-B",
+        "runtime/repository_http/images/manifest.json",
+        "src/authzest/runner/_repository_http_manifest.py",
+        "src/authzest/runner/_repository_http_transport.py",
+    ]
     expected = sorted(
         [path, "text", "eol=lf"]
         for path in historical
@@ -139,6 +150,7 @@ def test_only_inventoried_artifacts_have_explicit_lf_attributes():
         + image_inputs
         + packaged_sources
         + repository_inputs
+        + repository_http_inputs
     )
     lines = (root / ".gitattributes").read_text(encoding="utf-8").splitlines()
     actual = sorted(

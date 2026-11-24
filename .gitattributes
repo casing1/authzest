@@ -59,3 +59,13 @@ scripts/evaluation_metrics.py text eol=lf
 tests/fixtures/evaluation_reference/v1/manifest.json text eol=lf
 tests/fixtures/evaluation_reference/v1/references.json text eol=lf
 tests/fixtures/evaluation_reference/v1/tasks.json text eol=lf
+
+# HTTP-only source/guest assets use exact LF bytes on all checkouts.
+runtime/repository_http/_guest_common.py text eol=lf
+runtime/repository_http/app_launcher.py text eol=lf
+runtime/repository_http/relay_launcher.py text eol=lf
+runtime/repository_http/images/Dockerfile.linux-arm64-A text eol=lf
+runtime/repository_http/images/Dockerfile.linux-arm64-B text eol=lf
+runtime/repository_http/images/manifest.json text eol=lf
+src/authzest/runner/_repository_http_manifest.py text eol=lf
+src/authzest/runner/_repository_http_transport.py text eol=lf

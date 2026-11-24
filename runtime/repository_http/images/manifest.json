@@ -1,0 +1,77 @@
+{
+  "base_reference": "runtime/generated_repair/images/manifest.json",
+  "base_reference_sha256": "e0c3339143457ae9c57b50e5bf61b77440a4a2e872e4f8b34105d0306743b4e5",
+  "contents_verified": false,
+  "image_ids": null,
+  "kind": "repository-http-image-inputs",
+  "roles": {
+    "A": {
+      "asset_sources": {
+        "_guest_common.py": "runtime/repository_http/_guest_common.py",
+        "app_launcher.py": "runtime/repository_http/app_launcher.py",
+        "repository_http_manifest.py": "src/authzest/runner/_repository_http_manifest.py"
+      },
+      "assets": {
+        "_guest_common.py": "1636108b2ccd5e08ac64b201ba33c445755bda5512baecb13a22c0fdfcccb30e",
+        "app_launcher.py": "82706dec1c37bd3e0593685b11ed855da8c7c838eb57fd057414d8389ea202c3",
+        "repository_http_manifest.py": "2bb6eb3317ec17dd0a0fe1a160f5e93a19ba46f8383aa9fee169262f56c6bed3"
+      },
+      "platforms": {
+        "linux/arm64": {
+          "assets": {
+            "_guest_common.py": "1636108b2ccd5e08ac64b201ba33c445755bda5512baecb13a22c0fdfcccb30e",
+            "app_launcher.py": "82706dec1c37bd3e0593685b11ed855da8c7c838eb57fd057414d8389ea202c3",
+            "repository_http_manifest.py": "2bb6eb3317ec17dd0a0fe1a160f5e93a19ba46f8383aa9fee169262f56c6bed3"
+          },
+          "base_manifest_sha256": "df540bfd30bd380e89a349611ce42aa67bcb542d58c047706616eb6ba2f86a1b",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-arm64-A.txt",
+          "dependency_lock_sha256": "4fe83c082c5db3d478c0b40f39d626b3c687182d0c28efd818d5cffea93699b8",
+          "dockerfile": "Dockerfile.linux-arm64-A",
+          "dockerfile_sha256": "9642e697fe479ed6ad5c4e8c742885ff46671d2f8e34991dab8aeabdc51a5ce5",
+          "kind": "repository-http-image-recipe",
+          "platform": "linux/arm64",
+          "recipe_sha256": "5bd28e114acf521d9f25f931a12c60185e91ae418afac0195471b548a3f84962",
+          "role": "A",
+          "schema_version": "2.0"
+        }
+      }
+    },
+    "B": {
+      "asset_sources": {
+        "_guest_common.py": "runtime/repository_http/_guest_common.py",
+        "relay_launcher.py": "runtime/repository_http/relay_launcher.py",
+        "repository_http.py": "src/authzest/runner/_repository_http.py",
+        "repository_http_transport.py": "src/authzest/runner/_repository_http_transport.py"
+      },
+      "assets": {
+        "_guest_common.py": "1636108b2ccd5e08ac64b201ba33c445755bda5512baecb13a22c0fdfcccb30e",
+        "relay_launcher.py": "55a1fc1430e206d92e2de1ccb2024db2b31415887cd7377fd29338295a60a5dd",
+        "repository_http.py": "497c3b09a6a51911c3695e9b9ffdbed0384d02e43c24d631bc1d7773eb123dbf",
+        "repository_http_transport.py": "70c0834acce01cd7438080321eaf2d27f01d520ec0445d75dd8fa1ff0312b085"
+      },
+      "platforms": {
+        "linux/arm64": {
+          "assets": {
+            "_guest_common.py": "1636108b2ccd5e08ac64b201ba33c445755bda5512baecb13a22c0fdfcccb30e",
+            "relay_launcher.py": "55a1fc1430e206d92e2de1ccb2024db2b31415887cd7377fd29338295a60a5dd",
+            "repository_http.py": "497c3b09a6a51911c3695e9b9ffdbed0384d02e43c24d631bc1d7773eb123dbf",
+            "repository_http_transport.py": "70c0834acce01cd7438080321eaf2d27f01d520ec0445d75dd8fa1ff0312b085"
+          },
+          "base_manifest_sha256": "df540bfd30bd380e89a349611ce42aa67bcb542d58c047706616eb6ba2f86a1b",
+          "dependency_lock_path": "runtime/generated_repair/images/locks/linux-arm64-B.txt",
+          "dependency_lock_sha256": "15ede46cc460b1a15b005f8bc0dcf46515c6ee96242ee0a22617c7af89d4908e",
+          "dockerfile": "Dockerfile.linux-arm64-B",
+          "dockerfile_sha256": "391742c7330e494c63044e22de8765a86a2995a07ddd5fd6106281360f921e15",
+          "kind": "repository-http-image-recipe",
+          "platform": "linux/arm64",
+          "recipe_sha256": "3e6f6be699a03c8b60861087b9d56fe8d927ef59788f65af13beb4acd788121c",
+          "role": "B",
+          "schema_version": "2.0"
+        }
+      }
+    }
+  },
+  "runtime_ready": false,
+  "schema_version": "2.0",
+  "status": "declared-not-built"
+}
