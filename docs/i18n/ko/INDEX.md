@@ -337,6 +337,7 @@ docs/
 | 소유 정책 개선 설계 (제안)                         | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | 외부 선택 파일 소스·정책 제안 CLI                  | [Repository proposals](../../guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](guides/REPOSITORY_PROPOSALS.md)                           |
 | HTTP 정책 사례·소스 전용 A/B 준비                  | [HTTP verification](../../reference/REPOSITORY_HTTP_VERIFICATION.md)             | [HTTP 정책 검사 준비](reference/REPOSITORY_HTTP_VERIFICATION.md)             |
+| HTTP 전용 A/B 이미지 입력·context·내용 비교        | [HTTP images](../../reference/REPOSITORY_HTTP_IMAGES.md)                         | [HTTP 이미지 준비](reference/REPOSITORY_HTTP_IMAGES.md)                      |
 | 외부 복사·독립 검증·복구 설계                      | [Repository file workflow](../../development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)               |
 | 외부 live-origin·비공개 파일 세션 API (S2)         | [Repository file sessions](../../reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](reference/REPOSITORY_FILE_SESSION.md)                |
 | 외부 테스트 인터페이스·제공 자료 검증 계약 (S3)    | [Repository verification](../../reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](reference/REPOSITORY_VERIFICATION.md)                       |

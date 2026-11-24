@@ -16,6 +16,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- HTTP-only A/B image input and wheel checks, fresh minimal private contexts and bounded inert
+  rootfs comparisons. Bind the pinned base/dependency data and new guest/recipe bytes without
+  changing old validators. No image build, Engine/runtime activation or original-file correction.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP-only independent case/plan/supplied-phase contracts, exact model-PoC correspondence and
   request-only bounded observation. Add source-only A/B manifest/create plans, guest source and
   arm64 image-input declarations, checked with inert files/fake streams and kernel/tool peers.
@@ -65,6 +70,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   Stable publication is held pending actual external-project completion and new candidate review.
 
 ### Fixed
+
+- Publish the trusted descendant PID marker atomically in the existing cancellation regression.
+  Waiting for file creation alone could cancel its writer before the PID was flushed, causing an
+  intermittent empty-marker CI failure. Process-group, descendant and cleanup assertions remain.
 
 - Raise the supported Typer minimum to 0.27.3 and exercise CLI help at that exact version in
   cold-start CI. An installed wheel with the former allowed Typer 0.9.0 failed before parsing

@@ -26,6 +26,14 @@ FastAPI 앱의 GET 객체 소유권 접근통제**와 명시적인 정책입니�
 활성화·위험 수용·발행은 승인하지 않습니다. 완성 목표는 **2026-12-01**이며 보장이 아닙니다.
 공식 제출 마감은 **2026-12-06 23:59 Asia/Seoul**입니다. 아래 일정을 참고하세요.
 
+## HTTP A/B 이미지 준비 — 오프라인 전달
+
+[HTTP 이미지 도구](../reference/REPOSITORY_HTTP_IMAGES.md)는 정확한 base·의존성·새 guest/recipe
+바이트를 검사하고 선택 opaque wheel·관리 입력만 새 최소 비공개 context에 복사하며 제공된 비활성
+rootfs catalog를 비교합니다. 기존 자산·검증기는 유지합니다. 합성 ZIP/TAR·직접 관리한 파일 검사는
+빌드 이미지나 실제 runtime 수용이 아닙니다. 새 HTTP 파일 checkpoint/staging·Engine/직접 phase·
+CLI 조작과 최종 원본 적용/복구가 남아 있습니다.
+
 ## HTTP 정책·A/B 검사 준비 — 오프라인 전달
 
 [HTTP 검사 API](../reference/REPOSITORY_HTTP_VERIFICATION.md)는 모델 PoC를 별도로 제공한 지정
