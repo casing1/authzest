@@ -111,7 +111,8 @@ snapshot and fixed A create-plan declarations. It does not create or start a con
 
 Reports retain execution not-run, authorization unknown and `verified_fix=false`. Offline owned-file
 and fake-callback passes do not establish policy truth, safe images or actual repair verification.
-Concrete image/runtime acceptance, Engine/stopped-container checks and direct host phases must still
-connect to the CLI operator. Final original diff approval, backup, edit-conflict refusal/recovery,
+The separate [runtime input/metadata checks](REPOSITORY_HTTP_RUNTIME.md) now prepare HTTP profile,
+client and stopped-configuration comparisons. Concrete image/runtime acceptance and current direct
+host phases must still connect to the CLI operator. Final original diff approval, backup, edit-conflict refusal/recovery,
 installed actual acceptance and saved-result viewing remain open under #152/#150. No release follows
 from these source APIs.

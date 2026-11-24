@@ -41,6 +41,12 @@ GET 객체 소유권 인가, 새 HTTP PoC·수정 생성, 독립 전후 검사�
 12월 6일 23:59 Asia/Seoul 공식 마감은 구분합니다. 아래 내장 사례와 T/A/B 설명은 현재 구현·과거
 전달 기록이며 새 HTTP 전용 흐름의 완료 근거가 아닙니다.
 
+새 HTTP 전용 경로의 [사례·계획 선언](reference/REPOSITORY_HTTP_VERIFICATION.md),
+[비공개 파일 checkpoint·A 입력](reference/REPOSITORY_HTTP_FILES.md),
+[이미지 준비](reference/REPOSITORY_HTTP_IMAGES.md),
+[runtime 입력·메타데이터 검사](reference/REPOSITORY_HTTP_RUNTIME.md)를 별도 API로 전달했습니다.
+오프라인 구현이며 실제 직접 A/B phase·외부 CLI 조작·원본 수정 연결은 아직 미완료입니다.
+
 ## 내장 사례 전달 기록
 
 **정식판 우선:** [#150](https://github.com/casing1/authzest/issues/150)에서 제한된 범위의 완성형
@@ -339,6 +345,7 @@ docs/
 | HTTP 정책 사례·소스 전용 A/B 준비                  | [HTTP verification](../../reference/REPOSITORY_HTTP_VERIFICATION.md)             | [HTTP 정책 검사 준비](reference/REPOSITORY_HTTP_VERIFICATION.md)             |
 | HTTP 전용 A/B 이미지 입력·context·내용 비교        | [HTTP images](../../reference/REPOSITORY_HTTP_IMAGES.md)                         | [HTTP 이미지 준비](reference/REPOSITORY_HTTP_IMAGES.md)                      |
 | HTTP 소스 전용 비공개 파일·checkpoint·A 봉인 입력  | [HTTP private files](../../reference/REPOSITORY_HTTP_FILES.md)                   | [HTTP 비공개 파일](reference/REPOSITORY_HTTP_FILES.md)                       |
+| HTTP 프로필·client 연속성과 A/B 메타데이터 비교    | [HTTP runtime](../../reference/REPOSITORY_HTTP_RUNTIME.md)                       | [HTTP runtime 검사](reference/REPOSITORY_HTTP_RUNTIME.md)                    |
 | 외부 복사·독립 검증·복구 설계                      | [Repository file workflow](../../development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](development/REPOSITORY_FILE_WORKFLOW.md)               |
 | 외부 live-origin·비공개 파일 세션 API (S2)         | [Repository file sessions](../../reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](reference/REPOSITORY_FILE_SESSION.md)                |
 | 외부 테스트 인터페이스·제공 자료 검증 계약 (S3)    | [Repository verification](../../reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](reference/REPOSITORY_VERIFICATION.md)                       |

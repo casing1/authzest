@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 별도 HTTP 비공개 프로필·client 연속성, 네 문서의 제한된 Engine reader와 전체 A/B 시작 전
+  container 비교를 추가합니다. 기존 T/A/B 계약을 넓히지 않고 낮은 수준의 기본 도구를 공유합니다.
+  비활성 파일·메모리 소켓·제공 보고 검사는 실제 이미지/runtime/수정 수용이 아니며 직접 phase·
+  CLI 조정·원본 쓰기는 미완료입니다. [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP 소스 전용 복사 계획·비공개 파일 세션·현재 발급자/revision checkpoint·A manifest/소스
   봉인 입력을 추가합니다. 정확한 diff/적용/복구 결정·만료·파일 연속성·실패/정리 근거를 보존하며
   생성 테스트/T 수용·원본 쓰기는 하지 않습니다. Engine/직접 phase·CLI 조작·실제 수용은 후속입니다.

@@ -45,6 +45,12 @@ of completed external features. December 1 is the completion target; December 6 
 is the official deadline. Packaged-case and T/A/B details below describe delivered or historical work,
 not completion of the new HTTP-only path.
 
+The new HTTP-only path now has separate [case/plan declarations](reference/REPOSITORY_HTTP_VERIFICATION.md),
+[private file checkpoints and A staging](reference/REPOSITORY_HTTP_FILES.md),
+[image preparation](reference/REPOSITORY_HTTP_IMAGES.md) and
+[runtime input/metadata checks](reference/REPOSITORY_HTTP_RUNTIME.md). These offline-delivered APIs
+do not yet connect actual direct A/B phases, the external CLI operator or original-file correction.
+
 ## Packaged-case delivery record
 
 **Release first:** [#150](https://github.com/casing1/authzest/issues/150) tracks a complete narrow
@@ -361,6 +367,7 @@ docs/
 | HTTP policy cases and source-only A/B preparation                       | [HTTP verification](reference/REPOSITORY_HTTP_VERIFICATION.md)             | [HTTP 정책 검사 준비](i18n/ko/reference/REPOSITORY_HTTP_VERIFICATION.md)             |
 | HTTP-only A/B image inputs, contexts and inert content comparison       | [HTTP images](reference/REPOSITORY_HTTP_IMAGES.md)                         | [HTTP 이미지 준비](i18n/ko/reference/REPOSITORY_HTTP_IMAGES.md)                      |
 | HTTP source-only private files, checkpoints and sealed A inputs         | [HTTP private files](reference/REPOSITORY_HTTP_FILES.md)                   | [HTTP 비공개 파일](i18n/ko/reference/REPOSITORY_HTTP_FILES.md)                       |
+| HTTP profile/client continuity and A/B metadata comparison              | [HTTP runtime](reference/REPOSITORY_HTTP_RUNTIME.md)                       | [HTTP runtime 검사](i18n/ko/reference/REPOSITORY_HTTP_RUNTIME.md)                    |
 | External copy, independent verification and recovery design             | [Repository file workflow](development/REPOSITORY_FILE_WORKFLOW.md)        | [외부 파일 흐름 설계](i18n/ko/development/REPOSITORY_FILE_WORKFLOW.md)               |
 | External live-origin and private file-session API (S2)                  | [Repository file sessions](reference/REPOSITORY_FILE_SESSION.md)           | [외부 비공개 파일 세션](i18n/ko/reference/REPOSITORY_FILE_SESSION.md)                |
 | External test interface and supplied verification contracts (S3)        | [Repository verification](reference/REPOSITORY_VERIFICATION.md)            | [외부 검증 계약](i18n/ko/reference/REPOSITORY_VERIFICATION.md)                       |

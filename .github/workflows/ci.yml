@@ -54,6 +54,8 @@ jobs:
         run: python -m pytest tests/test_repository_http_image_inputs.py tests/test_repository_http_image_context.py tests/test_repository_http_image_contents.py
       - name: Check HTTP private files, checkpoints and sealed A inputs
         run: python -m pytest tests/test_repository_http_copy_plan.py tests/test_repository_http_files.py tests/test_repository_http_file_session.py tests/test_repository_http_session_failures.py tests/test_repository_http_staging.py tests/test_repository_http_staging_failures.py
+      - name: Check HTTP profile, client, metadata and stopped configuration offline
+        run: python -m pytest tests/test_repository_http_runtime_input.py tests/test_repository_http_client_pin.py tests/test_repository_http_engine_http.py tests/test_repository_http_engine_http_failures.py tests/test_repository_http_preflight.py tests/test_repository_http_preflight_failures.py tests/test_repository_http_container_inspect.py tests/test_repository_http_runtime_connection.py
       - name: Check external private file decisions with owned inert temporary files
         run: python -m pytest tests/test_repository_origin.py tests/test_repository_files.py tests/test_repository_file_session.py tests/test_repository_session_failures.py
       - name: Check external runtime foundation with inert files and fake guest peers
@@ -152,6 +154,14 @@ jobs:
           tests/test_repository_http_session_failures.py
           tests/test_repository_http_staging.py
           tests/test_repository_http_staging_failures.py
+          tests/test_repository_http_runtime_input.py
+          tests/test_repository_http_client_pin.py
+          tests/test_repository_http_engine_http.py
+          tests/test_repository_http_engine_http_failures.py
+          tests/test_repository_http_preflight.py
+          tests/test_repository_http_preflight_failures.py
+          tests/test_repository_http_container_inspect.py
+          tests/test_repository_http_runtime_connection.py
           tests/test_repository_cases.py
           tests/test_repository_verification.py
           tests/test_repository_verification_failures.py

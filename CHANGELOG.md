@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Separate HTTP private profile/client continuity, bounded four-document Engine metadata reader
+  and complete A/B stopped-container comparisons. Share unchanged low-level primitives without
+  widening legacy T/A/B contracts. Inert-file/memory-socket/supplied-report tests do not establish
+  actual image/runtime/repair acceptance; direct phases, CLI coordination and original writes remain
+  pending. [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP source-only copy plans/private file sessions, current issuer/revision checkpoints and
   sealed A manifest/source staging. Preserve exact private diff/apply/restore decisions, expiry,
   file continuity and retained failure/cleanup evidence; no generated-test/T adoption or original

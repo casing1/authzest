@@ -26,6 +26,15 @@ FastAPI 앱의 GET 객체 소유권 접근통제**와 명시적인 정책입니�
 활성화·위험 수용·발행은 승인하지 않습니다. 완성 목표는 **2026-12-01**이며 보장이 아닙니다.
 공식 제출 마감은 **2026-12-06 23:59 Asia/Seoul**입니다. 아래 일정을 참고하세요.
 
+## HTTP runtime 입력과 메타데이터 — 오프라인 전달
+
+[별도 HTTP runtime 검사](../reference/REPOSITORY_HTTP_RUNTIME.md)는 비공개 schema 2.0 프로필,
+현재 client·빈 설정·endpoint의 연속성을 확인하고 네 개의 고정 A/B Engine 문서와 전체 시작 전
+container 계획을 대조합니다. 검사는 비활성 파일·메모리 소켓·제공 보고만 사용하며 실제 Engine·guest를
+사용하지 않습니다. 메타데이터 일치는 이미지 내용·커널 강제·직접 phase 사실이 아닙니다. 다음은 제한된
+HTTP stdin과 현재 직접 A/B phase 연결, CLI 조정과 최종 원본 수정입니다. 실제 이미지·설치형 전체
+수용은 계속 필수 미완료 조건입니다.
+
 ## HTTP 비공개 파일 checkpoint와 A 입력 — 오프라인 전달
 
 [별도 HTTP 비공개 파일 API](../reference/REPOSITORY_HTTP_FILES.md)는 소스 전용 복사 계획, 정확한
