@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- HTTP 전용 독립 사례·계획·제공 phase 계약, 정확한 모델 PoC 대응과 요청 전용 제한 관찰을 추가합니다.
+  소스 전용 A/B manifest·생성 계획·guest 소스·arm64 이미지 입력 선언을 비활성 파일·가짜
+  stream/kernel/도구로 검사합니다. 이미지는 미빌드이며 Engine·대상·live staging/조작 흐름·원본
+  쓰기 수용은 아닙니다. [#210](https://github.com/casing1/authzest/issues/210)
+
 - 외부 FastAPI 한 파일을 위한 `repo-suggest --http-poc`: 별도 schema 2.0 요청, 제한된 GET PoC
   데이터·수정 소스 검증, 한 파일 diff와 전용 Codex 진입점을 추가합니다. 새 공유·재캡처·단일 시도
   제한과 기존 v1.0 기본 동작을 유지합니다. 오프라인·가짜 peer 검사는 실제 제공자 수용, A/B 실행,

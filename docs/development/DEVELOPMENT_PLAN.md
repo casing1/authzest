@@ -22,12 +22,24 @@ The operator target is the CLI; the external-project GUI target is saved-result 
 active support is macOS arm64, Python source installation and Docker Desktop. General authentication,
 multi-file apps, databases/external services and active external GUI operation are deferred.
 
-This freezes the delivery target only. External runtime/operator integration, the HTTP-only contract
-and original-project writes are unfinished. Existing T/A/B/pytest contracts and packaged GUI facts
+This freezes the delivery target only. The offline HTTP proposal/case contracts are delivered below;
+external runtime/operator integration and original-project writes are unfinished. Existing T/A/B/pytest contracts and packaged GUI facts
 below remain historical or broader foundations; they are not requirements to activate those deferred
 features for 0.1.0. No source sharing, runtime activation, risk acceptance or publication follows from
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
+
+## HTTP policy and A/B preparation — offline delivery
+
+The [HTTP verification APIs](../reference/REPOSITORY_HTTP_VERIFICATION.md) bind the model's exact
+PoC to a separately supplied regression case, retain 4–8 independent expectations and compare
+supplied before/after frames without granting live authority. A distinct request-only wire codec,
+single-source manifest, A/B guest source and arm64 unbuilt image/profile declarations prepare the
+next boundary. The unchanged HTTP parser/clock and pinned dependency references are shared; old
+v1.1/T/A/B identities are not substituted. Current tests use inert data, memory streams and fake
+kernel/tool collaborators. Image contexts/effective inspection, live HTTP file checkpoints/staging,
+Engine coordination and the actual before/apply/after/recovery operator remain pending. These
+preparations do not execute the target or finish original-project correction.
 
 ## HTTP proposal slice — offline delivery
 
