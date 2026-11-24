@@ -113,8 +113,10 @@ are false. This is neither an accepted image nor escape-proof isolation.
 
 The [HTTP image helpers](REPOSITORY_HTTP_IMAGES.md) now check maintained inputs, prepare retained
 minimal contexts and compare supplied inert exports. The [HTTP private-file APIs](REPOSITORY_HTTP_FILES.md)
-add current source-only checkpoints and sealed A inputs. Actual image/content acceptance,
-Engine/stopped-container inspection, direct host phases and the
+add current source-only checkpoints and sealed A inputs. Separate
+[runtime input/metadata checks](REPOSITORY_HTTP_RUNTIME.md) prepare HTTP profile/client, fixed Engine
+and stopped-container comparisons. Actual image/content acceptance,
+current direct host phases and the
 approved copy/before/diff/apply/after/restore operator remain pending. Old file sessions require pytest
 artifacts and cannot be adopted by inventing test fields. Final original-file application, backup,
 edit-conflict refusal and recovery remain required under #152/#150. Installed actual acceptance and

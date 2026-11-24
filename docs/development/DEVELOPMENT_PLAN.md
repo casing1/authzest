@@ -29,6 +29,16 @@ features for 0.1.0. No source sharing, runtime activation, risk acceptance or pu
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
 
+## HTTP runtime input and metadata — offline delivery
+
+The separate [HTTP runtime checks](../reference/REPOSITORY_HTTP_RUNTIME.md) load a private schema 2.0
+profile, pin current client/empty-config/endpoint facts, query only four fixed A/B Engine documents
+and compare full stopped-container plans. Tests use inert files, memory sockets and supplied reports;
+no actual Engine or guest is used. Metadata matches do not establish image contents, kernel
+enforcement or direct phase facts. Next connect the bounded HTTP stdin seam and current direct
+A/B phases, then CLI coordination and final original-file correction. Actual images and installed
+full-flow acceptance remain required.
+
 ## HTTP private-file checkpoints and A inputs — offline delivery
 
 The separate [HTTP private-file APIs](../reference/REPOSITORY_HTTP_FILES.md) now bind a source-only

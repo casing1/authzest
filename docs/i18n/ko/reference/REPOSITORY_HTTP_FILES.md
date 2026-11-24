@@ -102,6 +102,7 @@ B에는 기존 요청 전용 schedule과 EOF만 제한된 stdin으로 전달합�
 ## 남은 조작 흐름과 실제 수용
 
 보고는 실행 not-run·인가 unknown·`verified_fix=false`를 유지합니다. 직접 관리하는 파일·가짜 callback
-검사는 정책 정답·안전한 이미지·실제 수정 검증이 아닙니다. 구체적인 이미지/runtime 수용, Engine·중지
-container 검사와 직접 host phase를 CLI 조작 흐름에 연결해야 합니다. 최종 원본 diff 승인·백업·편집
+검사는 정책 정답·안전한 이미지·실제 수정 검증이 아닙니다. 별도 [runtime 입력·메타데이터 검사](REPOSITORY_HTTP_RUNTIME.md)로 HTTP 프로필·client·시작 전
+설정 비교를 준비했습니다. 구체적인 이미지/runtime 수용과 현재 직접 host phase를 CLI 조작 흐름에
+연결해야 합니다. 최종 원본 diff 승인·백업·편집
 충돌 거부/복구, 설치형 실제 수용·저장 결과 표시는 #152/#150에 남아 있으며 이 API로 릴리스하지 않습니다.
