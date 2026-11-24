@@ -59,6 +59,11 @@ from authzest.codex.owner_read_suggestion import (
     validate_owner_read_request,
     validate_owner_read_response,
 )
+from authzest.codex.repository_http_proposal import (
+    RepositoryHttpRequest,
+    validate_repository_http_request,
+    validate_repository_http_response,
+)
 from authzest.codex.repository_proposal import (
     REPOSITORY_HOST_INSTRUCTIONS,
     RepositoryProposalRequest,
@@ -874,6 +879,23 @@ class CodexAppServerAdapter:
             lambda raw, _usage: validate_repository_response(raw, checked),
         )
 
+    async def suggest_repository_http(self, request: RepositoryHttpRequest) -> dict[str, Any]:
+        """Propose bounded HTTP request data and a repair, never run either artifact."""
+        self._begin_request(detailed_validation=True)
+        try:
+            checked = validate_repository_http_request(request)
+            self._check_sharing(checked)
+            payload = checked.to_dict()
+        except BaseException as exc:
+            self._record_failure(exc)
+            raise
+        return await self._turn(
+            checked,
+            payload["prompt"],
+            payload["output_schema"],
+            lambda raw, _usage: validate_repository_http_response(raw, checked),
+        )
+
     def _check_sharing(
         self,
         request: (
@@ -882,6 +904,7 @@ class CodexAppServerAdapter:
             | GeneratedRepairTransportRequest
             | OwnerReadRequest
             | RepositoryProposalRequest
+            | RepositoryHttpRequest
         ),
     ) -> None:
         if self.consumed or self.approved_request_id != request.request_id:
@@ -897,6 +920,7 @@ class CodexAppServerAdapter:
             | GeneratedRepairTransportRequest
             | OwnerReadRequest
             | RepositoryProposalRequest
+            | RepositoryHttpRequest
         ),
         prompt: str,
         schema: dict[str, Any],
@@ -905,7 +929,7 @@ class CodexAppServerAdapter:
         # Only the explicitly guarded public entry points supply prompts/schema.
         # Recheck the sharing gate here before consuming this single-use transport.
         self._check_sharing(request)
-        repository_proposal = type(request) is RepositoryProposalRequest
+        repository_proposal = type(request) in (RepositoryProposalRequest, RepositoryHttpRequest)
         host_instructions = _host_instructions(repository_proposal)
         self.consumed = True
         deadline = asyncio.timeout(self.timeout_seconds)
