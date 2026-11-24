@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- HTTP source-only copy plans/private file sessions, current issuer/revision checkpoints and
+  sealed A manifest/source staging. Preserve exact private diff/apply/restore decisions, expiry,
+  file continuity and retained failure/cleanup evidence; no generated-test/T adoption or original
+  writes. Engine/direct phases, CLI operator and actual acceptance remain pending.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP-only A/B image input and wheel checks, fresh minimal private contexts and bounded inert
   rootfs comparisons. Bind the pinned base/dependency data and new guest/recipe bytes without
   changing old validators. No image build, Engine/runtime activation or original-file correction.

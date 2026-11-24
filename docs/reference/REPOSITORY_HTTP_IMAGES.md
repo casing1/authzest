@@ -90,8 +90,8 @@ An imported report cannot replace current direct host/Engine facts.
 
 ## Next connection
 
-Concrete image build/inspection and actual image acceptance remain pending. Fresh HTTP-only file
-checkpoints and sealed A inputs, Engine/stopped-container checks, direct before/after phases and the
-copy/diff/apply/restore CLI operator are subsequent work. Final original-file approval, backup,
+The [HTTP private-file APIs](REPOSITORY_HTTP_FILES.md) now bind current source-only copy decisions
+and checkpoints to sealed A inputs. Concrete image build/inspection and actual image acceptance,
+Engine/stopped-container checks, direct before/after phases and the CLI operator remain pending. Final original-file approval, backup,
 concurrent-edit refusal and recovery remain required under #152/#150. These offline helpers do not
 close actual generation, installed full-flow acceptance, the saved-result viewer or release gates.

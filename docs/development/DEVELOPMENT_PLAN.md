@@ -29,6 +29,16 @@ features for 0.1.0. No source sharing, runtime activation, risk acceptance or pu
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
 
+## HTTP private-file checkpoints and A inputs — offline delivery
+
+The separate [HTTP private-file APIs](../reference/REPOSITORY_HTTP_FILES.md) now bind a source-only
+copy plan, exact current private copy/diff/apply/restore decisions and live issuer checkpoints to
+sealed A manifest/source inputs. After staging reads the actual applied private file, not only the
+proposal text. Independent policy/case expectations and records stay outside guest inputs; B retains
+request-only stdin. Owned inert files and injected failures verify these source APIs. Concrete
+images/runtime, Engine/direct phases, external CLI/GUI operator and final original correction remain
+pending; private byte transitions are not authorization/runtime proof.
+
 ## HTTP A/B image preparation — offline delivery
 
 The [HTTP image helpers](../reference/REPOSITORY_HTTP_IMAGES.md) validate the exact referenced

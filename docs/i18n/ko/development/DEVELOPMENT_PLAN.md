@@ -26,6 +26,15 @@ FastAPI 앱의 GET 객체 소유권 접근통제**와 명시적인 정책입니�
 활성화·위험 수용·발행은 승인하지 않습니다. 완성 목표는 **2026-12-01**이며 보장이 아닙니다.
 공식 제출 마감은 **2026-12-06 23:59 Asia/Seoul**입니다. 아래 일정을 참고하세요.
 
+## HTTP 비공개 파일 checkpoint와 A 입력 — 오프라인 전달
+
+[별도 HTTP 비공개 파일 API](../reference/REPOSITORY_HTTP_FILES.md)는 소스 전용 복사 계획, 정확한
+현재 copy/diff/apply/restore 결정과 발급자 checkpoint를 A 봉인 manifest·소스 입력에 결합합니다.
+after는 제안 텍스트만이 아닌 실제 적용한 비공개 파일을 읽습니다. 독립 정책·사례 정답·기록은 입력 밖에
+남기고 B에는 요청 전용 stdin만 줍니다. 비활성 파일·주입한 실패로 소스 API를 검사했습니다. 실제
+이미지/runtime·Engine/직접 phase·외부 CLI/GUI 조작·원본 최종 수정은 미완료이며 비공개 바이트
+전환이 인가·runtime 증명은 아닙니다.
+
 ## HTTP A/B 이미지 준비 — 오프라인 전달
 
 [HTTP 이미지 도구](../reference/REPOSITORY_HTTP_IMAGES.md)는 정확한 base·의존성·새 guest/recipe

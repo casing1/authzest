@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- HTTP 소스 전용 복사 계획·비공개 파일 세션·현재 발급자/revision checkpoint·A manifest/소스
+  봉인 입력을 추가합니다. 정확한 diff/적용/복구 결정·만료·파일 연속성·실패/정리 근거를 보존하며
+  생성 테스트/T 수용·원본 쓰기는 하지 않습니다. Engine/직접 phase·CLI 조작·실제 수용은 후속입니다.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - HTTP 전용 A/B 이미지 입력·wheel 검사, 새 최소 비공개 context와 제한된 비활성 rootfs 비교를
   추가합니다. 기존 검증기를 유지하고 고정 base·의존성·새 guest/recipe 바이트를 결합합니다.
   이미지 빌드·Engine/runtime 활성화·원본 최종 수정은 포함하지 않습니다.
