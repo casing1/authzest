@@ -29,6 +29,17 @@ features for 0.1.0. No source sharing, runtime activation, risk acceptance or pu
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
 
+## HTTP proposal slice — offline delivery
+
+The explicit `repo-suggest --http-poc` path now prepares the single-file schema 2.0 request and
+validates one model-proposed GET request as data plus replacement source, using a dedicated adapter
+entry and host-derived source-only diff. Default v1.0 and v1.1 contracts remain separate. See the
+[proposal guide](../guides/REPOSITORY_PROPOSALS.md). Owned inert files, fake adapters and scripted
+App Server peers check the integration; no actual model/source sharing or target/guest execution is
+part of this delivery. A/B-only runtime/case integration, original application/recovery, new-result GUI
+import and installed actual acceptance remain pending under #210/#152/#150. This does not complete
+the frozen release checklist or enable external execution.
+
 ## External-project correction — 2026-11-23 KST
 
 This dated checkpoint records the broader plan before the scope freeze above; delivered source

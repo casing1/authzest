@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Opt-in `repo-suggest --http-poc` for one external FastAPI file: a distinct schema 2.0 request,
+  bounded GET PoC data and repair-source validation, one-file diff and a dedicated Codex entry.
+  Keep fresh sharing/recapture and one-attempt limits; default v1.0 behavior is unchanged.
+  Offline/fake-peer checks do not establish actual provider acceptance, A/B execution, GUI import
+  or final original-file correction. [#210](https://github.com/casing1/authzest/issues/210)
+
 - External runtime foundation: fresh live copy checkpoints, separate sealed T/A selected inputs,
   explicit guest bootstrap/client fixture and bounded scheduled-GET observation. Add separate
   unexecuted create plans and pinned source/recipe declarations, with inert-file and fake-peer tests.
@@ -51,6 +57,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
   [#200](https://github.com/casing1/authzest/issues/200)
 - Readable proposal output, single-JSON mode and bilingual external-project usage guidance.
   Stable publication is held pending actual external-project completion and new candidate review.
+
+### Fixed
+
+- Raise the supported Typer minimum to 0.27.3 and exercise CLI help at that exact version in
+  cold-start CI. An installed wheel with the former allowed Typer 0.9.0 failed before parsing
+  commands because the CLI uses union annotations. Package-byte checks alone did not detect it.
 
 ## [0.1.0] - 2026-11-23
 
