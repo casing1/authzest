@@ -7,7 +7,32 @@
 
 [Documentation index](../README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
 
+## 0.1.0 scope freeze — 2026-11-24 KST
+
+The accepted [course-release scope](0.1.0-SCOPE.md) is an explicitly selected, self-contained
+**single-file FastAPI app with GET object-ownership authorization** and an explicit policy. Codex
+must newly author bounded HTTP PoC request data and a one-file repair; independent host-held policy
+expectations, rather than the model's own verdict, judge isolated A/B before/after observations.
+Generated Python/pytest execution in the new external mode is deferred. Anonymous-policy checks do
+not establish general authentication assurance.
+
+The required workflow includes an exact-diff decision and final approved original-source application,
+backup, concurrent-edit refusal and explicit recovery. A private-copy result alone is insufficient.
+The operator target is the CLI; the external-project GUI target is saved-result viewing. Initial
+active support is macOS arm64, Python source installation and Docker Desktop. General authentication,
+multi-file apps, databases/external services and active external GUI operation are deferred.
+
+This freezes the delivery target only. External runtime/operator integration, the HTTP-only contract
+and original-project writes are unfinished. Existing T/A/B/pytest contracts and packaged GUI facts
+below remain historical or broader foundations; they are not requirements to activate those deferred
+features for 0.1.0. No source sharing, runtime activation, risk acceptance or publication follows from
+this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
+deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
+
 ## External-project correction — 2026-11-23 KST
+
+This dated checkpoint records the broader plan before the scope freeze above; delivered source
+facts remain valid, while its T/pytest and active external GUI follow-ups are deferred.
 
 Stable publication is on hold. The maintainer clarified that using the tool on a different FastAPI
 folder is a core requirement; the packaged demonstration alone does not finish the product.
@@ -27,25 +52,27 @@ new images and connect directly returned live phase results to the CLI operator 
 external acceptance. No supplied comparison or static create plan authorizes
 execution or file application. Original-project
 final correction requires a separate current-state check and user decision; private-copy success is
-not product completion. Connect the GUI only after the shared engine supports it. Installed/live external acceptance
-and a new final-candidate decision precede release. The previous readiness packet is historical and
+not product completion. Active external GUI connection was a later goal and is now deferred.
+Installed/live external acceptance and a new final-candidate decision precede release. The previous readiness packet is historical and
 was not accepted; it does not authorize risk acceptance or publication.
 
 ## Product direction
 
-Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The current course-release
-goal includes explicitly selected external FastAPI source, initially bounded to self-contained apps
-and one repair-source file, with a maintained scenario as a reproducible control: source evidence → newly generated
-defensive PoC/regression test → AI-authored repair or valid no-change/unknown → exact-diff approve/decline
-→ approved new-copy application → separately approved before/after checks → inspectable recovery
-→ explicit final original-project correction. External execution/application and that final write are pending.
+Build an installable, CLI-first FastAPI source-evidence tool for the OSS course. The frozen target is
+one selected self-contained external app file, GET object ownership and an explicit policy, with a
+maintained scenario as a reproducible control: source evidence → newly generated bounded HTTP PoC
+data and AI-authored repair or valid no-change/unknown → isolated A/B before observations against
+independent policy expectations → exact-diff approve/decline → reviewed private-copy application and after checks
+→ explicit final original-project correction, backup and recovery. Before/after stages retain their
+current separate decisions. External execution/operator integration and that final write are pending.
 Codex is a core goal, not an optional explanation add-on. Keep deterministic scan useful without an AI account.
 
 Keep parser/analyzer, Codex adapter, runner and presentation boundaries independent. The local API
-and React dashboard display static inventory and imported workflow results by default. The CLI and
-the explicit local GUI mode share the owner-read execution engine and separate current decisions.
-The GUI is enabled only with a startup-bound private runtime configuration; ordinary browsing and
-imports grant no execution authority. Evidence-assisted value remains a hypothesis to measure. See the
+and React dashboard display static inventory and imported workflow results by default. For the frozen
+external workflow, CLI operation and saved-result GUI viewing are the targets. The existing packaged
+owner-read CLI/GUI engine and its startup-bound runtime configuration remain separate delivered
+behavior; they do not implement external execution or authorize it through browsing/imports.
+Evidence-assisted value remains a hypothesis to measure. See the
 [model strategy](MODEL_STRATEGY.md).
 
 ## Interactive course workflow — 2026-11-23 KST
@@ -87,6 +114,9 @@ These are pending decisions; the preflight is not a new active end-to-end model/
 Do not expand parser/benchmark scope or close product issues in place of recording those decisions.
 
 ## Course-release priorities — 2026-11-12 KST
+
+This section preserves the earlier packaged-case priority order and delivered contracts. The
+2026-11-24 scope above supersedes its generated-pytest and active external GUI completion targets.
 
 [#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. This order
 supersedes earlier benchmark-first, optional-UI and template-only completion targets; it does not alter
@@ -584,7 +614,8 @@ regressions in the source candidate; repeated release retries are not a replacem
 ## Core acceptance and defensive PoC
 
 The checklist keeps historical registered-template acceptance and current deliveries visible.
-Open items cover the remaining release acceptance.
+Its original open-item wording is preserved; current external acceptance is governed by the frozen
+[0.1.0 scope](0.1.0-SCOPE.md), including HTTP PoC data rather than generated pytest execution.
 
 - [x] Exact ten-case label review recorded separately on 2026-10-09 KST (#77); offline contracts exist, but plans remain non-executable and execution consent is separate.
 - [x] Readable CLI results, retained records and documented text/JSON streams accepted (#79 / PR #90).
@@ -619,35 +650,31 @@ failed/not-run/unknown distinctly and preserve originals and later user edits.
 
 ## Schedule: readiness gates within the remaining submission buffer
 
-The seven **development** weeks agreed on 2026-09-10 include work already done; this audit does not
-start a fresh seven-week plan. The original remaining-calendar estimate is historical, not a current
-submission date. The last recorded approximate submission date was **2026-11-18**; it is a historical
-estimate, not a currently confirmed deadline. The missed November 4 alpha.4 target and earlier November 12–13 stable target are historical,
-not current promises. The published alpha.4 receipt remains unchanged. Work in this gate order and
-retain time before submission for exams, fixes, recording/report preparation and rehearsal:
+The official deadline supplied on 2026-11-24 is **2026-12-06 23:59 Asia/Seoul**. The internal
+**2026-12-01 completion target is not a delivery guarantee**. The old November 18 estimate, earlier
+release targets and seven-week development allocation remain historical; no new seven-week plan starts.
+The published alpha.4 receipt is unchanged.
 
-| Order       | Work / gate                                                                                                                                                                                                             |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First       | Reconcile the implemented one-scenario generation/execution contract (#151/#152), current CLI/GUI documentation and exact-candidate acceptance criteria. Identify remaining evidence gaps.                              |
-| Next        | Review version-bound generation/test/diff/apply/independent-control/restoration evidence together with the delivered UI and reproducible walkthrough. Address the identified acceptance gaps.                           |
-| Candidate   | Complete #85's demo/minimum evidence and README translations, exact-source regressions/install/artifact checks including #130, and fresh #89 stable-candidate disposition. State unavailable #84 measurements honestly. |
-| Publication | Select a stable version/tag and publish only after candidate findings, demonstrated required scope and release/public-download gates pass. There is no automatic date-based promotion of alpha.4.                       |
+| Date / gate  | Target                                                                                                                                                                                                                                                                     |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| November 26  | Go/no-go review of the first actual external single-file vertical flow, including generated HTTP PoC/repair, independent before/after observations and approved original application/recovery. Actual execution is still pending and requires its concrete reviewed scope. |
+| December 1   | Complete the frozen scope and stop feature expansion; revise the plan openly if the actual flow or required protections remain incomplete.                                                                                                                                 |
+| December 2–5 | Preserve time for fresh installation/acceptance, fixes, README explanations/references/license, actual demo/screenshots and a source ZIP matching the submission commit.                                                                                                   |
+| December 6   | Submit the public repository URL and matching source ZIP by 23:59 Asia/Seoul, retaining a final submission buffer.                                                                                                                                                         |
 
-Foundation/evidence/contracts and recorded live integration already consumed the early development
-budget. A stable course release means the newly declared single-scenario generation, approved
-verification and local presentation are complete and demonstrable, not general repository support or
-a production security guarantee. If a mandatory gate fails, report the gap and revise the plan with the
-maintainer; do not silently redefine template selection as generation or manufacture stable readiness.
-Additional live model use, source sharing and active file stages still require their own bound decisions.
+Publication still follows exact-candidate checks, evidence, current tooling disposition and release
+gates; the course deadline is not automatic release authority. No benchmark or model-superiority claim
+is needed to finish this scoped workflow. Source sharing and active file stages still require their
+current bound decisions. A failed mandatory gate remains an explicit gap rather than manufactured readiness.
 
 ## Deliberately deferred
 
-General nested dependency/callable interpretation, broad authentication/security classification,
-multi-file/existing-checkout repair transactions, arbitrary repositories/apps/unrestricted generated-code
-execution, additional adapters, cloud deployment, arbitrary-repository GUI execution and signing/notarization
-remain deferred. This does not defer #151's one-file patch plus generated test, #152's specifically
-approved isolated execution, or #153's local results UI. Open a separately justified issue before
-expanding that scope. The static parser
+General nested dependency/callable interpretation, general authentication analysis/repair, multi-file
+apps, databases/external services, generated Python/pytest execution in the new external mode,
+active external GUI operation, new active-runtime platforms, additional adapters, cloud deployment and signing/notarization remain
+deferred. This does not defer newly authored HTTP PoC data and a one-file repair, independent A/B
+verification, final approved original-file application/backup/conflict refusal/recovery, or saved-result
+viewing. Open a separately justified issue before expanding that scope. The static parser
 still needs maintained regressions, but finishing a complete deterministic vulnerability engine is
 not a dependency of the Codex improvement demo.
 
