@@ -3,6 +3,8 @@
 import stat
 from copy import deepcopy
 
+from tests.helpers.repository_http_container_data import MANIFEST_DIGESTS
+
 from authzest.codex.contracts import canonical
 from authzest.runner._generated_repair_engine_http import EngineResponse
 from authzest.runner._generated_repair_preflight import engine_identity_sha256
@@ -92,6 +94,12 @@ def metadata_context():
                 "image-" + role,
                 {
                     "Id": data["images"][role]["image_id"],
+                    "Descriptor": {
+                        "digest": MANIFEST_DIGESTS[role],
+                        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+                        "size": 2048,
+                        "platform": {"os": "linux", "architecture": "arm64", "variant": "v8"},
+                    },
                     "Os": "linux",
                     "Architecture": "arm64",
                     "Variant": "v8",

@@ -66,12 +66,24 @@ readiness false, authorization unknown and verified-fix false. Supplied frames a
 observations remain unverified history; even directly read daemon metadata cannot prove effective
 image contents or kernel resource/isolation enforcement.
 
+Image-inspect `Id` is the configuration digest. Optional `Descriptor` metadata is projected separately
+as `manifest_descriptor`, with `platform_manifest_reported` true only for an explicitly reported
+matching platform image manifest. An absent descriptor remains `null`; an index/list or a descriptor
+without platform does not supply that platform pin. Never fall back to the configuration ID.
+
 ## Stopped-container comparison
 
 `_repository_http_container_inspect.validate_stopped_container` accepts an exact
 `RepositoryHttpCreatePlan` and bounded supplied Engine object or one-element CLI array. It reconstructs
 the complete profile, manifest or request-only schedule and create plan before comparison. Rehashed
 mutations, legacy plans and T fields cannot substitute for that reconstruction.
+
+The required `image_manifest_digest` keyword is a separate expected platform-manifest pin, obtained
+independently of the stopped report under review. Container `Image` and `Config.Image` still match
+the profile's configuration ID; `ImageManifestDescriptor.digest` matches this separate pin. The
+[Docker Engine schema](https://github.com/moby/moby/blob/v28.3.3/api/swagger.yaml#L1798-L1818)
+distinguishes configuration and manifest digests. The pure API cannot authenticate a supplied pin
+or make a descriptor selected from the same untrusted container report independent evidence.
 
 The comparison requires the exact HTTP name/labels/nonces/container/image/command/environment,
 never-started state and zero restarts, read-only root, non-root user, fixed capabilities/security

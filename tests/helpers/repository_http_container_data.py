@@ -14,6 +14,7 @@ from authzest.runner._repository_http_runtime_profile import (
 
 CID = "d" * 64
 ENVIRONMENT = ["PATH=/usr/local/bin:/usr/bin", "LANG=C.UTF-8", "PYTHON_VERSION=3.12.16"]
+MANIFEST_DIGESTS = {"A": "sha256:" + "5" * 64, "B": "sha256:" + "6" * 64}
 ZERO_TIME = "0001-01-01T00:00:00Z"
 
 
@@ -255,7 +256,7 @@ def example(role="A"):
             },
         },
         "ImageManifestDescriptor": {
-            "digest": image,
+            "digest": MANIFEST_DIGESTS[role],
             "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
             "size": 2048,
             "platform": {"os": "linux", "architecture": architecture},

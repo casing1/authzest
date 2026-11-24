@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import inspect
 import math
+import re
 from dataclasses import dataclass
 from hashlib import sha256
 from time import monotonic
@@ -42,6 +43,7 @@ _MAX_BODY = 65_536
 _PENDING = (
     "client-executable-and-empty-config-identity",
     "reviewed-http-image-inputs-and-actual-guest-contents",
+    "independently-reviewed-platform-manifest-pin-and-config-id-correspondence",
     "effective-namespace-mount-seccomp-and-resource-enforcement",
     "current-http-staging-checkpoint-and-session-decisions",
     "host-owned-direct-A-B-phase-and-exact-cleanup",
@@ -71,6 +73,63 @@ def _profile(profile):
     if type(profile) is not RepositoryHttpRuntimeProfile:
         raise _invalid()
     return validate_runtime_profile(getattr(profile, "payload_json", None))
+
+
+def _manifest_descriptor(value, architecture):
+    """Select reported manifest metadata separately from the image config ID.
+
+    Descriptor may identify an index/list and may omit a platform. Even an
+    explicit matching platform manifest remains an unverified daemon report;
+    no pin is synthesized from Id, a list, an absent platform or this projection.
+    """
+    if value is None:
+        return None, False
+    if type(value) is not dict or not {"digest", "mediaType", "size"} <= set(value):
+        raise _invalid()
+    digest, media_type, size = value["digest"], value["mediaType"], value["size"]
+    if (
+        type(digest) is not str
+        or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None
+        or type(size) is not int
+        or not 0 < size <= 1_048_576
+    ):
+        raise _invalid()
+    media_type = _text(media_type, 128)
+    platform = value.get("platform")
+    if platform is not None:
+        if (
+            type(platform) is not dict
+            or not {"os", "architecture"} <= set(platform)
+            or set(platform)
+            - {"os", "architecture", "variant", "os.version", "os.features", "features"}
+        ):
+            raise _invalid()
+        selected = {
+            "os": _text(platform["os"], 32),
+            "architecture": _text(platform["architecture"], 32),
+        }
+        for key, maximum in (("variant", 32), ("os.version", 128)):
+            if key in platform:
+                selected[key] = _text(platform[key], maximum, empty=True)
+        for key in ("os.features", "features"):
+            if key in platform:
+                items = platform[key]
+                if type(items) is not list or len(items) > 32:
+                    raise _invalid()
+                selected[key] = [_text(item, 128) for item in items]
+        platform = selected
+    manifest = media_type in {
+        "application/vnd.oci.image.manifest.v1+json",
+        "application/vnd.docker.distribution.manifest.v2+json",
+    }
+    reported = bool(
+        manifest
+        and platform is not None
+        and platform["os"] == "linux"
+        and platform["architecture"] == architecture
+        and platform.get("variant", "") in ("", "v8")
+    )
+    return {"digest": digest, "mediaType": media_type, "size": size, "platform": platform}, reported
 
 
 def _projection(checked, frames):
@@ -174,8 +233,11 @@ def _projection(checked, frames):
             user = config.get("User")
             if user is not None:
                 _text(user, 256, empty=True)
+            descriptor, platform_manifest = _manifest_descriptor(body.get("Descriptor"), arch)
             selected.setdefault("images", {})[role] = {
                 "image_id": body["Id"],
+                "manifest_descriptor": descriptor,
+                "platform_manifest_reported": platform_manifest,
                 "os": "linux",
                 "architecture": arch,
                 "variant": variant,

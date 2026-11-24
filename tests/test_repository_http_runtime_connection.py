@@ -185,8 +185,12 @@ def test_current_private_source_to_metadata_and_stopped_AB_plans(connection, pha
             _supplied_stopped(value, cid, environment),
             container_id=cid,
             image_environment=environment,
+            image_manifest_digest=observed["metadata"]["images"][role]["manifest_descriptor"][
+                "digest"
+            ],
         ).to_dict()
         assert stopped["profile_id"] == observed["profile_id"]
+        assert stopped["image_manifest_digest"] != stopped["image_id"]
         assert stopped["ready"] is stopped["execution_authorized"] is False
         assert stopped["authorization_status"] == "unknown"
     source = (stage.input_path / "project/app.py").read_bytes()

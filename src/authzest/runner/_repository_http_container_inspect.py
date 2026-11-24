@@ -161,13 +161,21 @@ def validate_stopped_container(
     *,
     container_id: str,
     image_environment: list[str],
+    image_manifest_digest: str,
 ) -> RepositoryHttpStoppedContainerObservation:
     """Compare one bounded supplied object/one-element array without any I/O.
 
-    Current ownership, staged bytes, executable/config/endpoint/image identities,
-    invocation deadlines and cleanup need separate direct host observations.
+    ``image_manifest_digest`` is a separately captured platform manifest pin;
+    the profile image ID binds the image configuration, not that manifest. Both
+    remain supplied declarations. Current ownership, staged bytes, client/Engine
+    identities, deadlines and cleanup need separate direct host observations.
     """
     if type(container_id) is not str or re.fullmatch(r"[0-9a-f]{64}", container_id) is None:
+        raise _invalid()
+    if (
+        type(image_manifest_digest) is not str
+        or re.fullmatch(r"sha256:[0-9a-f]{64}", image_manifest_digest) is None
+    ):
         raise _invalid()
     checked, data = _plan(plan)
     environment = _environment(image_environment)
@@ -192,7 +200,7 @@ def validate_stopped_container(
         {"digest", "mediaType", "size", "platform"},
         {"annotations"},
     )
-    if descriptor["digest"] != image_id or _text(descriptor["mediaType"], 128) not in {
+    if descriptor["digest"] != image_manifest_digest or _text(descriptor["mediaType"], 128) not in {
         "application/vnd.oci.image.manifest.v1+json",
         "application/vnd.docker.distribution.manifest.v2+json",
     }:
@@ -220,6 +228,7 @@ def validate_stopped_container(
         "role": role,
         "platform": profile["platform"],
         "image_id": image_id,
+        "image_manifest_digest": image_manifest_digest,
         "inspect_sha256": sha256(raw.encode("utf-8")).hexdigest(),
         "image_environment_sha256": identity(environment),
         "reported_host_configuration": host,

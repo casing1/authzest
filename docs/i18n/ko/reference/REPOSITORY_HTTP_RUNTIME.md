@@ -61,12 +61,24 @@ POSIX non-frozen 소스 설치가 필요합니다.
 false입니다. 제공 응답·직렬화 관찰은 검증되지 않은 기록이며 직접 읽은 daemon 메타데이터도 이미지
 내용이나 커널 자원·격리 강제를 입증하지 않습니다.
 
+image-inspect의 `Id`는 configuration digest입니다. 선택적인 `Descriptor`는 별도
+`manifest_descriptor`로 투영하며 명시적으로 보고한 플랫폼이 일치하는 image manifest일 때만
+`platform_manifest_reported`를 true로 둡니다. 없는 descriptor는 `null`로 유지합니다. index/list나
+플랫폼이 없는 descriptor는 해당 플랫폼 pin을 제공하지 않으며 configuration ID로 대체하지 않습니다.
+
 ## 시작 전 컨테이너 비교
 
 `_repository_http_container_inspect.validate_stopped_container`는 정확한
 `RepositoryHttpCreatePlan`과 제한된 Engine 객체 또는 원소 하나의 CLI 배열을 받습니다.
 전체 프로필·manifest 또는 요청 전용 schedule·생성 계획을 재구성한 뒤 비교합니다.
 변경한 자료의 해시를 다시 계산하거나 이전 계획·T 필드를 제공해도 대체할 수 없습니다.
+
+필수 keyword `image_manifest_digest`는 검토 중인 시작 전 보고와 독립적으로 확보한 별도의 예상
+platform manifest pin입니다. container의 `Image`·`Config.Image`는 계속 프로필 configuration ID와
+비교하고 `ImageManifestDescriptor.digest`는 별도 pin과 대조합니다.
+[Docker Engine 명세](https://github.com/moby/moby/blob/v28.3.3/api/swagger.yaml#L1798-L1818)는
+configuration·manifest digest를 구분합니다. 이 순수 API는 제공된 pin을 인증하거나 같은 신뢰하지
+않는 container 보고에서 가져온 descriptor를 독립 근거로 만들지 않습니다.
 
 정확한 HTTP 이름·label·nonce·컨테이너·이미지·명령·환경, 미시작·재시작 0회, 읽기 전용 root,
 비특권 사용자, 고정 capability·security 옵션·namespace·자원과 비활성 port·device·restart·healthcheck를

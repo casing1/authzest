@@ -364,3 +364,76 @@ def test_transport_cancellation_preserves_original_and_known_partial_disposition
     assert result["engine_contact_attempted"] is True and result["wire_bytes_used"] == 29
     assert result["transport_diagnostic"]["socket_cleanup"] == "unconfirmed"
     assert result["ready"] is False and result["verified_fix"] is False
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda body: body.update(Descriptor=[]),
+        lambda body: body["Descriptor"].pop("digest"),
+        lambda body: body["Descriptor"].update(digest="sha256:" + "g" * 64),
+        lambda body: body["Descriptor"].update(digest="sha256:" + "a" * 63),
+        lambda body: body["Descriptor"].update(digest=True),
+        lambda body: body["Descriptor"].update(mediaType="x" * 129),
+        lambda body: body["Descriptor"].update(mediaType="invalid\nheader"),
+        lambda body: body["Descriptor"].update(size=True),
+        lambda body: body["Descriptor"].update(size=0),
+        lambda body: body["Descriptor"].update(size=1_048_577),
+        lambda body: body["Descriptor"].update(platform=[]),
+        lambda body: body["Descriptor"].update(platform={"os": "linux"}),
+        lambda body: body["Descriptor"]["platform"].update(architecture=True),
+        lambda body: body["Descriptor"]["platform"].update(variant="v" * 33),
+        lambda body: body["Descriptor"]["platform"].update(unknown="not-supported"),
+        lambda body: body["Descriptor"]["platform"].update({"os.features": ["x"] * 33}),
+        lambda body: body["Descriptor"]["platform"].update({"features": [False]}),
+    ],
+    ids=[
+        "not-object",
+        "missing-digest",
+        "nonhex-digest",
+        "short-digest",
+        "digest-type",
+        "large-media",
+        "control-media",
+        "bool-size",
+        "zero-size",
+        "large-size",
+        "platform-type",
+        "missing-architecture",
+        "architecture-type",
+        "large-variant",
+        "unknown-platform-field",
+        "large-features",
+        "feature-type",
+    ],
+)
+def test_malformed_optional_descriptor_cannot_hide_behind_valid_config_id(change):
+    from authzest.codex.contracts import decode
+    from helpers.repository_http_engine_data import frame, metadata_context
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    change(body)
+    frames[2] = frame("image-A", body)
+    with pytest.raises(ContractError):
+        preflight.normalize_runtime_metadata(checked, frames)
+
+
+def test_malformed_descriptor_stops_observation_with_prefix_and_cleanup_evidence(monkeypatch):
+    from authzest.codex.contracts import decode
+    from helpers.repository_http_engine_data import frame, metadata_context
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    body["Descriptor"]["digest"] = "not-a-manifest-digest"
+    frames[2] = frame("image-A", body)
+    observed = fake_reader(monkeypatch, frames)
+    result = preflight.observe_runtime_metadata(
+        checked, phase_deadline=130, setup_deadline=105
+    ).to_dict()
+    assert len(observed) == result["query_attempted"] == 3
+    assert result["response_count"] == 2
+    assert result["status"] == "failed" and result["failure_reason"] == "metadata-invalid"
+    assert result["metadata"]["engine"]["engine_id"] == "synthetic-http-engine"
+    assert result["wire_bytes_used"] == sum(item.wire_bytes for item in frames[:3])
+    assert result["ready"] is result["execution_authorized"] is result["verified_fix"] is False

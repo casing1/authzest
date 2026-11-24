@@ -13,7 +13,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import pytest
-from tests.helpers.repository_http_container_data import CID, ENVIRONMENT, example
+from tests.helpers.repository_http_container_data import CID, ENVIRONMENT, MANIFEST_DIGESTS, example
 
 from authzest.codex.contracts import ContractError, canonical
 from authzest.runner._generated_repair_runtime_profile import ContainerCreatePlan as LegacyPlan
@@ -39,11 +39,15 @@ def no_external_effects(monkeypatch):
 
 
 def validate(plan, value, **options):
+    role = plan.to_dict().get("role") if type(plan) is RepositoryHttpCreatePlan else "A"
     return validate_stopped_container(
         plan,
         canonical(value),
         container_id=options.get("container_id", CID),
         image_environment=options.get("image_environment", ENVIRONMENT),
+        image_manifest_digest=options.get(
+            "image_manifest_digest", MANIFEST_DIGESTS.get(role, MANIFEST_DIGESTS["A"])
+        ),
     )
 
 
@@ -212,7 +216,11 @@ def test_known_normalizations_and_irrelevant_display_metadata_are_accepted_witho
     value["Config"]["Healthcheck"]["Interval"] = 0
     value["UnrelatedDisplayField"] = "synthetic-ignored-text"
     result = validate_stopped_container(
-        plan, canonical([value]), container_id=CID, image_environment=ENVIRONMENT
+        plan,
+        canonical([value]),
+        container_id=CID,
+        image_environment=ENVIRONMENT,
+        image_manifest_digest=MANIFEST_DIGESTS["A"],
     )
     assert result.to_dict()["never_started_reported"] is True
     assert "synthetic-ignored-text" not in result.payload_json
@@ -277,7 +285,13 @@ def test_bounded_json_cannot_hide_missing_duplicate_or_multiple_inspections(chan
         del value["HostConfig"]["Init"]
         raw = canonical(value)
     with pytest.raises(ContractError):
-        validate_stopped_container(plan, raw, container_id=CID, image_environment=ENVIRONMENT)
+        validate_stopped_container(
+            plan,
+            raw,
+            container_id=CID,
+            image_environment=ENVIRONMENT,
+            image_manifest_digest=MANIFEST_DIGESTS["A"],
+        )
 
 
 @pytest.mark.parametrize(
@@ -481,7 +495,13 @@ def test_relay_plan_binds_request_schedule_and_explicit_eof_without_mounts(chang
 def test_non_text_nonunicode_and_nonfinite_inspect_values_refuse(raw):
     plan, _ = example()
     with pytest.raises(ContractError):
-        validate_stopped_container(plan, raw, container_id=CID, image_environment=ENVIRONMENT)
+        validate_stopped_container(
+            plan,
+            raw,
+            container_id=CID,
+            image_environment=ENVIRONMENT,
+            image_manifest_digest=MANIFEST_DIGESTS["A"],
+        )
 
 
 def test_supplied_reports_never_become_current_phase_or_authorization_evidence():
@@ -494,3 +514,88 @@ def test_supplied_reports_never_become_current_phase_or_authorization_evidence()
     assert data["authorization_status"] == "unknown"
     assert data["runtime_invoked"] is False
     assert not {"T", "test", "pytest", "session_revision", "checkpoint_id"} & data.keys()
+
+
+@pytest.mark.parametrize("role", ["A", "B"])
+def test_config_image_id_and_platform_manifest_digest_are_independent_bindings(role):
+    plan, value = example(role)
+    image_id = plan.to_dict()["profile"]["images"][role]["image_id"]
+    assert value["Image"] == value["Config"]["Image"] == image_id
+    assert value["ImageManifestDescriptor"]["digest"] == MANIFEST_DIGESTS[role]
+    assert MANIFEST_DIGESTS[role] != image_id
+    result = validate(plan, value).to_dict()
+    assert result["image_id"] == image_id
+    assert result["image_manifest_digest"] == MANIFEST_DIGESTS[role]
+    assert result["provenance"] == "caller-supplied-unverified"
+    assert result["execution_authorized"] is result["verified_fix"] is False
+
+
+@pytest.mark.parametrize("role", ["A", "B"])
+@pytest.mark.parametrize(
+    "change", ["descriptor-config-id", "pin-config-id", "other-role-pin", "other-manifest"]
+)
+def test_platform_manifest_cannot_be_replaced_by_config_or_unrelated_digest(role, change):
+    plan, value = example(role)
+    image_id = plan.to_dict()["profile"]["images"][role]["image_id"]
+    pin = MANIFEST_DIGESTS[role]
+    if change == "descriptor-config-id":
+        value["ImageManifestDescriptor"]["digest"] = image_id
+    elif change == "pin-config-id":
+        pin = image_id
+    elif change == "other-role-pin":
+        pin = MANIFEST_DIGESTS["B" if role == "A" else "A"]
+    else:
+        value["ImageManifestDescriptor"]["digest"] = "sha256:" + "7" * 64
+    with pytest.raises(ContractError):
+        validate(plan, value, image_manifest_digest=pin)
+
+
+@pytest.mark.parametrize("role", ["A", "B"])
+@pytest.mark.parametrize(
+    "pin",
+    [
+        None,
+        True,
+        1,
+        {},
+        [],
+        b"sha256:" + b"5" * 64,
+        "",
+        "5" * 64,
+        "sha256:" + "5" * 63,
+        "sha256:" + "5" * 65,
+        "SHA256:" + "5" * 64,
+        "sha256:" + "F" * 64,
+        "sha256:" + "g" * 64,
+        "sha256:" + "5" * 10000,
+    ],
+    ids=[
+        "none",
+        "bool",
+        "int",
+        "dict",
+        "list",
+        "bytes",
+        "empty",
+        "no-prefix",
+        "short",
+        "long",
+        "upper-algorithm",
+        "upper-hex",
+        "nonhex",
+        "over-limit",
+    ],
+)
+def test_expected_platform_manifest_pin_is_a_bounded_lowercase_sha256_scalar(role, pin):
+    plan, value = example(role)
+    with pytest.raises(ContractError):
+        validate(plan, value, image_manifest_digest=pin)
+
+
+@pytest.mark.parametrize("role", ["A", "B"])
+def test_separately_supplied_platform_manifest_pin_is_required_without_fallback(role):
+    plan, value = example(role)
+    with pytest.raises(TypeError):
+        validate_stopped_container(
+            plan, canonical(value), container_id=CID, image_environment=ENVIRONMENT
+        )

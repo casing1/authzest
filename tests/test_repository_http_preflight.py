@@ -261,3 +261,120 @@ def test_async_current_hook_is_not_awaited_or_dispatched(monkeypatch):
     ).to_dict()
     assert calls == queries == []
     assert data["status"] == "failed" and data["engine_contact_attempted"] is False
+
+
+def test_image_config_ids_and_platform_manifest_digests_remain_distinct():
+    from tests.helpers.repository_http_container_data import MANIFEST_DIGESTS
+
+    checked, frames = metadata_context()
+    result = preflight.normalize_runtime_metadata(checked, frames).to_dict()
+    for role in ("A", "B"):
+        image = result["metadata"]["images"][role]
+        assert image["image_id"] == checked.to_dict()["images"][role]["image_id"]
+        assert image["manifest_descriptor"]["digest"] == MANIFEST_DIGESTS[role]
+        assert image["manifest_descriptor"]["digest"] != image["image_id"]
+        assert image["platform_manifest_reported"] is True
+    assert result["ready"] is result["verified_fix"] is result["execution_authorized"] is False
+    assert (
+        "independently-reviewed-platform-manifest-pin-and-config-id-correspondence"
+        in result["pending"]
+    )
+
+
+@pytest.mark.parametrize("kind", ["absent", "null", "no-platform", "null-platform"])
+def test_absent_descriptor_or_platform_never_falls_back_to_config_id(kind):
+    from authzest.codex.contracts import decode
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    if kind == "absent":
+        del body["Descriptor"]
+    elif kind == "null":
+        body["Descriptor"] = None
+    elif kind == "no-platform":
+        del body["Descriptor"]["platform"]
+    else:
+        body["Descriptor"]["platform"] = None
+    frames[2] = frame("image-A", body)
+    result = preflight.normalize_runtime_metadata(checked, frames).to_dict()
+    image = result["metadata"]["images"]["A"]
+    assert result["status"] == "metadata-match"
+    assert image["platform_manifest_reported"] is False
+    if kind in {"absent", "null"}:
+        assert image["manifest_descriptor"] is None
+    else:
+        assert image["manifest_descriptor"]["platform"] is None
+        assert image["manifest_descriptor"]["digest"] != image["image_id"]
+    assert result["ready"] is result["verified_fix"] is False
+
+
+@pytest.mark.parametrize(
+    "media_type",
+    [
+        "application/vnd.oci.image.index.v1+json",
+        "application/vnd.docker.distribution.manifest.list.v2+json",
+    ],
+    ids=["oci-index", "docker-list"],
+)
+def test_index_or_manifest_list_is_recorded_without_becoming_a_platform_manifest(media_type):
+    from authzest.codex.contracts import decode
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    body["Descriptor"]["mediaType"] = media_type
+    # Even explicit matching platform metadata cannot turn an index into a
+    # single-platform manifest or an independently accepted pin.
+    frames[2] = frame("image-A", body)
+    result = preflight.normalize_runtime_metadata(checked, frames).to_dict()
+    image = result["metadata"]["images"]["A"]
+    assert image["manifest_descriptor"]["mediaType"] == media_type
+    assert image["platform_manifest_reported"] is False
+    assert image["manifest_descriptor"]["digest"] != image["image_id"]
+    assert result["ready"] is result["execution_authorized"] is False
+
+
+@pytest.mark.parametrize(
+    "platform",
+    [
+        {"os": "linux", "architecture": "amd64"},
+        {"os": "windows", "architecture": "arm64"},
+        {"os": "linux", "architecture": "arm64", "variant": "v7"},
+    ],
+    ids=["other-architecture", "other-os", "other-variant"],
+)
+def test_other_platform_descriptor_is_reported_without_a_matching_platform_claim(platform):
+    from authzest.codex.contracts import decode
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    body["Descriptor"]["platform"] = platform
+    frames[2] = frame("image-A", body)
+    image = preflight.normalize_runtime_metadata(checked, frames).to_dict()["metadata"]["images"][
+        "A"
+    ]
+    assert image["manifest_descriptor"]["platform"] == platform
+    assert image["platform_manifest_reported"] is False
+
+
+def test_descriptor_projection_is_detached_and_keeps_only_bounded_selected_fields():
+    from authzest.codex.contracts import decode
+
+    checked, frames = metadata_context()
+    body = decode(frames[2].body.decode())
+    body["Descriptor"]["annotations"] = {"ignored": "not-selected"}
+    body["Descriptor"]["platform"].update(
+        {"os.version": "", "os.features": ["synthetic"], "features": []}
+    )
+    frames[2] = frame("image-A", body)
+    result = preflight.normalize_runtime_metadata(checked, frames)
+    value = result.to_dict()["metadata"]["images"]["A"]
+    descriptor = value["manifest_descriptor"]
+    assert set(descriptor) == {"digest", "mediaType", "size", "platform"}
+    assert descriptor["platform"]["os.features"] == ["synthetic"]
+    assert value["platform_manifest_reported"] is True
+    assert "not-selected" not in result.payload_json
+    descriptor["digest"] = "changed detached dictionary"
+    assert (
+        result.to_dict()["metadata"]["images"]["A"]["manifest_descriptor"]["digest"]
+        != descriptor["digest"]
+    )
