@@ -71,6 +71,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Fixed
 
+- Publish the trusted descendant PID marker atomically in the existing cancellation regression.
+  Waiting for file creation alone could cancel its writer before the PID was flushed, causing an
+  intermittent empty-marker CI failure. Process-group, descendant and cleanup assertions remain.
+
 - Raise the supported Typer minimum to 0.27.3 and exercise CLI help at that exact version in
   cold-start CI. An installed wheel with the former allowed Typer 0.9.0 failed before parsing
   commands because the CLI uses union annotations. Package-byte checks alone did not detect it.

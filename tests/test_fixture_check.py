@@ -379,6 +379,7 @@ def test_worker_cwd_is_empty_and_not_the_fixture_path(monkeypatch, children):
 @pytest.mark.parametrize("mode", ["timeout", "cancel", "success"])
 def test_owned_process_group_descendant_is_stopped(monkeypatch, children, tmp_path, mode):
     marker = tmp_path / "descendant-pid"
+    pending_marker = marker.with_name(marker.name + ".pending")
     code = (
         "import os,sys,time\n"
         "sys.stdin.buffer.read()\n"
@@ -387,7 +388,9 @@ def test_owned_process_group_descendant_is_stopped(monkeypatch, children, tmp_pa
         "    os.close(1)\n"
         "    time.sleep(30)\n"
         "    os._exit(0)\n"
-        f"with open({str(marker)!r}, 'w') as target: target.write(str(child))\n"
+        # Publish readiness only after the PID has been written and the file closed.
+        f"with open({str(pending_marker)!r}, 'w') as target: target.write(str(child))\n"
+        f"os.replace({str(pending_marker)!r}, {str(marker)!r})\n"
         + (f"print({json.dumps(payload())!r})\n" if mode == "success" else "time.sleep(30)\n")
     )
     helper(monkeypatch, code)
