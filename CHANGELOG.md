@@ -58,6 +58,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Readable proposal output, single-JSON mode and bilingual external-project usage guidance.
   Stable publication is held pending actual external-project completion and new candidate review.
 
+### Fixed
+
+- Raise the supported Typer minimum to 0.27.3 and exercise CLI help at that exact version in
+  cold-start CI. An installed wheel with the former allowed Typer 0.9.0 failed before parsing
+  commands because the CLI uses union annotations. Package-byte checks alone did not detect it.
+
 ## [0.1.0] - 2026-11-23
 
 This date records preparation of the final course-release notes, following the first candidate

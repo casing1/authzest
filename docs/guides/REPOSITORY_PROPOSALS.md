@@ -64,6 +64,9 @@ integration. The saved-result GUI is a release goal for this mode, not a deliver
 
 Use the updated non-frozen source installation on POSIX and activate its Python environment. The
 dashboard/frontend build and Docker runtime are not required for this proposal-only CLI command.
+The package requires Typer **0.27.3 or newer**; older environments must resolve the updated
+package dependencies before using the CLI. The former 0.9 lower bound could not parse its union
+annotations, so the minimum-version CI now checks both root and proposal help.
 The existing Codex adapter requires a trusted Codex CLI **0.153.0**, an existing ChatGPT login and an
 explicit accessible model identifier. Offline preview does not contact Codex or use an account.
 
