@@ -388,13 +388,18 @@ def format_generated_file_offline_preview(value: dict) -> str:
 
 def format_repository_suggestion(value: dict) -> str:
     """Keep external proposals readable while escaping every untrusted text line."""
+    http_poc = value.get("kind") == "repository-http-suggestion"
     evidence = value.get("source_evidence") or {}
     selection = evidence.get("selection") or {}
     proposal = value.get("proposal") or {}
     preview = value.get("proposal_preview") or {}
     parts = [
-        "External repository proposal",
-        "Untrusted source/test suggestions; not executed, applied or verified.",
+        "External HTTP PoC and repair proposal" if http_poc else "External repository proposal",
+        (
+            "Untrusted HTTP request data and repair source; not executed, applied or verified."
+            if http_poc
+            else "Untrusted source/test suggestions; not executed, applied or verified."
+        ),
         section(
             "Summary",
             {
@@ -417,6 +422,10 @@ def format_repository_suggestion(value: dict) -> str:
         parts.append(_payload_block("Model rationale (unverified)", proposal.get("rationale")))
         for key in ("assumptions", "uncertainties", "limitations"):
             parts.append(_explanation_block(key.capitalize(), proposal.get(key)))
+    if http_poc and preview.get("poc") is not None:
+        parts.append(
+            _payload_block("HTTP PoC request data (not dispatched)", json_output(preview["poc"]))
+        )
     for change in preview.get("changes", []):
         parts.append(
             section(
@@ -431,8 +440,12 @@ def format_repository_suggestion(value: dict) -> str:
     if value.get("failure"):
         parts.append(section("Redacted failure", value["failure"]))
     parts.append(
-        "Proposed test paths are artifact labels; existing test files were not inspected. "
-        "Use --json for complete selected-source evidence and proposal data. "
+        (
+            "HTTP PoC data is not an observed reproduction or an independent policy oracle. "
+            if http_poc
+            else "Proposed test paths are artifact labels; existing test files were not inspected. "
+        )
+        + "Use --json for complete selected-source evidence and proposal data. "
         "The current GUI does not import this external-proposal result kind."
     )
     return "\n\n".join(parts)
@@ -739,6 +752,7 @@ class WorkflowOutput:
             "codex-fixture-sharing-preview",
             "owner-read-sharing-preview",
             "repository-sharing-preview",
+            "repository-http-sharing-preview",
         ):
             typer.echo(format_sharing_preview(value))
         elif isinstance(value, dict) and value.get("kind") in (
@@ -776,7 +790,10 @@ class WorkflowOutput:
         return input()
 
     def finish(self, value: dict, *, error: bool = False, preview: bool = False) -> None:
-        if not self.as_json and value.get("kind") == "repository-suggestion":
+        if not self.as_json and value.get("kind") in (
+            "repository-suggestion",
+            "repository-http-suggestion",
+        ):
             typer.echo(format_repository_suggestion(value), err=error)
         elif not self.as_json and value.get("kind") == "owner-read-suggestion":
             typer.echo(format_owner_read_suggestion(value), err=error)

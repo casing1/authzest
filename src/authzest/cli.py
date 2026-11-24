@@ -306,6 +306,15 @@ def repository_suggest(
         list[str] | None,
         typer.Option("--context", help="Selected related Python file; repeat at most four times."),
     ] = None,
+    http_poc: Annotated[
+        bool,
+        typer.Option(
+            "--http-poc", help="Propose bounded GET PoC data and one-file repair instead of pytest."
+        ),
+    ] = False,
+    app_attribute: Annotated[
+        str | None, typer.Option(help="App attribute for --http-poc only; defaults to app.")
+    ] = None,
     preview_only: Annotated[
         bool, typer.Option(help="Read selected files and preview offline; no account use.")
     ] = False,
@@ -316,7 +325,7 @@ def repository_suggest(
         float, typer.Option(help="Single adapter timeout in seconds, up to 120.")
     ] = 120,
 ) -> None:
-    """Propose an unexecuted defensive test and one-file repair for selected external source."""
+    """Propose an unexecuted external test/repair, or GET PoC data with --http-poc."""
     from authzest.analyzer.repository_input import RepositoryInputError
     from authzest.codex.contracts import ContractError
     from authzest.runner.repository_suggestion import (
@@ -334,6 +343,8 @@ def repository_suggest(
                     policy,
                     model,
                     contexts=tuple(context or ()),
+                    http_poc=http_poc,
+                    app_attribute=app_attribute,
                     timeout_seconds=timeout_seconds,
                 ),
                 preview=True,
@@ -346,6 +357,8 @@ def repository_suggest(
                 policy,
                 model,
                 contexts=tuple(context or ()),
+                http_poc=http_poc,
+                app_attribute=app_attribute,
                 timeout_seconds=timeout_seconds,
                 emit=output.emit,
                 read=output.read,
@@ -354,8 +367,8 @@ def repository_suggest(
     except (RepositoryInputError, ContractError, KeyboardInterrupt, asyncio.CancelledError) as exc:
         cancelled = isinstance(exc, (KeyboardInterrupt, asyncio.CancelledError))
         result = {
-            "schema_version": "1.0",
-            "kind": "repository-suggestion",
+            "schema_version": "2.0" if http_poc else "1.0",
+            "kind": "repository-http-suggestion" if http_poc else "repository-suggestion",
             "status": "cancelled" if cancelled else "invalid-input",
             "exit_code": 130 if cancelled else 2,
             "detail": "Interrupted."
@@ -364,6 +377,7 @@ def repository_suggest(
             "execution_status": "not-run",
             "patch_application": "not-run",
             "restoration_status": "not-run",
+            **({"verified_fix": False} if http_poc else {}),
         }
     output.finish(result, error=result["exit_code"] != 0)
     raise typer.Exit(code=result["exit_code"])

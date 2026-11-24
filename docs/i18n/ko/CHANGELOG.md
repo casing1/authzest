@@ -16,6 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ### 추가
 
+- 외부 FastAPI 한 파일을 위한 `repo-suggest --http-poc`: 별도 schema 2.0 요청, 제한된 GET PoC
+  데이터·수정 소스 검증, 한 파일 diff와 전용 Codex 진입점을 추가합니다. 새 공유·재캡처·단일 시도
+  제한과 기존 v1.0 기본 동작을 유지합니다. 오프라인·가짜 peer 검사는 실제 제공자 수용, A/B 실행,
+  GUI 가져오기나 원본 최종 수정 완료가 아닙니다. [#210](https://github.com/casing1/authzest/issues/210)
+
 - 외부 런타임 기반: 현재 복사본 checkpoint, 별도 봉인한 T/A 선택 입력, 명시적 guest 진입점/client
   fixture와 제한된 GET 관찰을 구현합니다. 미실행 생성 계획·소스/recipe pin과 비활성 파일·가짜 peer
   검사를 추가하며 이미지 시작·프로젝트 실행·CLI/GUI 실행 활성화·원본 수정은 하지 않습니다.

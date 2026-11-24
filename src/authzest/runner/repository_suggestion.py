@@ -26,6 +26,13 @@ from authzest.codex.contracts import (
     identity,
 )
 from authzest.codex.fixture_draft import MAX_RETRY_NOTIFICATIONS
+from authzest.codex.repository_http_proposal import (
+    RepositoryHttpRequest,
+    build_repository_http_request,
+    prepare_repository_http_preview,
+    validate_repository_http_options,
+    validate_repository_http_response,
+)
 from authzest.codex.repository_proposal import (
     build_repository_request,
     prepare_repository_preview,
@@ -49,10 +56,22 @@ def build_repository_sharing_preview(
     model: str,
     *,
     contexts: tuple[str, ...] = (),
+    http_poc: bool = False,
+    app_attribute: str | None = None,
     timeout_seconds: float = 120,
     invocation_nonce: str | None = None,
 ) -> dict[str, Any]:
     """Read only explicitly selected files; this function never contacts Codex."""
+    if type(http_poc) is not bool:
+        raise ContractError("Expected an explicit HTTP-PoC selector")
+    if not http_poc and app_attribute is not None:
+        raise ContractError("An app attribute requires explicit HTTP-PoC mode")
+    if http_poc and (contexts or app_attribute is not None and type(app_attribute) is not str):
+        raise ContractError("HTTP-PoC mode requires one source without context files")
+    if http_poc:
+        validate_repository_http_options(
+            source, app_attribute="app" if app_attribute is None else app_attribute
+        )
     if getattr(sys, "frozen", False):
         raise ContractError("Repository proposals require a non-frozen source installation")
     if (
@@ -69,11 +88,21 @@ def build_repository_sharing_preview(
     ):
         raise ContractError("Invalid sharing nonce")
     snapshot = capture_repository(root, source, policy, contexts)
-    request = build_repository_request(snapshot, model)
+    request = (
+        build_repository_http_request(
+            snapshot, model, app_attribute="app" if app_attribute is None else app_attribute
+        )
+        if http_poc
+        else build_repository_request(snapshot, model)
+    )
     payload = {
-        "schema_version": "1.0",
-        "kind": "repository-sharing-preview",
-        "source_scope": "explicit external repository files only; proposal-only",
+        "schema_version": "2.0" if http_poc else "1.0",
+        "kind": "repository-http-sharing-preview" if http_poc else "repository-sharing-preview",
+        "source_scope": (
+            "one explicit external FastAPI file and policy; HTTP PoC/repair proposal-only"
+            if http_poc
+            else "explicit external repository files only; proposal-only"
+        ),
         "request_id": request.request_id,
         "request": request.to_dict(),
         "limits": {
@@ -100,6 +129,20 @@ def build_repository_sharing_preview(
             "this decision does not authorize repository edits, copies or test execution."
         ),
     }
+    if http_poc:
+        payload["sharing"] = (
+            "Send only the displayed single source, policy text, static evidence, explicit HTTP "
+            "interface, prompt, schema and fixed host instructions through local Codex App Server "
+            "to OpenAI using your existing ChatGPT login. Review all text for secrets; explicit "
+            "selection is not secret detection. Absolute root paths are excluded. Codex adds "
+            "harness context and can consume account usage. There is one application attempt, "
+            "no model fallback and no application retry; internal retries and token/dollar usage "
+            "are not hard-capped. Request a new bounded GET PoC as data and a one-file repair, "
+            "not executable test code. Independent policy expectations are not included. "
+            "Policy and proposals are untrusted; no authentication assurance, observed behavior "
+            "or verified fix follows. This sharing decision authorizes no target execution, "
+            "copy, original-file change or recovery."
+        )
     challenged = {
         **payload,
         "sharing_content_id": "content-" + identity(payload),
@@ -115,19 +158,28 @@ async def run_repository_suggestion(
     model: str,
     *,
     contexts: tuple[str, ...] = (),
+    http_poc: bool = False,
+    app_attribute: str | None = None,
     timeout_seconds: float = 120,
     emit: Callable[[str], Any] = print,
     read: Callable[[str], str] = input,
     adapter_factory: Callable[..., Any] | None = None,
 ) -> dict[str, Any]:
     preview = build_repository_sharing_preview(
-        root, source, policy, model, contexts=contexts, timeout_seconds=timeout_seconds
+        root,
+        source,
+        policy,
+        model,
+        contexts=contexts,
+        http_poc=http_poc,
+        app_attribute=app_attribute,
+        timeout_seconds=timeout_seconds,
     )
     expires = monotonic() + SHARING_LIFETIME_SECONDS
     emit(json.dumps(preview, ensure_ascii=True, indent=2, allow_nan=False))
     result = {
-        "schema_version": "1.0",
-        "kind": "repository-suggestion",
+        "schema_version": "2.0" if http_poc else "1.0",
+        "kind": "repository-http-suggestion" if http_poc else "repository-suggestion",
         "status": "not-shared",
         "exit_code": 0,
         "request_id": preview["request_id"],
@@ -151,6 +203,8 @@ async def run_repository_suggestion(
         "original_checkout_modified": False,
         "authorization_status": "unknown",
     }
+    if http_poc:
+        result["verified_fix"] = False
     try:
         answer = read(f"Type 'share {preview['sharing_id']}' to send; Enter declines: ")
     except (EOFError, KeyboardInterrupt):
@@ -171,6 +225,8 @@ async def run_repository_suggestion(
             policy,
             model,
             contexts=contexts,
+            http_poc=http_poc,
+            app_attribute=app_attribute,
             timeout_seconds=timeout_seconds,
             invocation_nonce=preview["invocation_nonce"],
         )
@@ -186,7 +242,11 @@ async def run_repository_suggestion(
     # No filesystem reads occur inside the contract or the adapter's validation.
     from authzest.codex.repository_proposal import RepositoryProposalRequest
 
-    request = RepositoryProposalRequest(canonical(current["request"]))
+    request = (
+        RepositoryHttpRequest(canonical(current["request"]))
+        if http_poc
+        else RepositoryProposalRequest(canonical(current["request"]))
+    )
     factory = adapter_factory if adapter_factory is not None else _default_adapter_factory
     started = perf_counter()
     adapter = None
@@ -198,10 +258,18 @@ async def run_repository_suggestion(
             )
             result["application_turn_attempts"] = 1
             stage = "unknown"
-            response = await adapter.suggest_repository(request)
+            response = (
+                await adapter.suggest_repository_http(request)
+                if http_poc
+                else await adapter.suggest_repository(request)
+            )
         stage = "result-validation"
-        checked = validate_repository_response(canonical(response), request)
-        composed = prepare_repository_preview(checked, request)
+        if http_poc:
+            checked = validate_repository_http_response(canonical(response), request)
+            composed = prepare_repository_http_preview(checked, request)
+        else:
+            checked = validate_repository_response(canonical(response), request)
+            composed = prepare_repository_preview(checked, request)
     except asyncio.CancelledError:
         result.update(status="cancelled", exit_code=130)
         return result
