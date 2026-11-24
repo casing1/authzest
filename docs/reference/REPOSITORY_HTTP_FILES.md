@@ -96,8 +96,9 @@ HTTP/case/plan correspondence against that exact issuer checkpoint. It seals onl
 ```
 
 Input files use 0444 and input directories 0555. The outer directory remains 0700; its 0600 host
-record is outside inputs. Policy, expected answers, journal, generated tests and credentials do not
-enter A's input tree. There is no B stage: B receives the existing request-only schedule over bounded
+record is outside inputs. No separate policy, oracle, journal, generated-test or ambient credential
+files are copied. Selected source is preserved verbatim, including any literals it already contains.
+There is no B stage: B receives the existing request-only schedule over bounded
 stdin plus EOF, without source/policy/oracle mounts.
 
 Allocation hooks, staged readback, snapshots and create-plan construction recheck private and staged
