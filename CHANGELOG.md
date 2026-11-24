@@ -16,6 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- HTTP-only independent case/plan/supplied-phase contracts, exact model-PoC correspondence and
+  request-only bounded observation. Add source-only A/B manifest/create plans, guest source and
+  arm64 image-input declarations, checked with inert files/fake streams and kernel/tool peers.
+  Images remain unbuilt; no Engine, target, live staging/operator or original-write acceptance.
+  [#210](https://github.com/casing1/authzest/issues/210)
+
 - Opt-in `repo-suggest --http-poc` for one external FastAPI file: a distinct schema 2.0 request,
   bounded GET PoC data and repair-source validation, one-file diff and a dedicated Codex entry.
   Keep fresh sharing/recapture and one-attempt limits; default v1.0 behavior is unchanged.
