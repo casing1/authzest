@@ -43,7 +43,11 @@ from authzest.runner._repository_http_runtime_profile import (
     build_container_create_plan,
     validate_runtime_profile,
 )
-from authzest.runner._repository_http_staging import RepositoryHttpInputStage, supported
+from authzest.runner._repository_http_staging import (
+    RepositoryHttpInputStage,
+    RepositoryHttpStageInitializationError,
+    supported,
+)
 from authzest.runner._repository_http_transport import (
     MAX_CAPTURE_BYTES,
     HTTPProfileError,
@@ -319,6 +323,7 @@ class _Phase:
         self.manifest_pins = {}
         self.capture = self.capture_failure = self.relay_exit = None
         self.frame = self.comparison = None
+        self.stage_failure = None
         self.failure = None
         self.cleanup_errors = []
         self.runtime_attempted = False
@@ -599,9 +604,26 @@ class _Phase:
             schedule_sha256=sha256(self.schedule_bytes).hexdigest(),
         )
         self.setup(self._preflight)
-        stage = RepositoryHttpInputStage(
-            self.session, self.request, self.response, self.cases, self.plan, self.phase
-        )
+        try:
+            stage = RepositoryHttpInputStage(
+                self.session, self.request, self.response, self.cases, self.plan, self.phase
+            )
+        except BaseException as exc:
+            failure = getattr(exc, "repository_http_stage_initialization", exc)
+            if isinstance(failure, RepositoryHttpStageInitializationError):
+                self.stage_failure = {
+                    "stage": failure.stage,
+                    "created_path": None
+                    if failure.created_path is None
+                    else str(failure.created_path),
+                    "allocation_attempted": failure.allocation_attempted,
+                    "creation_confirmed": failure.creation_confirmed,
+                    "ownership_uncertain": failure.ownership_uncertain,
+                    "descriptor_cleanup_confirmed": failure.descriptor_cleanup_confirmed,
+                }
+                if failure.descriptor_cleanup_confirmed is not True or failure.ownership_uncertain:
+                    self.cleanup_errors.append("stage-initialization-cleanup-unconfirmed")
+            raise
         self.stages.append(stage)
         staged = stage.prepare_create(self.profile, self.nonce, uuid.uuid4().hex).to_dict()
         item_a = self.create(
@@ -818,7 +840,14 @@ class _Phase:
             else sha256(self.schedule_bytes).hexdigest(),
             "status": "complete" if complete else "failed",
             "failure": self.failure,
-            "criteria_met": bool(complete and self.comparison["supplied_criteria_met"]),
+            # A capture-level failure (e.g. B's final deadline check) is never
+            # success, even when every individual record holds a response.
+            "criteria_met": bool(
+                complete
+                and self.capture["status"] == "complete"
+                and self.capture["failure"] is None
+                and self.comparison["supplied_criteria_met"]
+            ),
             "cleanup_confirmed": cleaned,
             "cleanup_errors": self.cleanup_errors,
             "runtime_attempted": self.runtime_attempted,
@@ -848,6 +877,7 @@ class _Phase:
             "staged_inputs": [
                 None if stage.path is None else str(stage.path) for stage in self.stages
             ],
+            "stage_initialization_failure": self.stage_failure,
             "cli_output_bytes": self.pool.output_bytes,
             "setup_seconds": self.setup_used,
             "transport_failure": self.pool.first_failure,

@@ -877,3 +877,41 @@ def test_closed_profile_is_refused_before_precharge(setup):
     with pytest.raises(module.RepositoryHttpPhaseError, match="invalid-private-http-phase-context"):
         world.invoke(budget=budget)
     assert budget.used == 0 and world.calls == []
+
+
+def test_capture_level_failure_is_never_criteria_met(setup):
+    world = setup("after")
+
+    def late_deadline(capture):
+        capture.update(status="partial", failure="deadline-expired")
+        return capture
+
+    world.capture_hook = late_deadline
+    result = world.invoke().to_dict()
+    assert result["relay_exit_code"] == 1
+    assert result["comparison"]["counts"]["match"] == 5
+    assert result["relay_capture"]["failure"] == "deadline-expired"
+    assert result["criteria_met"] is False
+
+
+def test_stage_initialization_failure_is_retained(setup, monkeypatch):
+    world = setup("before")
+    from authzest.runner import _repository_http_staging as staging
+
+    original = staging.RepositoryHttpInputStage._create_file
+
+    def failing(self, name, content):
+        if name.endswith("app.py"):
+            raise OSError("synthetic staging write failure")
+        return original(self, name, content)
+
+    monkeypatch.setattr(staging.RepositoryHttpInputStage, "_create_file", failing)
+    monkeypatch.setattr(
+        staging.RepositoryHttpInputStage, "_close_descriptors", lambda self: OSError("close")
+    )
+    result = world.invoke().to_dict()
+    failure = result["stage_initialization_failure"]
+    assert result["status"] == "failed" and result["owned"] == []
+    assert failure["created_path"] and failure["descriptor_cleanup_confirmed"] is False
+    assert "stage-initialization-cleanup-unconfirmed" in result["cleanup_errors"]
+    assert result["cleanup_confirmed"] is False
