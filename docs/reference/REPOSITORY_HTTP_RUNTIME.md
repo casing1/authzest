@@ -100,15 +100,53 @@ match grants no ownership, direct execution evidence or lifecycle/write permissi
 must record owned intent before create, recheck every current input and clean up each exact owned
 guest/local child even after partial failure.
 
+## Direct A → B phase
+
+`_repository_http_phase.execute_repository_http_phase` is the private effectful bridge from a live
+private copy to one bounded HTTP observation. A trusted coordinator calls it only with the same
+quiescent `RepositoryHttpFileSession` (`copied-before` for **before**, `applied-after` for
+**after**), its exact request/response/cases/verification plan, a loaded private profile, a fresh
+session nonce, a synchronous dispatch guard and the shared `SessionEvidenceBudget`. Wrong state,
+types, asynchronous guards or nonces are refused before any effect.
+
+One phase uses one original 40-second deadline, at most 10 seconds of cumulative setup and a
+separate 10-second cleanup window, reusing the maintained `ProcessPool`, journal and budget:
+
+1. Capture the issuer's current private checkpoint, build the request-only schedule and journal
+   intent. Pin the client/config/endpoint and read the four fixed Engine documents. Require the
+   reviewed image environment/user, runc, cgroup v2, builtin seccomp and reported resource controls.
+2. Seal the A input stage, register the owned name, refuse an existing name, create the stopped A
+   guest and compare its inspect report against the exact plan and separately read manifest pin.
+3. Attach/start A, wait only for its untrusted startup hint, then create B in A's network namespace
+   and attach/start it with `--interactive`. The exact schedule bytes bound in B's plan are written
+   to stdin followed by EOF. The legacy process input limit stays 512 bytes; only this phase opts
+   into the 16 KiB HTTP schedule ceiling, still with nonblocking writes.
+4. Decode B's bounded capture strictly against the schedule and exit code. Remove each exact owned
+   guest, terminate local children and close the stage, even after failure or interruption.
+5. Only then project responses into the closed comparison frame, with actual cleanup states, and
+   compare with the host-held case expectations through the existing comparison.
+
+The guard, the issuer's checkpoint recheck, the profile handle and the stage are checked before
+every dispatch. A private edit, profile change or guard failure stops the phase and cleanup still
+runs. The first transport error aborts the remaining cases as `not-dispatched`; capture errors map
+onto the closed `timeout`/`http-framing`/`body-invalid`/`transport-error` set.
+
+The containerd image store reports a single-platform manifest descriptor without `platform`. That
+descriptor supplies the manifest pin only when it is a manifest (never an index/list) and the same
+image inspect reports linux/arm64. The stopped container must then report the same digest with an
+explicit platform. The configuration ID is never used as that pin.
+
+The retained result (`repository-http-phase-result`) records status, failure, `criteria_met`,
+owned guests and absence, cleanup errors, metadata, the projected frame and comparison, bounded
+command captures, staged-input and evidence paths. `criteria_met` requires a complete, cleaned phase
+whose comparison meets the existing before/after criteria. It is retained history: it cannot reopen
+a session, authorize a later write or certify the application beyond the reviewed finite cases.
+Owned inert-file tests use a fake Docker client and the maintained B capture codec; actual images
+and Engine execution are not exercised by those tests.
+
 ## Remaining work
 
-Connect actual reviewed image acceptance and current private checkpoints/stages/profile/client facts
-to a separate direct A → B host phase. Preserve one original phase deadline, cumulative setup/output,
-exact owned cleanup and every independent policy case. The existing process input ceiling is smaller
-than the new bounded HTTP schedule; the HTTP-specific stdin seam still needs implementation and
-regression coverage before dispatch. Do not silently widen legacy process contracts.
-
-Then connect direct results to private before/diff/apply/after/restore CLI coordination and separately
-implement final original-file approval, backup, fresh-state/edit-conflict checks and recovery.
-Installed actual full-flow acceptance and saved-result viewing remain open. These source APIs do not
-complete the release criteria or publish a release.
+Connect this phase to the private before/diff/apply/after CLI coordination and separately implement
+final original-file approval, backup, fresh-state/edit-conflict checks and recovery. Actual reviewed
+image build/acceptance, installed actual full-flow evidence and saved-result viewing remain open.
+These source APIs do not complete the release criteria or publish a release.
