@@ -109,8 +109,18 @@ class Project:
             "file_session_revision": session._revision,
             "plan_id": plan.plan_id,
             "source_sha256": sha256(text.encode()).hexdigest(),
-            "comparison": {"outcomes": [{"case_id": "other", "outcome": "match"}]},
+            "comparison": {
+                "frame_status": "valid-supplied",
+                "planned_cases": 5,
+                "counts": {"match": 5, "mismatch": 0, "error": 0, "not-dispatched": 0},
+                "outcomes": [
+                    {"case_id": name, "outcome": "match", "reason": "matches-supplied-" + phase}
+                    for name in ("owner", "other", "anonymous", "normal", "public")
+                ],
+            },
             "cleanup_confirmed": True,
+            "runtime_attempted": True,
+            "schedule_sha256": "c" * 64,
             "evidence_directory": "/owned/" + phase,
             "captures": [],
             "runtime_metadata": {},

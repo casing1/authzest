@@ -201,6 +201,7 @@ async def run_repository_http_fix(
         "model": model,
         "request_id": None,
         "case_basis": None,
+        "source_evidence": None,
         "cases": None,
         "suggestion": None,
         "proposal_status": None,
@@ -225,6 +226,14 @@ async def run_repository_http_fix(
         request = build_repository_http_request(origin.snapshot, model, app_attribute=attribute)
         result["request_id"] = request.request_id
         result["case_basis"] = case_basis(request)
+        context = request.to_dict()
+        selected_source, selected_policy = context["selection"]["files"]
+        # Captured inputs let the saved-result viewer rebuild the diff independently.
+        result["source_evidence"] = {
+            "source": {key: selected_source[key] for key in ("path", "sha256", "text")},
+            "policy": {key: selected_policy[key] for key in ("path", "sha256", "text")},
+            "http_interface": context["http_interface"],
+        }
         cases = build_repository_http_cases(_read_case_file(cases_path))
         case_data = cases.to_dict()
         if case_data["basis"] != result["case_basis"]:
