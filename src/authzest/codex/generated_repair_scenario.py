@@ -7,6 +7,8 @@ independently approved reference set or observed endpoint behavior.
 
 from __future__ import annotations
 
+import json
+from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path
 
@@ -63,15 +65,28 @@ POLICY = (
 )
 
 
-def build_scenario_context() -> dict:
-    """Return detached fixed bytes and in-memory declarations; paths are labels only."""
+@lru_cache(maxsize=4)
+def _declaration_json(source: str, source_path: str) -> str:
+    """Inventory one exact source text once per process, as immutable JSON text.
+
+    The AST inventory is a pure function of the text and label, but the request,
+    proposal and session checks rebuild this context thousands of times per run;
+    re-parsing each time made those checks CPU-bound. Keying on the exact text
+    still parses and checks a changed SOURCE. Failures raise and are not cached.
+    """
     root = Path("owned-fastapi-document-ownership")
-    parsed = FastAPIRouteParser().parse_source(SOURCE, root / SOURCE_PATH)
+    parsed = FastAPIRouteParser().parse_source(source, root / source_path)
     if parsed.error or parsed.diagnostics or len(parsed.routes) != 1:
         raise ContractError("Maintained generation scenario mismatch", code="validation-identity")
     declaration = parsed.routes[0].to_dict(root)
     if declaration["path"] != "/documents/{document_id}" or declaration["methods"] != ["GET"]:
         raise ContractError("Maintained generation route mismatch", code="validation-identity")
+    return json.dumps(declaration, ensure_ascii=False, allow_nan=False)
+
+
+def build_scenario_context() -> dict:
+    """Return detached fixed bytes and in-memory declarations; paths are labels only."""
+    declaration = json.loads(_declaration_json(SOURCE, SOURCE_PATH))
     return {
         "scenario_id": SCENARIO_ID,
         "source": {

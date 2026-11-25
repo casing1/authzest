@@ -24,7 +24,10 @@ jobs:
 
   generated-contract-cold-start:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # CPU-bound: some hosted runners take about 2x as long (7 min fast, about 14 slow
+    # in 2026-11). A stalled test fails within 120 s (tests/conftest.py), so this
+    # budget only has to cover a slow runner, not a hang.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
