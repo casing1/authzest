@@ -105,15 +105,22 @@ def test_build_uses_fresh_contexts_without_attestations(tmp_path, monkeypatch):
         return SimpleNamespace(context_path=work / ("context-" + role))
 
     monkeypatch.setattr(setup.contexts, "prepare_image_context", prepare)
-    monkeypatch.setattr(setup.contexts, "check_prepared_context", lambda root, value: {})
+    checked = []
+
+    def check(context, value):
+        checked.append(context == value.context_path)
+        return {}
+
+    monkeypatch.setattr(setup.contexts, "check_prepared_context", check)
     calls = []
     images = setup.build_images(tmp_path / "wheels", tmp_path / "work", runner=_runner(calls))
     assert [role for role, _ in prepared] == ["A", "B"]
-    assert prepared[1][1] == tmp_path / "work" / "empty-wheelhouse"
+    assert prepared[1][1] == tmp_path / "work-empty-wheelhouse"
     builds = [argv for argv in calls if argv[1] == "build"]
     assert all("--provenance=false" in a and "--sbom=false" in a for a in builds)
     assert all("--platform=linux/arm64" in a and "--pull=false" in a for a in builds)
     assert images["A"]["image_id"] == "sha256:" + "7" * 64
+    assert checked == [True, True]
 
 
 def test_profile_pins_private_client_copy_and_validates(tmp_path):

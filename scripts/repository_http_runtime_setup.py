@@ -112,13 +112,14 @@ def build_images(
 ) -> dict:
     """Build A and B from fresh minimal contexts; return the reported image IDs."""
     _private_directory(work)
-    empty = work / "empty-wheelhouse"
+    # B has no wheels; its empty input root must not overlap the output parent.
+    empty = work.parent / (work.name + "-empty-wheelhouse")
     empty.mkdir(mode=0o700, exist_ok=True)
     images = {}
     for role, wheels in (("A", wheelhouse), ("B", empty)):
         inputs.verify_wheelhouse(root, wheels, role, PLATFORM)
         prepared = contexts.prepare_image_context(root, wheels, work, role, PLATFORM)
-        contexts.check_prepared_context(root, prepared)
+        contexts.check_prepared_context(prepared.context_path, prepared)
         recipe = expected_recipe_pins(PLATFORM, role)["recipe_sha256"]
         tag = f"authzest-repository-http-{role.lower()}:{recipe[:12]}"
         _run(
