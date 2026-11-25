@@ -20,6 +20,10 @@ from dataclasses import dataclass, field
 from time import monotonic
 
 MAX_OUTPUT_BYTES = 262_144
+LEGACY_INPUT_BYTES = 512
+# A fresh pipe holds at least 16 KiB on the supported macOS/Linux hosts. Writes
+# stay nonblocking, so unavailable capacity is still refused, never awaited.
+MAX_INPUT_BYTES = 16_384
 _POLL_INTERVAL = 0.05
 
 
@@ -76,6 +80,7 @@ class ProcessPool:
         *,
         phase_deadline: float | None = None,
         cleanup_reserve_bytes: int = 0,
+        max_input_bytes: int = LEGACY_INPUT_BYTES,
     ):
         if (
             not callable(clock)
@@ -83,6 +88,8 @@ class ProcessPool:
             or not 0 < max_output_bytes <= MAX_OUTPUT_BYTES
             or type(cleanup_reserve_bytes) is not int
             or not 0 <= cleanup_reserve_bytes < max_output_bytes
+            or type(max_input_bytes) is not int
+            or not LEGACY_INPUT_BYTES <= max_input_bytes <= MAX_INPUT_BYTES
         ):
             raise ValueError("Invalid process pool configuration")
         if phase_deadline is not None and (
@@ -92,6 +99,7 @@ class ProcessPool:
         if os.name != "posix" or getattr(sys, "frozen", False):
             raise ProcessError("unsupported-platform", ())
         self._clock, self._maximum = clock, max_output_bytes
+        self._max_input = max_input_bytes
         self._normal_limit = max_output_bytes - cleanup_reserve_bytes
         self._normal_output_exhausted = False
         self._last, self._phase_deadline, self._first = None, phase_deadline, None
@@ -258,7 +266,7 @@ class ProcessPool:
                 or (cwd is not None and (type(cwd) is not str or not os.path.isabs(cwd)))
                 or (
                     input_bytes is not None
-                    and (type(input_bytes) is not bytes or len(input_bytes) > 512)
+                    and (type(input_bytes) is not bytes or len(input_bytes) > self._max_input)
                 )
                 or type(label) is not str
                 or re.fullmatch(r"[A-Za-z0-9_.-]{1,64}", label) is None
@@ -328,8 +336,9 @@ class ProcessPool:
             raise
 
     def _write_input(self, state: _State, data: bytes, deadline: float) -> None:
-        # At most POSIX's minimum PIPE_BUF enters a fresh empty pipe. Nonblocking
-        # writes still refuse unavailable capacity instead of waiting for a reader.
+        # The legacy default stays at POSIX's minimum PIPE_BUF. A larger opt-in
+        # limit relies on fresh pipe capacity; nonblocking writes still refuse
+        # unavailable capacity instead of waiting for a reader.
         failure = None
         try:
             descriptor = state.input_stream.fileno()

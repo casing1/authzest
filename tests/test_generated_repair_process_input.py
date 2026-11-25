@@ -260,3 +260,57 @@ def test_input_close_failure_remains_uncertain_even_if_retry_closes_writer(fake,
     result = pool.terminate_all(clock() + 1)[0]
     assert result.local_cleanup_confirmed is False
     assert "input-pipe-cleanup-unconfirmed" in result.errors
+
+
+@pytest.mark.parametrize("limit", [511, 16_385, True, 512.0, "16384", None])
+def test_input_limit_configuration_is_closed(limit):
+    with pytest.raises(ValueError, match="Invalid process pool configuration"):
+        transport.ProcessPool(max_input_bytes=limit)
+
+
+def test_default_input_limit_remains_legacy_pipe_buf(fake, monkeypatch):
+    _, calls, pool, _ = fake
+    assert transport.LEGACY_INPUT_BYTES == 512
+    with pytest.raises(transport.ProcessError, match="invalid-process-input"):
+        pool.start(["/fixed/docker"], {}, 101, "legacy", input_bytes=b"x" * 513)
+    assert calls == []
+
+
+def test_opt_in_input_limit_is_exact_and_still_refuses_excess(monkeypatch):
+    calls = []
+
+    def popen(*args, **kwargs):
+        calls.append(args)
+        raise AssertionError("oversized input must be refused before launch")
+
+    monkeypatch.setattr(transport.subprocess, "Popen", popen)
+    pool = transport.ProcessPool(clock=Clock(), max_input_bytes=transport.MAX_INPUT_BYTES)
+    with pytest.raises(transport.ProcessError, match="invalid-process-input"):
+        pool.start(["/fixed/docker"], {}, 101, "excess", input_bytes=b"x" * 16_385)
+    assert calls == []
+
+
+def test_real_child_reads_opt_in_schedule_sized_input_and_eof():
+    payload = (bytes(range(32, 127)) * 200)[: transport.MAX_INPUT_BYTES]
+    pool = transport.ProcessPool(
+        phase_deadline=monotonic() + 5, max_input_bytes=transport.MAX_INPUT_BYTES
+    )
+    try:
+        handle = pool.start(
+            [
+                sys.executable,
+                "-I",
+                "-B",
+                "-c",
+                "import sys; data = sys.stdin.buffer.read(); sys.stdout.write(str(len(data)))",
+            ],
+            {},
+            monotonic() + 5,
+            "schedule-echo",
+            input_bytes=payload,
+        )
+        result = pool.wait(handle, monotonic() + 5)
+        assert result.stdout == str(len(payload)).encode() and result.returncode == 0
+    finally:
+        snapshots = pool.terminate_all(monotonic() + 1)
+    assert snapshots[0].local_cleanup_confirmed is True
