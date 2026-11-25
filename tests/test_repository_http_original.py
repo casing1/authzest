@@ -468,3 +468,47 @@ def test_unpreservable_metadata_never_replaces_original(applied, monkeypatch):
     assert caught.value.result["state"] == "original-unchanged-failed"
     assert (root / "app.py").read_text() == SOURCE
     assert [entry.name for entry in root.iterdir() if entry.name.startswith(".")] == []
+
+
+def test_interruption_right_after_rename_stays_restorable(applied, monkeypatch):
+    session, root, recovery = applied()
+    real_rename = os.rename
+
+    def rename_then_interrupt(*args, **kwargs):
+        real_rename(*args, **kwargs)
+        if args[1] == "app.py":  # Only the original replacement, not record.json.
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr(original_module.os, "rename", rename_then_interrupt)
+    with pytest.raises(KeyboardInterrupt) as caught:
+        apply_original(session, _after(session), recovery_parent=recovery)
+    monkeypatch.setattr(original_module.os, "rename", real_rename)
+    record = caught.value.repository_http_original_record
+    assert record["state"] == "recovery-required"
+    assert (root / "app.py").read_text() == AFTER
+    path = recovery / record["record_id"]
+    preview = inspect_original_record(path)
+    assert preview["current_original"] == "matches-applied" and preview["restore_allowed"]
+    assert restore_original(path)["state"] == "restored"
+    assert (root / "app.py").read_text() == SOURCE
+
+
+def test_rename_failure_before_effect_reports_unchanged(applied, monkeypatch):
+    session, root, recovery = applied()
+
+    real_rename = os.rename
+
+    def refuse(*args, **kwargs):
+        if args[1] == "app.py":
+            raise PermissionError("synthetic")
+        return real_rename(*args, **kwargs)
+
+    monkeypatch.setattr(original_module.os, "rename", refuse)
+    with pytest.raises(RepositoryHttpOriginalError) as caught:
+        apply_original(session, _after(session), recovery_parent=recovery)
+    assert caught.value.result["state"] == "original-unchanged-failed"
+    assert (root / "app.py").read_text() == SOURCE
+    monkeypatch.setattr(original_module.os, "rename", real_rename)
+    # The safety net still refuses: the original equals the backup, not the repair.
+    path = recovery / caught.value.result["record_id"]
+    assert inspect_original_record(path)["restore_allowed"] is False

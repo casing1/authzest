@@ -36,7 +36,11 @@ _BACKUP, _APPLIED, _RECORD = "before.py", "after.py", "record.json"
 _DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
 # An interrupted apply can leave intent-recorded after the rename; the exact
 # applied-bytes check below still decides whether restoring is safe.
-_RESTORABLE = frozenset({"intent-recorded", "applied", "recovery-required"})
+# Restore always requires the original to equal the applied bytes exactly, so a
+# conservatively classified failure state never blocks a safe recovery.
+_RESTORABLE = frozenset(
+    {"intent-recorded", "applied", "recovery-required", "original-unchanged-failed"}
+)
 _STATES = {
     "intent-recorded",
     "applied",
@@ -315,6 +319,15 @@ def _remove_temporary(parent: int, name: str) -> str:
         return "temporary-removal-unconfirmed"
 
 
+def _original_may_hold(target) -> bool:
+    """After an interrupted rename, only an observed unchanged original is safe to report."""
+    try:
+        raw, _ = _read_leaf(target.parent_fd, target.name, MAX_SOURCE_BYTES)
+    except BaseException:
+        return True
+    return raw != target.before
+
+
 def _summary(meta: dict) -> dict:
     return {
         "uid": meta["uid"],
@@ -465,7 +478,7 @@ def apply_original(
         "history": [{"event": "intent-recorded", "at": _now()}],
     }
     temporary = None
-    renamed = False
+    renamed = rename_attempted = False
     try:
         _write_new(folder, _BACKUP, target.before, 0o400)
         _write_new(folder, _APPLIED, target.after, 0o400)
@@ -487,6 +500,7 @@ def apply_original(
         if current.identity != target.identity or current.before != target.before:
             raise RepositoryHttpOriginalError("original-edit-conflict")
         _guard(guard)
+        rename_attempted = True
         os.rename(temporary, target.name, src_dir_fd=target.parent_fd, dst_dir_fd=target.parent_fd)
         renamed, temporary = True, None
         os.fsync(target.parent_fd)
@@ -506,7 +520,11 @@ def apply_original(
         if temporary is not None:
             cleanup = _remove_temporary(target.parent_fd, temporary)
         code = exc.code if isinstance(exc, RepositoryHttpOriginalError) else type(exc).__name__
-        record["state"] = "recovery-required" if renamed else "original-unchanged-failed"
+        record["state"] = (
+            "recovery-required"
+            if renamed or rename_attempted and _original_may_hold(target)
+            else "original-unchanged-failed"
+        )
         record["failure"] = {"code": code, "temporary_cleanup": cleanup}
         record["history"].append({"event": record["state"], "at": _now()})
         try:
