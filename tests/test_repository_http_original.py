@@ -392,6 +392,8 @@ def test_macos_acl_survives_apply_or_blocks_replacement(tmp_path, access):
     lib.acl_from_text.restype = ctypes.c_void_p
     lib.acl_set_file.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_void_p]
     lib.acl_free.argtypes = [ctypes.c_void_p]
+    lib.acl_init.argtypes = [ctypes.c_int]
+    lib.acl_init.restype = ctypes.c_void_p
 
     def prepare(path):
         text = "!#acl 1\ngroup:ABCDEFAB-CDEF-ABCD-EFAB-CDEF0000000C:everyone:12:" + access + "\n"
@@ -419,6 +421,12 @@ def test_macos_acl_survives_apply_or_blocks_replacement(tmp_path, access):
         assert _metadata_of(root / "app.py") == before
     finally:
         session.close()
+        # Clear the test ACL so pytest can remove its temporary directory later.
+        empty = lib.acl_init(0)
+        try:
+            lib.acl_set_file(str(root / "app.py").encode(), 0x00000100, empty)
+        finally:
+            lib.acl_free(empty)
 
 
 def test_group_survives_when_another_group_is_available(tmp_path):

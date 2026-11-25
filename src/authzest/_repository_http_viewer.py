@@ -112,7 +112,9 @@ def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None
     )
 
 
-def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
+def _phase(
+    value: Any, candidate: str, regression: str | None, case_ids: list[str] | None
+) -> dict | None:
     phase = _object(value, nullable=True)
     if phase is None:
         return None
@@ -136,6 +138,11 @@ def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
             )
             if case_id == regression:
                 regression_status = outcome
+        # Every reviewed case appears exactly once; invented or repeated IDs
+        # cannot stand in for the recorded case set.
+        ids = [row["case_id"] for row in outcomes]
+        if case_ids is None or len(set(ids)) != len(ids) or set(ids) != set(case_ids):
+            _bad()
         counts = _object(comparison.get("counts"))
         planned = _integer(comparison.get("planned_cases"), nullable=False)
         # Recount from the validated rows; a supplied count can never override them.
@@ -154,8 +161,16 @@ def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
         }
     failure = _text(phase.get("failure"))
     status = _text(phase.get("status"))
+    digest = _hash(phase.get("source_sha256"))
+    cleaned = _bool(phase.get("cleanup_confirmed"))
+    # A phase may fail before capturing its source hash, but success needs the
+    # hash, confirmed cleanup and every reviewed case matching.
     if phase.get("criteria_met") is True and (
-        status != "complete" or projected is None or projected["matching_case_count"] != planned
+        status != "complete"
+        or projected is None
+        or projected["matching_case_count"] != planned
+        or cleaned is not True
+        or digest is None
     ):
         _bad()
     return {
@@ -164,9 +179,9 @@ def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
         "test_exit_code": None,
         "regression_status": regression_status,
         "response_status": None,
-        "cleanup_confirmed": _bool(phase.get("cleanup_confirmed")),
+        "cleanup_confirmed": cleaned,
         "generated_runtime_attempted": _bool(phase.get("runtime_attempted")),
-        "application_sha256": _hash(phase.get("source_sha256")),
+        "application_sha256": digest,
         "test_sha256": _hash(phase.get("schedule_sha256")),
         "failure": None
         if failure is None
@@ -177,16 +192,30 @@ def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
     }
 
 
-def _stages(data: dict, before: dict | None, after: dict | None) -> list[dict]:
-    private = _object(data.get("private_copy"), nullable=True) or {}
+def _completed_steps(private: dict) -> set[str | None]:
     history = private.get("history") or []
     if type(history) is not list or len(history) > 16:
         _bad()
-    done = {
+    return {
         _text(_object(item).get("step"))
         for item in history
         if _object(item).get("status") == "completed"
     }
+
+
+def _case_ids(cases: dict, regression: str | None) -> list[str] | None:
+    ids = cases.get("case_ids")
+    if ids is None:
+        return None
+    if type(ids) is not list or not 4 <= len(ids) <= 8:
+        _bad()
+    ids = [_text(item, nullable=False) for item in ids]
+    if len(set(ids)) != len(ids) or regression not in ids:
+        _bad()
+    return ids
+
+
+def _stages(done: set[str | None], before: dict | None, after: dict | None) -> list[dict]:
     status = {
         "copy": "completed" if "copy" in done else "not-run",
         "before": None if before is None else before["status"],
@@ -216,25 +245,28 @@ def preview_repository_http_fix_result(data: dict) -> dict:
     proposal, assessment = _proposal(data, source)
     cases = _object(data.get("cases"), nullable=True) or {}
     regression = _text(cases.get("regression_case_id"))
-    before = _phase(data.get("before_phase"), "before", regression)
-    after = _phase(data.get("after_phase"), "after", regression)
-    # Bind each check to the exact displayed source: before to the captured
-    # source (when recorded) and after to the model-authored replacement.
-    if (
-        before is not None
-        and source is not None
-        and before["application_sha256"] != source["source"]["sha256"]
-    ):
+    case_ids = _case_ids(cases, regression)
+    before = _phase(data.get("before_phase"), "before", regression, case_ids)
+    after = _phase(data.get("after_phase"), "after", regression, case_ids)
+    # Bind each recorded hash to the exact displayed source: before to the
+    # captured source (when recorded) and after to the model-authored repair.
+    # A phase that failed before its checkpoint has no hash to bind.
+    before_sha = None if before is None else before["application_sha256"]
+    if before_sha is not None and source is not None and before_sha != source["source"]["sha256"]:
         _bad()
     if after is not None and (
-        proposal is None or after["application_sha256"] != proposal["after_source"]["sha256"]
+        proposal is None
+        or after["application_sha256"] not in (None, proposal["after_source"]["sha256"])
     ):
         _bad()
     verified = _bool(data.get("verified_fix"))
-    if verified is True and (
-        after is None
-        or after["comparison"] is None
-        or not (after["comparison"]["matches_expected_profile"])
+    # A verified repair needs the defect reproduced before and every reviewed
+    # case matched after, each with a bound hash and confirmed cleanup.
+    if verified is True and not all(
+        phase is not None
+        and phase["comparison"] is not None
+        and phase["comparison"]["matches_expected_profile"] is True
+        for phase in (before, after)
     ):
         _bad()
     original = _object(data.get("original"), nullable=True) or {}
@@ -242,8 +274,13 @@ def preview_repository_http_fix_result(data: dict) -> dict:
     modified = _bool(data.get("original_checkout_modified"))
     if status == "original-applied" and (original_state != "applied" or modified is not True):
         _bad()
-    recovery = original_state == "recovery-required" or status == "original-recovery-required"
     private = _object(data.get("private_copy"), nullable=True) or {}
+    done = _completed_steps(private)
+    recovery = (
+        original_state == "recovery-required"
+        or status == "original-recovery-required"
+        or private.get("state") == "recovery-required"
+    )
     warnings = [
         "Imported claims are unverified. Display validation is not execution, "
         "approval or a security verdict.",
@@ -273,7 +310,7 @@ def preview_repository_http_fix_result(data: dict) -> dict:
             "patch_application": "applied-to-original"
             if original_state in ("applied", "restored")
             else "applied-to-copy"
-            if after is not None
+            if "apply" in done
             else "not-run",
             "applied": modified,
             "current_copy_state": _text(private.get("state")),
@@ -295,7 +332,7 @@ def preview_repository_http_fix_result(data: dict) -> dict:
             else not all(phase["cleanup_confirmed"] is True for phase in (before, after) if phase),
             "clock_unconfirmed": None,
             "workspace_state": _text(private.get("state")),
-            "stages": _stages(data, before, after),
+            "stages": _stages(done, before, after),
             "checks": {"before": before, "after": after},
             "authorization_status": "reviewed-cases-matched" if verified else "unknown",
             "verified_fix": verified,
