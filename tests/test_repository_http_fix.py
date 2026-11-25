@@ -23,6 +23,7 @@ from authzest.codex.repository_http_proposal import build_repository_http_reques
 from authzest.runner import repository_http_fix as module
 from authzest.runner._repository_http_phase import RepositoryHttpPhaseResult
 from authzest.runner._repository_http_staging import supported
+from authzest.runner.repository_http_verification import _binding
 
 pytestmark = pytest.mark.skipif(not supported(), reason="POSIX external repair flow scope")
 
@@ -109,8 +110,51 @@ class Project:
             "file_session_revision": session._revision,
             "plan_id": plan.plan_id,
             "source_sha256": sha256(text.encode()).hexdigest(),
-            "comparison": {"outcomes": [{"case_id": "other", "outcome": "match"}]},
+            "comparison": {
+                "phase": phase,
+                "plan_id": plan.plan_id,
+                "binding": _binding(plan.to_dict(), phase),
+                "designated_regression_case_id": "other",
+                "frame_status": "valid-supplied",
+                "cleanup_supplied_confirmed": True,
+                "supplied_before_differs_from_desired_after": self.criteria[phase]
+                if phase == "before"
+                else None,
+                "supplied_criteria_met": self.criteria[phase],
+                "planned_cases": 5,
+                "counts": {"match": 5, "mismatch": 0, "error": 0, "not-dispatched": 0},
+                "outcomes": [
+                    {"case_id": name, "outcome": "match", "reason": "matches-supplied-" + phase}
+                    for name in ("owner", "other", "anonymous", "normal", "public")
+                ],
+            },
             "cleanup_confirmed": True,
+            "frame": {
+                "phase": phase,
+                "plan_id": plan.plan_id,
+                "binding": _binding(plan.to_dict(), phase),
+                "cleanup": {"A": "confirmed", "B": "confirmed"},
+                "observations": [
+                    {
+                        "case_id": name,
+                        "outcome": "response",
+                        "error_code": None,
+                        "response": {"status": 200, "body": {"kind": "json", "value": {}}},
+                    }
+                    for name in ("owner", "other", "anonymous", "normal", "public")
+                ],
+            },
+            "cleanup_errors": [],
+            "engine_transport_cleanup_confirmed": True,
+            "relay_capture": {"status": "complete", "failure": None},
+            "relay_capture_failure": None,
+            "stage_initialization_failure": None,
+            "owned": [
+                {"role": role, "create_attempted": True, "absence_observed": True}
+                for role in ("A", "B")
+            ],
+            "runtime_attempted": True,
+            "schedule_sha256": "c" * 64,
             "evidence_directory": "/owned/" + phase,
             "captures": [],
             "runtime_metadata": {},

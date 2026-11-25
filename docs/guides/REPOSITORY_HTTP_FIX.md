@@ -88,7 +88,8 @@ Each effect asks for its own typed code, valid for 300 seconds; Enter declines a
    flags, or whose metadata cannot be reproduced exactly is refused and left unchanged.
 
 `--json` writes one final `repository-http-fix-result`; progress goes to stderr. Each phase keeps a
-private evidence directory with its journal and full result.
+private evidence directory with its journal and full result. Save the final JSON (for example with
+`umask 077`) to open it read-only in the [result viewer](RESULT_VIEWER.md).
 
 ## Results
 

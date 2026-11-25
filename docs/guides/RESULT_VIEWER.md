@@ -121,6 +121,13 @@ observations satisfy the target policy. Check restoration and recovery state alo
 A restored copy contains the original source bytes. A recovery-required record keeps that condition
 visible even when an earlier after observation passed.
 
+External single-file results saved with `authzest repo-fix … --json` (`kind:
+"repository-http-fix-result"`, schema 2.0) are also accepted. The view rebuilds the repair diff from
+the recorded source and model-authored replacement, shows the model's HTTP PoC as data, the before
+and after checks with the designated regression and each reviewed case outcome, and whether the
+original file was written, restored or needs recovery. Private paths, account data, runtime metadata
+and raw captures are dropped. See [External HTTP fix](REPOSITORY_HTTP_FIX.md).
+
 The older `codex-generated-file-workflow` import remains supported. Its version 1.0 records include
 bound `source_evidence`. Older records without the top-level version carry `legacy-unversioned` and
 leave missing before source and declarations unavailable. Static scan JSON, registered-template

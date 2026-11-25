@@ -59,7 +59,7 @@ jobs:
       - name: Check direct HTTP A/B phase and bounded stdin with a fake Docker client
         run: python -m pytest tests/test_repository_http_phase.py tests/test_generated_repair_process_input.py
       - name: Check repo-fix flow and original backup/recovery with owned files and fakes
-        run: python -m pytest tests/test_repository_http_fix.py tests/test_repository_http_original.py
+        run: python -m pytest tests/test_repository_http_fix.py tests/test_repository_http_original.py tests/test_repository_http_result_viewer.py
       - name: Check external private file decisions with owned inert temporary files
         run: python -m pytest tests/test_repository_origin.py tests/test_repository_files.py tests/test_repository_file_session.py tests/test_repository_session_failures.py
       - name: Check external runtime foundation with inert files and fake guest peers

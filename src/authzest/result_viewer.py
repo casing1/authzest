@@ -507,6 +507,10 @@ def preview_workflow_result(raw: bytes) -> dict:
         from authzest._owner_read_viewer import preview_owner_read_result
 
         return preview_owner_read_result(data)
+    if data.get("kind") == "repository-http-fix-result":
+        from authzest._repository_http_viewer import preview_repository_http_fix_result
+
+        return preview_repository_http_fix_result(data)
     if data.get("kind") != "codex-generated-file-workflow":
         _bad()
     version = data.get("schema_version", "legacy-unversioned")

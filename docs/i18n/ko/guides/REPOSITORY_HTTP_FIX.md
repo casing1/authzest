@@ -88,7 +88,8 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
    원본을 그대로 둡니다.
 
 `--json`은 최종 `repository-http-fix-result` 하나를 출력하며 진행 상황은 stderr로 나갑니다. 각 검사는
-journal과 전체 결과가 담긴 비공개 근거 디렉터리를 남깁니다.
+journal과 전체 결과가 담긴 비공개 근거 디렉터리를 남깁니다. 최종 JSON을 저장하면(예: `umask 077`)
+[결과 뷰어](RESULT_VIEWER.md)에서 읽기 전용으로 열 수 있습니다.
 
 ## 결과
 

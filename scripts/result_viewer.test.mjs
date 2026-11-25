@@ -256,3 +256,61 @@ test("capture privacy copy describes the view rather than the selected JSON expo
   assert.doesNotMatch(render(ownerReadView()), /not included in this export/);
   assert.match(render(ownerReadView(), "ko"), /이 화면에는 테스트 원본 출력과 요청별 관찰값이 없습니다/);
 });
+
+function httpFixView() {
+  const record = ownerReadView();
+  record.record_kind = "repository-http-fix-result";
+  record.summary = {
+    ...record.summary, status: "original-applied", exit_code: 0, proposal_status: "proposed-change",
+    execution_status: "before-and-after-checked", patch_application: "applied-to-original",
+    applied: true, current_copy_state: "applied-after", restoration_status: "applied",
+    original_checkout_modified: true, recovery_required: false,
+  };
+  const phase = before => ({
+    candidate: before ? "before" : "after", status: "complete", test_exit_code: null,
+    regression_status: "match", response_status: null, cleanup_confirmed: true,
+    generated_runtime_attempted: true, application_sha256: "a".repeat(64), test_sha256: "b".repeat(64),
+    failure: null, transport_failure: null,
+    comparison: {
+      expected_profile: `reviewed-${before ? "before" : "after"}-answers`, comparison_status: "valid-supplied",
+      matches_expected_profile: true, case_count: 5, matching_case_count: 5,
+      intended_match_count: null, request_count: 5, matching_request_count: 5,
+    },
+    case_outcomes: [
+      { case_id: "owner", outcome: "match", reason: null },
+      { case_id: "other", outcome: "match", reason: null },
+    ],
+  });
+  record.session = {
+    ...record.session, checks: { before: phase(true), after: phase(false) },
+    authorization_status: "reviewed-cases-matched", verified_fix: true,
+  };
+  return record;
+}
+
+test("repo-fix results show reviewed case outcomes without pytest fields", () => {
+  const html = render(httpFixView());
+  const before = phaseMarkup(html, "Before"), after = phaseMarkup(html, "After");
+  assert.match(before, /Designated HTTP regression<\/dt><dd>match<\/dd>/);
+  assert.match(after, /Matching cases<\/dt><dd>5 \/ 5<\/dd>/);
+  assert.match(after, /Reviewed case outcomes/);
+  assert.match(after, /<code>other<\/code> match/);
+  assert.doesNotMatch(before, /Pytest regression|Generated test exit code|HTTP response status/);
+  assert.match(html, /Reviewed cases matched after repair<\/dt><dd>Yes<\/dd>/);
+  assert.match(html, /Application history<\/dt><dd>applied-to-original<\/dd>/);
+  assert.match(html, /compares bounded HTTP responses from isolated containers/);
+  assert.doesNotMatch(html, /Generated-test exit codes are auxiliary evidence/);
+});
+
+test("repo-fix labels render in Korean", () => {
+  const html = render(httpFixView(), "ko");
+  assert.match(html, /지정 HTTP 회귀 사례<\/dt><dd>match<\/dd>/);
+  assert.match(html, /검토 사례별 결과/);
+  assert.match(html, /수정 후 검토 사례 일치<\/dt><dd>예<\/dd>/);
+  assert.match(html, /제한된 HTTP 응답을 검토한 사례의 기대 답과 비교합니다/);
+});
+
+test("import instructions name repo-fix results", () => {
+  assert.match(messages.en.importCopy, /repo-fix --json/);
+  assert.match(messages.ko.importCopy, /repo-fix --json/);
+});
