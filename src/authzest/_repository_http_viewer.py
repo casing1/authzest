@@ -143,6 +143,40 @@ def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None
     )
 
 
+def _frame_supports(phase: dict, comparison: dict, case_ids: list[str]) -> bool:
+    """The retained runtime frame must back every matching comparison row.
+
+    It belongs to the same phase, plan and binding, confirms A and B cleanup,
+    and holds one policy-range HTTP response per reviewed case, in order.
+    """
+    frame = phase.get("frame")
+    if type(frame) is not dict:
+        return False
+    observations = frame.get("observations")
+    if (
+        frame.get("phase") != phase.get("phase")
+        or frame.get("plan_id") != comparison.get("plan_id")
+        or frame.get("binding") != comparison.get("binding")
+        or frame.get("cleanup") != {"A": "confirmed", "B": "confirmed"}
+        or type(observations) is not list
+        or len(observations) != len(case_ids)
+    ):
+        return False
+    for observed, row in zip(observations, comparison["outcomes"], strict=False):
+        if type(observed) is not dict or type(row) is not dict:
+            return False
+        response = observed.get("response")
+        status = response.get("status") if type(response) is dict else None
+        if (
+            observed.get("case_id") != row.get("case_id")
+            or observed.get("outcome") != "response"
+            or type(status) is not int
+            or not (200 <= status < 300 or 400 <= status < 500)
+        ):
+            return False
+    return True
+
+
 def _producer_success(phase: dict) -> bool:
     """The runner's own success conditions beyond the comparison itself.
 
@@ -258,6 +292,7 @@ def _phase(
         or cleaned is not True
         or attempted is not True
         or not _producer_success(phase)
+        or not _frame_supports(phase, comparison, case_ids or [])
         or digest is None
         or (
             candidate == "before"

@@ -114,6 +114,15 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         # Malformed roles are refused instead of raising while being compared.
         lambda r: r["after_phase"]["owned"][1].pop("role"),
         lambda r: r["after_phase"]["owned"][1].update(role={"name": "B"}),
+        # The retained runtime frame must back the comparison.
+        lambda r: r["after_phase"].pop("frame"),
+        lambda r: r["after_phase"]["frame"]["cleanup"].update(B="unconfirmed"),
+        lambda r: r["after_phase"]["frame"]["observations"].pop(),
+        lambda r: r["after_phase"]["frame"]["observations"][1].update(outcome="error"),
+        lambda r: r["after_phase"]["frame"]["observations"][1].update(case_id="owner"),
+        lambda r: r["after_phase"]["frame"]["observations"][1]["response"].update(status=500),
+        lambda r: r["after_phase"]["frame"]["binding"].update(source_sha256="0" * 64),
+        lambda r: r["after_phase"]["frame"].update(phase="before"),
         lambda r: r["before_phase"].update(evidence_persistence_failure="OSError"),
         # Outcome rows must be exactly the recorded reviewed cases.
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="invented"),
