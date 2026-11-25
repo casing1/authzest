@@ -46,6 +46,14 @@ def test_applied_record_projects_checks_and_rebuilt_diff(record):
         "completed",
         "complete",
     ]
+    # Only the before and after checks start containers.
+    assert [stage["attempted"] for stage in view["session"]["stages"]] == [
+        False,
+        True,
+        False,
+        False,
+        True,
+    ]
 
 
 def test_private_paths_and_raw_records_are_dropped(record):

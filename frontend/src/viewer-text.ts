@@ -55,6 +55,8 @@ export const messages = {
     checks: "Before / after observations",
     checksNote:
       "Generated-test exit codes are auxiliary evidence. Independent controls compare only the maintained finite scenario; neither is a general security verdict.",
+    httpChecksNote:
+      "Each check compares bounded HTTP responses from isolated containers with the reviewed case answers. A match covers only those cases; it is not a general security verdict.",
     noPhase: "No phase receipt in this file. Execution is not established.",
     phaseStatus: "Phase status",
     testExit: "Generated test exit code",
@@ -184,6 +186,8 @@ export const messages = {
     checks: "Before / after 관찰 결과",
     checksNote:
       "생성 테스트 종료값은 보조 근거입니다. 독립 대조 검사는 관리 중인 한정된 사례만 비교하며, 어느 쪽도 일반적인 보안 판정이 아닙니다.",
+    httpChecksNote:
+      "각 검사는 격리된 컨테이너가 돌려준 제한된 HTTP 응답을 검토한 사례의 기대 답과 비교합니다. 일치는 그 사례에만 해당하며 일반적인 보안 판정이 아닙니다.",
     noPhase:
       "파일에 이 단계의 검사 기록이 없습니다. 실행을 확인할 수 없습니다.",
     phaseStatus: "검사 상태",

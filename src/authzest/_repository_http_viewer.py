@@ -216,6 +216,11 @@ def _case_ids(cases: dict, regression: str | None) -> list[str] | None:
 
 
 def _stages(done: set[str | None], before: dict | None, after: dict | None) -> list[dict]:
+    # Only the before and after checks start containers; file steps never do.
+    runtime = {
+        name: None if phase is None else phase["generated_runtime_attempted"]
+        for name, phase in (("before", before), ("after", after))
+    }
     status = {
         "copy": "completed" if "copy" in done else "not-run",
         "before": None if before is None else before["status"],
@@ -229,7 +234,7 @@ def _stages(done: set[str | None], before: dict | None, after: dict | None) -> l
             "status": status[name] or "not-run",
             "decision": None,
             "expired": None,
-            "attempted": status[name] not in (None, "not-run"),
+            "attempted": runtime.get(name, False),
             "dispatched": None,
             "reason": None,
         }

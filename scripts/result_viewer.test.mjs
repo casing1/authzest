@@ -298,6 +298,8 @@ test("repo-fix results show reviewed case outcomes without pytest fields", () =>
   assert.doesNotMatch(before, /Pytest regression|Generated test exit code|HTTP response status/);
   assert.match(html, /Reviewed cases matched after repair<\/dt><dd>Yes<\/dd>/);
   assert.match(html, /Application history<\/dt><dd>applied-to-original<\/dd>/);
+  assert.match(html, /compares bounded HTTP responses from isolated containers/);
+  assert.doesNotMatch(html, /Generated-test exit codes are auxiliary evidence/);
 });
 
 test("repo-fix labels render in Korean", () => {
@@ -305,6 +307,7 @@ test("repo-fix labels render in Korean", () => {
   assert.match(html, /지정 HTTP 회귀 사례<\/dt><dd>match<\/dd>/);
   assert.match(html, /검토 사례별 결과/);
   assert.match(html, /수정 후 검토 사례 일치<\/dt><dd>예<\/dd>/);
+  assert.match(html, /제한된 HTTP 응답을 검토한 사례의 기대 답과 비교합니다/);
 });
 
 test("import instructions name repo-fix results", () => {

@@ -315,7 +315,7 @@ export default function WorkflowResult({ view, language }: Props) {
         />
       </Panel>
       <Panel title={t.checks}>
-        <p className="muted">{t.checksNote}</p>
+        <p className="muted">{httpFix ? t.httpChecksNote : t.checksNote}</p>
         <div className="phase-grid">
           <PhaseCard
             title={t.before}
