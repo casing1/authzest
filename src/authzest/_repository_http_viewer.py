@@ -48,7 +48,9 @@ def _source(data: dict) -> tuple[dict | None, dict | None, str | None]:
             "scenario_id": "external-single-file-http",
             "source": source,
             "declarations": [],
-            "policy": [line for line in policy["text"].splitlines() if line.strip()][:32],
+            # The full policy (at most 8 KiB) is shown: the checks are bound to
+            # all of it, so no later rule may be hidden from the operator.
+            "policy": [line for line in policy["text"].splitlines() if line.strip()],
             "policy_authorship": "user-provided policy file " + policy["path"],
             "policy_review": "unverified intent; expected answers come from the reviewed case file",
         },

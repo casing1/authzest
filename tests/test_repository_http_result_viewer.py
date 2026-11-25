@@ -209,3 +209,14 @@ def test_failed_private_apply_stays_visible_as_an_unconfirmed_effect(tmp_path):
     assert stage["status"] == "failed" and stage["reason"] == "effect-unconfirmed"
     assert view["summary"]["patch_application"] == "copy-apply-unconfirmed"
     assert view["summary"]["recovery_required"] is True
+
+
+def test_long_policy_is_shown_in_full(record):
+    # Every rule bound by the policy hash is visible, including late ones.
+    text = "".join(f"rule {number}: owners only\n" for number in range(40))
+    digest = sha256(text.encode()).hexdigest()
+    record["source_evidence"]["policy"].update(text=text, sha256=digest)
+    record["case_basis"]["policy_sha256"] = digest
+    view = _view(record)
+    assert len(view["source_evidence"]["policy"]) == 40
+    assert view["source_evidence"]["policy"][-1] == "rule 39: owners only"
