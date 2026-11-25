@@ -71,7 +71,7 @@ the policy text. A case file is your review record, not authenticated approval.
 ## 3. Run the flow
 
 ```bash
-authzest repo-fix /path/to/project --source app.py --policy policy.md --model EXPLICIT_MODEL --cases cases.json --runtime-profile ~/.authzest/runtime.json
+authzest repo-fix /path/to/project --source app.py --policy policy.md --model EXPLICIT_MODEL --cases cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
 Each effect asks for its own typed code, valid for 300 seconds; Enter declines and stops:

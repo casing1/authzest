@@ -10,7 +10,7 @@ further below is optional.
 
 The walkthrough takes about 15 minutes, of which the model call and the two container checks take
 about 2. It needs macOS arm64, Python 3.12, Node.js 22.13+ (22.x) or 24, Docker Desktop and the
-Codex CLI signed in with your ChatGPT account. The [release notes](../releases/0.1.0.md) list what
+Codex CLI `0.153.0` signed in with your ChatGPT account (other versions are refused). The [release notes](../releases/0.1.0.md) list what
 0.1.0 supports.
 
 ## External repair demonstration
@@ -26,6 +26,7 @@ python3.12 -m venv .venv
 .venv/bin/python -m pip install -e '.[ui]'
 npm --prefix frontend ci
 npm --prefix frontend run build
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -51,6 +52,7 @@ Point out that the case file never leaves the host. It is not sent to the model 
 ### 2. Run the repair
 
 ```bash
+umask 077
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json --json > ~/authzest-demo-result.json
 ```
 
@@ -66,8 +68,8 @@ Each question shows a code to type; Enter declines and every code expires after 
 | `run-after …`      | The after check. Expect 5/5 cases to match their after answers.                                |
 | `apply-original …` | The target path. The original is written atomically and a backup is kept.                      |
 
-The final status should be `original-applied`. Show the change and keep the restore command it
-printed:
+The final status should be `original-applied`. The result, including the recovery record, is in
+the saved JSON. Show the change:
 
 ```bash
 diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
@@ -75,10 +77,11 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 
 ### 3. Undo the write
 
-Paste the restore command that `repo-fix` printed. It looks like this:
+With `--json` the restore command is saved in the result rather than printed. This reads the
+recovery record path from the saved JSON:
 
 ```bash
-.venv/bin/authzest repo-restore ~/.authzest/recovery/original-YYYYMMDDTHHMMSSZ-xxxxxxxx
+.venv/bin/authzest repo-restore "$(.venv/bin/python -c "import json, pathlib; print(json.loads(pathlib.Path('~/authzest-demo-result.json').expanduser().read_text())['original']['record_path'])")"
 ```
 
 It asks for one more code and refuses if the file was edited after the write. Running `diff` again

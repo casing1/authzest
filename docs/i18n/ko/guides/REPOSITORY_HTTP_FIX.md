@@ -71,7 +71,7 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
 ## 3. 흐름 실행
 
 ```bash
-authzest repo-fix /path/to/project --source app.py --policy policy.md --model EXPLICIT_MODEL --cases cases.json --runtime-profile ~/.authzest/runtime.json
+authzest repo-fix /path/to/project --source app.py --policy policy.md --model EXPLICIT_MODEL --cases cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
 효과마다 300초 동안 유효한 확인 코드를 따로 입력해야 하며 Enter는 거절하고 멈춥니다.

@@ -52,6 +52,7 @@ wheel 14개를 PyPI에서 받아 모든 바이트를 검증합니다. 그 뒤 �
 `~/.authzest/runtime`에 비공개 프로필을 씁니다.
 
 ```bash
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -64,7 +65,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
-Codex 로그인에서 보이는 모델 ID를 사용하세요. 효과마다 300초 동안 유효한 확인 코드를 따로 묻습니다.
+ChatGPT로 로그인한 Codex CLI `0.153.0`과 그 로그인에서 보이는 모델 ID를 사용하세요. 효과마다 300초 동안 유효한 확인 코드를 따로 묻습니다.
 순서는 share, copy, run-before, apply-private, run-after, apply-original입니다. 따옴표 안 문구 전체를
 입력하고, Enter는 거절입니다. `original-applied`는 두 검사가 검토한 사례와 일치했고 파일에 적용되었다는
 뜻입니다. `before-not-reproduced`, `after-not-verified`, `poc-not-covered`, `original-conflict`는 원본을

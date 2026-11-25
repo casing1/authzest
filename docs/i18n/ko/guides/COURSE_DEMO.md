@@ -8,7 +8,7 @@ PoC와 수정안을 받고, 직접 검토한 사례로 격리된 컨테이너에
 예제는 선택 사항입니다.
 
 전체 시연은 약 15분이며, 그중 모델 호출과 두 번의 컨테이너 검사는 약 2분입니다. macOS arm64, Python 3.12,
-Node.js 22.13 이상(22.x) 또는 24, Docker Desktop, ChatGPT 계정으로 로그인한 Codex CLI가 필요합니다. 0.1.0의
+Node.js 22.13 이상(22.x) 또는 24, Docker Desktop, ChatGPT 계정으로 로그인한 Codex CLI `0.153.0`(다른 버전은 거절)이 필요합니다. 0.1.0의
 지원 범위는 [릴리스 노트](../releases/0.1.0.md)를 보세요.
 
 ## 외부 수정 시연
@@ -23,6 +23,7 @@ python3.12 -m venv .venv
 .venv/bin/python -m pip install -e '.[ui]'
 npm --prefix frontend ci
 npm --prefix frontend run build
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -48,6 +49,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 ### 2. 수정 실행
 
 ```bash
+umask 077
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json --json > ~/authzest-demo-result.json
 ```
 
@@ -63,7 +65,8 @@ Codex 계정에 표시되는 모델 ID를 사용하세요. 진행 상황과 질�
 | `run-after …`      | 수정 후 검사. 5/5 사례가 수정 후 답과 일치해야 합니다.                                      |
 | `apply-original …` | 대상 경로. 원본을 원자적으로 쓰고 백업을 남깁니다.                                          |
 
-최종 상태는 `original-applied`여야 합니다. 바뀐 내용을 보여 주고, 출력된 복구 명령을 기록해 둡니다.
+최종 상태는 `original-applied`여야 합니다. 복구 기록을 포함한 결과는 저장한 JSON에 있습니다. 바뀐 내용을
+보여 줍니다.
 
 ```bash
 diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
@@ -71,10 +74,11 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 
 ### 3. 쓰기 되돌리기
 
-`repo-fix`가 출력한 복구 명령을 붙여 넣습니다. 형태는 다음과 같습니다.
+`--json`을 쓰면 복구 명령은 화면에 출력되지 않고 결과에 저장됩니다. 다음 명령은 저장한 JSON에서 복구
+기록 경로를 읽어 실행합니다.
 
 ```bash
-.venv/bin/authzest repo-restore ~/.authzest/recovery/original-YYYYMMDDTHHMMSSZ-xxxxxxxx
+.venv/bin/authzest repo-restore "$(.venv/bin/python -c "import json, pathlib; print(json.loads(pathlib.Path('~/authzest-demo-result.json').expanduser().read_text())['original']['record_path'])")"
 ```
 
 코드를 한 번 더 묻고, 쓰기 이후 파일이 편집됐으면 거절합니다. `diff`를 다시 실행하면 아무것도 출력되지
