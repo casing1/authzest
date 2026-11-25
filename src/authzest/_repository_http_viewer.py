@@ -165,7 +165,9 @@ def _producer_success(phase: dict) -> bool:
         and phase.get("stage_initialization_failure") is None
         and phase.get("evidence_persistence_failure") is None
         and phase.get("journal_close_failure") is None
-        and sorted(_object(item).get("role") for item in owned) == ["A", "B"]
+        # Compare without ordering unvalidated values (a missing or non-string
+        # role must be refused, not raise).
+        and [_object(item).get("role") for item in owned] in (["A", "B"], ["B", "A"])
         and all(
             _object(item).get("create_attempted") is True
             and _object(item).get("absence_observed") is True
