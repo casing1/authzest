@@ -28,8 +28,10 @@ predates the current GUI and newly generated owner-read repair workflow.
 **Status — 2026-11-25 KST.** The external flow ran end to end on the bundled demo with a real Codex
 model and Docker Desktop. The model's PoC reproduced the reviewed defect (5/5 before cases), its
 repair matched all 5 after cases, and the original file was written with a backup. A later user edit
-made `repo-restore` refuse, and once the edit was removed it restored the original bytes. Stable
-publication still waits for the remaining release checks. [External fix guide](docs/guides/REPOSITORY_HTTP_FIX.md)
+made `repo-restore` refuse, and once the edit was removed it restored the original bytes. The same
+flow then passed again from a fresh wheel installation: a new PoC and repair, 5/5 before and after,
+the write and an installed `repo-restore`. Stable publication still waits for the remaining release
+checks. [External fix guide](docs/guides/REPOSITORY_HTTP_FIX.md)
 
 ## What you can do
 
