@@ -132,6 +132,7 @@ class _RepositoryHttpOriginalTarget:
     root: Path
     source_path: str
     parent_fd: int
+    source_fd: int
     name: str
     identity: tuple
     before: bytes
@@ -436,7 +437,7 @@ class RepositoryHttpFileSession:
                 raise RepositoryHttpSessionError("Private source differs from the applied repair")
             selection = self._request.to_dict()["selection"]
             snapshot = self._origin.verify(selection)
-            parent, name, observed, raw = self._origin._source_target()
+            parent, name, observed, raw, source_fd = self._origin._source_target()
             if raw != self._before:
                 raise RepositoryHttpSessionError("Original source differs from its capture")
             return _RepositoryHttpOriginalTarget(
@@ -446,6 +447,7 @@ class RepositoryHttpFileSession:
                 root=snapshot.root,
                 source_path=selection["source"],
                 parent_fd=parent,
+                source_fd=source_fd,
                 name=name,
                 identity=tuple(observed),
                 before=self._before,

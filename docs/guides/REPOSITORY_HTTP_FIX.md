@@ -83,7 +83,9 @@ Each effect asks for its own typed code, valid for 300 seconds; Enter declines a
 4. **apply-private** – accept the exact diff and apply it to the private copy.
 5. **run-after** – check the repaired copy against every `after` answer.
 6. **apply-original** – recheck that the original and policy are unchanged since capture, keep a
-   backup and write the repair. Any edit since capture is refused as a conflict.
+   backup and write the repair. Any edit since capture is refused as a conflict. The replacement keeps
+   the file's mode, group, ACL and extended attributes; a file owned by another user, with file
+   flags, or whose metadata cannot be reproduced exactly is refused and left unchanged.
 
 `--json` writes one final `repository-http-fix-result`; progress goes to stderr. Each phase keeps a
 private evidence directory with its journal and full result.

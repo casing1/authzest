@@ -12,13 +12,14 @@ concurrent writer; the operator must not edit the file during these steps.
 from __future__ import annotations
 
 import difflib
+import errno
 import inspect
 import json
 import os
 import secrets
 import stat
+import sys
 from collections.abc import Callable
-from contextlib import suppress
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
@@ -115,7 +116,13 @@ def _read_leaf(parent: int, name: str, limit: int) -> tuple[bytes, os.stat_resul
         os.close(fd)
 
 
-def _write_new(parent: int, name: str, data: bytes, mode: int) -> None:
+def _write_new(
+    parent: int,
+    name: str,
+    data: bytes,
+    mode: int,
+    prepare: Callable[[int], None] | None = None,
+) -> None:
     fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, mode, dir_fd=parent)
     try:
         os.fchmod(fd, mode)
@@ -125,7 +132,203 @@ def _write_new(parent: int, name: str, data: bytes, mode: int) -> None:
             if written <= 0:
                 raise RepositoryHttpOriginalError("short-write")
             view = view[written:]
+        if prepare is not None:
+            prepare(fd)
         os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+# Security metadata: the replacement is a new inode, so ownership, group, mode,
+# ACLs and extended attributes (including Linux ACL/label xattrs) are copied from
+# the current file and compared before the rename; anything unpreservable refuses.
+_COPYFILE_ACL, _COPYFILE_XATTR = 1 << 0, 1 << 2
+_LIBC = None
+
+
+def _libc():
+    global _LIBC
+    if _LIBC is None:
+        import ctypes
+        import ctypes.util
+
+        lib = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+        lib.fcopyfile.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32]
+        lib.fcopyfile.restype = ctypes.c_int
+        lib.flistxattr.argtypes = [ctypes.c_int, ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int]
+        lib.flistxattr.restype = ctypes.c_ssize_t
+        lib.fgetxattr.argtypes = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_void_p,
+            ctypes.c_size_t,
+            ctypes.c_uint32,
+            ctypes.c_int,
+        ]
+        lib.fgetxattr.restype = ctypes.c_ssize_t
+        lib.fremovexattr.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int]
+        lib.fremovexattr.restype = ctypes.c_int
+        lib.acl_get_fd.argtypes = [ctypes.c_int]
+        lib.acl_get_fd.restype = ctypes.c_void_p
+        lib.acl_to_text.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+        lib.acl_to_text.restype = ctypes.c_void_p
+        lib.acl_free.argtypes = [ctypes.c_void_p]
+        _LIBC = (ctypes, lib)
+    return _LIBC
+
+
+def _metadata_failure() -> RepositoryHttpOriginalError:
+    return RepositoryHttpOriginalError("original-metadata-not-preserved")
+
+
+def _xattr_names(fd: int) -> list[str]:
+    if sys.platform == "darwin":
+        ctypes, lib = _libc()
+        size = lib.flistxattr(fd, None, 0, 0)
+        if size < 0:
+            raise _metadata_failure()
+        buffer = ctypes.create_string_buffer(max(size, 1))
+        size = lib.flistxattr(fd, buffer, size, 0)
+        if size < 0:
+            raise _metadata_failure()
+        return sorted(name.decode("utf-8") for name in buffer.raw[:size].split(b"\0") if name)
+    if hasattr(os, "listxattr"):
+        try:
+            return sorted(os.listxattr(fd))
+        except OSError as exc:
+            if exc.errno in (errno.ENOTSUP, errno.EOPNOTSUPP):
+                return []
+            raise _metadata_failure() from None
+    return []
+
+
+def _xattr_value(fd: int, name: str) -> bytes:
+    if sys.platform == "darwin":
+        ctypes, lib = _libc()
+        key = name.encode("utf-8")
+        size = lib.fgetxattr(fd, key, None, 0, 0, 0)
+        if size < 0:
+            raise _metadata_failure()
+        buffer = ctypes.create_string_buffer(max(size, 1))
+        size = lib.fgetxattr(fd, key, buffer, size, 0, 0)
+        if size < 0:
+            raise _metadata_failure()
+        return buffer.raw[:size]
+    return os.getxattr(fd, name)
+
+
+def _acl_text(fd: int) -> str | None:
+    if sys.platform != "darwin":
+        return None  # Linux POSIX ACLs are system.posix_acl_* extended attributes.
+    ctypes, lib = _libc()
+    acl = lib.acl_get_fd(fd)
+    if not acl:
+        return None
+    try:
+        text = lib.acl_to_text(acl, None)
+        if not text:
+            raise _metadata_failure()
+        try:
+            return ctypes.string_at(text).decode("utf-8")
+        finally:
+            lib.acl_free(text)
+    finally:
+        lib.acl_free(acl)
+
+
+def _metadata(fd: int) -> dict:
+    info = os.fstat(fd)
+    acl = _acl_text(fd)
+    return {
+        "uid": info.st_uid,
+        "gid": info.st_gid,
+        "mode": stat.S_IMODE(info.st_mode),
+        "flags": getattr(info, "st_flags", 0),
+        "xattrs": {name: _hash(_xattr_value(fd, name)) for name in _xattr_names(fd)},
+        "acl_sha256": None if acl is None else _hash(acl.encode("utf-8")),
+    }
+
+
+def _check_supported_metadata(meta: dict) -> None:
+    if meta["uid"] != os.geteuid():
+        raise RepositoryHttpOriginalError("original-owner-differs")
+    if meta["flags"]:
+        raise RepositoryHttpOriginalError("original-file-flags-unsupported")
+
+
+def _copy_metadata(source: int, target: int, meta: dict) -> None:
+    try:
+        if sys.platform == "darwin":
+            _, lib = _libc()
+            if lib.fcopyfile(source, target, None, _COPYFILE_ACL | _COPYFILE_XATTR) != 0:
+                raise _metadata_failure()
+            for name in set(_xattr_names(target)) - set(meta["xattrs"]):
+                if lib.fremovexattr(target, name.encode("utf-8"), 0) != 0:
+                    raise _metadata_failure()
+        elif hasattr(os, "setxattr"):
+            for name in meta["xattrs"]:
+                os.setxattr(target, name, os.getxattr(source, name))
+            for name in set(_xattr_names(target)) - set(meta["xattrs"]):
+                os.removexattr(target, name)
+        if os.fstat(target).st_gid != meta["gid"]:
+            os.fchown(target, -1, meta["gid"])
+        os.fchmod(target, meta["mode"])
+    except OSError:
+        raise _metadata_failure() from None
+    if _metadata(target) != meta:
+        raise _metadata_failure()
+
+
+def _remove_temporary(parent: int, name: str) -> str:
+    """Remove our own temporary file; a copied deny-delete ACL is cleared first."""
+    try:
+        os.unlink(name, dir_fd=parent)
+        return "temporary-removed"
+    except FileNotFoundError:
+        return "temporary-absent"
+    except PermissionError:
+        if sys.platform != "darwin":
+            return "temporary-removal-unconfirmed"
+    except OSError:
+        return "temporary-removal-unconfirmed"
+    try:
+        ctypes, lib = _libc()
+        lib.acl_init.argtypes = [ctypes.c_int]
+        lib.acl_init.restype = ctypes.c_void_p
+        lib.acl_set_fd.argtypes = [ctypes.c_int, ctypes.c_void_p]
+        lib.acl_set_fd.restype = ctypes.c_int
+        fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+        try:
+            empty = lib.acl_init(0)
+            if not empty:
+                return "temporary-removal-unconfirmed"
+            try:
+                if lib.acl_set_fd(fd, empty) != 0:
+                    return "temporary-removal-unconfirmed"
+            finally:
+                lib.acl_free(empty)
+        finally:
+            os.close(fd)
+        os.unlink(name, dir_fd=parent)
+        return "temporary-removed"
+    except OSError:
+        return "temporary-removal-unconfirmed"
+
+
+def _summary(meta: dict) -> dict:
+    return {
+        "uid": meta["uid"],
+        "gid": meta["gid"],
+        "mode": meta["mode"],
+        "xattr_names": sorted(meta["xattrs"]),
+        "acl_present": meta["acl_sha256"] is not None,
+    }
+
+
+def _leaf_metadata(parent: int, name: str) -> dict:
+    fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+    try:
+        return _metadata(fd)
     finally:
         os.close(fd)
 
@@ -211,6 +414,11 @@ def apply_original(
     except Exception as exc:
         raise RepositoryHttpOriginalError("original-edit-conflict") from exc
     phase = _check_after_result(target, after_result)
+    try:
+        meta = _metadata(target.source_fd)
+    except OSError:
+        raise _metadata_failure() from None
+    _check_supported_metadata(meta)
     _guard(guard)
     _private_directory(recovery_parent, create=True)
     record_id = (
@@ -243,6 +451,7 @@ def apply_original(
             target.identity[7],
         ],
         "applied_identity": None,
+        "metadata": _summary(meta),
         "state": "intent-recorded",
         "failure": None,
         "verification": {
@@ -262,9 +471,14 @@ def apply_original(
         _write_new(folder, _APPLIED, target.after, 0o400)
         _replace_record(folder, record)
         _guard(guard)
-        mode = stat.S_IMODE(target.identity[2])
         temporary = "." + target.name + ".authzest-" + secrets.token_hex(6) + ".tmp"
-        _write_new(target.parent_fd, temporary, target.after, mode)
+        _write_new(
+            target.parent_fd,
+            temporary,
+            target.after,
+            meta["mode"],
+            lambda fd: _copy_metadata(target.source_fd, fd, meta),
+        )
         # Final edit-conflict check immediately before the rename.
         try:
             current = session._original_target()
@@ -279,6 +493,8 @@ def apply_original(
         raw, info = _read_leaf(target.parent_fd, target.name, MAX_SOURCE_BYTES)
         if raw != target.after:
             raise RepositoryHttpOriginalError("original-readback-mismatch")
+        if _leaf_metadata(target.parent_fd, target.name) != meta:
+            raise RepositoryHttpOriginalError("original-metadata-readback-mismatch")
         record["applied_identity"] = _identity(info)
         record["state"] = "applied"
         record["history"].append({"event": "applied", "at": _now()})
@@ -288,13 +504,7 @@ def apply_original(
     except BaseException as exc:
         cleanup = None
         if temporary is not None:
-            try:
-                os.unlink(temporary, dir_fd=target.parent_fd)
-                cleanup = "temporary-removed"
-            except FileNotFoundError:
-                cleanup = "temporary-absent"
-            except OSError:
-                cleanup = "temporary-removal-unconfirmed"
+            cleanup = _remove_temporary(target.parent_fd, temporary)
         code = exc.code if isinstance(exc, RepositoryHttpOriginalError) else type(exc).__name__
         record["state"] = "recovery-required" if renamed else "original-unchanged-failed"
         record["failure"] = {"code": code, "temporary_cleanup": cleanup}
@@ -424,8 +634,20 @@ def restore_original(record_path: Path, *, guard: Callable[[], None] | None = No
         if current != after:
             raise RepositoryHttpOriginalError("original-changed-after-application")
         _guard(guard)
-        temporary = "." + name + ".authzest-" + secrets.token_hex(6) + ".tmp"
-        _write_new(parent, temporary, before, stat.S_IMODE(info.st_mode))
+        current_fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
+        try:
+            meta = _metadata(current_fd)
+            _check_supported_metadata(meta)
+            temporary = "." + name + ".authzest-" + secrets.token_hex(6) + ".tmp"
+            _write_new(
+                parent,
+                temporary,
+                before,
+                meta["mode"],
+                lambda fd: _copy_metadata(current_fd, fd, meta),
+            )
+        finally:
+            os.close(current_fd)
         again, again_info = _read_leaf(parent, name, MAX_SOURCE_BYTES)
         if again != after or _identity(again_info) != _identity(info):
             raise RepositoryHttpOriginalError("original-changed-after-application")
@@ -434,7 +656,7 @@ def restore_original(record_path: Path, *, guard: Callable[[], None] | None = No
         temporary = None
         os.fsync(parent)
         raw, _ = _read_leaf(parent, name, MAX_SOURCE_BYTES)
-        if raw != before:
+        if raw != before or _leaf_metadata(parent, name) != meta:
             record["state"] = "recovery-required"
             record["failure"] = {"code": "restore-readback-mismatch", "temporary_cleanup": None}
             record["history"].append({"event": "recovery-required", "at": _now()})
@@ -448,8 +670,7 @@ def restore_original(record_path: Path, *, guard: Callable[[], None] | None = No
         return record
     finally:
         if temporary is not None and parent is not None:
-            with suppress(OSError):
-                os.unlink(temporary, dir_fd=parent)
+            _remove_temporary(parent, temporary)
         if parent is not None:
             os.close(parent)
         os.close(folder)

@@ -83,7 +83,9 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
 4. **apply-private** – 정확한 diff를 승인하고 비공개 복사본에만 적용합니다.
 5. **run-after** – 수정한 복사본을 모든 `after` 응답과 비교합니다.
 6. **apply-original** – 원본과 정책이 캡처 이후 그대로인지 다시 확인하고 백업을 남긴 뒤 수정을 씁니다.
-   캡처 이후 편집이 있으면 충돌로 거절합니다.
+   캡처 이후 편집이 있으면 충돌로 거절합니다. 교체 파일은 권한·그룹·ACL·확장 속성을 그대로 유지합니다.
+   다른 사용자 소유 파일, 파일 플래그가 있는 파일, 메타데이터를 정확히 재현할 수 없는 파일은 거절하고
+   원본을 그대로 둡니다.
 
 `--json`은 최종 `repository-http-fix-result` 하나를 출력하며 진행 상황은 stderr로 나갑니다. 각 검사는
 journal과 전체 결과가 담긴 비공개 근거 디렉터리를 남깁니다.

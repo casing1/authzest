@@ -15,6 +15,7 @@ from tests.helpers.repository_http_file_data import make_http_file_session, perf
 from tests.helpers.repository_http_verification_data import AFTER, SOURCE
 
 from authzest.codex.contracts import canonical
+from authzest.runner import repository_http_original as original_module
 from authzest.runner._repository_http_phase import RepositoryHttpPhaseResult
 from authzest.runner._repository_http_staging import supported
 from authzest.runner.repository_http_original import (
@@ -290,3 +291,180 @@ def test_interrupted_apply_before_rename_is_not_rewritten(applied):
     with pytest.raises(RepositoryHttpOriginalError, match="original-already-matches-backup"):
         restore_original(path)
     assert (root / "app.py").read_text() == SOURCE
+
+
+def _set_xattr(path, name, value):
+    """Set one extended attribute through the platform API, or skip the test."""
+    import ctypes
+    import ctypes.util
+    import errno
+    import sys
+
+    if sys.platform == "darwin":
+        lib = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+        lib.setxattr.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_size_t,
+            ctypes.c_uint32,
+            ctypes.c_int,
+        ]
+        if lib.setxattr(str(path).encode(), name.encode(), value, len(value), 0, 0) != 0:
+            pytest.skip("extended attributes unavailable")
+        return
+    try:
+        os.setxattr(path, name, value)
+    except (AttributeError, OSError) as exc:
+        if isinstance(exc, AttributeError) or exc.errno in (errno.ENOTSUP, errno.EOPNOTSUPP):
+            pytest.skip("extended attributes unavailable")
+        raise
+
+
+def _session_with_metadata(tmp_path, prepare):
+    """Create the owned project, adjust metadata, then capture it."""
+    from tests.helpers.repository_http_verification_data import POLICY, case_data, inputs
+
+    from authzest.analyzer.repository_origin import capture_repository_origin
+    from authzest.codex.repository_http_copy_plan import prepare_repository_http_copy_plan
+    from authzest.codex.repository_http_proposal import build_repository_http_request
+    from authzest.runner.repository_http_cases import build_repository_http_cases
+    from authzest.runner.repository_http_file_session import RepositoryHttpFileSession
+
+    root = (tmp_path / "meta-origin").resolve()
+    root.mkdir()
+    (root / "app.py").write_text(SOURCE)
+    (root / "policy.md").write_text(POLICY)
+    prepare(root / "app.py")
+    parent = tmp_path / "meta-private"
+    parent.mkdir(mode=0o700)
+    origin = capture_repository_origin(root, "app.py", "policy.md")
+    request = build_repository_http_request(origin.snapshot, "offline-model")
+    response = inputs()[1]
+    response["request_id"] = request.request_id
+    response["proposal"]["before_sha256"] = request.to_dict()["selection"]["files"][0]["sha256"]
+    cases = build_repository_http_cases(case_data(request))
+    plan = prepare_repository_http_copy_plan(request, response, cases)
+    session = RepositoryHttpFileSession(origin, request, response, cases, plan, _parent=parent)
+    for step in ("copy", "accept-diff", "apply"):
+        perform(session, step)
+    return session, root
+
+
+def _metadata_of(path):
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        return original_module._metadata(fd)
+    finally:
+        os.close(fd)
+
+
+def test_extended_attributes_and_mode_survive_apply_and_restore(tmp_path):
+    name = "user.authzest.test" if os.uname().sysname != "Darwin" else "org.authzest.test"
+
+    def prepare(path):
+        _set_xattr(path, name, b"keep-me")
+        os.chmod(path, 0o640)
+
+    session, root = _session_with_metadata(tmp_path, prepare)
+    try:
+        before = _metadata_of(root / "app.py")
+        assert name in before["xattrs"]
+        record = apply_original(session, _after(session), recovery_parent=tmp_path / "r")
+        assert (root / "app.py").read_text() == AFTER
+        assert _metadata_of(root / "app.py") == before
+        assert name in record["metadata"]["xattr_names"] and record["metadata"]["mode"] == 0o640
+        restore_original(tmp_path / "r" / record["record_id"])
+        assert (root / "app.py").read_text() == SOURCE
+        assert _metadata_of(root / "app.py") == before
+    finally:
+        session.close()
+
+
+@pytest.mark.skipif(os.uname().sysname != "Darwin", reason="macOS extended ACL API")
+@pytest.mark.parametrize("access", ["allow:read", "deny:delete"])
+def test_macos_acl_survives_apply_or_blocks_replacement(tmp_path, access):
+    import ctypes
+    import ctypes.util
+
+    lib = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+    lib.acl_from_text.argtypes = [ctypes.c_char_p]
+    lib.acl_from_text.restype = ctypes.c_void_p
+    lib.acl_set_file.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_void_p]
+    lib.acl_free.argtypes = [ctypes.c_void_p]
+
+    def prepare(path):
+        text = "!#acl 1\ngroup:ABCDEFAB-CDEF-ABCD-EFAB-CDEF0000000C:everyone:12:" + access + "\n"
+        acl = lib.acl_from_text(text.encode())
+        assert acl
+        try:
+            assert lib.acl_set_file(str(path).encode(), 0x00000100, acl) == 0
+        finally:
+            lib.acl_free(acl)
+
+    session, root = _session_with_metadata(tmp_path, prepare)
+    try:
+        before = _metadata_of(root / "app.py")
+        assert before["acl_sha256"] is not None
+        if access == "deny:delete":
+            # The ACL forbids replacing the entry: refuse and keep the original.
+            with pytest.raises(RepositoryHttpOriginalError) as caught:
+                apply_original(session, _after(session), recovery_parent=tmp_path / "r")
+            assert caught.value.result["state"] == "original-unchanged-failed"
+            assert (root / "app.py").read_text() == SOURCE
+            assert [entry.name for entry in root.iterdir() if entry.name.startswith(".")] == []
+            return
+        record = apply_original(session, _after(session), recovery_parent=tmp_path / "r")
+        assert record["metadata"]["acl_present"] is True
+        assert _metadata_of(root / "app.py") == before
+    finally:
+        session.close()
+
+
+def test_group_survives_when_another_group_is_available(tmp_path):
+    current = os.getegid()
+    others = [gid for gid in os.getgroups() if gid != current]
+    if not others:
+        pytest.skip("no second group available")
+
+    session, root = _session_with_metadata(tmp_path, lambda path: os.chown(path, -1, others[0]))
+    try:
+        apply_original(session, _after(session), recovery_parent=tmp_path / "r")
+        assert os.stat(root / "app.py").st_gid == others[0]
+    finally:
+        session.close()
+
+
+@pytest.mark.parametrize(
+    ("change", "code"),
+    [({"uid": -5}, "original-owner-differs"), ({"flags": 2}, "original-file-flags-unsupported")],
+)
+def test_unsupported_ownership_or_flags_are_refused(applied, monkeypatch, change, code):
+    session, root, recovery = applied()
+    real = original_module._metadata
+    monkeypatch.setattr(original_module, "_metadata", lambda fd: {**real(fd), **change})
+    with pytest.raises(RepositoryHttpOriginalError, match=code):
+        apply_original(session, _after(session), recovery_parent=recovery)
+    assert (root / "app.py").read_text() == SOURCE and not recovery.exists()
+
+
+def test_unpreservable_metadata_never_replaces_original(applied, monkeypatch):
+    session, root, recovery = applied()
+    calls = []
+    real = original_module._metadata
+
+    def drifting(fd):
+        value = real(fd)
+        calls.append(1)
+        if len(calls) > 1:  # The temporary copy differs from the original.
+            value["xattrs"] = {**value["xattrs"], "org.authzest.lost": "0" * 64}
+        return value
+
+    monkeypatch.setattr(original_module, "_metadata", drifting)
+    with pytest.raises(
+        RepositoryHttpOriginalError, match="original-metadata-not-preserved"
+    ) as caught:
+        apply_original(session, _after(session), recovery_parent=recovery)
+    assert caught.value.result["state"] == "original-unchanged-failed"
+    assert (root / "app.py").read_text() == SOURCE
+    assert [entry.name for entry in root.iterdir() if entry.name.startswith(".")] == []
