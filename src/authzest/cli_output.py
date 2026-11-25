@@ -451,6 +451,108 @@ def format_repository_suggestion(value: dict) -> str:
     return "\n\n".join(parts)
 
 
+def _phase_lines(name: str, phase: dict | None) -> str:
+    if not phase:
+        return section(name, {"status": "not-run"})
+    comparison = phase.get("comparison") or {}
+    return section(
+        name,
+        {
+            "status": phase.get("status"),
+            "criteria_met": phase.get("criteria_met"),
+            "failure": phase.get("failure"),
+            "cases": {
+                row.get("case_id"): row.get("outcome") for row in comparison.get("outcomes", [])
+            },
+            "cleanup_confirmed": phase.get("cleanup_confirmed"),
+            "evidence": phase.get("evidence_directory"),
+        },
+    )
+
+
+def format_repository_http_fix_step(value: dict) -> str:
+    """One progress message of the interactive HTTP repair flow."""
+    step = value.get("step")
+    if step == "proposed-diff":
+        return "\n\n".join(
+            [
+                _payload_block(
+                    "HTTP PoC request data (model-authored)", json_output(value.get("poc"))
+                ),
+                _payload_block("Exact proposed diff (not yet applied)", value.get("diff")),
+            ]
+        )
+    if step == "original-preview":
+        return "\n\n".join(
+            [
+                section(
+                    "Original file change",
+                    {key: value.get(key) for key in ("root", "source_path", "original_state")},
+                ),
+                _payload_block("Exact original diff", value.get("diff")),
+            ]
+        )
+    if step in ("before-phase-finished", "after-phase-finished"):
+        return section(
+            step.split("-")[0].capitalize() + " check result",
+            {
+                "status": value.get("status"),
+                "criteria_met": value.get("criteria_met"),
+                "failure": value.get("failure"),
+                "cases": {
+                    row.get("case_id"): row.get("outcome") for row in value.get("outcomes") or []
+                },
+                "evidence": value.get("evidence_directory"),
+            },
+        )
+    return section(
+        "Step: " + str(step), {k: v for k, v in value.items() if k not in ("kind", "step")}
+    )
+
+
+def format_repository_http_fix(value: dict) -> str:
+    """Final readable summary; --json keeps the complete record."""
+    original = value.get("original") or {}
+    parts = [
+        "External FastAPI ownership repair",
+        section(
+            "Summary",
+            {
+                "status": value.get("status"),
+                "model": value.get("model"),
+                "proposal_status": value.get("proposal_status"),
+                "verified_fix": value.get("verified_fix"),
+                "verification_scope": value.get("verification_scope"),
+                "original_checkout_modified": value.get("original_checkout_modified"),
+                "failure": value.get("failure"),
+            },
+        ),
+    ]
+    if value.get("cases"):
+        parts.append(section("Reviewed independent cases", value["cases"]))
+    parts.append(_phase_lines("Before check", value.get("before_phase")))
+    parts.append(_phase_lines("After check", value.get("after_phase")))
+    if value.get("diff"):
+        parts.append(_payload_block("Repair diff", value["diff"]))
+    if original:
+        parts.append(
+            section(
+                "Original application",
+                {
+                    key: original.get(key)
+                    for key in ("state", "root", "source_path", "record_path", "failure")
+                },
+            )
+        )
+    if value.get("restore_command"):
+        parts.append("Recovery: " + quoted(value["restore_command"])[1:-1])
+    parts.append(
+        "Matching observations cover the reviewed cases only; they do not certify the "
+        "whole application or a real authentication system."
+    )
+    return "\n\n".join(parts)
+
+
 def format_sharing_preview(value: dict) -> str:
     scope = {
         key: value[key]
@@ -760,6 +862,8 @@ class WorkflowOutput:
             "owner-policy-file-stage-preview",
         ):
             typer.echo(format_file_workflow_preview(value))
+        elif isinstance(value, dict) and value.get("kind") == "repository-http-fix-step":
+            typer.echo(format_repository_http_fix_step(value))
         elif isinstance(value, dict) and value.get("kind") == "owner-read-copy-plan":
             typer.echo("Private copy review\n" + json_output(value))
         elif isinstance(value, dict) and value.get("kind") == "owner-policy-file-stage-result":
@@ -795,12 +899,17 @@ class WorkflowOutput:
             "repository-http-suggestion",
         ):
             typer.echo(format_repository_suggestion(value), err=error)
+        elif not self.as_json and value.get("kind") == "repository-http-fix-result":
+            typer.echo(format_repository_http_fix(value), err=error)
         elif not self.as_json and value.get("kind") == "owner-read-suggestion":
             typer.echo(format_owner_read_suggestion(value), err=error)
         elif self.as_json or error:
             # Small redacted errors retain stderr in human mode; explicit JSON
             # mode includes application failures in its single stdout result.
             typer.echo(json_output(value), err=error and not self.as_json)
+        elif preview and value.get("kind") == "repository-http-fix-preview":
+            typer.echo(section("Selected inputs to share (not sent)", value["request"]))
+            typer.echo(section("Required case-file basis", value["case_basis"]))
         elif preview and value.get("kind") == "owner-read-file-offline-preview":
             typer.echo(format_sharing_preview(value["sharing_preview"]))
             typer.echo(section("Reviewed local runtime", value["runtime_review"]))
