@@ -112,6 +112,7 @@ class Project:
             "source_sha256": sha256(text.encode()).hexdigest(),
             "comparison": {
                 "phase": phase,
+                "plan_id": plan.plan_id,
                 "binding": _binding(plan.to_dict(), phase),
                 "designated_regression_case_id": "other",
                 "frame_status": "valid-supplied",
@@ -128,6 +129,21 @@ class Project:
                 ],
             },
             "cleanup_confirmed": True,
+            "frame": {
+                "phase": phase,
+                "plan_id": plan.plan_id,
+                "binding": _binding(plan.to_dict(), phase),
+                "cleanup": {"A": "confirmed", "B": "confirmed"},
+                "observations": [
+                    {
+                        "case_id": name,
+                        "outcome": "response",
+                        "error_code": None,
+                        "response": {"status": 200, "body": {"kind": "json", "value": {}}},
+                    }
+                    for name in ("owner", "other", "anonymous", "normal", "public")
+                ],
+            },
             "cleanup_errors": [],
             "engine_transport_cleanup_confirmed": True,
             "relay_capture": {"status": "complete", "failure": None},
