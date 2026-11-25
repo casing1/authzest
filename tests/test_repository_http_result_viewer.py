@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
+from hashlib import sha256
 
 import pytest
 from tests.helpers.repository_http_verification_data import AFTER, SOURCE
@@ -101,6 +102,24 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         lambda r: r["cases"].update(case_ids=r["cases"]["case_ids"][:-1]),
         lambda r: r["cases"].update(regression_case_id="missing"),
         lambda r: r["private_copy"]["history"][0].update(status="pending"),
+        # Reviewed cases are bound to the captured source, policy and interface.
+        lambda r: r["source_evidence"]["policy"].update(
+            text="anyone may read\n",
+            sha256=sha256(b"anyone may read\n").hexdigest(),
+        ),
+        lambda r: r["case_basis"].update(interface_id="repository-http-interface-other"),
+        lambda r: r.update(case_basis=None),
+        # The before-defect criterion is recomputed, not trusted.
+        lambda r: r["before_phase"]["comparison"].update(
+            supplied_before_differs_from_desired_after=False
+        ),
+        lambda r: r["before_phase"]["comparison"].pop("supplied_before_differs_from_desired_after"),
+        lambda r: r["after_phase"]["comparison"].update(cleanup_supplied_confirmed=False),
+        lambda r: r["after_phase"]["comparison"].update(supplied_criteria_met=False),
+        # Each comparison belongs to its phase, case set and PoC.
+        lambda r: r["after_phase"]["comparison"].update(phase="before"),
+        lambda r: r["after_phase"]["comparison"]["binding"].update(case_set_id="other-set"),
+        lambda r: r["proposal"]["proposal"]["poc"].update(path="/items/two"),
     ],
 )
 def test_contradictory_or_tampered_records_are_refused(record, change):

@@ -10,6 +10,7 @@ from __future__ import annotations
 from hashlib import sha256
 from typing import Any
 
+from authzest.codex.contracts import identity
 from authzest.result_viewer import (
     _bad,
     _bool,
@@ -35,12 +36,13 @@ def _captured(value: Any, *, limit: int) -> dict:
     return {"path": _text(value.get("path"), nullable=False), "sha256": digest, "text": text}
 
 
-def _source(data: dict) -> tuple[dict | None, dict | None]:
+def _source(data: dict) -> tuple[dict | None, dict | None, str | None]:
     evidence = _object(data.get("source_evidence"), nullable=True)
     if evidence is None:
-        return None, None
+        return None, None, None
     source = _captured(evidence.get("source"), limit=16_384)
     policy = _captured(evidence.get("policy"), limit=8_192)
+    interface = _text(_object(evidence.get("http_interface")).get("interface_id"), nullable=False)
     return (
         {
             "scenario_id": "external-single-file-http",
@@ -51,7 +53,34 @@ def _source(data: dict) -> tuple[dict | None, dict | None]:
             "policy_review": "unverified intent; expected answers come from the reviewed case file",
         },
         policy,
+        interface,
     )
+
+
+def _basis(
+    data: dict, source: dict | None, policy: dict | None, interface: str | None
+) -> dict | None:
+    """The reviewed case file's basis, bound to the captured inputs when recorded."""
+    basis = _object(data.get("case_basis"), nullable=True)
+    if basis is None:
+        return None
+    values = {
+        key: _text(basis.get(key), nullable=False)
+        for key in ("selection_id", "interface_id", "source_path", "policy_path")
+    }
+    for key in ("source_sha256", "policy_sha256"):
+        values[key] = _hash(basis.get(key), nullable=False)
+    if source is not None and policy is not None:
+        captured = {
+            "interface_id": interface,
+            "source_path": source["source"]["path"],
+            "source_sha256": source["source"]["sha256"],
+            "policy_path": policy["path"],
+            "policy_sha256": policy["sha256"],
+        }
+        if any(values[key] != value for key, value in captured.items()):
+            _bad()
+    return values
 
 
 def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None]:
@@ -113,7 +142,11 @@ def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None
 
 
 def _phase(
-    value: Any, candidate: str, regression: str | None, case_ids: list[str] | None
+    value: Any,
+    candidate: str,
+    regression: str | None,
+    case_ids: list[str] | None,
+    binding: dict[str, str | None],
 ) -> dict | None:
     phase = _object(value, nullable=True)
     if phase is None:
@@ -143,6 +176,18 @@ def _phase(
         ids = [row["case_id"] for row in outcomes]
         if case_ids is None or len(set(ids)) != len(ids) or set(ids) != set(case_ids):
             _bad()
+        # The comparison must belong to this phase, case set, interface, PoC
+        # and displayed source; a check from other inputs cannot be reused.
+        recorded = _object(comparison.get("binding"))
+        if (
+            comparison.get("phase") != candidate
+            or comparison.get("designated_regression_case_id") != regression
+            or any(
+                expected is not None and recorded.get(key) != expected
+                for key, expected in binding.items()
+            )
+        ):
+            _bad()
         counts = _object(comparison.get("counts"))
         planned = _integer(comparison.get("planned_cases"), nullable=False)
         # Recount from the validated rows; a supplied count can never override them.
@@ -163,14 +208,22 @@ def _phase(
     status = _text(phase.get("status"))
     digest = _hash(phase.get("source_sha256"))
     cleaned = _bool(phase.get("cleanup_confirmed"))
-    # A phase may fail before capturing its source hash, but success needs the
-    # hash, confirmed cleanup and every reviewed case matching.
+    # A phase may fail before capturing its source hash. Success is recomputed:
+    # a valid frame, confirmed cleanup, every reviewed case matching, the hash,
+    # and before the repair the regression answer differing from the desired one.
     if phase.get("criteria_met") is True and (
         status != "complete"
         or projected is None
+        or comparison.get("frame_status") != "valid-supplied"
+        or comparison.get("cleanup_supplied_confirmed") is not True
+        or comparison.get("supplied_criteria_met") is not True
         or projected["matching_case_count"] != planned
         or cleaned is not True
         or digest is None
+        or (
+            candidate == "before"
+            and comparison.get("supplied_before_differs_from_desired_after") is not True
+        )
     ):
         _bad()
     return {
@@ -254,13 +307,45 @@ def preview_repository_http_fix_result(data: dict) -> dict:
     if data.get("schema_version") != "2.0":
         _bad()
     status = _text(data.get("status"), nullable=False)
-    source, _policy = _source(data)
+    source, policy, interface = _source(data)
+    basis = _basis(data, source, policy, interface)
     proposal, assessment = _proposal(data, source)
     cases = _object(data.get("cases"), nullable=True) or {}
     regression = _text(cases.get("regression_case_id"))
     case_ids = _case_ids(cases, regression)
-    before = _phase(data.get("before_phase"), "before", regression, case_ids)
-    after = _phase(data.get("after_phase"), "after", regression, case_ids)
+    # Reviewed cases are only accepted against a recorded basis.
+    if case_ids is not None and basis is None:
+        _bad()
+    change = _object(_object(data.get("proposal"), nullable=True) or {}).get("proposal")
+    shared = {
+        "case_set_id": _text(cases.get("case_set_id")),
+        "interface_id": None if basis is None else basis["interface_id"],
+        "poc_sha256": None if change is None else identity(_object(change).get("poc")),
+    }
+    before_source = (
+        source["source"]["sha256"]
+        if source is not None
+        else None
+        if basis is None
+        else basis["source_sha256"]
+    )
+    before = _phase(
+        data.get("before_phase"),
+        "before",
+        regression,
+        case_ids,
+        {**shared, "source_sha256": before_source},
+    )
+    after = _phase(
+        data.get("after_phase"),
+        "after",
+        regression,
+        case_ids,
+        {
+            **shared,
+            "source_sha256": None if proposal is None else proposal["after_source"]["sha256"],
+        },
+    )
     # Bind each recorded hash to the exact displayed source: before to the
     # captured source (when recorded) and after to the model-authored repair.
     # A phase that failed before its checkpoint has no hash to bind.

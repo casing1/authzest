@@ -23,6 +23,7 @@ from authzest.codex.repository_http_proposal import build_repository_http_reques
 from authzest.runner import repository_http_fix as module
 from authzest.runner._repository_http_phase import RepositoryHttpPhaseResult
 from authzest.runner._repository_http_staging import supported
+from authzest.runner.repository_http_verification import _binding
 
 pytestmark = pytest.mark.skipif(not supported(), reason="POSIX external repair flow scope")
 
@@ -110,7 +111,15 @@ class Project:
             "plan_id": plan.plan_id,
             "source_sha256": sha256(text.encode()).hexdigest(),
             "comparison": {
+                "phase": phase,
+                "binding": _binding(plan.to_dict(), phase),
+                "designated_regression_case_id": "other",
                 "frame_status": "valid-supplied",
+                "cleanup_supplied_confirmed": True,
+                "supplied_before_differs_from_desired_after": self.criteria[phase]
+                if phase == "before"
+                else None,
+                "supplied_criteria_met": self.criteria[phase],
                 "planned_cases": 5,
                 "counts": {"match": 5, "mismatch": 0, "error": 0, "not-dispatched": 0},
                 "outcomes": [
