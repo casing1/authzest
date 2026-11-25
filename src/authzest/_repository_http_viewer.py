@@ -208,9 +208,11 @@ def _phase(
     status = _text(phase.get("status"))
     digest = _hash(phase.get("source_sha256"))
     cleaned = _bool(phase.get("cleanup_confirmed"))
+    attempted = _bool(phase.get("runtime_attempted"))
     # A phase may fail before capturing its source hash. Success is recomputed:
-    # a valid frame, confirmed cleanup, every reviewed case matching, the hash,
-    # and before the repair the regression answer differing from the desired one.
+    # a started runtime, a valid frame, confirmed cleanup, every reviewed case
+    # matching, the hash and, before the repair, the regression answer
+    # differing from the desired one.
     if phase.get("criteria_met") is True and (
         status != "complete"
         or projected is None
@@ -219,6 +221,7 @@ def _phase(
         or comparison.get("supplied_criteria_met") is not True
         or projected["matching_case_count"] != planned
         or cleaned is not True
+        or attempted is not True
         or digest is None
         or (
             candidate == "before"
@@ -233,7 +236,7 @@ def _phase(
         "regression_status": regression_status,
         "response_status": None,
         "cleanup_confirmed": cleaned,
-        "generated_runtime_attempted": _bool(phase.get("runtime_attempted")),
+        "generated_runtime_attempted": attempted,
         "application_sha256": digest,
         "test_sha256": _hash(phase.get("schedule_sha256")),
         "failure": None

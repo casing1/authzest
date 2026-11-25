@@ -96,6 +96,9 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         # Success needs confirmed cleanup and a bound source hash.
         lambda r: r["after_phase"].update(cleanup_confirmed=False),
         lambda r: r["after_phase"].update(source_sha256=None),
+        # A check that never started containers cannot claim success.
+        lambda r: r["after_phase"].update(runtime_attempted=False),
+        lambda r: r["before_phase"].update(runtime_attempted=False),
         # Outcome rows must be exactly the recorded reviewed cases.
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="invented"),
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="other"),
