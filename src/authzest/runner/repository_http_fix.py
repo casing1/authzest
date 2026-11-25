@@ -37,7 +37,7 @@ from authzest.codex.repository_http_proposal import (
     validate_repository_http_options,
     validate_repository_http_response,
 )
-from authzest.runner._generated_repair_phase import SessionEvidenceBudget
+from authzest.runner._generated_repair_phase import PhaseError, SessionEvidenceBudget
 from authzest.runner._repository_http_phase import execute_repository_http_phase
 from authzest.runner._repository_http_runtime_input import (
     RepositoryHttpRuntimeInputError,
@@ -289,18 +289,22 @@ async def run_repository_http_fix(
                 phase + "-declined",
             )
             flow.step(phase + "-phase-started")
-            value = phase_runner(
-                session,
-                request,
-                response,
-                cases,
-                plan,
-                profile,
-                phase=phase,
-                session_nonce=secrets.token_hex(16),
-                dispatch_guard=flow.guard,
-                evidence_budget=budget,
-            )
+            try:
+                value = phase_runner(
+                    session,
+                    request,
+                    response,
+                    cases,
+                    plan,
+                    profile,
+                    phase=phase,
+                    session_nonce=secrets.token_hex(16),
+                    dispatch_guard=flow.guard,
+                    evidence_budget=budget,
+                )
+            except PhaseError as exc:
+                result["failure"] = {"code": str(exc), "phase": phase}
+                raise _Declined(phase + "-phase-failed", 1) from None
             phases[phase] = value
             summary = _phase_summary(value)
             result[phase + "_phase"] = summary

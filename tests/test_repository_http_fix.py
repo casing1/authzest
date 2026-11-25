@@ -302,3 +302,18 @@ def test_cli_restore_round_trip(tmp_path, monkeypatch):
     assert (project.root / "app.py").read_text() == SOURCE
     again = runner.invoke(app, ["repo-restore", record, "--json"], input="\n")
     assert json.loads(again.stdout)["status"] == "restore-refused"
+
+
+def test_phase_runner_refusal_is_a_failed_result(tmp_path):
+    from authzest.runner._repository_http_phase import RepositoryHttpPhaseError
+
+    project = Project(tmp_path)
+
+    def refuse(*_args, **_kwargs):
+        raise RepositoryHttpPhaseError("invalid-private-http-phase-context")
+
+    project.phase = refuse
+    result = project.run(Answers(*ALL))
+    assert result["status"] == "before-phase-failed" and result["exit_code"] == 1
+    assert result["failure"] == {"code": "invalid-private-http-phase-context", "phase": "before"}
+    assert (project.root / "app.py").read_text() == SOURCE
