@@ -317,3 +317,20 @@ def test_phase_runner_refusal_is_a_failed_result(tmp_path):
     assert result["status"] == "before-phase-failed" and result["exit_code"] == 1
     assert result["failure"] == {"code": "invalid-private-http-phase-context", "phase": "before"}
     assert (project.root / "app.py").read_text() == SOURCE
+
+
+def test_partial_sharing_phrase_is_explained(tmp_path):
+    project = Project(tmp_path)
+
+    def only_identifier(prompt):
+        return re.search(r"Type 'share ([^']+)'", prompt).group(1)
+
+    result = project.run(only_identifier)
+    assert result["status"] == "not-shared" and project.adapter_calls == 0
+    assert result["failure"]["code"] == "sharing-phrase-mismatch"
+
+
+def test_blank_sharing_answer_is_a_plain_decline(tmp_path):
+    project = Project(tmp_path)
+    result = project.run(Answers("decline"))
+    assert result["status"] == "not-shared" and result["failure"] is None

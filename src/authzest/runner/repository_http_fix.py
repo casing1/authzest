@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import secrets
 import stat
 from collections.abc import Callable
@@ -228,6 +229,16 @@ async def run_repository_http_fix(
         profile = prepare_repository_http_runtime_input(profile_path)
         flow.step("inputs-captured", request_id=request.request_id, cases=result["cases"])
 
+        sharing = {"expected": None, "answer": None}
+
+        def sharing_read(prompt: str) -> str:
+            # Remember only whether a typed answer missed the exact phrase.
+            match = re.search(r"Type '([^']+)'", prompt)
+            sharing["expected"] = match.group(1) if match else None
+            answer = read(prompt)
+            sharing["answer"] = answer
+            return answer
+
         suggestion = await run_repository_suggestion(
             root,
             source,
@@ -237,7 +248,7 @@ async def run_repository_http_fix(
             app_attribute=app_attribute,
             timeout_seconds=timeout_seconds,
             emit=emit,
-            read=read,
+            read=sharing_read,
             adapter_factory=adapter_factory,
         )
         result["suggestion"] = {
@@ -253,6 +264,15 @@ async def run_repository_http_fix(
         }
         if suggestion["status"] != "proposal-ready":
             result.update(status=suggestion["status"], exit_code=suggestion["exit_code"])
+            if (
+                suggestion["status"] == "not-shared"
+                and sharing["answer"]
+                and sharing["answer"] != sharing["expected"]
+            ):
+                result["failure"] = {
+                    "code": "sharing-phrase-mismatch",
+                    "hint": "Type the whole phrase shown in quotes, including its first word.",
+                }
             return result
         shared = RepositoryHttpRequest(canonical(suggestion["source_evidence"]))
         if shared.payload_json != request.payload_json:
