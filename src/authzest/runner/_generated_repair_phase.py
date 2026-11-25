@@ -249,8 +249,9 @@ class _ClientPin:
 
 
 class _Journal:
-    def __init__(self, budget):
+    def __init__(self, budget, prefix="authzest-generated-phase-"):
         self.budget = budget
+        self.prefix = prefix
         self.path = None
         self.fd = -1
         self.initialization_stage = "not-created"
@@ -259,7 +260,7 @@ class _Journal:
 
     def initialize(self):
         self.initialization_stage = "create-directory"
-        self.path = Path(tempfile.mkdtemp(prefix="authzest-generated-phase-"))
+        self.path = Path(tempfile.mkdtemp(prefix=self.prefix))
         self.initialization_stage = "open-journal"
         self.fd = os.open(
             self.path / "events.jsonl", os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600
