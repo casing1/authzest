@@ -685,7 +685,18 @@ class _Phase:
         self.current(stage)
 
     def _preflight(self, limit):
-        self.pin = RepositoryHttpClientPin(self.profile, self.tick)
+        try:
+            self.pin = RepositoryHttpClientPin(self.profile, self.tick)
+        except BaseException as exc:
+            # The failed pin never becomes owned state; keep its descriptor facts.
+            for name in (
+                "descriptor_cleanup_confirmed",
+                "http_client_descriptor_cleanup_confirmed",
+            ):
+                if getattr(exc, name, True) is not True:
+                    self.cleanup_errors.append("client-pin-descriptor-cleanup-unconfirmed")
+                    break
+            raise
         self.metadata = observe_runtime_metadata(
             self.profile,
             phase_deadline=self.deadline,

@@ -915,3 +915,21 @@ def test_stage_initialization_failure_is_retained(setup, monkeypatch):
     assert failure["created_path"] and failure["descriptor_cleanup_confirmed"] is False
     assert "stage-initialization-cleanup-unconfirmed" in result["cleanup_errors"]
     assert result["cleanup_confirmed"] is False
+
+
+@pytest.mark.parametrize(
+    "attribute", ["descriptor_cleanup_confirmed", "http_client_descriptor_cleanup_confirmed"]
+)
+def test_client_pin_cleanup_failure_is_retained(setup, monkeypatch, attribute):
+    world = setup("before")
+
+    def failing(profile, tick):
+        error = RuntimeError("pin")
+        setattr(error, attribute, False)
+        raise error
+
+    monkeypatch.setattr(module, "RepositoryHttpClientPin", failing)
+    result = world.invoke().to_dict()
+    assert result["status"] == "failed" and world.calls == []
+    assert "client-pin-descriptor-cleanup-unconfirmed" in result["cleanup_errors"]
+    assert result["cleanup_confirmed"] is False
