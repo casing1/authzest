@@ -276,6 +276,7 @@ def _copy_metadata(source: int, target: int, meta: dict) -> None:
                 os.removexattr(target, name)
         if os.fstat(target).st_gid != meta["gid"]:
             os.fchown(target, -1, meta["gid"])
+        # The final mode is installed last, after ACLs, attributes and group.
         os.fchmod(target, meta["mode"])
     except OSError:
         raise _metadata_failure() from None
@@ -489,7 +490,7 @@ def apply_original(
             target.parent_fd,
             temporary,
             target.after,
-            meta["mode"],
+            0o600,  # Private until the original security metadata is installed.
             lambda fd: _copy_metadata(target.source_fd, fd, meta),
         )
         # Final edit-conflict check immediately before the rename.
@@ -661,7 +662,7 @@ def restore_original(record_path: Path, *, guard: Callable[[], None] | None = No
                 parent,
                 temporary,
                 before,
-                meta["mode"],
+                0o600,
                 lambda fd: _copy_metadata(current_fd, fd, meta),
             )
         finally:

@@ -138,9 +138,19 @@ class _Flow:
             raise RepositoryHttpOriginalError("decision-expired")
 
 
-def _perform(session: RepositoryHttpFileSession, step: str) -> dict:
+def _perform(session: RepositoryHttpFileSession, step: str, flow: _Flow) -> dict:
+    """Perform one private step only within the user's original answer deadline.
+
+    The session issues its own short-lived plan; it never extends the user's
+    decision, which is rechecked immediately before the effect.
+    """
     plan = session.prepare(step)
-    return session.perform(session.decide(plan, plan.to_dict()["confirmation"]))
+    decision = session.decide(plan, plan.to_dict()["confirmation"])
+    try:
+        flow.guard()
+    except RepositoryHttpOriginalError:
+        raise _Declined("decision-expired", 1) from None
+    return session.perform(decision)
 
 
 def build_repository_http_fix_preview(
@@ -349,7 +359,7 @@ async def run_repository_http_fix(
             "(the original stays unchanged).",
             "copy-declined",
         )
-        _perform(session, "copy")
+        _perform(session, "copy", flow)
         result["private_copy"] = session.result()
         run_phase("before")
         flow.step("proposed-diff", diff=result["diff"], poc=response["proposal"]["poc"])
@@ -358,8 +368,8 @@ async def run_repository_http_fix(
             "Accept this exact diff and apply it to the private copy only.",
             "private-apply-declined",
         )
-        _perform(session, "accept-diff")
-        _perform(session, "apply")
+        _perform(session, "accept-diff", flow)
+        _perform(session, "apply", flow)
         result["private_copy"] = session.result()
         run_phase("after")
         result["verified_fix"] = True

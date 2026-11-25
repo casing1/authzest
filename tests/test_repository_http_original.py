@@ -512,3 +512,20 @@ def test_rename_failure_before_effect_reports_unchanged(applied, monkeypatch):
     # The safety net still refuses: the original equals the backup, not the repair.
     path = recovery / caught.value.result["record_id"]
     assert inspect_original_record(path)["restore_allowed"] is False
+
+
+def test_replacement_stays_private_until_metadata_is_installed(applied, monkeypatch):
+    session, root, recovery = applied()
+    real = original_module._copy_metadata
+    modes = []
+
+    def observe(source, target, meta):
+        modes.append(stat.S_IMODE(os.fstat(target).st_mode))
+        real(source, target, meta)
+        modes.append(stat.S_IMODE(os.fstat(target).st_mode))
+
+    monkeypatch.setattr(original_module, "_copy_metadata", observe)
+    record = apply_original(session, _after(session), recovery_parent=recovery)
+    expected = record["metadata"]["mode"]
+    restore_original(recovery / record["record_id"])
+    assert modes == [0o600, expected, 0o600, expected]

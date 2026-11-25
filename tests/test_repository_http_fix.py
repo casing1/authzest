@@ -334,3 +334,17 @@ def test_blank_sharing_answer_is_a_plain_decline(tmp_path):
     project = Project(tmp_path)
     result = project.run(Answers("decline"))
     assert result["status"] == "not-shared" and result["failure"] is None
+
+
+def test_late_private_effect_never_extends_the_answer_deadline(tmp_path):
+    project = Project(tmp_path)
+    # copy prompt issued at 0, answered at 299 (valid), effect reached at 301.
+    times = iter([0.0, 299.0, 301.0])
+
+    def clock():
+        return next(times, 1000.0)
+
+    result = project.run(Answers(*ALL), clock=clock)
+    assert result["status"] == "decision-expired" and result["exit_code"] == 1
+    assert result["private_copy"]["private_root"] is None
+    assert project.phase_calls == []
