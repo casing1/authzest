@@ -73,6 +73,12 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         lambda r: r["original"].update(state="intent-recorded"),
         lambda r: r.update(schema_version="1.0"),
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(outcome="passed"),
+        # A failed regression row cannot hide behind an unchanged match count.
+        lambda r: r["after_phase"]["comparison"]["outcomes"][1].update(outcome="mismatch"),
+        # Checks must belong to the displayed before source and repair.
+        lambda r: r["proposal"]["proposal"].update(after_text=AFTER + "# other repair\n"),
+        lambda r: r["after_phase"].update(source_sha256="0" * 64),
+        lambda r: r["before_phase"].update(source_sha256="0" * 64),
     ],
 )
 def test_contradictory_or_tampered_records_are_refused(record, change):

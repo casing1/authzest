@@ -138,8 +138,9 @@ def _phase(value: Any, candidate: str, regression: str | None) -> dict | None:
                 regression_status = outcome
         counts = _object(comparison.get("counts"))
         planned = _integer(comparison.get("planned_cases"), nullable=False)
-        matching = _integer(counts.get("match"), nullable=False)
-        if planned != len(outcomes) or matching > planned:
+        # Recount from the validated rows; a supplied count can never override them.
+        matching = sum(row["outcome"] == "match" for row in outcomes)
+        if planned != len(outcomes) or _integer(counts.get("match"), nullable=False) != matching:
             _bad()
         projected = {
             "expected_profile": "reviewed-" + candidate + "-answers",
@@ -217,6 +218,18 @@ def preview_repository_http_fix_result(data: dict) -> dict:
     regression = _text(cases.get("regression_case_id"))
     before = _phase(data.get("before_phase"), "before", regression)
     after = _phase(data.get("after_phase"), "after", regression)
+    # Bind each check to the exact displayed source: before to the captured
+    # source (when recorded) and after to the model-authored replacement.
+    if (
+        before is not None
+        and source is not None
+        and before["application_sha256"] != source["source"]["sha256"]
+    ):
+        _bad()
+    if after is not None and (
+        proposal is None or after["application_sha256"] != proposal["after_source"]["sha256"]
+    ):
+        _bad()
     verified = _bool(data.get("verified_fix"))
     if verified is True and (
         after is None
