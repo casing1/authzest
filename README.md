@@ -267,7 +267,8 @@ execution or source-sharing authority.
 - [Course walkthrough](docs/guides/COURSE_DEMO.md): GUI, CLI and saved-result presentation.
 - [Contributing](CONTRIBUTING.md): meaningful commits, tests, labels and branch rules.
 - [Security policy](SECURITY.md): reporting and supported review boundaries.
-- [MIT license](LICENSE).
+- [MIT license](LICENSE) and [references and third-party software](docs/reference/THIRD_PARTY.md):
+  no copied code; dependencies and bundled runtime components keep their own licenses.
 
 Static declarations, supplied policy and finite test outcomes are different evidence. Diagnostics
 and unknown/not-run/declined/failed states remain visible. AuthZest does not establish general

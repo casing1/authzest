@@ -14,7 +14,64 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 ## [Unreleased]
 
-### 추가
+아래 0.1.0 항목 이후의 변경은 아직 없습니다.
+
+## [0.1.0] - 2026-11-23
+
+제목의 날짜는 과제용 릴리스 노트를 준비한 날입니다. 일치하는 태그를 만드는 릴리스 커밋에서 실제
+발행일로 바꿉니다. 실제 발행과 산출물은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서
+확인하세요. [릴리스 노트](releases/0.1.0.md)와 [준비 상태](releases/0.1.0-READINESS.md)에
+지원 범위와 남은 결정을 기록합니다.
+
+### alpha.4 이후 주요 변경사항
+
+- **외부 단일 파일 수정.** `repo-fix`는 다른 폴더의 독립 FastAPI 파일 하나, 사용자 정책, 검토한 GET
+  사례 4–8개를 받습니다. 공유를 따로 승인하면 Codex에 HTTP PoC 요청과 수정안을 받고, 정확한 수정
+  전·후 소스를 격리된 A/B 컨테이너에서 검토한 답과 비교합니다. 추가 승인 뒤에만 백업과 함께 원본에
+  씁니다. `repo-restore`는 이후 편집이 없을 때 원본을 되돌립니다. 2026-11-25 동봉 시연이 소스
+  checkout과 설치한 wheel 모두에서 실제 모델로 끝까지 통과했습니다(수정 전·후 5/5).
+  [외부 수정 안내](guides/REPOSITORY_HTTP_FIX.md)
+- **외부 수정 결과 보기.** 대시보드에서 저장한 `repo-fix` JSON을 읽기 전용으로 엽니다. 기록한 소스로
+  diff를 다시 만들고, 모순되거나 변조된 결과는 거절합니다. [GUI 안내](guides/RESULT_VIEWER.md)
+- **Codex 제안.** 소스 CLI에서 요청을 오프라인으로 먼저 확인하고, 관리하는 FastAPI 소유권 예제의
+  새 회귀 테스트와 단일 파일 수정안을 공유 승인 후 Codex에 요청할 수 있습니다. 실행 흐름은 각
+  단계에서 결정을 받고 비공개 복사본에서 변경을 검사하며 복구 상태를 기록합니다. 실행 파일로 묶지
+  않은 POSIX 소스 설치와 검토한 Linux 런타임 이미지가 필요합니다.
+- **대화형 로컬 GUI.** `authzest ui --ai-runtime-config PATH`로 owner-read 작업 공간을 켭니다.
+  CLI 엔진·기존 Codex 로그인과 별도의 현재 런타임/공유/복사/before/diff/적용/after/복구 결정을
+  공유합니다. 전체 계획·소스/테스트/diff·제한된 호스트 활동·변경 전후·복구를 확인하고 전체 JSON을
+  내려받습니다. 일반 실행은 정적 라우트 목록과 읽기 전용 결과 가져오기를 지원하며 현재 워크플로
+  결과의 스키마는 `1.0`입니다. 편집 가능 소스 설치와 프런트엔드 빌드가 필요합니다.
+  [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI 안내](guides/RESULT_VIEWER.md)
+- **설치와 시연.** 영한 과제 안내는 GUI 흐름을 중심으로 CLI·저장한 결과 대안도 설명합니다.
+  정확한 소스 `80b574d`의 사전 검증에서 설치형 CLI 검사 39개·읽기 전용 UI 검사 7개와
+  Linux x64·macOS arm64·Windows x64의 네이티브 사전 검증 작업 7개를 모두 통과했습니다.
+  설치·오프라인 근거이며 새 실제 AI 또는 제품 guest 실행은 아닙니다.
+  [사전 검증 #197](https://github.com/casing1/authzest/issues/197) · [과제 안내](guides/COURSE_DEMO.md)
+- **개발 포맷 도구.** Prettier 3.10.1의 내장 brace-expansion은 #89에서 추적하는 권고 세 건의
+  수정 버전 기준을 충족합니다. 별도 picomatch 권고/CVE 상태·경고와 남은 후보별 판단은 #171에서
+  추적합니다. [포맷 안내](development/FORMATTING.md)
+
+### 외부 단일 파일 경로
+
+2026-11-23 노트 이후 [#151](https://github.com/casing1/authzest/issues/151),
+[#152](https://github.com/casing1/authzest/issues/152), [#210](https://github.com/casing1/authzest/issues/210)에서
+전달했습니다. 이 묶음의 앞선 항목은 오프라인 단계 기록이며, 그때 남은 일로 적은 내용은 이후 PR로
+완료했습니다.
+
+- HTTP 경로의 직접 A/B phase: 사전 검사, 소유한 컨테이너와 정확한 정리, 요청 전용 제한 stdin, phase
+  시간 예산을 추가했습니다. CLI가 공유·비공개 복사·수정 전 검사·정확한 diff·비공개 적용·수정 후 검사를
+  잇고, 효과마다 한 번만 쓰는 코드를 따로 받습니다. [PR #217](https://github.com/casing1/authzest/pull/217)
+- 승인형 원본 적용: 보유한 원본을 다시 확인하고 원자적으로 쓰며, 메타데이터·ACL·확장 속성을
+  유지하고 내구성 있는 백업을 기록합니다. 바뀐 원본은 거절하며, 복구는 파일이 적용한 바이트를
+  그대로 가질 때만 합니다. [PR #218](https://github.com/casing1/authzest/pull/218)
+- runtime 준비 스크립트(고정 wheel 다운로드, 로컬 이미지 빌드, 비공개 runtime 프로필)와 유지보수자가
+  검토한 사례 5개를 가진 시연 앱. [PR #217](https://github.com/casing1/authzest/pull/217) ·
+  [PR #218](https://github.com/casing1/authzest/pull/218)
+- `repo-fix` 읽기 전용 저장 결과 보기: diff를 다시 만들고, 각 검사를 검토 사례·캡처한 입력·phase
+  프레임·정리 기록에 묶으며, 모순된 기록은 거절합니다. [PR #219](https://github.com/casing1/authzest/pull/219)
+- 네 언어 README, 외부 수정 안내, 설치 후보 실행을 포함한 범위 기록.
+  [PR #219](https://github.com/casing1/authzest/pull/219) · [PR #220](https://github.com/casing1/authzest/pull/220)
 
 - 별도 HTTP 비공개 프로필·client 연속성, 네 문서의 제한된 Engine reader와 전체 A/B 시작 전
   container 비교를 추가합니다. 기존 T/A/B 계약을 넓히지 않고 낮은 수준의 기본 도구를 공유합니다.
@@ -72,7 +129,7 @@ AuthZest의 주요 변경사항을 기록합니다.
 - 읽기 쉬운 제안 출력·단일 JSON 모드와 외부 프로젝트 영한 사용 안내를 추가했습니다.
   외부 프로젝트 지원 완성과 새 후보 검토까지 정식 발행을 보류합니다.
 
-### 수정
+### 2026-11-23 노트 이후 수정
 
 - 기존 취소 회귀 검사의 신뢰한 자식 PID 기록을 완료한 뒤 원자적으로 공개합니다. 파일 생성만
   기다리면 PID 기록 전에 작성 프로세스를 종료해 CI가 간헐적으로 빈 파일을 읽었습니다.
@@ -81,34 +138,6 @@ AuthZest의 주요 변경사항을 기록합니다.
 - Typer 최소 지원을 0.27.3으로 올리고 cold-start CI에서 해당 버전의 CLI 도움말을 검사합니다.
   이전에 허용한 Typer 0.9.0 설치본은 CLI의 union 타입 표기를 처리하지 못해 명령 처리 전에 실패했습니다.
   패키지 바이트 검사만으로는 이 문제를 발견하지 못했습니다.
-
-## [0.1.0] - 2026-11-23
-
-위 날짜는 2026-11-19의 첫 후보 준비에 이어 최종 과제용 릴리스 노트를 준비한 날이며 발행 시각은
-아닙니다. 실제 발행과 산출물은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서
-확인하세요. [릴리스 노트](releases/0.1.0.md)와 [준비 상태](releases/0.1.0-READINESS.md)에
-지원 범위와 남은 결정을 기록합니다.
-
-### alpha.4 이후 주요 변경사항
-
-- **Codex 제안.** 소스 CLI에서 요청을 오프라인으로 먼저 확인하고, 관리하는 FastAPI 소유권 예제의
-  새 회귀 테스트와 단일 파일 수정안을 공유 승인 후 Codex에 요청할 수 있습니다. 실행 흐름은 각
-  단계에서 결정을 받고 비공개 복사본에서 변경을 검사하며 복구 상태를 기록합니다. 실행 파일로 묶지
-  않은 POSIX 소스 설치와 검토한 Linux 런타임 이미지가 필요합니다.
-- **대화형 로컬 GUI.** `authzest ui --ai-runtime-config PATH`로 owner-read 작업 공간을 켭니다.
-  CLI 엔진·기존 Codex 로그인과 별도의 현재 런타임/공유/복사/before/diff/적용/after/복구 결정을
-  공유합니다. 전체 계획·소스/테스트/diff·제한된 호스트 활동·변경 전후·복구를 확인하고 전체 JSON을
-  내려받습니다. 일반 실행은 정적 라우트 목록과 읽기 전용 결과 가져오기를 지원하며 현재 워크플로
-  결과의 스키마는 `1.0`입니다. 편집 가능 소스 설치와 프런트엔드 빌드가 필요합니다.
-  [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI 안내](guides/RESULT_VIEWER.md)
-- **설치와 시연.** 영한 과제 안내는 GUI 흐름을 중심으로 CLI·저장한 결과 대안도 설명합니다.
-  정확한 소스 `80b574d`의 사전 검증에서 설치형 CLI 검사 39개·읽기 전용 UI 검사 7개와
-  Linux x64·macOS arm64·Windows x64의 네이티브 사전 검증 작업 7개를 모두 통과했습니다.
-  설치·오프라인 근거이며 새 실제 AI 또는 제품 guest 실행은 아닙니다.
-  [사전 검증 #197](https://github.com/casing1/authzest/issues/197) · [과제 안내](guides/COURSE_DEMO.md)
-- **개발 포맷 도구.** Prettier 3.10.1의 내장 brace-expansion은 #89에서 추적하는 권고 세 건의
-  수정 버전 기준을 충족합니다. 별도 picomatch 권고/CVE 상태·경고와 남은 후보별 판단은 #171에서
-  추적합니다. [포맷 안내](development/FORMATTING.md)
 
 ### 최종 소스 수정
 

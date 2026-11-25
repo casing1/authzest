@@ -14,7 +14,73 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
-### Added
+No changes after the 0.1.0 entries below yet.
+
+## [0.1.0] - 2026-11-23
+
+This heading date records preparation of the course-release notes. It is replaced with the
+publication date in the release commit, which creates the matching tag. Check
+[GitHub Releases](https://github.com/casing1/authzest/releases) for actual publication and assets.
+[Release notes](docs/releases/0.1.0.md) and the
+[readiness snapshot](docs/releases/0.1.0-READINESS.md) describe the supported scope and pending decisions.
+
+### Highlights since alpha.4
+
+- **External single-file repair.** `repo-fix` takes one self-contained FastAPI file in another
+  folder, a user policy and 4–8 reviewed GET cases. After separate sharing approval it asks Codex
+  for an HTTP PoC request and a repair. It checks the exact before and after source in isolated
+  A/B containers against the reviewed answers, then writes the original only after a further
+  approval, with a backup. `repo-restore` undoes the write unless the file was edited since.
+  On 2026-11-25 the bundled demo passed end to end with a real model, from the source checkout
+  and from an installed wheel: 5/5 cases before and after.
+  [External fix guide](docs/guides/REPOSITORY_HTTP_FIX.md)
+- **Saved-result viewing for external fixes.** The dashboard opens a saved `repo-fix` JSON read-only.
+  It rebuilds the diff from the recorded source and refuses contradictory or tampered results.
+  [GUI guide](docs/guides/RESULT_VIEWER.md)
+- **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
+  newly authored regression test and one-file repair for the maintained FastAPI ownership example
+  after sharing approval. The active workflow uses separate decisions, checks changes on a private
+  copy, and records recovery. It requires a non-frozen POSIX source installation and reviewed Linux runtime images.
+- **Interactive local GUI.** Enable the owner-read operator workspace with
+  `authzest ui --ai-runtime-config PATH`. It shares the CLI engine, existing Codex login and separate
+  current runtime/share/copy/before/diff/apply/after/restore decisions. Inspect the complete plan,
+  source/test/diff, bounded host activity, before/after and recovery, and download the complete JSON.
+  Ordinary launch supports static route inventory and read-only result import; current workflow
+  results use schema `1.0`. Use an editable source install and frontend build.
+  [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI guide](docs/guides/RESULT_VIEWER.md)
+- **Installation and demonstration.** The bilingual course guide leads with the GUI workflow and
+  retains CLI and saved-result alternatives. Exact-source preflight at `80b574d` passed 39 installed
+  CLI checks, seven read-only UI checks and all seven native-preview jobs across Linux x64,
+  macOS arm64 and Windows x64. This is installation/offline evidence, not a new actual AI or product
+  guest run. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
+- **Developer formatting.** The brace-expansion bundled in Prettier 3.10.1 meets the fixed-version
+  requirements for the three advisories tracked in #89. The separate picomatch advisory/CVE status,
+  warnings and remaining candidate-specific decision are tracked in #171.
+  [Formatting guide](docs/development/FORMATTING.md)
+
+### External single-file route
+
+Delivered after the 2026-11-23 notes under [#151](https://github.com/casing1/authzest/issues/151),
+[#152](https://github.com/casing1/authzest/issues/152) and [#210](https://github.com/casing1/authzest/issues/210).
+The earlier entries in this group record offline checkpoints; their pending statements were
+completed by the later PRs.
+
+- Direct A/B phase for the HTTP route: preflight checks, owned containers with exact cleanup,
+  bounded request-only stdin and the phase budgets. The CLI coordinates sharing, private copy,
+  before check, exact diff, private apply and after check. Each effect takes its own single-use code.
+  [PR #217](https://github.com/casing1/authzest/pull/217)
+- Approved original application. It rechecks the held original, writes atomically, keeps
+  metadata, ACLs and extended attributes, and records a durable backup. It refuses a changed
+  original. Recovery restores only while the file still holds the applied bytes.
+  [PR #218](https://github.com/casing1/authzest/pull/218)
+- Runtime setup script: pinned wheel download, local image build and a private runtime profile.
+  Also a demo app with five maintainer-reviewed cases.
+  [PR #217](https://github.com/casing1/authzest/pull/217) · [PR #218](https://github.com/casing1/authzest/pull/218)
+- Read-only saved-result viewer for `repo-fix`. It rebuilds the diff, binds each check to the
+  reviewed cases, the captured inputs, the phase frame and the cleanup receipts, and refuses
+  contradictory records. [PR #219](https://github.com/casing1/authzest/pull/219)
+- README in four languages, external fix guide and scope record, including the installed-candidate trial.
+  [PR #219](https://github.com/casing1/authzest/pull/219) · [PR #220](https://github.com/casing1/authzest/pull/220)
 
 - Separate HTTP private profile/client continuity, bounded four-document Engine metadata reader
   and complete A/B stopped-container comparisons. Share unchanged low-level primitives without
@@ -81,7 +147,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Readable proposal output, single-JSON mode and bilingual external-project usage guidance.
   Stable publication is held pending actual external-project completion and new candidate review.
 
-### Fixed
+### Fixes after the 2026-11-23 notes
 
 - Publish the trusted descendant PID marker atomically in the existing cancellation regression.
   Waiting for file creation alone could cancel its writer before the PID was flushed, causing an
@@ -90,37 +156,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Raise the supported Typer minimum to 0.27.3 and exercise CLI help at that exact version in
   cold-start CI. An installed wheel with the former allowed Typer 0.9.0 failed before parsing
   commands because the CLI uses union annotations. Package-byte checks alone did not detect it.
-
-## [0.1.0] - 2026-11-23
-
-This date records preparation of the final course-release notes, following the first candidate
-preparation on 2026-11-19. It is not a publication timestamp. Check
-[GitHub Releases](https://github.com/casing1/authzest/releases) for actual publication and assets.
-[Release notes](docs/releases/0.1.0.md) and the
-[readiness snapshot](docs/releases/0.1.0-READINESS.md) describe the supported scope and pending decisions.
-
-### Highlights since alpha.4
-
-- **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
-  newly authored regression test and one-file repair for the maintained FastAPI ownership example
-  after sharing approval. The active workflow uses separate decisions, checks changes on a private
-  copy, and records recovery. It requires a non-frozen POSIX source installation and reviewed Linux runtime images.
-- **Interactive local GUI.** Enable the owner-read operator workspace with
-  `authzest ui --ai-runtime-config PATH`. It shares the CLI engine, existing Codex login and separate
-  current runtime/share/copy/before/diff/apply/after/restore decisions. Inspect the complete plan,
-  source/test/diff, bounded host activity, before/after and recovery, and download the complete JSON.
-  Ordinary launch supports static route inventory and read-only result import; current workflow
-  results use schema `1.0`. Use an editable source install and frontend build.
-  [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI guide](docs/guides/RESULT_VIEWER.md)
-- **Installation and demonstration.** The bilingual course guide leads with the GUI workflow and
-  retains CLI and saved-result alternatives. Exact-source preflight at `80b574d` passed 39 installed
-  CLI checks, seven read-only UI checks and all seven native-preview jobs across Linux x64,
-  macOS arm64 and Windows x64. This is installation/offline evidence, not a new actual AI or product
-  guest run. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
-- **Developer formatting.** The brace-expansion bundled in Prettier 3.10.1 meets the fixed-version
-  requirements for the three advisories tracked in #89. The separate picomatch advisory/CVE status,
-  warnings and remaining candidate-specific decision are tracked in #171.
-  [Formatting guide](docs/development/FORMATTING.md)
 
 ### Final source fixes
 
