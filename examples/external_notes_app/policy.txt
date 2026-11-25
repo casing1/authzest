@@ -1,0 +1,11 @@
+# Notes access policy
+
+- Requests identify a synthetic user with the `x-user` header. Users: `test-alice`, `test-bob`.
+- Note 1 is owned by `test-alice`; note 2 is owned by `test-bob`.
+- `GET /notes/{note_id}` without `x-user` must return 401 `{"detail": "Not authenticated"}`.
+- A user may read only notes they own. Any other user must receive 403 `{"detail": "Forbidden"}`.
+- The owner receives the note unchanged: `{"id", "owner", "text"}`.
+- `GET /health` is public and returns `{"ok": true}`.
+
+Designated regression: `test-bob` reading note 1 (`GET /notes/1` with `x-user: test-bob`) must be
+denied with 403. Do not change response bodies or other behaviour.

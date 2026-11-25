@@ -46,9 +46,19 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
   "cases": [
     {
       "id": "other",
-      "request": { "method": "GET", "path": "/notes/1", "headers": { "x-user": "test-bob" } },
-      "before": { "status": 200, "body": { "kind": "json", "value": { "id": 1 } } },
-      "after": { "status": 403, "body": { "kind": "json", "value": { "detail": "Forbidden" } } }
+      "request": {
+        "method": "GET",
+        "path": "/notes/1",
+        "headers": { "x-user": "test-bob" }
+      },
+      "before": {
+        "status": 200,
+        "body": { "kind": "json", "value": { "id": 1 } }
+      },
+      "after": {
+        "status": 403,
+        "body": { "kind": "json", "value": { "detail": "Forbidden" } }
+      }
     }
   ]
 }
@@ -80,15 +90,15 @@ journal과 전체 결과가 담긴 비공개 근거 디렉터리를 남깁니다
 
 ## 결과
 
-| 상태                                                  | 의미                                                  |
-| ----------------------------------------------------- | ----------------------------------------------------- |
-| `original-applied`                                    | 두 검사가 일치했고 원본에 수정이 적용되었습니다.      |
-| `original-declined`                                   | 두 검사가 일치했고 원본은 그대로 두었습니다.          |
-| `before-not-reproduced`                               | 수정 전 소스에서 검토한 결함이 나타나지 않았습니다.   |
-| `after-not-verified`                                  | 수정한 복사본이 일부 검토 사례와 맞지 않았습니다.     |
-| `poc-not-covered`                                     | 모델 PoC가 지정 회귀 요청과 다릅니다.                 |
-| `original-conflict`                                   | 캡처 이후 원본이나 정책이 바뀌어 쓰지 않았습니다.     |
-| `*-phase-failed`, `original-recovery-required`, 기타  | 단계가 실패했습니다. `failure`와 보존 근거를 보세요.  |
+| 상태                                                 | 의미                                                 |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| `original-applied`                                   | 두 검사가 일치했고 원본에 수정이 적용되었습니다.     |
+| `original-declined`                                  | 두 검사가 일치했고 원본은 그대로 두었습니다.         |
+| `before-not-reproduced`                              | 수정 전 소스에서 검토한 결함이 나타나지 않았습니다.  |
+| `after-not-verified`                                 | 수정한 복사본이 일부 검토 사례와 맞지 않았습니다.    |
+| `poc-not-covered`                                    | 모델 PoC가 지정 회귀 요청과 다릅니다.                |
+| `original-conflict`                                  | 캡처 이후 원본이나 정책이 바뀌어 쓰지 않았습니다.    |
+| `*-phase-failed`, `original-recovery-required`, 기타 | 단계가 실패했습니다. `failure`와 보존 근거를 보세요. |
 
 `verified_fix: true`는 after 검사가 **직접 검토한 사례**와 일치했다는 뜻입니다. 앱 전체, 실제 인증
 체계, 그 요청 밖의 동작을 보증하지 않습니다.

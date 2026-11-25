@@ -46,9 +46,19 @@ denial, normal use and, where applicable, anonymous denial and public routes:
   "cases": [
     {
       "id": "other",
-      "request": { "method": "GET", "path": "/notes/1", "headers": { "x-user": "test-bob" } },
-      "before": { "status": 200, "body": { "kind": "json", "value": { "id": 1 } } },
-      "after": { "status": 403, "body": { "kind": "json", "value": { "detail": "Forbidden" } } }
+      "request": {
+        "method": "GET",
+        "path": "/notes/1",
+        "headers": { "x-user": "test-bob" }
+      },
+      "before": {
+        "status": 200,
+        "body": { "kind": "json", "value": { "id": 1 } }
+      },
+      "after": {
+        "status": 403,
+        "body": { "kind": "json", "value": { "detail": "Forbidden" } }
+      }
     }
   ]
 }
@@ -80,15 +90,15 @@ private evidence directory with its journal and full result.
 
 ## Results
 
-| Status                                                 | Meaning                                                     |
-| ------------------------------------------------------ | ----------------------------------------------------------- |
-| `original-applied`                                     | Both checks matched; the original now holds the repair.     |
-| `original-declined`                                    | Both checks matched; you kept the original unchanged.       |
-| `before-not-reproduced`                                | The before source did not show the reviewed defect.         |
-| `after-not-verified`                                   | The repaired copy did not match every reviewed case.        |
-| `poc-not-covered`                                      | The model's PoC differs from the designated regression.     |
-| `original-conflict`                                    | The original or policy changed after capture; not written.  |
-| `*-phase-failed`, `original-recovery-required`, others | A step failed; read `failure` and the retained evidence.    |
+| Status                                                 | Meaning                                                    |
+| ------------------------------------------------------ | ---------------------------------------------------------- |
+| `original-applied`                                     | Both checks matched; the original now holds the repair.    |
+| `original-declined`                                    | Both checks matched; you kept the original unchanged.      |
+| `before-not-reproduced`                                | The before source did not show the reviewed defect.        |
+| `after-not-verified`                                   | The repaired copy did not match every reviewed case.       |
+| `poc-not-covered`                                      | The model's PoC differs from the designated regression.    |
+| `original-conflict`                                    | The original or policy changed after capture; not written. |
+| `*-phase-failed`, `original-recovery-required`, others | A step failed; read `failure` and the retained evidence.   |
 
 `verified_fix: true` means the after check matched **your reviewed cases**. It does not certify the
 whole application, a real authentication system or behaviour outside those requests.
