@@ -33,6 +33,9 @@ MAX_RECORD_BYTES = 65_536
 MAX_SOURCE_BYTES = 16_384
 _BACKUP, _APPLIED, _RECORD = "before.py", "after.py", "record.json"
 _DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+# An interrupted apply can leave intent-recorded after the rename; the exact
+# applied-bytes check below still decides whether restoring is safe.
+_RESTORABLE = frozenset({"intent-recorded", "applied", "recovery-required"})
 _STATES = {
     "intent-recorded",
     "applied",
@@ -400,12 +403,7 @@ def inspect_original_record(record_path: Path) -> dict:
         "record_path": str(record_path),
         "record": record,
         "current_original": status,
-        "restore_allowed": status == "matches-applied"
-        and record["state"]
-        in {
-            "applied",
-            "recovery-required",
-        },
+        "restore_allowed": status == "matches-applied" and record["state"] in _RESTORABLE,
         "diff": _diff(record["source_path"], after, before) if status == "matches-applied" else "",
     }
 
@@ -417,7 +415,7 @@ def restore_original(record_path: Path, *, guard: Callable[[], None] | None = No
     temporary = None
     try:
         record, before, after = _load_record(folder)
-        if record["state"] not in {"applied", "recovery-required"}:
+        if record["state"] not in _RESTORABLE:
             raise RepositoryHttpOriginalError("record-state-not-restorable")
         parent, name = _open_original_parent(record)
         current, info = _read_leaf(parent, name, MAX_SOURCE_BYTES)

@@ -258,3 +258,35 @@ def test_relative_or_shared_record_directory_is_refused(applied, tmp_path):
     shared.chmod(0o755)
     with pytest.raises(RepositoryHttpOriginalError, match="private-recovery-directory"):
         restore_original(shared)
+
+
+def _rewrite_state(path, state):
+    import json
+
+    raw = json.loads((path / "record.json").read_text())
+    raw["state"] = state
+    (path / "record.json").write_text(json.dumps(raw))
+
+
+def test_interrupted_apply_after_rename_can_be_restored(applied):
+    session, root, recovery = applied()
+    record = apply_original(session, _after(session), recovery_parent=recovery)
+    path = recovery / record["record_id"]
+    # As if the process died after the rename but before the completion record.
+    _rewrite_state(path, "intent-recorded")
+    preview = inspect_original_record(path)
+    assert preview["current_original"] == "matches-applied" and preview["restore_allowed"]
+    assert restore_original(path)["state"] == "restored"
+    assert (root / "app.py").read_text() == SOURCE
+
+
+def test_interrupted_apply_before_rename_is_not_rewritten(applied):
+    session, root, recovery = applied()
+    record = apply_original(session, _after(session), recovery_parent=recovery)
+    path = recovery / record["record_id"]
+    restore_original(path)
+    _rewrite_state(path, "intent-recorded")
+    assert inspect_original_record(path)["restore_allowed"] is False
+    with pytest.raises(RepositoryHttpOriginalError, match="original-already-matches-backup"):
+        restore_original(path)
+    assert (root / "app.py").read_text() == SOURCE
