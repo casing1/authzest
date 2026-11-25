@@ -27,11 +27,12 @@ export type Phase = {
     request_count: number;
     matching_request_count: number;
   } | null;
+  case_outcomes?: { case_id: string; outcome: string; reason: string | null }[];
 };
 export type WorkflowView = {
   schema_version: "1.0";
   kind: "authzest-workflow-view";
-  record_kind?: "owner-read-suggestion";
+  record_kind?: "owner-read-suggestion" | "repository-http-fix-result";
   record_version: "1.0" | "legacy-unversioned";
   provenance: "imported-unverified";
   assessment: {

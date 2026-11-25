@@ -102,17 +102,89 @@ function FailureNotice({
   );
 }
 
+function HttpPhaseCard({
+  phase,
+  title,
+  language,
+}: {
+  phase: Phase | null;
+  title: string;
+  language: Language;
+}) {
+  const t = textFor(language);
+  const comparison = phase?.comparison;
+  return (
+    <article className="phase-card">
+      <h3>{title}</h3>
+      {!phase ? (
+        <p className="muted">{t.noPhase}</p>
+      ) : (
+        <>
+          <Facts
+            language={language}
+            items={[
+              [t.phaseStatus, phase.status],
+              [t.httpRegression, phase.regression_status],
+              [t.cleanup, phase.cleanup_confirmed],
+              [t.comparison, comparison?.comparison_status],
+              [t.matches, comparison?.matches_expected_profile],
+              [
+                t.cases,
+                comparison
+                  ? `${comparison.matching_case_count} / ${comparison.case_count}`
+                  : null,
+              ],
+            ]}
+          />
+          {phase.case_outcomes && phase.case_outcomes.length > 0 ? (
+            <>
+              <h4>{t.caseOutcomes}</h4>
+              <ul className="case-outcomes">
+                {phase.case_outcomes.map((row) => (
+                  <li key={row.case_id}>
+                    <code>{visibleText(row.case_id)}</code>{" "}
+                    {visibleText(row.outcome)}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <details className="hash-details">
+            <summary>SHA-256</summary>
+            <Facts
+              language={language}
+              items={[
+                [t.sourceHash, phase.application_sha256],
+                [t.scheduleHash, phase.test_sha256],
+              ]}
+            />
+          </details>
+          <FailureNotice
+            failure={phase.failure}
+            title={t.errorTitle}
+            language={language}
+          />
+        </>
+      )}
+    </article>
+  );
+}
+
 function PhaseCard({
   phase,
   title,
   language,
   ownerRead,
+  httpFix = false,
 }: {
   phase: Phase | null;
   title: string;
   language: Language;
   ownerRead: boolean;
+  httpFix?: boolean;
 }) {
+  if (httpFix)
+    return <HttpPhaseCard phase={phase} title={title} language={language} />;
   const t = textFor(language);
   const comparison = phase?.comparison;
   const facts: [string, unknown][] = [[t.phaseStatus, phase?.status]];
@@ -205,6 +277,7 @@ export default function WorkflowResult({ view, language }: Props) {
     source = view.source_evidence,
     proposal = view.proposal;
   const ownerRead = view.record_kind === "owner-read-suggestion";
+  const httpFix = view.record_kind === "repository-http-fix-result";
   const summaryFacts: [string, unknown][] = [
     [t.workflow, summary.status],
     [t.proposal, summary.proposal_status],
@@ -217,6 +290,9 @@ export default function WorkflowResult({ view, language }: Props) {
   ];
   if (ownerRead || summary.recovery_required !== undefined) {
     summaryFacts.push([t.recoveryRequired, summary.recovery_required]);
+  }
+  if (httpFix) {
+    summaryFacts.push([t.reviewedCasesMatched, session?.verified_fix]);
   }
   return (
     <div className="workflow-result">
@@ -246,12 +322,14 @@ export default function WorkflowResult({ view, language }: Props) {
             phase={session?.checks.before ?? null}
             language={language}
             ownerRead={ownerRead}
+            httpFix={httpFix}
           />
           <PhaseCard
             title={t.after}
             phase={session?.checks.after ?? null}
             language={language}
             ownerRead={ownerRead}
+            httpFix={httpFix}
           />
         </div>
         <p className="footnote">{t.captures}</p>
