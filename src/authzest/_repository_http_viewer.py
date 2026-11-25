@@ -192,15 +192,19 @@ def _phase(
     }
 
 
-def _completed_steps(private: dict) -> set[str | None]:
+def _step_statuses(private: dict) -> dict[str, str]:
+    """Latest recorded outcome of each private file step, failed ones included."""
     history = private.get("history") or []
     if type(history) is not list or len(history) > 16:
         _bad()
-    return {
-        _text(_object(item).get("step"))
-        for item in history
-        if _object(item).get("status") == "completed"
-    }
+    steps: dict[str, str] = {}
+    for item in history:
+        item = _object(item)
+        status = _text(item.get("status"), nullable=False)
+        if status not in ("completed", "failed"):
+            _bad()
+        steps[_text(item.get("step"), nullable=False)] = status
+    return steps
 
 
 def _case_ids(cases: dict, regression: str | None) -> list[str] | None:
@@ -215,17 +219,19 @@ def _case_ids(cases: dict, regression: str | None) -> list[str] | None:
     return ids
 
 
-def _stages(done: set[str | None], before: dict | None, after: dict | None) -> list[dict]:
+def _stages(steps: dict[str, str], before: dict | None, after: dict | None) -> list[dict]:
     # Only the before and after checks start containers; file steps never do.
     runtime = {
         name: None if phase is None else phase["generated_runtime_attempted"]
         for name, phase in (("before", before), ("after", after))
     }
+    # A failed file step may already have written files; it stays visible as
+    # failed with an unconfirmed effect rather than reading as never run.
     status = {
-        "copy": "completed" if "copy" in done else "not-run",
+        "copy": steps.get("copy", "not-run"),
         "before": None if before is None else before["status"],
-        "source-diff": "completed" if "accept-diff" in done else "not-run",
-        "source-apply": "completed" if "apply" in done else "not-run",
+        "source-diff": steps.get("accept-diff", "not-run"),
+        "source-apply": steps.get("apply", "not-run"),
         "after": None if after is None else after["status"],
     }
     return [
@@ -236,7 +242,9 @@ def _stages(done: set[str | None], before: dict | None, after: dict | None) -> l
             "expired": None,
             "attempted": runtime.get(name, False),
             "dispatched": None,
-            "reason": None,
+            "reason": "effect-unconfirmed"
+            if status[name] == "failed" and name not in runtime
+            else None,
         }
         for name in _STAGE_NAMES
     ]
@@ -280,7 +288,7 @@ def preview_repository_http_fix_result(data: dict) -> dict:
     if status == "original-applied" and (original_state != "applied" or modified is not True):
         _bad()
     private = _object(data.get("private_copy"), nullable=True) or {}
-    done = _completed_steps(private)
+    steps = _step_statuses(private)
     recovery = (
         original_state == "recovery-required"
         or status == "original-recovery-required"
@@ -315,7 +323,9 @@ def preview_repository_http_fix_result(data: dict) -> dict:
             "patch_application": "applied-to-original"
             if original_state in ("applied", "restored")
             else "applied-to-copy"
-            if "apply" in done
+            if steps.get("apply") == "completed"
+            else "copy-apply-unconfirmed"
+            if steps.get("apply") == "failed"
             else "not-run",
             "applied": modified,
             "current_copy_state": _text(private.get("state")),
@@ -337,7 +347,7 @@ def preview_repository_http_fix_result(data: dict) -> dict:
             else not all(phase["cleanup_confirmed"] is True for phase in (before, after) if phase),
             "clock_unconfirmed": None,
             "workspace_state": _text(private.get("state")),
-            "stages": _stages(done, before, after),
+            "stages": _stages(steps, before, after),
             "checks": {"before": before, "after": after},
             "authorization_status": "reviewed-cases-matched" if verified else "unknown",
             "verified_fix": verified,

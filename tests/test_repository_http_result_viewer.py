@@ -100,6 +100,7 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="other"),
         lambda r: r["cases"].update(case_ids=r["cases"]["case_ids"][:-1]),
         lambda r: r["cases"].update(regression_case_id="missing"),
+        lambda r: r["private_copy"]["history"][0].update(status="pending"),
     ],
 )
 def test_contradictory_or_tampered_records_are_refused(record, change):
@@ -170,3 +171,19 @@ def test_private_copy_recovery_is_shown_even_when_original_is_untouched(tmp_path
     assert view["summary"]["recovery_required"] is True
     assert view["session"]["recovery_required"] is True
     assert view["summary"]["original_checkout_modified"] is False
+
+
+def test_failed_private_apply_stays_visible_as_an_unconfirmed_effect(tmp_path):
+    project = Project(tmp_path)
+    result = project.run(Answers(*("accept",) * 4, "decline"))
+    history = result["private_copy"]["history"]
+    assert [item["step"] for item in history] == ["copy", "accept-diff", "apply"]
+    # The source may already be replaced when the completion journal fails.
+    history[-1]["status"] = "failed"
+    result["private_copy"]["state"] = "recovery-required"
+    result.update(status="failed", exit_code=1, failure={"code": "RepositoryHttpSessionError"})
+    view = _view(result)
+    stage = {item["stage"]: item for item in view["session"]["stages"]}["source-apply"]
+    assert stage["status"] == "failed" and stage["reason"] == "effect-unconfirmed"
+    assert view["summary"]["patch_application"] == "copy-apply-unconfirmed"
+    assert view["summary"]["recovery_required"] is True
