@@ -135,7 +135,7 @@ class Project:
             "stage_initialization_failure": None,
             "owned": [
                 {"role": role, "create_attempted": True, "absence_observed": True}
-                for role in ("a", "b")
+                for role in ("A", "B")
             ],
             "runtime_attempted": True,
             "schedule_sha256": "c" * 64,

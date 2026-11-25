@@ -147,12 +147,12 @@ def _producer_success(phase: dict) -> bool:
     """The runner's own success conditions beyond the comparison itself.
 
     A complete phase has no failure, a complete failure-free relay capture,
-    no cleanup errors, confirmed engine transport cleanup and every created
-    container observed absent afterwards.
+    no cleanup errors, confirmed engine transport cleanup and exactly one
+    created container per role (A and B), each observed absent afterwards.
     """
     capture = _object(phase.get("relay_capture"), nullable=True)
     owned = phase.get("owned")
-    if type(owned) is not list or len(owned) > 4:
+    if type(owned) is not list or len(owned) != 2:
         return False
     return (
         phase.get("failure") is None
@@ -165,9 +165,10 @@ def _producer_success(phase: dict) -> bool:
         and phase.get("stage_initialization_failure") is None
         and phase.get("evidence_persistence_failure") is None
         and phase.get("journal_close_failure") is None
+        and sorted(_object(item).get("role") for item in owned) == ["A", "B"]
         and all(
-            _object(item).get("create_attempted") is not True
-            or _object(item).get("absence_observed") is True
+            _object(item).get("create_attempted") is True
+            and _object(item).get("absence_observed") is True
             for item in owned
         )
     )

@@ -106,6 +106,11 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         lambda r: r["after_phase"].update(cleanup_errors=["remove-a"]),
         lambda r: r["after_phase"].update(engine_transport_cleanup_confirmed=False),
         lambda r: r["after_phase"]["owned"][0].update(absence_observed=False),
+        # Both A and B cleanup receipts are required, exactly once each.
+        lambda r: r["after_phase"].update(owned=[]),
+        lambda r: r["after_phase"]["owned"].pop(),
+        lambda r: r["after_phase"]["owned"][1].update(role="A"),
+        lambda r: r["before_phase"]["owned"][0].update(create_attempted=False),
         lambda r: r["before_phase"].update(evidence_persistence_failure="OSError"),
         # Outcome rows must be exactly the recorded reviewed cases.
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="invented"),
