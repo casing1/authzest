@@ -122,6 +122,31 @@ class _RepositoryHttpRuntimeCheckpoint:
         raise TypeError("Live runtime checkpoints cannot be serialized")
 
 
+@dataclass(frozen=True, slots=True)
+class _RepositoryHttpOriginalTarget:
+    """Live original-source binding for one separately approved write; never saved."""
+
+    session_id: str
+    revision: int
+    verification_plan_id: str
+    root: Path
+    source_path: str
+    parent_fd: int
+    name: str
+    identity: tuple
+    before: bytes
+    after: bytes
+
+    def __copy__(self):
+        raise TypeError("Live original targets cannot be copied")
+
+    def __deepcopy__(self, memo):
+        raise TypeError("Live original targets cannot be copied")
+
+    def __reduce__(self):
+        raise TypeError("Live original targets cannot be serialized")
+
+
 def _hash(data: bytes) -> str:
     return sha256(data).hexdigest()
 
@@ -384,6 +409,48 @@ class RepositoryHttpFileSession:
                 raise RepositoryHttpSessionError(
                     "Runtime checkpoint differs from current private state"
                 )
+        finally:
+            self._busy = False
+
+    def _original_target(self) -> _RepositoryHttpOriginalTarget:
+        """Recheck the applied private copy and every held original input.
+
+        Refuses unless quiescent in ``applied-after``. Any change to the selected
+        original files or directories since capture is an edit conflict. This
+        bridge itself writes nothing; the caller owns the separate decision.
+        """
+        self._enter()
+        try:
+            if (
+                self._state != "applied-after"
+                or type(self._files) is not RepositoryHttpFiles
+                or self._pending is not None
+                or self._decision is not None
+                or self._consumed
+                or self._failure is not None
+            ):
+                raise RepositoryHttpSessionError("A quiescent applied private copy is required")
+            self._contracts()
+            self._files.verify()
+            if self._files.read(self._source_path) != self._after:
+                raise RepositoryHttpSessionError("Private source differs from the applied repair")
+            selection = self._request.to_dict()["selection"]
+            snapshot = self._origin.verify(selection)
+            parent, name, observed, raw = self._origin._source_target()
+            if raw != self._before:
+                raise RepositoryHttpSessionError("Original source differs from its capture")
+            return _RepositoryHttpOriginalTarget(
+                session_id=self._session_id,
+                revision=self._revision,
+                verification_plan_id=self._verification_plan.plan_id,
+                root=snapshot.root,
+                source_path=selection["source"],
+                parent_fd=parent,
+                name=name,
+                identity=tuple(observed),
+                before=self._before,
+                after=self._after,
+            )
         finally:
             self._busy = False
 

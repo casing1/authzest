@@ -100,6 +100,16 @@ class RepositoryOrigin:
             ):
                 _fail("changed")
 
+    def _source_target(self) -> tuple[int, str, tuple, bytes]:
+        """Verified held parent descriptor, leaf name, identity and bytes of the source.
+
+        Trusted coordination for a separately approved original write; the
+        descriptor stays owned by this handle and must not be closed by callers.
+        """
+        self.verify()
+        parent, name, _fd, observed, raw, _limit = self._files[0]
+        return parent, name, observed, raw
+
     def verify(self, selection: dict | None = None) -> RepositoryInput:
         """Check exact initial selection, identities and bytes without importing code."""
         if getattr(self, "_closed", True):
