@@ -99,6 +99,14 @@ def test_records_without_source_evidence_warn_instead_of_inventing_a_diff(record
         # A check that never started containers cannot claim success.
         lambda r: r["after_phase"].update(runtime_attempted=False),
         lambda r: r["before_phase"].update(runtime_attempted=False),
+        # The runner's own success conditions are rechecked too.
+        lambda r: r["after_phase"]["relay_capture"].update(status="failed"),
+        lambda r: r["after_phase"]["relay_capture"].update(failure="deadline"),
+        lambda r: r["after_phase"].update(relay_capture=None),
+        lambda r: r["after_phase"].update(cleanup_errors=["remove-a"]),
+        lambda r: r["after_phase"].update(engine_transport_cleanup_confirmed=False),
+        lambda r: r["after_phase"]["owned"][0].update(absence_observed=False),
+        lambda r: r["before_phase"].update(evidence_persistence_failure="OSError"),
         # Outcome rows must be exactly the recorded reviewed cases.
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="invented"),
         lambda r: r["after_phase"]["comparison"]["outcomes"][0].update(case_id="other"),

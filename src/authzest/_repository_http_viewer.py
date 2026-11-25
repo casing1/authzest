@@ -143,6 +143,36 @@ def _proposal(data: dict, source: dict | None) -> tuple[dict | None, dict | None
     )
 
 
+def _producer_success(phase: dict) -> bool:
+    """The runner's own success conditions beyond the comparison itself.
+
+    A complete phase has no failure, a complete failure-free relay capture,
+    no cleanup errors, confirmed engine transport cleanup and every created
+    container observed absent afterwards.
+    """
+    capture = _object(phase.get("relay_capture"), nullable=True)
+    owned = phase.get("owned")
+    if type(owned) is not list or len(owned) > 4:
+        return False
+    return (
+        phase.get("failure") is None
+        and capture is not None
+        and capture.get("status") == "complete"
+        and capture.get("failure") is None
+        and phase.get("relay_capture_failure") is None
+        and phase.get("cleanup_errors") == []
+        and phase.get("engine_transport_cleanup_confirmed") is True
+        and phase.get("stage_initialization_failure") is None
+        and phase.get("evidence_persistence_failure") is None
+        and phase.get("journal_close_failure") is None
+        and all(
+            _object(item).get("create_attempted") is not True
+            or _object(item).get("absence_observed") is True
+            for item in owned
+        )
+    )
+
+
 def _phase(
     value: Any,
     candidate: str,
@@ -224,6 +254,7 @@ def _phase(
         or projected["matching_case_count"] != planned
         or cleaned is not True
         or attempted is not True
+        or not _producer_success(phase)
         or digest is None
         or (
             candidate == "before"

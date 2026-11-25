@@ -128,6 +128,15 @@ class Project:
                 ],
             },
             "cleanup_confirmed": True,
+            "cleanup_errors": [],
+            "engine_transport_cleanup_confirmed": True,
+            "relay_capture": {"status": "complete", "failure": None},
+            "relay_capture_failure": None,
+            "stage_initialization_failure": None,
+            "owned": [
+                {"role": role, "create_attempted": True, "absence_observed": True}
+                for role in ("a", "b")
+            ],
             "runtime_attempted": True,
             "schedule_sha256": "c" * 64,
             "evidence_directory": "/owned/" + phase,
