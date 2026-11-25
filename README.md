@@ -12,9 +12,11 @@
 # AuthZest
 
 AuthZest is an open-source FastAPI authorization-testing project with a Python CLI and a local web
-dashboard. Inspect source declarations offline, or use Codex to propose a defensive regression test
-and a repair for the maintained owner's archived-note scenario. Review each step before checking,
-changing and restoring a private copy.
+dashboard. For one self-contained FastAPI file in another folder, `repo-fix` asks Codex for an HTTP
+proof-of-concept and a repair of a GET object-ownership defect. It checks the exact before and after
+source in isolated containers against cases you reviewed, and only then offers to write the original
+file, keeping a backup for recovery. Static declaration scanning and the packaged owner-read scenario
+remain available.
 
 **This README describes the 0.1.0 source scope.** The package version is `0.1.0`; package metadata
 alone does not establish publication. Check [GitHub Releases](https://github.com/casing1/authzest/releases)
@@ -23,24 +25,82 @@ for available tags, files and checksums. The earlier
 predates the current GUI and newly generated owner-read repair workflow.
 [0.1.0 notes](docs/releases/0.1.0.md) · [Final readiness](docs/releases/0.1.0-READINESS.md) · [Changelog](CHANGELOG.md)
 
-**Stable publication is on hold while external-project support is completed.** The source now adds
-`repo-suggest` for an external folder's explicitly selected Python source, policy and optional
-context. This CLI stage returns unexecuted test/repair proposals and exact diffs. External-copy
-application, before/after execution and GUI integration remain follow-up work; the active GUI below
-still uses the packaged scenario. [External-project guide](docs/guides/REPOSITORY_PROPOSALS.md)
+**Status — 2026-11-25 KST.** The external flow ran end to end on the bundled demo with a real Codex
+model and Docker Desktop. The model's PoC reproduced the reviewed defect (5/5 before cases), its
+repair matched all 5 after cases, and the original file was written with a backup. A later user edit
+made `repo-restore` refuse, and once the edit was removed it restored the original bytes. Stable
+publication still waits for the remaining release checks. [External fix guide](docs/guides/REPOSITORY_HTTP_FIX.md)
 
 ## What you can do
 
-| Feature                | Current source behavior                                                                                                                                                                                                              |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Static source scan     | Discover supported FastAPI/router declarations, prefixes and dependencies without importing or executing the target app. Read source locations, diagnostics and partial-analysis status.                                             |
-| AI proposal            | Preview the exact packaged source and policy, then request a newly authored defensive test and one-file availability-rule repair through the existing Codex adapter. No-change and unknown are valid outcomes.                       |
-| Reviewed copy workflow | Review separate runtime, sharing, copy, before, diff, apply, after and restore decisions. Test the generated regression and seven maintained controls in reviewed network-disabled Linux guests. Apply only to a fresh private copy. |
-| Local GUI              | Run the same owner-read engine with current typed decisions, inspect generated code/diffs, before/after and recovery, and download the complete JSON. Ordinary launch supports static inventory and saved-result viewing.            |
+| Feature                | Current source behavior                                                                                                                                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| External file repair   | `repo-fix`: share one selected file and policy, get a GET PoC and repair, run isolated before/after checks against your reviewed cases, then approve the original write with backup, conflict refusal and `repo-restore` recovery.                            |
+| Static source scan     | Discover supported FastAPI/router declarations, prefixes and dependencies without importing or executing the target app. Read source locations, diagnostics and partial-analysis status.                                                                      |
+| AI proposal            | Preview the exact packaged source and policy, then request a newly authored defensive test and one-file availability-rule repair through the existing Codex adapter. No-change and unknown are valid outcomes.                                                |
+| Reviewed copy workflow | Review separate runtime, sharing, copy, before, diff, apply, after and restore decisions. Test the generated regression and seven maintained controls in reviewed network-disabled Linux guests. Apply only to a fresh private copy.                          |
+| Local GUI              | Run the same owner-read engine with current typed decisions, inspect generated code/diffs, before/after and recovery, and download the complete JSON. Ordinary launch supports static inventory and saved-result viewing, including saved `repo-fix` results. |
 
-The AI workflow targets **one maintained synthetic scenario**. A repository selected for static
-scanning is not automatically sent to Codex or repaired. General repository repair and arbitrary
-application execution are outside the supported scope. [Workflow contract](docs/development/GENERATED_REPAIR_CONTRACT.md)
+The GUI's active AI workflow targets **one maintained synthetic scenario**; `repo-fix` targets the
+narrow external scope below. A repository selected for static scanning is not automatically sent to
+Codex or repaired. General repository repair and arbitrary application execution are outside the
+supported scope. [Workflow contract](docs/development/GENERATED_REPAIR_CONTRACT.md)
+
+## Repair an external FastAPI file
+
+Prepare the reviewed runtime once from the source checkout (macOS arm64, Python 3.12, Docker Desktop).
+This downloads 14 pinned wheels from PyPI and verifies every byte. It then builds the two images without
+running any target code, and writes a private profile under `~/.authzest/runtime`:
+
+```bash
+.venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup profile
+```
+
+Copy the demo outside the repository, review its five cases, then run the flow:
+
+```bash
+cp -R examples/external_notes_app ~/authzest-demo-notes
+.venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
+```
+
+Use a model ID that your Codex login lists. Each effect asks for its own code, which expires after
+300 seconds: share, copy, run-before, apply-private, run-after and apply-original. Type the whole
+quoted phrase; Enter declines. `original-applied` means both checks matched your reviewed cases and the
+file was written. `before-not-reproduced`, `after-not-verified`, `poc-not-covered` and
+`original-conflict` stop safely without touching the original. Add `--json` to save the complete result
+for the dashboard viewer. Undo the write while the file still holds exactly the applied repair:
+
+```bash
+.venv/bin/authzest repo-restore ~/.authzest/recovery/original-YYYYMMDDTHHMMSSZ-xxxxxxxx
+```
+
+For your own project, run `repo-fix` with `--preview-only` first. Copy the printed `case_basis` into a
+case file with 4–8 reviewed GET cases. [External fix guide](docs/guides/REPOSITORY_HTTP_FIX.md)
+
+### Supported scope and limits
+
+- One flat `.py` application file (≤16 KiB) with a module-level `app`, plus a policy file (≤8 KiB).
+- Only packages in the pinned image (FastAPI, Starlette, Pydantic, Uvicorn and their dependencies);
+  in-memory data, no database, external service, environment configuration or startup lifespan.
+- GET object ownership only, with relative paths without query strings and synthetic `x-user`,
+  `x-user-id` or `x-role` headers. `Authorization`/JWT, cookies and real logins are not exercised.
+- JSON or empty responses up to 4 KiB. You write the expected answers. The model's PoC must equal the
+  designated regression request.
+- Matching cases are finite observations, not general authorization assurance. Multi-file projects,
+  routers in other modules, database-backed dependencies and other HTTP methods are unsupported.
+
+### Original goal and roadmap
+
+AuthZest set out to analyze general FastAPI projects for vulnerabilities and patch them automatically.
+0.1.0 deliberately ships the narrow slice above, verified end to end, instead of an unverified general
+claim. The next steps are:
+
+1. A route → dependency → handler → data-access graph across files, building on the existing scan.
+2. Multi-file proposals that choose their context from that graph.
+3. Automatic runtime setup for real projects: dependencies, databases and data seeding.
+4. Authentication adapters, such as JWT test identities, and other HTTP methods.
 
 ## Quick start: local dashboard
 

@@ -12,8 +12,10 @@
 # AuthZest
 
 AuthZest는 Python CLI와 로컬 웹 대시보드를 제공하는 FastAPI 접근통제 테스트 오픈소스 프로젝트입니다.
-소스 선언을 오프라인으로 확인하거나, Codex로 관리 대상인 소유자의 보관 노트 사례에 대한 방어적
-회귀 테스트와 수정안을 제안받을 수 있습니다. 각 단계를 검토한 뒤 비공개 복사본을 검사·변경·복구합니다.
+다른 폴더의 자체 완결 FastAPI 파일 하나에 대해 `repo-fix`가 Codex에 GET 객체 소유권 결함의 HTTP PoC와
+수정을 요청합니다. 정확한 수정 전·후 소스를 격리 컨테이너에서 직접 검토한 사례와 대조하고, 두 검사가
+통과해야만 백업을 남긴 원본 파일 쓰기를 제안합니다. 정적 선언 스캔과 내장 owner-read 사례도 계속
+사용할 수 있습니다.
 
 **이 README는 0.1.0 소스의 지원 범위를 설명합니다.** 패키지 버전은 `0.1.0`이며 패키지 정보만으로
 공개 발행 여부를 판단할 수는 없습니다. 제공되는 태그·파일·체크섬은
@@ -22,23 +24,81 @@ AuthZest는 Python CLI와 로컬 웹 대시보드를 제공하는 FastAPI 접근
 수정 코드 생성 흐름이 추가되기 전의 버전입니다.
 [0.1.0 안내](releases/0.1.0.md) · [최종 준비 상태](releases/0.1.0-READINESS.md) · [변경 이력](CHANGELOG.md)
 
-**외부 프로젝트 지원을 완성할 때까지 정식 발행을 보류합니다.** 현재 소스에 추가한
-`repo-suggest`는 외부 폴더에서 명시한 Python 소스·정책·선택 문맥으로 미실행 테스트·수정 제안과
-정확한 diff를 반환하는 CLI 단계입니다. 외부 복사본 적용·전후 실행 검사·GUI 연결은 후속이며,
-아래 활성 GUI는 여전히 내장 사례를 사용합니다. [외부 프로젝트 안내](guides/REPOSITORY_PROPOSALS.md)
+**현재 상태 — 2026-11-25 KST.** 동봉한 시연 앱으로 실제 Codex 모델과 Docker Desktop을 사용해 외부
+흐름 전체를 실행했습니다. 모델 PoC가 검토한 결함을 재현했고(수정 전 사례 5/5), 수정안은 수정 후 사례
+5개와 모두 일치했으며, 백업과 함께 원본 파일에 적용되었습니다. 이후 사용자 편집이 생기자 `repo-restore`가
+복구를 거절했고, 편집을 되돌린 뒤에는 원본 바이트를 복구했습니다. 정식 발행은 남은 릴리스 점검 뒤로
+보류합니다. [외부 수정 안내](guides/REPOSITORY_HTTP_FIX.md)
 
 ## 사용할 수 있는 기능
 
-| 기능               | 현재 소스의 동작                                                                                                                                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 정적 소스 스캔     | 대상 앱을 import하거나 실행하지 않고 지원 범위의 FastAPI·라우터 선언, prefix와 의존성을 탐색합니다. 소스 위치, 진단과 부분 분석 상태를 확인합니다.                                                      |
-| AI 제안            | 공유할 내장 소스와 정책을 정확히 미리 본 뒤, 기존 Codex 어댑터를 통해 새 방어적 테스트와 파일 하나의 가용성 규칙 수정을 요청합니다. 변경 없음과 불명도 정상적인 결과입니다.                             |
-| 검토형 복사본 작업 | 런타임·공유·복사·before·diff·적용·after·복구를 각각 검토하고 결정합니다. 검토한 네트워크 차단 Linux guest에서 생성 회귀 테스트와 관리 대상 대조 7개를 검사하며, 새 비공개 복사본에만 변경을 적용합니다. |
-| 로컬 GUI           | CLI와 같은 owner-read 엔진에 현재 확인 문구로 결정을 전달합니다. 생성 코드·diff·before/after·복구 상태를 확인하고 전체 JSON을 내려받습니다. 일반 실행은 정적 목록과 저장 결과 보기를 지원합니다.        |
+| 기능               | 현재 소스의 동작                                                                                                                                                                                                                 |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 외부 파일 수정     | `repo-fix`: 선택한 파일과 정책을 공유해 GET PoC와 수정을 받고, 검토한 사례로 격리된 수정 전·후 검사를 실행한 뒤, 백업·충돌 거절·`repo-restore` 복구가 있는 원본 쓰기를 승인합니다.                                               |
+| 정적 소스 스캔     | 대상 앱을 import하거나 실행하지 않고 지원 범위의 FastAPI·라우터 선언, prefix와 의존성을 탐색합니다. 소스 위치, 진단과 부분 분석 상태를 확인합니다.                                                                               |
+| AI 제안            | 공유할 내장 소스와 정책을 정확히 미리 본 뒤, 기존 Codex 어댑터를 통해 새 방어적 테스트와 파일 하나의 가용성 규칙 수정을 요청합니다. 변경 없음과 불명도 정상적인 결과입니다.                                                      |
+| 검토형 복사본 작업 | 런타임·공유·복사·before·diff·적용·after·복구를 각각 검토하고 결정합니다. 검토한 네트워크 차단 Linux guest에서 생성 회귀 테스트와 관리 대상 대조 7개를 검사하며, 새 비공개 복사본에만 변경을 적용합니다.                          |
+| 로컬 GUI           | CLI와 같은 owner-read 엔진에 현재 확인 문구로 결정을 전달합니다. 생성 코드·diff·before/after·복구 상태를 확인하고 전체 JSON을 내려받습니다. 일반 실행은 정적 목록과 저장된 `repo-fix` 결과를 포함한 저장 결과 보기를 지원합니다. |
 
-AI 흐름의 대상은 **직접 관리하는 합성 시나리오 하나**입니다. 정적 스캔을 위해 선택한 저장소를
-Codex에 자동 전송하거나 수정하지 않습니다. 일반 저장소 수정과 임의 애플리케이션 실행은 지원 범위에
-포함되지 않습니다. [작업 흐름 계약](development/GENERATED_REPAIR_CONTRACT.md)
+GUI의 활성 AI 흐름 대상은 **직접 관리하는 합성 시나리오 하나**이고, `repo-fix`는 아래의 좁은 외부 범위를
+다룹니다. 정적 스캔을 위해 선택한 저장소를 Codex에 자동 전송하거나 수정하지 않습니다. 일반 저장소 수정과
+임의 애플리케이션 실행은 지원 범위에 포함되지 않습니다. [작업 흐름 계약](development/GENERATED_REPAIR_CONTRACT.md)
+
+## 외부 FastAPI 파일 수정
+
+소스 checkout에서 검토한 runtime을 한 번 준비합니다(macOS arm64, Python 3.12, Docker Desktop). 고정된
+wheel 14개를 PyPI에서 받아 모든 바이트를 검증합니다. 그 뒤 대상 코드를 실행하지 않고 두 이미지를 빌드하며,
+`~/.authzest/runtime`에 비공개 프로필을 씁니다.
+
+```bash
+.venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup profile
+```
+
+시연 앱을 저장소 밖으로 복사하고 사례 5개를 검토한 뒤 흐름을 실행합니다.
+
+```bash
+cp -R examples/external_notes_app ~/authzest-demo-notes
+.venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
+```
+
+Codex 로그인에서 보이는 모델 ID를 사용하세요. 효과마다 300초 동안 유효한 확인 코드를 따로 묻습니다.
+순서는 share, copy, run-before, apply-private, run-after, apply-original입니다. 따옴표 안 문구 전체를
+입력하고, Enter는 거절입니다. `original-applied`는 두 검사가 검토한 사례와 일치했고 파일에 적용되었다는
+뜻입니다. `before-not-reproduced`, `after-not-verified`, `poc-not-covered`, `original-conflict`는 원본을
+건드리지 않고 안전하게 멈춥니다. `--json`을 붙이면 대시보드 뷰어에서 열 수 있는 전체 결과를 저장합니다.
+파일이 적용한 수정과 정확히 같을 때 쓰기를 되돌립니다.
+
+```bash
+.venv/bin/authzest repo-restore ~/.authzest/recovery/original-YYYYMMDDTHHMMSSZ-xxxxxxxx
+```
+
+직접 만든 프로젝트에는 먼저 `--preview-only`로 `repo-fix`를 실행합니다. 출력된 `case_basis`를 검토한
+GET 사례 4–8개가 담긴 사례 파일에 옮겨 적습니다. [외부 수정 안내](guides/REPOSITORY_HTTP_FIX.md)
+
+### 지원 범위와 한계
+
+- 모듈 수준 `app`이 있는 평면 `.py` 앱 파일 하나(16KiB 이하)와 정책 파일(8KiB 이하).
+- 고정 이미지에 든 패키지(FastAPI, Starlette, Pydantic, Uvicorn과 그 의존성)만 사용합니다. 메모리 데이터만
+  쓰며 데이터베이스, 외부 서비스, 환경 설정, 시작 lifespan은 지원하지 않습니다.
+- GET 객체 소유권만 다룹니다. 경로는 쿼리 문자열 없는 상대 경로이고, 신원은 합성 `x-user`, `x-user-id`,
+  `x-role` 헤더입니다. `Authorization`/JWT, 쿠키, 실제 로그인은 검사하지 않습니다.
+- 응답은 4KiB 이하의 JSON이거나 빈 본문입니다. 기대 응답은 사용자가 작성합니다. 모델 PoC는 지정 회귀
+  요청과 같아야 합니다.
+- 일치한 사례는 유한한 관찰이며 일반적인 접근통제 보증이 아닙니다. 다중 파일 프로젝트, 다른 모듈의
+  router, 데이터베이스 기반 의존성, 다른 HTTP 메서드는 지원하지 않습니다.
+
+### 원래 목표와 로드맵
+
+AuthZest의 원래 목표는 범용 FastAPI 프로젝트의 취약점을 분석하고 자동으로 패치하는 것입니다. 0.1.0은
+검증되지 않은 범용 주장 대신, 위의 좁은 범위를 처음부터 끝까지 검증한 형태로 제공합니다. 다음 단계는
+아래와 같습니다.
+
+1. 기존 스캔을 바탕으로 파일을 가로지르는 라우트 → 의존성 → 핸들러 → 데이터 접근 그래프.
+2. 그 그래프로 문맥을 고르는 다중 파일 제안.
+3. 실제 프로젝트를 위한 runtime 자동 구성: 의존성, 데이터베이스, 데이터 준비.
+4. JWT 테스트 신원 같은 인증 어댑터와 다른 HTTP 메서드.
 
 ## 빠른 시작: 로컬 대시보드
 
