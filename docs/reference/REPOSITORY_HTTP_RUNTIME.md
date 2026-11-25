@@ -66,10 +66,12 @@ readiness false, authorization unknown and verified-fix false. Supplied frames a
 observations remain unverified history; even directly read daemon metadata cannot prove effective
 image contents or kernel resource/isolation enforcement.
 
-Image-inspect `Id` is the configuration digest. Optional `Descriptor` metadata is projected separately
-as `manifest_descriptor`, with `platform_manifest_reported` true only for an explicitly reported
-matching platform image manifest. An absent descriptor remains `null`; an index/list or a descriptor
-without platform does not supply that platform pin. Never fall back to the configuration ID.
+Image-inspect `Id` is treated as the image identity bound by the profile. Optional `Descriptor` metadata
+is projected separately as `manifest_descriptor`, with `platform_manifest_reported` true only for an
+explicitly reported matching platform image manifest. An absent descriptor remains `null`, and an
+index/list never supplies a platform pin. The projection flag stays false for a platform-less
+descriptor; only the direct phase below applies its narrower containerd rule. Never fall back to the
+configuration ID.
 
 ## Stopped-container comparison
 

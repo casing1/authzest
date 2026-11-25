@@ -61,10 +61,11 @@ POSIX non-frozen 소스 설치가 필요합니다.
 false입니다. 제공 응답·직렬화 관찰은 검증되지 않은 기록이며 직접 읽은 daemon 메타데이터도 이미지
 내용이나 커널 자원·격리 강제를 입증하지 않습니다.
 
-image-inspect의 `Id`는 configuration digest입니다. 선택적인 `Descriptor`는 별도
+image-inspect의 `Id`는 프로필에 묶인 이미지 식별자로 다룹니다. 선택적인 `Descriptor`는 별도
 `manifest_descriptor`로 투영하며 명시적으로 보고한 플랫폼이 일치하는 image manifest일 때만
-`platform_manifest_reported`를 true로 둡니다. 없는 descriptor는 `null`로 유지합니다. index/list나
-플랫폼이 없는 descriptor는 해당 플랫폼 pin을 제공하지 않으며 configuration ID로 대체하지 않습니다.
+`platform_manifest_reported`를 true로 둡니다. 없는 descriptor는 `null`로 유지하고 index/list는 플랫폼
+pin을 제공하지 않습니다. 플랫폼이 없는 descriptor의 투영 표시는 false로 유지하며 아래 직접 phase만 더 좁은
+containerd 규칙을 적용합니다. configuration ID로 대체하지 않습니다.
 
 ## 시작 전 컨테이너 비교
 

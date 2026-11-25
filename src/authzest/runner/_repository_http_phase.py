@@ -66,6 +66,7 @@ _LABEL = "org.authzest.repository-http."
 _ID = re.compile(r"[0-9a-f]{64}\Z")
 _NONCE = re.compile(r"[0-9a-f]{32}\Z")
 _STATES = {"before": "copied-before", "after": "applied-after"}
+_INLINE_OUTPUT_BYTES = 16_384
 _MANIFEST_TYPES = {
     "application/vnd.oci.image.manifest.v1+json",
     "application/vnd.docker.distribution.manifest.v2+json",
@@ -121,6 +122,17 @@ def _error_class(code):
     if code.startswith("http-") or code in {"wire-budget", "receive-call-budget"}:
         return "http-framing"
     return "transport-error"
+
+
+def _bounded_output(name, data):
+    """Inline small outputs; larger ones (B's capture) keep only size and digest.
+
+    The decoded relay capture is summarized separately and its digest journaled,
+    so the retained result stays within its precharged fixed allowance.
+    """
+    if len(data) <= _INLINE_OUTPUT_BYTES:
+        return {name + "_base64": base64.b64encode(data).decode("ascii")}
+    return {name + "_sha256": sha256(data).hexdigest(), name + "_bytes": len(data)}
 
 
 def _manifest_pin(image):
@@ -707,6 +719,7 @@ class _Phase:
             try:
                 self.remove(item, limit=self.cleanup_deadline, cleanup=True)
             except BaseException as exc:
+                item["cleanup_failed"] = True
                 self.cleanup_errors.append(type(exc).__name__)
                 if not isinstance(exc, Exception):
                     self.failure = self.failure or "cancelled-during-cleanup"
@@ -734,11 +747,12 @@ class _Phase:
         states = {}
         for role in "AB":
             items = [item for item in self.owned if item["plan"]["role"] == role]
+            # Each role reflects only its own exact removal observation.
             states[role] = (
                 "confirmed"
-                if len(items) == 1 and items[0]["absent"] and not self.cleanup_errors
+                if len(items) == 1 and items[0]["absent"]
                 else "failed"
-                if self.cleanup_errors
+                if any(item.get("cleanup_failed") for item in items)
                 else "unknown"
             )
         plan = self.plan.to_dict()
@@ -765,8 +779,8 @@ class _Phase:
                 "label": value.label,
                 "returncode": value.returncode,
                 "complete": value.complete,
-                "stdout_base64": base64.b64encode(value.stdout).decode("ascii"),
-                "stderr_base64": base64.b64encode(value.stderr).decode("ascii"),
+                **_bounded_output("stdout", value.stdout),
+                **_bounded_output("stderr", value.stderr),
                 "errors": list(value.errors),
                 "local_cleanup_confirmed": value.local_cleanup_confirmed,
             }
@@ -889,6 +903,10 @@ def execute_repository_http_phase(
         or type(evidence_budget) is not SessionEvidenceBudget
     ):
         raise RepositoryHttpPhaseError("invalid-private-http-phase-context")
+    try:
+        validate_runtime_profile(profile_input.profile.payload_json)
+    except Exception:
+        raise RepositoryHttpPhaseError("invalid-private-http-phase-context") from None
     # Precharge one bounded record slot before any effect.
     evidence_budget.charge(MAX_PHASE_RESULT_BYTES)
     current = _Phase(

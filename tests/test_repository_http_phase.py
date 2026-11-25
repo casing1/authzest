@@ -625,6 +625,7 @@ def test_removal_failure_is_retained_and_never_met(setup):
     assert result["status"] == "failed" and result["criteria_met"] is False
     assert result["cleanup_confirmed"] is False and result["cleanup_errors"]
     assert result["frame"]["cleanup"] == {"A": "failed", "B": "failed"}
+    assert all(item["absence_observed"] is False for item in result["owned"])
     assert result["comparison"]["supplied_criteria_met"] is False
 
 
@@ -728,9 +729,10 @@ def test_relay_result_captures_are_bounded_history(setup):
     result = world.invoke().to_dict()
     relay = [item for item in result["captures"] if item["label"].startswith("attach-start-B")]
     assert len(relay) == 1
-    raw = base64.b64decode(relay[0]["stdout_base64"])
+    raw = base64.b64decode(relay[0]["stdout_base64"]) if "stdout_base64" in relay[0] else None
+    digest = relay[0].get("stdout_sha256") or sha256(raw).hexdigest()
     events = _read(os.path.join(result["evidence_directory"], "events.jsonl"))
-    assert sha256(raw).hexdigest() in events
+    assert digest in events
     assert result["provenance"] == "historical-private-controller-result-not-importable-authority"
 
 
@@ -858,3 +860,20 @@ def test_manifest_pin_selection_never_uses_config_or_index():
         change(value)
         with pytest.raises(module.RepositoryHttpPhaseError):
             module._manifest_pin(value)
+
+
+def test_large_outputs_keep_digest_only(setup):
+    assert module._bounded_output("stdout", b"x" * 10) == {
+        "stdout_base64": base64.b64encode(b"x" * 10).decode()
+    }
+    large = module._bounded_output("stdout", b"y" * 16_385)
+    assert large == {"stdout_sha256": sha256(b"y" * 16_385).hexdigest(), "stdout_bytes": 16_385}
+
+
+def test_closed_profile_is_refused_before_precharge(setup):
+    world = setup("before")
+    world.loaded.close()
+    budget = SessionEvidenceBudget()
+    with pytest.raises(module.RepositoryHttpPhaseError, match="invalid-private-http-phase-context"):
+        world.invoke(budget=budget)
+    assert budget.used == 0 and world.calls == []
