@@ -342,6 +342,7 @@ docs/
 | 테스트 전용 소유 정책 수정 쌍 (제안)               | [Repair-pair design](../../development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)       | [테스트 전용 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)   |
 | 소유 정책 개선 설계 (제안)                         | [Improvement design](../../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)       | [소유 정책 개선 설계](development/OWNER_POLICY_IMPROVEMENT_DESIGN.md)        |
 | 외부 선택 파일 소스·정책 제안 CLI                  | [Repository proposals](../../guides/REPOSITORY_PROPOSALS.md)                     | [외부 저장소 제안](guides/REPOSITORY_PROPOSALS.md)                           |
+| 외부 단일 파일 HTTP 수정 흐름과 원본 복구 (CLI)    | [External HTTP fix](../../guides/REPOSITORY_HTTP_FIX.md)                         | [외부 HTTP 수정](guides/REPOSITORY_HTTP_FIX.md)                              |
 | HTTP 정책 사례·소스 전용 A/B 준비                  | [HTTP verification](../../reference/REPOSITORY_HTTP_VERIFICATION.md)             | [HTTP 정책 검사 준비](reference/REPOSITORY_HTTP_VERIFICATION.md)             |
 | HTTP 전용 A/B 이미지 입력·context·내용 비교        | [HTTP images](../../reference/REPOSITORY_HTTP_IMAGES.md)                         | [HTTP 이미지 준비](reference/REPOSITORY_HTTP_IMAGES.md)                      |
 | HTTP 소스 전용 비공개 파일·checkpoint·A 봉인 입력  | [HTTP private files](../../reference/REPOSITORY_HTTP_FILES.md)                   | [HTTP 비공개 파일](reference/REPOSITORY_HTTP_FILES.md)                       |

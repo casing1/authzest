@@ -383,6 +383,140 @@ def repository_suggest(
     raise typer.Exit(code=result["exit_code"])
 
 
+@app.command("repo-fix")
+def repository_fix(
+    path: Annotated[Path, typer.Argument(help="External FastAPI project root (real POSIX path).")],
+    source: Annotated[
+        str, typer.Option(help="Selected single-file FastAPI app, relative to root.")
+    ],
+    policy: Annotated[str, typer.Option(help="Selected UTF-8 .md/.txt policy, relative to root.")],
+    model: Annotated[str, typer.Option(help="Exact Codex model identifier; no fallback.")],
+    cases: Annotated[
+        Path | None, typer.Option(help="Human-reviewed independent case JSON for these inputs.")
+    ] = None,
+    runtime_profile: Annotated[
+        Path | None, typer.Option(help="Private reviewed A/B runtime profile JSON.")
+    ] = None,
+    app_attribute: Annotated[
+        str | None, typer.Option(help="FastAPI app attribute; defaults to app.")
+    ] = None,
+    recovery_dir: Annotated[
+        Path | None,
+        typer.Option(help="Private backup/recovery parent; defaults to ~/.authzest/recovery."),
+    ] = None,
+    preview_only: Annotated[
+        bool,
+        typer.Option(help="Capture inputs and print the sharing data and case basis only."),
+    ] = False,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Write one final JSON to stdout.")
+    ] = False,
+    timeout_seconds: Annotated[
+        float, typer.Option(help="Single adapter timeout in seconds, up to 120.")
+    ] = 120,
+) -> None:
+    """Propose, check in isolated A/B guests, then apply an approved fix to one file."""
+    from authzest.analyzer.repository_input import RepositoryInputError
+    from authzest.codex.contracts import ContractError
+    from authzest.runner.repository_http_fix import (
+        build_repository_http_fix_preview,
+        run_repository_http_fix,
+    )
+
+    output = WorkflowOutput(as_json)
+    try:
+        if preview_only:
+            output.finish(
+                build_repository_http_fix_preview(
+                    path, source, policy, model, app_attribute=app_attribute
+                ),
+                preview=True,
+            )
+            return
+        if cases is None or runtime_profile is None:
+            raise typer.BadParameter("--cases and --runtime-profile are required to run")
+        result = asyncio.run(
+            run_repository_http_fix(
+                path,
+                source,
+                policy,
+                model,
+                cases_path=cases,
+                profile_path=runtime_profile,
+                app_attribute=app_attribute,
+                recovery_parent=recovery_dir,
+                timeout_seconds=timeout_seconds,
+                emit=output.emit,
+                read=output.read,
+            )
+        )
+    except (RepositoryInputError, ContractError) as exc:
+        result = {
+            "schema_version": "2.0",
+            "kind": "repository-http-fix-result",
+            "status": "invalid-input",
+            "exit_code": 2,
+            "failure": {"code": type(exc).__name__},
+            "original_checkout_modified": False,
+            "verified_fix": False,
+        }
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        result = {
+            "schema_version": "2.0",
+            "kind": "repository-http-fix-result",
+            "status": "cancelled",
+            "exit_code": 130,
+            "original_checkout_modified": None,
+            "verified_fix": False,
+        }
+    output.finish(result, error=result["exit_code"] != 0)
+    raise typer.Exit(code=result["exit_code"])
+
+
+@app.command("repo-restore")
+def repository_restore(
+    record: Annotated[Path, typer.Argument(help="Recovery record directory from repo-fix.")],
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Write one final JSON to stdout.")
+    ] = False,
+) -> None:
+    """Restore an original file from its repo-fix backup unless it was edited since."""
+    import secrets
+
+    from authzest.runner.repository_http_original import (
+        RepositoryHttpOriginalError,
+        inspect_original_record,
+        restore_original,
+    )
+
+    output = WorkflowOutput(as_json)
+    result = {"schema_version": "2.0", "kind": "repository-http-restore-result"}
+    try:
+        preview = inspect_original_record(record.expanduser().absolute())
+        output.emit(json.dumps(preview))
+        if not preview["restore_allowed"]:
+            result.update(
+                status="restore-refused", exit_code=1, current=preview["current_original"]
+            )
+        else:
+            code = "restore " + secrets.token_hex(3)
+            try:
+                answer = output.read(f"Type '{code}' to restore the backup; Enter declines: ")
+            except (EOFError, KeyboardInterrupt):
+                answer = None
+            if answer != code:
+                result.update(status="restore-declined", exit_code=0)
+            else:
+                restored = restore_original(record.expanduser().absolute())
+                result.update(status="restored", exit_code=0, record=restored)
+    except RepositoryHttpOriginalError as exc:
+        result.update(status="restore-refused", exit_code=1, failure={"code": exc.code})
+    except OSError as exc:
+        result.update(status="restore-failed", exit_code=1, failure={"code": type(exc).__name__})
+    output.finish(result, error=result["exit_code"] != 0)
+    raise typer.Exit(code=result["exit_code"])
+
+
 @app.command("owner-read-suggest")
 def owner_read_suggest(
     model: Annotated[str, typer.Option(help="Exact Codex model for the owner-read suggestion.")],
