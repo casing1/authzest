@@ -365,6 +365,7 @@ docs/
 | 승인형 생성 복사/검사/적용/복구 CLI                | [Generated file workflow](../../guides/GENERATED_FILE_WORKFLOW.md)               | [생성 파일 흐름](guides/GENERATED_FILE_WORKFLOW.md)                          |
 | 로컬 결과 화면과 선택형 소유자 조회 GUI            | [Result viewer](../../guides/RESULT_VIEWER.md)                                   | [로컬 결과 화면](guides/RESULT_VIEWER.md)                                    |
 | 과제용 설치, 저장된 기록 시연, 근거 범위           | [Course demo](../../guides/COURSE_DEMO.md)                                       | [과제 시연](guides/COURSE_DEMO.md)                                           |
+| 참고 자료, 서드파티 소프트웨어, 라이선스           | [Third-party](../../reference/THIRD_PARTY.md)                                    | [서드파티·참고 자료](reference/THIRD_PARTY.md)                               |
 | 내부 생성 T → A/B 실행기                           | [Private phase](../../development/GENERATED_REPAIR_PHASE.md)                     | [비공개 단계 실행기](development/GENERATED_REPAIR_PHASE.md)                  |
 | 패키지에 포함한 오프라인 fixture 시연              | [Fixture demo](../../guides/FIXTURE_DEMO.md)                                     | [오프라인 fixture 시연](guides/FIXTURE_DEMO.md)                              |
 | opt-in 소유 fixture Codex 초안                     | [Codex fixture](../../guides/CODEX_FIXTURE.md)                                   | [Codex fixture](guides/CODEX_FIXTURE.md)                                     |

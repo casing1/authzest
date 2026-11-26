@@ -2,18 +2,116 @@
 
 [한국어](../i18n/ko/guides/COURSE_DEMO.md) · [Documentation](../README.md) · [Course delivery #85](https://github.com/casing1/authzest/issues/85)
 
-Use the local AI workspace to present the maintained owner's archived-note scenario: review a new
-regression test and rule change, inspect the before/after observations, and confirm restoration.
-The GUI and CLI use the same owner-read engine and separate current decisions. Use the same
-checkout throughout the demonstration and download its result before starting another run.
+The main demonstration repairs an object-ownership defect in a FastAPI file outside this repository.
+AuthZest asks Codex for a PoC and a repair, proves the defect and the fix in isolated containers
+against cases you reviewed, writes the original with a backup, and undoes the write on request.
+Then the saved result is shown in the local dashboard. The maintained owner-read GUI example
+further below is optional.
 
-This guide describes current source functionality. Source package version `0.1.0` is preparation for
-the course release; the latest published release remains
-[alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4). Public delivery and mock tests
-are not acceptance of a new installed candidate. Keep the historical evidence below tied to its
-recorded source and provenance.
+The walkthrough takes about 15 minutes, of which the model call and the two container checks take
+about 2. It needs macOS arm64, Python 3.12, Node.js 22.13+ (22.x) or 24, Docker Desktop and the
+Codex CLI `0.153.0` signed in with your ChatGPT account (other versions are refused). The [release notes](../releases/0.1.0.md) list what
+0.1.0 supports.
 
-## Current owner-read demonstration
+## External repair demonstration
+
+### Prepare once
+
+Run from the repository root. The runtime commands download 14 pinned wheels and verify every byte,
+build the two A/B images without running target code, and write a private profile under
+`~/.authzest/runtime`:
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -e '.[ui]'
+npm --prefix frontend ci
+npm --prefix frontend run build
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
+.venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup profile
+```
+
+### 1. Show the defect and the reviewed cases
+
+Copy the demo outside the repository so the original file can be written later:
+
+```bash
+cp -R examples/external_notes_app ~/authzest-demo-notes
+```
+
+Show three files:
+
+- `app.py`: `read_note` returns any existing note to any signed-in user. The owner check is missing.
+- `policy.txt`: the rule in plain language. Users may read only notes they own.
+- `cases.json`: five reviewed GET cases with the answers expected before and after the repair. The
+  designated regression is `other`: `test-bob` reading note 1 gets 200 today and must get 403.
+
+Point out that the case file never leaves the host. It is not sent to the model or into a container.
+
+### 2. Run the repair
+
+```bash
+umask 077
+.venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json --json > ~/authzest-demo-result.json
+```
+
+Use a model ID that your Codex account lists. Progress and the six questions appear in the terminal.
+Each question shows a code to type; Enter declines and every code expires after 300 seconds:
+
+| Code               | What to show before typing it                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| `share …`          | The exact request: only `app.py` and `policy.txt` are shared. Type the whole phrase in quotes. |
+| `copy …`           | A fresh private copy is made; the original stays unchanged.                                    |
+| `run-before …`     | The before check. Expect 5/5 cases to match their before answers, which reproduces the defect. |
+| `apply-private …`  | The model's PoC and the exact diff: an owner check that returns 403.                           |
+| `run-after …`      | The after check. Expect 5/5 cases to match their after answers.                                |
+| `apply-original …` | The target path. The original is written atomically and a backup is kept.                      |
+
+The final status should be `original-applied`. The result, including the recovery record, is in
+the saved JSON. Show the change:
+
+```bash
+diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
+```
+
+### 3. Undo the write
+
+With `--json` the restore command is saved in the result rather than printed. This reads the
+recovery record path from the saved JSON:
+
+```bash
+.venv/bin/authzest repo-restore "$(.venv/bin/python -c "import json, pathlib; print(json.loads(pathlib.Path('~/authzest-demo-result.json').expanduser().read_text())['original']['record_path'])")"
+```
+
+It asks for one more code and refuses if the file was edited after the write. Running `diff` again
+prints nothing.
+
+### 4. Show the saved result
+
+```bash
+.venv/bin/authzest ui --workspace examples/fastapi_inventory
+```
+
+Open [the local dashboard](http://127.0.0.1:8000), choose **Workflow results**, select
+`~/authzest-demo-result.json` and open it. Walk through the summary, the PoC, the rebuilt diff, the
+before and after case outcomes and the original/recovery state. The viewer is read-only and refuses
+contradictory or tampered files.
+
+### What to say about the evidence
+
+- The repair is accepted because the reviewed cases matched, not because the model said so.
+- Five matching cases cover those requests only. They do not prove the whole application secure.
+- The identities are synthetic test headers, not a real login system.
+- Decline at any question to show that nothing further happens. An unchanged original stays unchanged.
+
+The same flow ran end to end on 2026-11-25 from the source checkout and from an installed wheel;
+see the [readiness snapshot](../releases/0.1.0-READINESS.md).
+
+## Optional: maintained owner-read GUI example
+
+This earlier demonstration uses the bundled archived-note scenario and the opt-in GUI workspace.
+It is independent of the external flow above.
 
 ### Prepare the source installation
 

@@ -2,16 +2,111 @@
 
 [English](../../../guides/COURSE_DEMO.md) · [문서 목차](../INDEX.md) · [과제 제출 #85](https://github.com/casing1/authzest/issues/85)
 
-로컬 AI 작업 공간에서 관리하는 소유자의 보관 노트 사례를 시연합니다. 새 회귀 테스트와 규칙 변경을
-검토하고 before/after 관찰과 복구 상태를 확인합니다. GUI와 CLI는 같은 owner-read 엔진과 개별 현재
-결정을 사용합니다. 시연 동안 같은 checkout을 사용하고 다른 실행을 시작하기 전에 결과를 내려받습니다.
+주 시연은 이 저장소 밖의 FastAPI 파일에 있는 객체 소유권 결함을 고치는 과정입니다. AuthZest가 Codex에
+PoC와 수정안을 받고, 직접 검토한 사례로 격리된 컨테이너에서 결함과 수정을 확인한 뒤, 백업과 함께 원본에
+쓰고, 요청하면 되돌립니다. 마지막으로 저장한 결과를 로컬 대시보드에서 보여 줍니다. 아래쪽의 owner-read GUI
+예제는 선택 사항입니다.
 
-이 안내는 현재 소스 기능을 설명합니다. 소스 패키지 버전 `0.1.0`은 과제용 정식판 준비 상태이며 최신
-공개판은 [alpha.4](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다. 공개된 구현과
-모의 검사만으로 새 설치 후보의 수용이 성립하지는 않습니다. 아래 과거 근거는 기록한 소스와 출처에
-묶어서 설명합니다.
+전체 시연은 약 15분이며, 그중 모델 호출과 두 번의 컨테이너 검사는 약 2분입니다. macOS arm64, Python 3.12,
+Node.js 22.13 이상(22.x) 또는 24, Docker Desktop, ChatGPT 계정으로 로그인한 Codex CLI `0.153.0`(다른 버전은 거절)이 필요합니다. 0.1.0의
+지원 범위는 [릴리스 노트](../releases/0.1.0.md)를 보세요.
 
-## 현재 소유자 조회 시연
+## 외부 수정 시연
+
+### 한 번만 준비
+
+저장소 최상위에서 실행합니다. runtime 명령은 고정 wheel 14개를 내려받아 모든 바이트를 확인하고, 대상
+코드를 실행하지 않고 A/B 이미지 두 개를 빌드한 뒤, `~/.authzest/runtime`에 비공개 프로필을 씁니다.
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -e '.[ui]'
+npm --prefix frontend ci
+npm --prefix frontend run build
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
+.venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
+.venv/bin/python -m scripts.repository_http_runtime_setup profile
+```
+
+### 1. 결함과 검토한 사례 보여 주기
+
+나중에 원본 파일에 쓸 수 있도록 시연 앱을 저장소 밖으로 복사합니다.
+
+```bash
+cp -R examples/external_notes_app ~/authzest-demo-notes
+```
+
+세 파일을 보여 줍니다.
+
+- `app.py`: `read_note`가 로그인한 누구에게나 존재하는 노트를 돌려줍니다. 소유자 확인이 빠져 있습니다.
+- `policy.txt`: 규칙을 평이한 문장으로 적었습니다. 사용자는 자기 노트만 읽을 수 있습니다.
+- `cases.json`: 수정 전·후에 기대하는 답을 적은 검토한 GET 사례 5개입니다. 지정 회귀는 `other`로,
+  `test-bob`이 노트 1을 읽으면 지금은 200이지만 403이어야 합니다.
+
+사례 파일은 호스트를 벗어나지 않으며 모델이나 컨테이너로 보내지 않는다는 점을 짚어 줍니다.
+
+### 2. 수정 실행
+
+```bash
+umask 077
+.venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json --json > ~/authzest-demo-result.json
+```
+
+Codex 계정에 표시되는 모델 ID를 사용하세요. 진행 상황과 질문 여섯 개가 터미널에 나옵니다. 질문마다 입력할
+코드를 보여 주며, Enter는 거절이고 모든 코드는 300초 뒤 만료됩니다.
+
+| 코드               | 입력하기 전에 보여 줄 내용                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| `share …`          | 공유할 정확한 요청. `app.py`와 `policy.txt`만 공유합니다. 따옴표 안 문구 전체를 입력합니다. |
+| `copy …`           | 새 비공개 복사본을 만듭니다. 원본은 그대로입니다.                                           |
+| `run-before …`     | 수정 전 검사. 5/5 사례가 수정 전 답과 일치하면 결함이 재현된 것입니다.                      |
+| `apply-private …`  | 모델 PoC와 정확한 diff. 403을 돌려주는 소유자 확인이 추가됩니다.                            |
+| `run-after …`      | 수정 후 검사. 5/5 사례가 수정 후 답과 일치해야 합니다.                                      |
+| `apply-original …` | 대상 경로. 원본을 원자적으로 쓰고 백업을 남깁니다.                                          |
+
+최종 상태는 `original-applied`여야 합니다. 복구 기록을 포함한 결과는 저장한 JSON에 있습니다. 바뀐 내용을
+보여 줍니다.
+
+```bash
+diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
+```
+
+### 3. 쓰기 되돌리기
+
+`--json`을 쓰면 복구 명령은 화면에 출력되지 않고 결과에 저장됩니다. 다음 명령은 저장한 JSON에서 복구
+기록 경로를 읽어 실행합니다.
+
+```bash
+.venv/bin/authzest repo-restore "$(.venv/bin/python -c "import json, pathlib; print(json.loads(pathlib.Path('~/authzest-demo-result.json').expanduser().read_text())['original']['record_path'])")"
+```
+
+코드를 한 번 더 묻고, 쓰기 이후 파일이 편집됐으면 거절합니다. `diff`를 다시 실행하면 아무것도 출력되지
+않습니다.
+
+### 4. 저장 결과 보여 주기
+
+```bash
+.venv/bin/authzest ui --workspace examples/fastapi_inventory
+```
+
+[로컬 대시보드](http://127.0.0.1:8000)를 열고 **Workflow results**에서 `~/authzest-demo-result.json`을 선택해
+엽니다. 요약, PoC, 재구성한 diff, 수정 전·후 사례 결과, 원본·복구 상태를 차례로 설명합니다. 화면은 읽기
+전용이며 모순되거나 변조된 파일은 거절합니다.
+
+### 근거에 대해 설명할 점
+
+- 수정안은 모델의 주장이 아니라 검토한 사례가 일치했기 때문에 받아들입니다.
+- 사례 5개의 일치는 그 요청에만 해당하며 앱 전체의 보안을 증명하지 않습니다.
+- 사용자 식별은 합성 테스트 헤더이며 실제 로그인 시스템이 아닙니다.
+- 어느 질문에서든 거절하면 더 진행되지 않고, 바뀌지 않은 원본은 그대로 남는다는 것을 보여 줄 수 있습니다.
+
+같은 흐름이 2026-11-25 소스 checkout과 설치한 wheel에서 끝까지 실행됐습니다.
+[준비 상태](../releases/0.1.0-READINESS.md)를 보세요.
+
+## 선택: 관리 중인 owner-read GUI 예제
+
+동봉한 보관 노트 시나리오와 선택형 GUI 작업 공간을 쓰는 이전 시연입니다. 위 외부 흐름과는 별개입니다.
 
 ### 소스 설치 준비
 

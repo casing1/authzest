@@ -55,6 +55,7 @@ Codex и Docker Desktop. PoC модели воспроизвёл провере�
 запуская целевой код, и записывают приватный профиль в `~/.authzest/runtime`:
 
 ```bash
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -67,7 +68,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
-Используйте ID модели, доступный в вашей учётной записи Codex. Каждое действие запрашивает свой код,
+Используйте Codex CLI `0.153.0` со входом через ChatGPT и ID модели, доступный в этой учётной записи. Каждое действие запрашивает свой код,
 который истекает через 300 секунд: share, copy, run-before, apply-private, run-after и apply-original.
 Вводите всю фразу в кавычках; Enter означает отказ. `original-applied` означает, что обе проверки совпали
 с просмотренными случаями и файл записан. `before-not-reproduced`, `after-not-verified`, `poc-not-covered`
@@ -272,7 +273,8 @@ UI на FastAPI/React используют общий процесс ядра; �
 - [Учебная демонстрация](../../guides/COURSE_DEMO.md): GUI, CLI и показ сохранённых результатов.
 - [Участие в разработке](../../../CONTRIBUTING.md): содержательные коммиты, тесты, метки и правила веток.
 - [Политика безопасности](../../../SECURITY.md): сообщения о проблемах и поддерживаемые границы проверки.
-- [Лицензия MIT](../../../LICENSE).
+- [Лицензия MIT](../../../LICENSE) и [источники и сторонние компоненты (англ.)](../../reference/THIRD_PARTY.md):
+  скопированного кода нет; зависимости и поставляемые компоненты среды выполнения сохраняют свои лицензии.
 
 Статические объявления, заданная политика и конечный набор результатов тестов — разные виды данных.
 Диагностика и состояния «неизвестно», «не выполнялось», «отказ» и «ошибка» остаются видимыми. AuthZest

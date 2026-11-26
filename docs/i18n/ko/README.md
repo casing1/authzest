@@ -52,6 +52,7 @@ wheel 14개를 PyPI에서 받아 모든 바이트를 검증합니다. 그 뒤 �
 `~/.authzest/runtime`에 비공개 프로필을 씁니다.
 
 ```bash
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -64,7 +65,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
-Codex 로그인에서 보이는 모델 ID를 사용하세요. 효과마다 300초 동안 유효한 확인 코드를 따로 묻습니다.
+ChatGPT로 로그인한 Codex CLI `0.153.0`과 그 로그인에서 보이는 모델 ID를 사용하세요. 효과마다 300초 동안 유효한 확인 코드를 따로 묻습니다.
 순서는 share, copy, run-before, apply-private, run-after, apply-original입니다. 따옴표 안 문구 전체를
 입력하고, Enter는 거절입니다. `original-applied`는 두 검사가 검토한 사례와 일치했고 파일에 적용되었다는
 뜻입니다. `before-not-reproduced`, `after-not-verified`, `poc-not-covered`, `original-conflict`는 원본을
@@ -263,7 +264,8 @@ FastAPI·React UI는 같은 핵심 작업 흐름을 사용하며 UI 변경이 �
 - [과제 시연](guides/COURSE_DEMO.md): GUI·CLI·저장 결과 발표.
 - [기여 안내](CONTRIBUTING.md): 의미 있는 커밋, 테스트, 라벨과 브랜치 규칙.
 - [보안 정책](SECURITY.md): 제보와 지원 검토 범위.
-- [MIT 라이선스](../../../LICENSE).
+- [MIT 라이선스](../../../LICENSE)와 [참고 자료·서드파티 소프트웨어](reference/THIRD_PARTY.md): 복사한 코드는
+  없으며, 의존성과 함께 배포되는 runtime 구성 요소는 각자의 라이선스를 따릅니다.
 
 정적 선언, 제공한 정책과 유한 테스트 결과는 서로 다른 근거입니다. 진단과 불명·미실행·거절·실패
 상태를 표시합니다. AuthZest가 일반적인 접근통제 안전성, 운영 환경의 격리나 측정된 모델 성능 우위를

@@ -55,6 +55,7 @@ This downloads 14 pinned wheels from PyPI and verifies every byte. It then build
 running any target code, and writes a private profile under `~/.authzest/runtime`:
 
 ```bash
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -67,7 +68,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
-Use a model ID that your Codex login lists. Each effect asks for its own code, which expires after
+Use Codex CLI `0.153.0` signed in with ChatGPT and a model ID that your login lists. Each effect asks for its own code, which expires after
 300 seconds: share, copy, run-before, apply-private, run-after and apply-original. Type the whole
 quoted phrase; Enter declines. `original-applied` means both checks matched your reviewed cases and the
 file was written. `before-not-reproduced`, `after-not-verified`, `poc-not-covered` and
@@ -267,7 +268,8 @@ execution or source-sharing authority.
 - [Course walkthrough](docs/guides/COURSE_DEMO.md): GUI, CLI and saved-result presentation.
 - [Contributing](CONTRIBUTING.md): meaningful commits, tests, labels and branch rules.
 - [Security policy](SECURITY.md): reporting and supported review boundaries.
-- [MIT license](LICENSE).
+- [MIT license](LICENSE) and [references and third-party software](docs/reference/THIRD_PARTY.md):
+  no copied code; dependencies and bundled runtime components keep their own licenses.
 
 Static declarations, supplied policy and finite test outcomes are different evidence. Diagnostics
 and unknown/not-run/declined/failed states remain visible. AuthZest does not establish general

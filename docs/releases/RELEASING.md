@@ -2,11 +2,10 @@
 
 [Documentation](../README.md) · English · [한국어](../i18n/ko/releases/RELEASING.md)
 
-> **Publication held — 2026-11-23 KST.** The maintainer did not accept the previous
-> synthetic-only release proposal. [#200](https://github.com/casing1/authzest/issues/200) now
-> prioritizes external-project proposals, followed by reviewed copy verification and GUI integration.
-> The dated notes below retain their original scope; they are not current external-project
-> acceptance, risk acceptance or publication authority.
+> **0.1.0 prepared — 2026-11-26 KST.** The external single-file flow is delivered and verified.
+> The current [release notes](0.1.0.md) and [readiness snapshot](0.1.0-READINESS.md) list the
+> remaining maintainer decisions and the release steps. The dated sections below keep their original
+> scope; they are history, not current acceptance, risk acceptance or publication authority.
 
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.

@@ -54,6 +54,7 @@ Docker Desktop）。固定された wheel 14 個を PyPI から取得してす�
 二つのイメージをビルドして、`~/.authzest/runtime` に非公開プロファイルを書き込みます。
 
 ```bash
+mkdir -p -m 700 ~/.authzest ~/.authzest/runtime
 .venv/bin/python -m scripts.repository_http_runtime_setup wheels --output ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup build --wheelhouse ~/.authzest/runtime/wheels
 .venv/bin/python -m scripts.repository_http_runtime_setup profile
@@ -66,7 +67,7 @@ cp -R examples/external_notes_app ~/authzest-demo-notes
 .venv/bin/authzest repo-fix ~/authzest-demo-notes --source app.py --policy policy.txt --model EXPLICIT_MODEL --cases examples/external_notes_app/cases.json --runtime-profile ~/.authzest/runtime/runtime.json
 ```
 
-Codex のログインで表示されるモデル ID を使ってください。効果ごとに 300 秒で失効する確認コードを個別に
+ChatGPT でログインした Codex CLI `0.153.0` と、そのログインで表示されるモデル ID を使ってください。効果ごとに 300 秒で失効する確認コードを個別に
 求めます。順序は share、copy、run-before、apply-private、run-after、apply-original です。引用符内の
 文全体を入力し、Enter は拒否になります。`original-applied` は両方の検査がレビュー済みケースと一致し、
 ファイルに書き込まれたことを意味します。`before-not-reproduced`、`after-not-verified`、`poc-not-covered`、
@@ -272,7 +273,8 @@ Typer CLI と FastAPI/React UI は共通のコアフローを使います。UI �
 - [授業デモガイド](../../guides/COURSE_DEMO.md)：GUI、CLI、保存結果の提示。
 - [貢献ガイド](../../../CONTRIBUTING.md)：意味のあるコミット、テスト、ラベル、ブランチルール。
 - [セキュリティポリシー](../../../SECURITY.md)：報告方法と対応するレビュー範囲。
-- [MIT ライセンス](../../../LICENSE)。
+- [MIT ライセンス](../../../LICENSE)と[参考資料・サードパーティソフトウェア（英語）](../../reference/THIRD_PARTY.md)。
+  コピーしたコードはなく、依存関係と同梱ランタイム部品はそれぞれのライセンスに従います。
 
 静的な宣言、与えられたポリシー、有限のテスト結果は、それぞれ異なる根拠です。診断と
 不明・未実行・拒否・失敗の状態は表示に残ります。AuthZest は一般的な認可の保証、
