@@ -74,6 +74,47 @@ stale sharing and reachable generated-code execution as real boundary failures, 
 workflows used synthetic fixtures. This section accepts no risk and excludes no findings. See the
 [external-project guide](docs/guides/REPOSITORY_PROPOSALS.md).
 
+## External single-file repair (`repo-fix`)
+
+`authzest repo-fix` is the 0.1.0 flow that can change a file outside this repository, so its
+boundaries matter most. It runs only from a non-frozen source or wheel installation on macOS arm64
+with Docker Desktop and a private runtime profile prepared by the setup script.
+
+- What is shared: After a typed sharing decision on the full preview, Codex receives the one
+  selected source file and the policy file. The reviewed case file, which holds the expected answers,
+  never leaves the host. Codex runs through its App Server in a read-only sandbox without network
+  access, with an empty temporary directory as its working directory, and uses your existing
+  ChatGPT login.
+- Model output: The PoC request and the replacement source are untrusted data. The PoC must
+  equal the designated regression case or the flow stops. The replacement source runs only inside
+  the isolated A container, never on the host.
+- Containers: A has network mode `none`, a read-only root filesystem, a non-root user, fixed
+  capabilities and two read-only bind mounts (manifest and the selected file). B shares only A's
+  network namespace and receives the request schedule over stdin. Each phase has a 40-second
+  deadline, at most 10 seconds of setup and a 10-second cleanup window. Containers carry owned
+  names and are removed exactly; uncertain cleanup is reported, not hidden.
+- Decisions: Sharing, copy, before check, private apply, after check and original write each
+  need their own typed single-use code, which expires after 300 seconds.
+- Original write: Before writing, AuthZest rechecks that the original and policy are unchanged
+  since capture and refuses any edit as a conflict. It replaces the file atomically and keeps its
+  mode, group, ACL and extended attributes. It refuses a file owned by another user, a file with
+  flags, or metadata it cannot reproduce. The recovery record lives in a private `0700` directory
+  under `~/.authzest/recovery` with read-only copies of the before and after bytes.
+  `authzest repo-restore` restores only while the file still holds exactly the applied bytes, so
+  later edits are never overwritten.
+- Saved results: The `--json` result contains the shared source and policy text and private
+  paths. Save it with `umask 077`. The dashboard viewer drops private paths when it displays a
+  result, but do not upload results to a hosted viewer.
+
+Limits: the file-state checks are not atomic against a hostile process running as the same user,
+and container isolation relies on Docker Desktop. Matching the reviewed cases shows only that those
+requests behave as expected; it is not a security audit of the application. Identities are
+synthetic test headers. Treat disclosure of files beyond the selected pair, acceptance of a PoC
+that differs from the regression case, guest network access, host execution of model output, writes
+outside the selected file and a restore that overwrites later edits as real boundary failures. See
+the [external fix guide](docs/guides/REPOSITORY_HTTP_FIX.md) and the
+[HTTP runtime reference](docs/reference/REPOSITORY_HTTP_RUNTIME.md).
+
 ## Threat model and current boundaries
 
 The [repository threat model](docs/reference/threat-model.md) documents inspected source, protected
