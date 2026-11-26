@@ -8,7 +8,7 @@
 > [!WARNING]
 > 익숙하지 않은 checkout을 먼저 검토한 뒤 아래 보호 명령을 사용하세요. 직접 CLI·에디터·API 호출에는
 > 보호 명령의 사전 검사가 적용되지 않습니다. 과거 위험 수용은
-> [alpha.4에만 적용](#alpha4-관리자-판단--2026-11-05-kst)됩니다.
+> [alpha.4에만 적용](#alpha4-관리자-판단-2026-11-05-kst)됩니다.
 
 ## 현재 소스 포맷터
 
@@ -22,7 +22,7 @@
 의존성 검사는 기존 CLI와 CJS API가 사용하는 설치된 ESM 번들을 검토한 SHA-256과 대조합니다.
 정상 포맷 테스트에서는 EditorConfig 동작을 확인합니다.
 
-### Picomatch 후속 확인 — 2026-11-19 KST
+### Picomatch 후속 확인 (2026-11-19 KST)
 
 GitHub는 11월 18일 UTC에 [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)를
 철회했습니다. 확인 시점에 [CVE 원본 API](https://cveawg.mitre.org/api/cve/CVE-2026-112366)는
@@ -37,7 +37,7 @@ GitHub는 11월 18일 UTC에 [GHSA-fc5q-39xc-vjpf](https://github.com/advisories
 한정됩니다. 편집기 유효 설정, 확장 버전, 도구 직접 실행 경로는 별도 근거가 필요합니다.
 기존 alpha.4 위험 결정은 공개 프리릴리스에 적용됩니다.
 
-### 최종 소스 사전검증 — 2026-11-23 KST
+### 최종 소스 사전검증 (2026-11-23 KST)
 
 소스 `80b574d`의 lock·포맷터 guard·검토한 설정 바이트는 이전 평가와 같습니다.
 [#197](https://github.com/casing1/authzest/issues/197)에 새 설치 도구와 세 플랫폼 native 아카이브
@@ -166,7 +166,7 @@ workflow script를 신뢰하고 사전 검사부터 Prettier가 다시 읽을 �
 이 기록은 확인한 개발 도구 경로를 런타임 주장과 구분했으며 전체 의존성 감사나 새 바이너리
 내용 증명은 아니었습니다.
 
-## 현재 정적 재확인 — 2026-11-02 KST
+## 현재 정적 재확인 (2026-11-02 KST)
 
 소스 `ee49f5a04be41453aa7bf7b75438d04761b5880a`의 별도 정적 재확인에서도 전달된
 [#89](https://github.com/casing1/authzest/issues/89) 주장은 **`needs_review` / 신뢰도 medium**이며
@@ -202,7 +202,7 @@ npm 감사 0이나 CI 통과도 이 판단을 바꾸지 않습니다. 정적 판
 호환 배포 바이트 교체 또는 정확한 후보의 잔여 개발 도구 위험에 대한 명시적 결정을 기록하는 것이었습니다.
 이후 아래 관리자 결정은 별도로 구분하며 #89는 열어 둡니다.
 
-## Alpha.4 관리자 판단 — 2026-11-05 KST
+## Alpha.4 관리자 판단 (2026-11-05 KST)
 
 관리자는 설명된 위험을 검토한 뒤 명시적 경고와 후속 추적을 조건으로 **다가오는 alpha.4의 개발용
 포맷터 가용성 잔여 위험만 수용**했습니다. 추적은 [#89](https://github.com/casing1/authzest/issues/89)와

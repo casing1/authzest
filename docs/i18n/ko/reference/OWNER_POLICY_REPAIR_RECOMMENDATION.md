@@ -10,7 +10,7 @@
 [변경 없는 S1 추천 API](OWNER_POLICY_RECOMMENDATION.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81)
 
-## 가용성과 경계 — 2026-10-29 KST
+## 가용성과 경계 (2026-10-29 KST)
 
 이 **미출시 소스 기능**은 #81에서 추적합니다.
 `authzest.codex.owner_policy_repair_recommendation`의 순수 오프라인 선택 계약은
@@ -40,7 +40,7 @@
 있을 때만 현재 검증한 응답을 소유 파일 세션에 연결합니다. 공유 승인만으로는 실행·적용·복구를
 허용하지 않습니다.
 
-## 제한된 실제 수용 — 2026-10-28 KST
+## 제한된 실제 수용 (2026-10-28 KST)
 
 [수용 기록](https://github.com/casing1/authzest/issues/81#issuecomment-6458726176)은
 `cc644a1`에서 기존 ChatGPT 로그인·Codex `0.153.0`·명시적 모델 `gpt-6-astra`를 사용해
@@ -285,7 +285,7 @@ print(
 before 재실행이나 런타임 변경 없이 사례 8개가 일치했고 자체 승인을 소비했습니다. 보존 기록의
 오프라인 비교는 새 제품 비교 API나 인증된 실행 증명이 아닙니다. #80은 부정 소스를 계속 거절합니다.
 이후 PR #110은 별도 승인한 최종 head 리뷰와 전달을 2026-10-28 `ea081e0`에서 완료했습니다.
-[소스 전달 기록](OWNER_POLICY_REPAIR_CHECK.md#소스-전달-완료--2026-10-28-kst)을 확인하세요.
+[소스 전달 기록](OWNER_POLICY_REPAIR_CHECK.md#소스-전달-완료-2026-10-28-kst)을 확인하세요.
 이후 별도 검토한 파일 식별값 연결 API를 PR #118에서 전달했습니다. 2026-10-29 `fb90c46`의
 [파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)은
 과거 실제 추천을 재검증하고 before 검사·정확한 diff·적용·after 검사·복구 각각의 승인을

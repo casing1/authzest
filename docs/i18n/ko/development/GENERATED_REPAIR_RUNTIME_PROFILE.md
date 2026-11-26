@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 runtime profile — 오프라인 선언과 생성 계획
+# 생성 수정 runtime profile (오프라인 선언과 생성 계획)
 
 [문서 목차](../INDEX.md) · [Guest 소스](GENERATED_REPAIR_GUESTS.md) ·
 [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)
 
-## 범위 — 2026-11-13 KST
+## 범위 (2026-11-13 KST)
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 전달받은 로컬 엔진/이미지
 선언을 검증하고 고정된 **정지 생성 인자 데이터**를 만듭니다. Docker 실행·daemon/이미지/파일 검사·

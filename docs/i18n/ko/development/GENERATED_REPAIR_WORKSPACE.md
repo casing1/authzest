@@ -3,11 +3,11 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 비공개 작업공간 — 오프라인 파일 I/O 기반
+# 생성 수정 비공개 작업공간 (오프라인 파일 I/O 기반)
 
 [문서 목차](../INDEX.md) · [검증 기반](GENERATED_REPAIR_VERIFICATION.md)
 
-## 범위 — 2026-11-16 KST
+## 범위 (2026-11-16 KST)
 
 [#152](https://github.com/casing1/authzest/issues/152)의 **비공개 저수준 파일 I/O 경계**입니다.
 Opt-in [세션](GENERATED_REPAIR_SESSION.md)과 [CLI 파일 흐름](../guides/GENERATED_FILE_WORKFLOW.md)이

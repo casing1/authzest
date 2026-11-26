@@ -7,7 +7,7 @@
 
 [문서 목차](../INDEX.md) · [공개 로드맵](https://github.com/casing1/authzest/issues/1)
 
-## 0.1.0 범위 확정 — 2026-11-24 KST
+## 0.1.0 범위 확정 (2026-11-24 KST)
 
 수용한 [과목 릴리스 범위](0.1.0-SCOPE.md)는 명시적으로 선택한 자체 완결형 **단일 파일
 FastAPI 앱의 GET 객체 소유권 접근통제**와 명시적인 정책입니다. Codex는 제한된 HTTP PoC 요청
@@ -26,7 +26,7 @@ FastAPI 앱의 GET 객체 소유권 접근통제**와 명시적인 정책입니�
 활성화·위험 수용·발행은 승인하지 않습니다. 완성 목표는 **2026-12-01**이며 보장이 아닙니다.
 공식 제출 마감은 **2026-12-06 23:59 Asia/Seoul**입니다. 아래 일정을 참고하세요.
 
-## HTTP runtime 입력과 메타데이터 — 오프라인 전달
+## HTTP runtime 입력과 메타데이터 (오프라인 전달)
 
 [별도 HTTP runtime 검사](../reference/REPOSITORY_HTTP_RUNTIME.md)는 비공개 schema 2.0 프로필,
 현재 client·빈 설정·endpoint의 연속성을 확인하고 네 개의 고정 A/B Engine 문서와 전체 시작 전
@@ -35,7 +35,7 @@ container 계획을 대조합니다. 검사는 비활성 파일·메모리 소�
 HTTP stdin과 현재 직접 A/B phase 연결, CLI 조정과 최종 원본 수정입니다. 실제 이미지·설치형 전체
 수용은 계속 필수 미완료 조건입니다.
 
-## HTTP 비공개 파일 checkpoint와 A 입력 — 오프라인 전달
+## HTTP 비공개 파일 checkpoint와 A 입력 (오프라인 전달)
 
 [별도 HTTP 비공개 파일 API](../reference/REPOSITORY_HTTP_FILES.md)는 소스 전용 복사 계획, 정확한
 현재 copy/diff/apply/restore 결정과 발급자 checkpoint를 A 봉인 manifest·소스 입력에 결합합니다.
@@ -44,7 +44,7 @@ after는 제안 텍스트만이 아닌 실제 적용한 비공개 파일을 읽�
 이미지/runtime·Engine/직접 phase·외부 CLI/GUI 조작·원본 최종 수정은 미완료이며 비공개 바이트
 전환이 인가·runtime 증명은 아닙니다.
 
-## HTTP A/B 이미지 준비 — 오프라인 전달
+## HTTP A/B 이미지 준비 (오프라인 전달)
 
 [HTTP 이미지 도구](../reference/REPOSITORY_HTTP_IMAGES.md)는 정확한 base·의존성·새 guest/recipe
 바이트를 검사하고 선택 opaque wheel·관리 입력만 새 최소 비공개 context에 복사하며 제공된 비활성
@@ -52,7 +52,7 @@ rootfs catalog를 비교합니다. 기존 자산·검증기는 유지합니다. 
 빌드 이미지나 실제 runtime 수용이 아닙니다. 새 HTTP 파일 checkpoint/staging·Engine/직접 phase·
 CLI 조작과 최종 원본 적용/복구가 남아 있습니다.
 
-## HTTP 정책·A/B 검사 준비 — 오프라인 전달
+## HTTP 정책·A/B 검사 준비 (오프라인 전달)
 
 [HTTP 검사 API](../reference/REPOSITORY_HTTP_VERIFICATION.md)는 모델 PoC를 별도로 제공한 지정
 회귀 요청과 정확히 결합하고 독립 기대값 4~8개와 제공된 전후 frame을 실행 권한 없이 비교합니다.
@@ -62,7 +62,7 @@ CLI 조작과 최종 원본 적용/복구가 남아 있습니다.
 이미지 context·실제 검사, live HTTP 파일 checkpoint·staging, Engine 조정과 실제
 before/apply/after/복구 조작 흐름은 미완료입니다. 대상 실행이나 원본 최종 수정 완료가 아닙니다.
 
-## HTTP 제안 단계 — 오프라인 전달
+## HTTP 제안 단계 (오프라인 전달)
 
 명시적 `repo-suggest --http-poc` 경로는 단일 파일 schema 2.0 요청을 준비하고 모델이 제안한
 GET 요청 데이터 하나·수정 소스를 전용 adapter 진입점과 호스트의 한 파일 diff로 검증합니다.
@@ -72,7 +72,7 @@ GET 요청 데이터 하나·수정 소스를 전용 adapter 진입점과 호스
 새 결과 GUI 가져오기와 설치형 실제 수용은 #210/#152/#150에 남아 있습니다. 확정한 릴리스
 체크리스트 완료나 외부 실행 활성화가 아닙니다.
 
-## 외부 프로젝트 지원 방향 수정 — 2026-11-23 KST
+## 외부 프로젝트 지원 방향 수정 (2026-11-23 KST)
 
 이 절은 위 범위 확정 전의 더 넓은 계획을 기록합니다. 전달한 소스 사실은 유지하되
 T/pytest와 외부 프로젝트 활성 GUI 후속 작업은 후순위입니다.
@@ -113,7 +113,7 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 별도의 구현 사실이며 외부 실행을 구현하거나 열람·가져오기에 실행 권한을 주지 않습니다.
 근거 보조의 가치는 측정할 가설로 둡니다. [모델 전략](MODEL_STRATEGY.md)을 참고하세요.
 
-## 대화형 과제 흐름 — 2026-11-23 KST
+## 대화형 과제 흐름 (2026-11-23 KST)
 
 이 절과 아래 릴리스 전달 절은 내장 사례의 과거 도달 지점을 기록합니다. 위의 외부 프로젝트 요구가
 기존 시연만으로 완료하던 범위와 발행 순서를 대체합니다.
@@ -138,7 +138,7 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 릴리스 검사에 포함합니다. 네 언어 README는 현재 소스와 공개 alpha.4를 구분합니다. 일반 저장소
 수정과 모델 비교 우위 주장은 이번 범위 밖이며 이 문서 갱신만으로 기능 수용 이슈를 완료하지 않습니다.
 
-## 정식판 최종 전달 — 2026-11-23 KST
+## 정식판 최종 전달 (2026-11-23 KST)
 
 [#197](https://github.com/casing1/authzest/issues/197)에서 소스 `80b574d`의 설치·업그레이드,
 읽기 전용 UI와 세 플랫폼 native 사전검증을 완료했습니다.
@@ -148,7 +148,7 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 아직 미결이며 사전검증은 새 활성 모델·guest 종단간 실행이 아닙니다. 이 결정을 기록하는 대신
 파서·벤치마크 범위를 늘리거나 제품 이슈를 닫지 않습니다.
 
-## 과목 릴리스 우선순위 — 2026-11-12 KST
+## 과목 릴리스 우선순위 (2026-11-12 KST)
 
 이 절은 이전 내장 사례의 우선순위와 전달한 계약을 보존합니다. 생성 pytest와 외부 활성 GUI의
 완료 목표는 위 2026-11-24 범위로 대체합니다.
@@ -159,10 +159,10 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 
 | 우선순위                                                                                                           | 필수 제출 기능                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — [#151](https://github.com/casing1/authzest/issues/151)                                                         | 명시적 정책·인메모리 데이터를 사용하는 관리 대상 FastAPI 객체 소유권 사례 하나에서 새 방어적 테스트와 애플리케이션 소스 한 파일의 AI 작성 패치를 생성합니다. 기존 등록 after 템플릿을 수정 선택지로 보내거나 템플릿 선택을 생성으로 표시하지 않습니다.                                                                            |
-| 2 — [#152](https://github.com/casing1/authzest/issues/152)                                                         | 검토한 생성 테스트와 사례에 맞는 별도 소유자/비소유자/익명/정상 사용 대조 검사를 격리된 변경 전후 환경에서 각각 승인받아 수행하도록 설계·구현합니다. 검토한 정확한 diff만 새 복사본에 적용하고 오래됐거나 사용자가 편집한 입력을 거부하며 거절·실패·복구 근거를 보존합니다. 모델 작성 테스트만으로 수정 효과를 입증하지 않습니다. |
-| 3 — [#153](https://github.com/casing1/authzest/issues/153), [#189](https://github.com/casing1/authzest/issues/189) | scan·PoC/테스트·diff·변경 전후·복구를 정직하게 표시합니다. 기본 읽기 전용 경로를 유지하고 같은 엔진·별도 결정을 사용하는 명시적 로컬 owner-read GUI를 추가합니다. failed/not-run/unknown·복구 상태를 보존하며 클라우드 배포는 필요하지 않습니다.                                                                                  |
-| 4 — [#85](https://github.com/casing1/authzest/issues/85)와 #150                                                    | 설치형 흐름/시연 재현·정직한 최소 릴리스 근거·구현과 일치하는 영어 README 및 한국어/일본어/러시아어 번역을 완료합니다. 정확한 릴리스 후보를 검증하고 발행 전에 새로운 [#89](https://github.com/casing1/authzest/issues/89) 판단을 받습니다.                                                                                       |
+| 1 - [#151](https://github.com/casing1/authzest/issues/151)                                                         | 명시적 정책·인메모리 데이터를 사용하는 관리 대상 FastAPI 객체 소유권 사례 하나에서 새 방어적 테스트와 애플리케이션 소스 한 파일의 AI 작성 패치를 생성합니다. 기존 등록 after 템플릿을 수정 선택지로 보내거나 템플릿 선택을 생성으로 표시하지 않습니다.                                                                            |
+| 2 - [#152](https://github.com/casing1/authzest/issues/152)                                                         | 검토한 생성 테스트와 사례에 맞는 별도 소유자/비소유자/익명/정상 사용 대조 검사를 격리된 변경 전후 환경에서 각각 승인받아 수행하도록 설계·구현합니다. 검토한 정확한 diff만 새 복사본에 적용하고 오래됐거나 사용자가 편집한 입력을 거부하며 거절·실패·복구 근거를 보존합니다. 모델 작성 테스트만으로 수정 효과를 입증하지 않습니다. |
+| 3 - [#153](https://github.com/casing1/authzest/issues/153), [#189](https://github.com/casing1/authzest/issues/189) | scan·PoC/테스트·diff·변경 전후·복구를 정직하게 표시합니다. 기본 읽기 전용 경로를 유지하고 같은 엔진·별도 결정을 사용하는 명시적 로컬 owner-read GUI를 추가합니다. failed/not-run/unknown·복구 상태를 보존하며 클라우드 배포는 필요하지 않습니다.                                                                                  |
+| 4 - [#85](https://github.com/casing1/authzest/issues/85)와 #150                                                    | 설치형 흐름/시연 재현·정직한 최소 릴리스 근거·구현과 일치하는 영어 README 및 한국어/일본어/러시아어 번역을 완료합니다. 정확한 릴리스 후보를 검증하고 발행 전에 새로운 [#89](https://github.com/casing1/authzest/issues/89) 판단을 받습니다.                                                                                       |
 
 [릴리스 준비 기록](../releases/RELEASING.md)에서 이미 구현한 범위와 최종 후보 근거가 필요한 범위를
 추적합니다. [생성 파일 흐름 안내](../guides/GENERATED_FILE_WORKFLOW.md)는 소스 공유와 각 실행 단계에
@@ -195,13 +195,13 @@ parser/analyzer, Codex adapter, runner, 표현 계층의 경계를 유지합니�
 [과제 시연](../guides/COURSE_DEMO.md)은 `34baebc`의 과거 설치형 실행, 완료된 #153 결과 UI, 현재 형식의
 거절 예제를 구별합니다. #152에는 최종 후보의 설치형 수용 검증이 남아 있습니다.
 
-## 공개 alpha.4 기준 — 2026-11-05 KST
+## 공개 alpha.4 기준 (2026-11-05 KST)
 
 릴리스 소스는 `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, 패키지 `0.1.0a4`, 스캔 스키마 `1.2`,
 태그는 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다.
 11월 5일 03:02:07 UTC에 프리릴리스로 발행했고 공개 파일 6개를 모두 내려받아 체크섬·attempt-2
 태그 산출물과 일치함을 확인했습니다. 공개 macOS 파일도 스캔/미리보기 13개·고정 런타임 1개를
-통과했습니다. [릴리스 기록](../releases/RELEASING.md#alpha4-발행과-공개-파일-검증--2026-11-05-kst)을
+통과했습니다. [릴리스 기록](../releases/RELEASING.md#alpha4-발행과-공개-파일-검증-2026-11-05-kst)을
 참고하세요. 정상 문서 전달은 #83에서 추적합니다. 태그 실행 attempt 1은 Python
 4,923개 통과·fake-server JSONL race 1개 실패로 중단됐고 동일 태그 attempt 2는 Python 4,924개·
 Node 71개·발행 포함 job 8개를 통과했습니다. 이후
@@ -243,7 +243,7 @@ PR #123이 상태 전달을 완료했습니다.
 [PR #115](https://github.com/casing1/authzest/pull/115)는 선택형 에디터 검토 workspace를 추가했으며
 강제 보안 경계나 #89 위험 수용이 아닙니다. PR #116은 설치 CLI smoke를 추가했습니다. macOS host
 한 대에서 `1d0ebb8`의 새 소스 설치와 같은 버전 소스 교체가 각각 검사 13개를 통과했습니다.
-[소스 설치 기록](../releases/RELEASING.md#로컬-소스-설치-관찰--2026-10-29)은 버전이 바뀐 alpha.4
+[소스 설치 기록](../releases/RELEASING.md#로컬-소스-설치-관찰-2026-10-29)은 버전이 바뀐 alpha.4
 업데이트나 다른 플랫폼/경로를 입증하지 않습니다. 과거 관찰은 원래 범위를 유지하며 아래
 11월 5일 후보 검사는 별도입니다. 2026-11-02 준비에서는 소스 버전을
 `0.1.0a4`로 설정하고 미사용 태그 `v0.1.0-alpha.4`를 제안하며 태그 생성·발행은 하지 않습니다.
@@ -257,11 +257,11 @@ scan/preview 검사를 통과했고 세 바이너리 manifest의 로컬 체크�
 host 한 대의 임시 소스 설치·실제 alpha.3 → alpha.4 교체도 각각 설치 CLI 오프라인 13/13을 통과하고
 noneditable provenance·전체 패키지 바이트를 대조했습니다. 제품 AI·정책/runtime worker·실제 파일
 흐름·UI 검사를 추가하지 않았습니다. 결과는 `b5f3eb8`에만 연결하며 이후 문서 병합이나 최종 릴리스
-커밋으로 옮기지 않습니다. [현재 릴리스 준비 표](../releases/RELEASING.md#alpha4-준비-상태--2026-11-05-kst)는 소스 전용
+커밋으로 옮기지 않습니다. [현재 릴리스 준비 표](../releases/RELEASING.md#alpha4-준비-상태-2026-11-05-kst)는 소스 전용
 실제 소유 파일 동작과 native scan/정적 UI/오프라인 미리보기를 구분합니다.
 [11월 5일 정적 재확인](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400)은 #89의
 `needs_review` / medium 판단을 유지합니다. 이후 관리자는 명시적 경고·보호 명령의 가정·후속 추적을
-조건으로 [다가오는 alpha.4의 명시한 도구 잔여 위험만 수용](FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)했습니다.
+조건으로 [다가오는 alpha.4의 명시한 도구 잔여 위험만 수용](FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)했습니다.
 릴리스 판단이지 파서 수정·호환성 결과·포괄 면제가 아닙니다. 이후 PR #129가 `090002d`에 경고를
 전달했고 추적 non-Markdown 211개 파일의 모드/blob이 판단 기준 `7509a6a`와 같음을 확인했습니다.
 alpha.4 한정 결정을 #83에서 정확한 이 소스에 연결했습니다. #89는 열어 두고 최종 release/공개 파일
@@ -320,7 +320,7 @@ PR #98로 전달한 과거 제안으로 유지합니다. 구현 CI·리뷰·전�
 서로 다른 출처를 보존할 뿐 새 벤치마크를 선정하거나 고정하지 않습니다.
 #84의 독립 검토 증명과 비교 측정은 계속 미완료입니다.
 
-### 평가 지원 작업 — 과목 릴리스 우선순위의 후속 범위
+### 평가 지원 작업 (과목 릴리스 우선순위의 후속 범위)
 
 다음 목록은 #84의 전달한 준비 작업과 남은 조건을 보존합니다. 여기의 개별 다음 단계 표현은 전체
 릴리스 우선순위가 아니며 #151–#153이나 #85를 대체하지 않습니다.
@@ -399,11 +399,11 @@ recipe/프레임 builder와 직렬 오프라인 `Batch` ledger를 `scripts/evalu
 [JSONL/가짜 pipe 경계](EVALUATION_PROTOCOL.md#순수-jsonlrpc-검사와-소유-가짜-pipe)를 참고하세요.
 별도 순수 helper는 제한된 detached 경계·선택한 합성 session/목록/thread/settings/final-answer
 후보를 검사하지만 전체 프로토콜/recipe 검증이나 실제 계정/모델 사용 권한이 아닙니다.
-[선택 의미 검사 범위](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사--trial-아님)를 참고하세요.
+[선택 의미 검사 범위](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사-trial-아님)를 참고하세요.
 순수 `SlotCoordinator` / `BatchCoordinator`는 제공된 discovery/generation 바이트/EOF/종료/정리와
 원래 dispatch 시계/예산으로 기존 검사를 조합합니다. `turn/start`에서만 모델 송신을 표시하고 정확한
 RPC ack/생명주기 확인 후 finish하며 실패/skipped 분모를 유지합니다.
-[순수 coordinator 범위](EVALUATION_PROTOCOL.md#순수-slotbatch-조합--실제-transport-아님)를 참고하세요.
+[순수 coordinator 범위](EVALUATION_PROTOCOL.md#순수-slotbatch-조합-실제-transport-아님)를 참고하세요.
 Dispatch ledger에는 `Batch.fail`을 추가하여 bridge가 현재 시각에 관찰한 slot 실패를 즉시 고정하고
 정리 전까지 첫 원인을 보존하며 늦은 timeout으로 대체하지 않습니다. 정리·2차 clock 결과는 별도로
 두고 기존 clock/TTL/`T`/시간창/finish 계약을 유지합니다.
@@ -471,12 +471,12 @@ finish 순서·합성 원래 예산 만료·실패/정리·예정 분모를 검�
 
 | 단계                                        | 현재 상태              | 완료 조건 / 남은 추적                                                                                           |
 | ------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | 종료·보존              | 완료된 기반 기록                                                                                                |
-| 02 — Source evidence and alpha.2 follow-up  | 종료·보존              | 완료된 근거/릴리즈 후속 기록                                                                                    |
-| 03 — Offline AI contract and evaluation     | 종료·보존              | #33 계약/mock 평가이며 실제 모델 품질 결과는 아님                                                               |
-| 04 — User-approved Codex workflow           | 열림; 제한된 핵심 완료 | #77/#80 완료; PR #123으로 제한된 수용과 #82→#81→#35 완료 전달; 마일스톤 종료는 핵심 수용과 별도                 |
-| 05 — CLI usability and prerelease readiness | 발행 검증 완료         | #79·alpha.4 발행/공개 확인 완료; 정상 문서 전달은 [#83](https://github.com/casing1/authzest/issues/83)에서 추적 |
-| 06 — Evaluation and course delivery         | 열림                   | #84 독립 검토 비교와 #85 재현 시연/근거 고정; 소스 테스트 harness 안정화 전달은 #130에서 별도 추적              |
+| 01 - CLI foundation and alpha.1 follow-up   | 종료·보존              | 완료된 기반 기록                                                                                                |
+| 02 - Source evidence and alpha.2 follow-up  | 종료·보존              | 완료된 근거/릴리즈 후속 기록                                                                                    |
+| 03 - Offline AI contract and evaluation     | 종료·보존              | #33 계약/mock 평가이며 실제 모델 품질 결과는 아님                                                               |
+| 04 - User-approved Codex workflow           | 열림; 제한된 핵심 완료 | #77/#80 완료; PR #123으로 제한된 수용과 #82→#81→#35 완료 전달; 마일스톤 종료는 핵심 수용과 별도                 |
+| 05 - CLI usability and prerelease readiness | 발행 검증 완료         | #79·alpha.4 발행/공개 확인 완료; 정상 문서 전달은 [#83](https://github.com/casing1/authzest/issues/83)에서 추적 |
+| 06 - Evaluation and course delivery         | 열림                   | #84 독립 검토 비교와 #85 재현 시연/근거 고정; 소스 테스트 harness 안정화 전달은 #130에서 별도 추적              |
 
 [#78](https://github.com/casing1/authzest/issues/78)에서 인증을 확인해 04 설명을 정비하고 05/06을
 실제 생성했습니다. #79/#83은 05, #84/#85는 06에 배정했으며 담당자·라벨·마일스톤 필드를

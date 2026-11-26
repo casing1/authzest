@@ -3,11 +3,11 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 검증 — 오프라인 기반
+# 생성 수정 검증 (오프라인 기반)
 
 [문서 목차](../INDEX.md) · [생성 계약](GENERATED_REPAIR_CONTRACT.md)
 
-## 상태와 범위 — 2026-11-09 KST
+## 상태와 범위 (2026-11-09 KST)
 
 이는 [#150](https://github.com/casing1/authzest/issues/150) 아래
 [#152](https://github.com/casing1/authzest/issues/152)의 첫 오프라인 구현 단계입니다.
@@ -114,15 +114,15 @@ before 기준은 원하는 수정 후 기준과 다릅니다. 소유자·잘못�
 보조 정보입니다. 생성 Python은 자체 실패·통과 보고를 위조할 수 있으며 호스트가 비교하는
 관리형 대조군을 대신할 수 없습니다.
 
-## 제안한 격리 경계 — 미구현
+## 제안한 격리 경계 (미구현)
 
 수용한 방향은 선택적이고 신뢰하는 로컬 Linux Docker 엔진입니다. 생성 pytest의 호스트 실행이나
 등록 정책 worker의 허용 범위 확대가 아닙니다. 각 before/after 단계는 새 역할을 사용합니다.
 
-- **T — 생성 테스트:** 정확히 capture한 앱·테스트 바이트, 고정 pytest 진입점, network none.
-- **A — 앱:** 정확히 capture한 앱 바이트, 생성 테스트 없음, 고정 이미지 소유 ASGI 서버,
+- **T (생성 테스트:)** 정확히 capture한 앱·테스트 바이트, 고정 pytest 진입점, network none.
+- **A (앱:)** 정확히 capture한 앱 바이트, 생성 테스트 없음, 고정 이미지 소유 ASGI 서버,
   network none과 고정 컨테이너 내부 loopback 포트.
-- **B — 관리형 relay:** 별도 PID·파일시스템 namespace, 소스·테스트 mount 없음.
+- **B (관리형 relay:)** 별도 PID·파일시스템 namespace, 소스·테스트 mount 없음.
   A의 정확한 네트워크 namespace에만 합류해 고정 요청을 보내고 제한된 응답 사실을 반환.
 - **호스트 oracle:** 생성 Python과 guest 밖에서 예상값과 최종 판정을 관리.
 

@@ -2,14 +2,14 @@
 
 [문서](../INDEX.md) · [English](../../../releases/RELEASING.md) · 한국어
 
-> **0.1.0 준비 완료 — 2026-11-26 KST.** 외부 단일 파일 흐름을 전달하고 실제로 확인했습니다. 남은
+> **0.1.0 준비 완료 (2026-11-26 KST).** 외부 단일 파일 흐름을 전달하고 실제로 확인했습니다. 남은
 > 유지보수자 결정과 릴리스 단계는 현재 [릴리스 노트](0.1.0.md)와 [준비 상태](0.1.0-READINESS.md)에
 > 있습니다. 아래 날짜별 항목은 당시 범위를 보존한 기록이며 현재 수용·위험 수용·발행 권한이 아닙니다.
 
 AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. 현재 릴리스 절차에는 PyPI나 npm 패키지
 배포가 포함되지 않습니다. 바이너리에는 서명이나 notarization이 적용되어 있지 않습니다.
 
-## 정식 0.1.0 최종 인계 준비 — 2026-11-23 KST
+## 정식 0.1.0 최종 인계 준비 (2026-11-23 KST)
 
 [릴리스 노트 초안](0.1.0.md)은 한정된 전달 범위를 설명합니다.
 [준비 상태 자료](0.1.0-READINESS.md)는 확인한 근거와 관리자의 미결 결정을 구분합니다.
@@ -40,7 +40,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 판단, 태그 파이프라인과 공개 다운로드 확인도 별도 조건으로 유지합니다. 이후 소스나 산출물의 식별자는
 각각 별도로 검토해야 합니다.
 
-## 릴리스 검증 시간과 UI 검사 — 2026-11-23 KST
+## 릴리스 검증 시간과 UI 검사 (2026-11-23 KST)
 
 릴리스 워크플로의 `validate` 작업에는 유한한 **45분** 제한을 적용합니다.
 [#192](https://github.com/casing1/authzest/pull/192)의 Python 회귀 검사는
@@ -58,14 +58,14 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 네이티브 빌드·후보 수용·릴리스 발행을 뜻하지는 않습니다. 발행 전에는 아래의 정확한 후보별 조건을
 확인합니다.
 
-## 정식 0.1.0 준비 상태 — 2026-11-19 KST
+## 정식 0.1.0 준비 상태 (2026-11-19 KST)
 
 [#150](https://github.com/casing1/authzest/issues/150)에서 과제용 정식판을 추적합니다. 후보 패키지
 버전은 `0.1.0`이며 [변경 이력](../CHANGELOG.md)에 후보 준비일을 기록했습니다. 최신 공개판은
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)입니다.
 11월 18일은 과제 제출 예상일이었습니다. 정식판 준비 상태는 아래 검사 결과에 따릅니다.
 
-**현재 소스 갱신 — 2026-11-23 KST:** [#190](https://github.com/casing1/authzest/pull/190)에
+**현재 소스 갱신 (2026-11-23 KST:)** [#190](https://github.com/casing1/authzest/pull/190)에
 명시적 owner-read 작업 GUI를 추가했고 [#192](https://github.com/casing1/authzest/pull/192)에서
 종료된 세션의 반복 조회를 중단합니다. [뷰어 안내](../guides/RESULT_VIEWER.md)와
 [과제 시연](../guides/COURSE_DEMO.md)은 CLI/GUI 공유 엔진·별도의 현재 결정·JSON 다운로드를
@@ -92,7 +92,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 - 독립 비교는 [#84](https://github.com/casing1/authzest/issues/84)에서 추적합니다. 확보하지 못한 근거를 밝히고
   벤치마크 확대는 핵심 릴리스 범위 밖에 둡니다.
 
-### 소스 설치 사전 검증 — 2026-11-19 KST
+### 소스 설치 사전 검증 (2026-11-19 KST)
 
 [`db3eee6`](https://github.com/casing1/authzest/commit/db3eee65bc4f47a72f7d9a9d7bf88ee7fde63152)의
 [main CI](https://github.com/casing1/authzest/actions/runs/44331310556)와
@@ -114,7 +114,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 이 사전 검증은 한 호스트의 위 소스 설치 경로에 한정됩니다. 실제 모델 생성·생성 코드 실행·현재 native
 패키지·공개 다운로드·정식 버전 업그레이드는 별도 검증 대상입니다.
 
-## Alpha.4 이후 테스트 harness 안정화 — 2026-11-05 KST
+## Alpha.4 이후 테스트 harness 안정화 (2026-11-05 KST)
 
 [#130](https://github.com/casing1/authzest/issues/130)의 소스 전용 후속 수정은 오프라인 가짜 서버의
 실시간 append 기록을 닫힌 JSONL snapshot의 원자적 교체로 바꿉니다. 부모 reader와 후속 가짜 서버
@@ -129,7 +129,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 기록하고 RC/정식판 검사에 회귀 사례를 포함합니다. 아래 alpha.4 태그·공개 파일·첫 실패 이력은 바꾸지
 않습니다.
 
-## Alpha.4 준비 상태 — 2026-11-05 KST
+## Alpha.4 준비 상태 (2026-11-05 KST)
 
 **발행·공개 파일 검증 완료:**
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4)를
@@ -139,7 +139,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
 정상 문서 전달은 [#83](https://github.com/casing1/authzest/issues/83)에서 추적하며 발행으로
 #84/#85를 완료하거나 #89/#130을 수정한 것으로 보지 않습니다.
 
-### Alpha.4 발행과 공개 파일 검증 — 2026-11-05 KST
+### Alpha.4 발행과 공개 파일 검증 (2026-11-05 KST)
 
 [공개 릴리스 기록](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)에
 릴리스/asset 식별값·실제 검사·남은 한계를 기록했습니다.
@@ -186,7 +186,7 @@ Windows 런타임 지원을 뜻하지 않습니다. 전체 회귀 검사에는 �
 계속 `c868152`에만 연결합니다. Native 파일은 실험용 scan/preview 배포물이지 설치기·UI 동작·일반 OS
 호환성·서명·공증의 근거가 아닙니다. 일반 FastAPI PoC와 모델 작성 교체 소스 생성은 미구현입니다.
 
-[#89의 명시적 alpha.4 한정 판단](../development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)은
+[#89의 명시적 alpha.4 한정 판단](../development/FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)은
 추적 non-Markdown 211개 파일의 모드/blob을 `7509a6a`와 대조한 뒤
 [#83](https://github.com/casing1/authzest/issues/83)에서 이 정확한 경고 후보에 연결했습니다.
 #89는 수정 완료가 아닌 OPEN / `needs_review` / medium을 유지합니다. 정식 릴리스에서는 다시
@@ -199,7 +199,7 @@ Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현�
 버전 파일명이 달라질 수 있으므로 태그 실행 inventory와 비배포 main 산출물을 구별합니다.
 독립 평가와 재현 가능한 과목 근거는 #84/#85에서 계속 추적합니다.
 
-### 과거 준비와 초기 사전 검사 — 2026-11-05 KST
+### 과거 준비와 초기 사전 검사 (2026-11-05 KST)
 
 아래 미충족 표는 최종 후보 검사 이전 `b5f3eb8` 시점의 기록입니다. 당시 미완료 항목과 원래
 소스 식별값을 보존하며 현재 발행 상태로 해석하지 않습니다.
@@ -214,7 +214,7 @@ Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현�
 보안 발견 건수는 미보고이며 0건 판단이 아닙니다. 아래 11월 5일 비배포 native·소스 설치 관찰은
 해당 후보에 묶인 사전 근거이지 전체 릴리스/runtime·공개 산출물 검증이 아닙니다. 공개 alpha.3는 그대로입니다.
 11월 18일 전후라는 과목 제출 추정은 확정 기한이나 검사 조건을 생략할 근거가 아닙니다.
-이후 관리자는 [명시적 경고와 후속 조건](../development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)을 전제로
+이후 관리자는 [명시적 경고와 후속 조건](../development/FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)을 전제로
 다가오는 alpha.4의 명시한 포맷 잔여 위험을 수용했습니다. 다른 릴리스 조건을 면제하거나 내장 파서를 수정한 것은 아닙니다.
 
 제한된 소스 핵심은 완료됐습니다. [PR #123](https://github.com/casing1/authzest/pull/123)이
@@ -264,7 +264,7 @@ non-Markdown 바이트가 판단 기준 `7509a6a821947b516f543222d7cd620ab2ad8e8
 명시한 alpha.4 결정은 해당 후보에 연결하며 관련 소스/도구/workflow·노출이 바뀌면
 과거·미지정 후보의 결정을 재사용하지 않고 다시 판단합니다.
 
-### 후보 사전 검사 관찰 — 2026-11-05 KST
+### 후보 사전 검사 관찰 (2026-11-05 KST)
 
 [Native preview 실행 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368)의
 attempt 1이 `b5f3eb81d318e94c5e400ec52e78f1550e13f931`에서 **7/7 job**을 통과했습니다.
@@ -291,7 +291,7 @@ bytecode를 제외한 전체 패키지 파일을 각 소스 snapshot과 대조�
 ## 배포된 preview와 현재 소스
 
 최신 공개 프리릴리스는 alpha.4이며 정확한 커밋·공개 파일·제한된 검사 범위는
-[위 현재 기록](#alpha4-발행과-공개-파일-검증--2026-11-05-kst)에 있습니다.
+[위 현재 기록](#alpha4-발행과-공개-파일-검증-2026-11-05-kst)에 있습니다.
 아래 alpha.3/alpha.2는 과거 기록이며 불변 공개 산출물은 바꾸지 않습니다.
 
 ### 발행된 alpha.3
@@ -457,7 +457,7 @@ gh run view RUN_ID --json headSha,event,status,conclusion
 커밋 `4218b807ad892bb92e27a6bb23c4d64000e2a3bf` 기준
 [2026-10-08 정적 판단](../development/FORMATTING.md#의존성-근거와-한계)은 #89를
 `needs_review`, 신뢰도 medium으로 기록했습니다. 영향받는 내장 코드는 확인했지만 보호 명령이나
-AuthZest 런타임의 악용을 입증한 것은 아닙니다. 별도 [2026-11-02 정적 후속 기록](../development/FORMATTING.md#현재-정적-재확인--2026-11-02-kst)은
+AuthZest 런타임의 악용을 입증한 것은 아닙니다. 별도 [2026-11-02 정적 후속 기록](../development/FORMATTING.md#현재-정적-재확인-2026-11-02-kst)은
 공식 `prettier@3.9.10` 배포 바이트 확인과 `needs_review` / medium 유지 판단을 기록하며 호환 수정이나
 위험 수용을 입증하지 않습니다. 이전 판단은 과거 근거로 보존합니다. 의존성 정비나 해당 판단은 개발 도구 전체의
 보안 검토 완료를 입증하거나 기존 릴리스·태그·패키지 버전·alpha.3 산출물을 변경하지 않습니다.
@@ -467,7 +467,7 @@ AuthZest 런타임의 악용을 입증한 것은 아닙니다. 별도 [2026-11-0
 관리자의 명시적 결정이 필요합니다. wrapper만 보호하는 범위, 직접 editor/API 검증 공백,
 신뢰한 toolchain·안정된 파일 가정을 명시하며 위험을 묵시적으로 수용하거나 무시하지 않습니다.
 정적 판단은 수용 승인이 아니며 이후
-[명시적 alpha.4 관리자 결정](../development/FORMATTING.md#alpha4-관리자-판단--2026-11-05-kst)을 별도로
+[명시적 alpha.4 관리자 결정](../development/FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)을 별도로
 기록하고 #83에서 정확한 후보에 연결합니다. 발행 gate를 유지한 채 일반 개발과 별도로 범위를 정한 후보 검사는
 계속할 수 있습니다. #77의 정확한 예상값 10개는 2026-10-09 KST에 별도
 [정답 기록](../../../../tests/fixtures/owner_case_review/maintainer_review.json)으로 승인됐으며
@@ -683,7 +683,7 @@ smoke 결과를 기록하세요. checkout 밖에서 설치된 인터프리터의
 바이트코드 외 패키지 파일이 그 소스와 일치하는지 확인합니다. 두 snapshot의 패키지 버전이 같으면
 표시 버전만으로 교체를 증명할 수 없습니다. 위 명령은 이러한 출처 검사를 자동화하지 않습니다.
 
-### 로컬 소스 설치 관찰 — 2026-10-29
+### 로컬 소스 설치 관찰 (2026-10-29)
 
 macOS 27.0.1(26A434) arm64, Python 3.12.7, pip backend의 pipx 1.18.7에서 별도 임시 pipx home으로
 현재 소스 새 설치와 alpha.3 소스 설치의 교체를 확인했습니다. 소스는 깨끗한 Git archive export이며 alpha.3

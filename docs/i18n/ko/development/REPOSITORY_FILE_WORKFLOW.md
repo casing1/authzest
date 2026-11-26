@@ -9,7 +9,7 @@
 [#202](https://github.com/casing1/authzest/issues/202) ·
 [#152](https://github.com/casing1/authzest/issues/152)
 
-## 현재 릴리스 범위 — 2026-11-24 KST
+## 현재 릴리스 범위 (2026-11-24 KST)
 
 확정한 [0.1.0 범위](0.1.0-SCOPE.md)는 명시적으로 선택한 자체 완결형 외부 FastAPI 한 파일,
 GET 객체 소유권과 명시적인 정책을 대상으로 합니다. 모델이 새로 작성한 제한된 HTTP PoC 데이터와

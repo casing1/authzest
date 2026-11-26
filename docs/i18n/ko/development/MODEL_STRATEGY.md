@@ -19,7 +19,7 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 패치 적용이나 테스트 실행 허가가 아닙니다. 아래의 더 넓은 설계는 일반 저장소 구현을 뜻하지 않으며
 수용한 유한 범위의 핵심은 현재 우선순위에 기록합니다.
 별도 [#50 fixture adapter](../guides/CODEX_FIXTURE.md)는 훨씬 좁은 범위이며 한 소유 fixture의 실제 초안·적용·복구 확인 1회가 성공했습니다.
-후속 [#54 실제 소스 연동 확인](../guides/RUNTIME_VERIFICATION.md#제한적-실제-검증--2026-09-12)에서는
+후속 [#54 실제 소스 연동 확인](../guides/RUNTIME_VERIFICATION.md#제한적-실제-검증-2026-09-12)에서는
 별도 승인한 고정 런타임 검사와 복구까지 완료했습니다. 공개된
 [alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)에 이 제한적 흐름이 포함됩니다.
 별도의 [공개 산출물 근거](../releases/RELEASING.md)는 추가 실제 모델 결과나 #35 전체의 완료가 아닙니다.
@@ -29,7 +29,7 @@ Codex 연동과 승인/거절을 포함한 개선 흐름은 단순한 향후 선
 [소스 전용 예제](../guides/EXAMPLES.md)는 파서 회귀 검사와 데모이며
 보안 벤치마크가 아닙니다.
 
-## 정식판 우선순위 — 2026-11-09 KST
+## 정식판 우선순위 (2026-11-09 KST)
 
 과제 완성형 정식판 목표는 추가 비교 transport 단계가 아니라
 [#150](https://github.com/casing1/authzest/issues/150)입니다.
@@ -68,7 +68,7 @@ Codex의 등록 수정 템플릿 선택·정확한 diff 승인/적용·캡처한
 제한된 핵심 수용이 이 범위를 몰래 완료한 것은 아닙니다.
 
 alpha.4는 11월 5일 정확한 소스 `090002d`에서 발행됐습니다.
-[릴리스 안내](../releases/RELEASING.md#alpha4-발행과-공개-파일-검증--2026-11-05-kst)에 태그 실행
+[릴리스 안내](../releases/RELEASING.md#alpha4-발행과-공개-파일-검증-2026-11-05-kst)에 태그 실행
 attempt 2와 공개 파일 6개의 검증을 기록하며 첫 실행 실패는 릴리스 이력에 그대로 남깁니다.
 alpha.4 이후 [#130](https://github.com/casing1/authzest/issues/130)의 소스 변경은 완성된 가짜 서버
 JSONL 스냅샷을 원자적으로 공개하고 엄격한 기록 검증·결정적 회귀 사례를 유지하며 검증·전달은

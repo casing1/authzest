@@ -413,7 +413,7 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 필요합니다. 기존 codec·고정 버전·제품 `0.1.0a4` / 리포트 `1.2`·v1/수학/과거 자료는 그대로입니다.
 #84는 체크 7개가 모두 미완료인 OPEN이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 오프라인 설정 preflight — 시작 동작의 증거 아님
+## 순수 오프라인 설정 preflight (시작 동작의 증거 아님)
 
 `scripts/evaluation_preflight.py`의 `check_config(result, configuration, *, phase)`·
 `compare_configs(discovery_result, generation_result, configuration)`는 호출자가 제공한
@@ -479,7 +479,7 @@ CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책
 미완료인 OPEN입니다. 아래 선택 의미 helper는 이 envelope 전용 계층과 별도이며 coordinator 생명주기·
 더 넓은 recipe 검증은 실제 경로의 별도 승인 전 후속 조건입니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
 
-## 선택한 합성 응답 의미 검사 — trial 아님
+## 선택한 합성 응답 의미 검사 (trial 아님)
 
 `scripts/evaluation_semantics.py`의 `checked`는 호출자 제공 JSON을 제한하고 deep-detach하며
 `Boundary`는 선언한 설정/cwd/thread 기대값이지 인증된 실행 범위가 아닙니다.
@@ -513,7 +513,7 @@ python -m pytest tests/test_evaluation_turn_semantics.py
 codec/preflight/데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개는
 그대로이며 실제 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 slot·batch 조합 — 실제 transport 아님
+## 순수 slot·batch 조합 (실제 transport 아님)
 
 `scripts/evaluation_coordinator.py`의 `SlotCoordinator`는 기존 recipe·JSONL·preflight·선택
 session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initialized/config 뒤 제공된 EOF·정상

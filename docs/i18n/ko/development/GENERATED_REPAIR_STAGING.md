@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 입력 staging — 비공개 비활성 스냅샷
+# 생성 수정 입력 staging (비공개 비활성 스냅샷)
 
 [문서 목차](../INDEX.md) · [비공개 workspace](GENERATED_REPAIR_WORKSPACE.md) ·
 [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md)
 
-## 범위 — 2026-11-13 KST
+## 범위 (2026-11-13 KST)
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 추후 T/테스트·A/앱의 파일
 mount용 비공개 입력 스냅샷을 준비합니다. 직접 관리하는 비활성 임시 파일로만 검사한 내부 POSIX

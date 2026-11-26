@@ -10,7 +10,7 @@
 [S1 추천 API](OWNER_POLICY_RECOMMENDATION.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81)
 
-## 사용 가능 범위와 경계 — 2026-10-21 KST
+## 사용 가능 범위와 경계 (2026-10-21 KST)
 
 [PR #101](https://github.com/casing1/authzest/pull/101)에서 도입한 소스 구현은
 `authzest.codex.owner_policy_repair_pair`에 순수 Python 데이터 API를 제공합니다.

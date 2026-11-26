@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 guest 진입점 — 오프라인 소스
+# 생성 수정 guest 진입점 (오프라인 소스)
 
 [문서 목차](../INDEX.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)
 
-## 범위 — 2026-11-18 KST
+## 범위 (2026-11-18 KST)
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 관리형 standalone guest
 launcher **소스**를 추가하고 가짜 의존성·소켓으로만 검사합니다. 실제 guest·앱·생성 테스트·소켓·

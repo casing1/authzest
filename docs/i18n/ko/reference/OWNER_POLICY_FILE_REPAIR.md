@@ -10,7 +10,7 @@
 [수정 추천](OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [내장 대조군 검사](OWNER_POLICY_REPAIR_CHECK.md)
 
-## 가용성과 근거 — 2026-10-29 KST
+## 가용성과 근거 (2026-10-29 KST)
 
 미출시 소스 구현은 [PR #118](https://github.com/casing1/authzest/pull/118)에서 전달했습니다.
 관리자는
@@ -32,7 +32,7 @@
 
 <a id="file-workflow-acceptance-2026-10-29-kst"></a>
 
-## 파일 흐름 수용 — 2026-10-29 KST
+## 파일 흐름 수용 (2026-10-29 KST)
 
 소스 커밋 `fb90c46db1c6afa858451d434ccff1ebf8184fcd`와 POSIX macOS의 Python **3.12.7**에서
 새 소유 복사본 흐름 한 건을 완료했습니다.

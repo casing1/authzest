@@ -7,7 +7,7 @@
 
 [문서 목차](../INDEX.md)
 
-## 상태 — 2026-11-22 KST
+## 상태 (2026-11-22 KST)
 
 [#151](https://github.com/casing1/authzest/issues/151)은
 [과목 릴리스 범위](https://github.com/casing1/authzest/issues/150)의 오프라인 요청·제안 계약을 선택형
@@ -323,7 +323,7 @@ assistant가 작성한 정책은 **유지관리자 검토 대기** 상태입니�
 [Codex App Server 문서](https://learn.chatgpt.com/docs/app-server)에서 설명하는 현재 turn의
 `outputSchema` 필드를 사용합니다.
 
-## 명시적으로 켜는 로컬 AI 흐름 설계 — 2026년 11월 23일
+## 명시적으로 켜는 로컬 AI 흐름 설계 (2026년 11월 23일)
 
 [#189](https://github.com/casing1/authzest/issues/189)는 기존 owner-read 엔진을 로컬 대화형 GUI에
 연결합니다. 이 절은 구현 전 검토용 설계이며 새 실제 모델 호출·생성 산출물 실행·패치 적용·릴리스

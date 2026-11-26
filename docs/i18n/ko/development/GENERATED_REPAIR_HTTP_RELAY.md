@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 HTTP relay — 오프라인 스트림 기반
+# 생성 수정 HTTP relay (오프라인 스트림 기반)
 
 [문서 목차](../INDEX.md) · [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md) ·
 [호스트 대조군](GENERATED_REPAIR_VERIFICATION.md)
 
-## 범위 — 2026-11-12 KST
+## 범위 (2026-11-12 KST)
 
 [#152](https://github.com/casing1/authzest/issues/152)의 또 다른 부분 단계입니다.
 관리형 relay codec은 고정 합성 사례의 응답 사실을 제한된 크기로 읽습니다. **활성 엔진 어댑터가

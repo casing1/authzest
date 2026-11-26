@@ -36,7 +36,7 @@ The `v0.1.0` tag points to the release commit. Files and checksums are on
 - **Saved-result viewing for external fixes.** The dashboard opens a saved `repo-fix` JSON read-only.
   It rebuilds the diff from the recorded source and refuses contradictory or tampered results.
   [GUI guide](docs/guides/RESULT_VIEWER.md)
-- **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
+- **Maintained-example proposals.** The source CLI offers an offline request preview and can ask Codex for a
   newly authored regression test and one-file repair for the maintained FastAPI ownership example
   after sharing approval. The active workflow uses separate decisions, checks changes on a private
   copy, and records recovery. It requires a non-frozen POSIX source installation and reviewed Linux runtime images.
@@ -47,11 +47,11 @@ The `v0.1.0` tag points to the release commit. Files and checksums are on
   Ordinary launch supports static route inventory and read-only result import; current workflow
   results use schema `1.0`. Use an editable source install and frontend build.
   [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI guide](docs/guides/RESULT_VIEWER.md)
-- **Installation and demonstration.** The bilingual course guide leads with the GUI workflow and
-  retains CLI and saved-result alternatives. Exact-source preflight at `80b574d` passed 39 installed
+- **Installation and demonstration.** The bilingual course guide leads with the external repair
+  demo and keeps the owner-read GUI as an optional section. Exact-source preflight at `80b574d` passed 39 installed
   CLI checks, seven read-only UI checks and all seven native-preview jobs across Linux x64,
-  macOS arm64 and Windows x64. This is installation/offline evidence, not a new actual AI or product
-  guest run. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
+  macOS arm64 and Windows x64. These are installation and offline checks; they ran no model or
+  product guest. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
 - **Developer formatting.** The brace-expansion bundled in Prettier 3.10.1 meets the fixed-version
   requirements for the three advisories tracked in #89. The separate picomatch advisory/CVE status,
   warnings and remaining candidate-specific decision are tracked in #171.

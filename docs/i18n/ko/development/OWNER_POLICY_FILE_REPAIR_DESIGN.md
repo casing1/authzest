@@ -3,14 +3,14 @@
   <strong>한국어</strong>
 </p>
 
-# 소유 정책 파일 적용·검사·복구 — 검토용 설계
+# 소유 정책 파일 적용·검사·복구 (검토용 설계)
 
 [문서 목차](../INDEX.md) · [개발 계획](DEVELOPMENT_PLAN.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81) ·
 [수정 추천](../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [내장 대조군 검사](../reference/OWNER_POLICY_REPAIR_CHECK.md)
 
-## 현재 상태 — 2026-10-29 KST
+## 현재 상태 (2026-10-29 KST)
 
 관리자는 [`29d8c82`의 이 설계와 오프라인 구현을 승인했습니다](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422).
 [PR #118](https://github.com/casing1/authzest/pull/118)에서 소스 구현과 오프라인 검증 기록을 관리합니다.
@@ -24,7 +24,7 @@
 
 ## 과거 제안과 결정 요청
 
-**제안 — 2026-10-29 KST.** 기준 main은 `80110e02ec8b3392e1841a42f8761179219285cd`입니다.
+**제안 (2026-10-29 KST).** 기준 main은 `80110e02ec8b3392e1841a42f8761179219285cd`입니다.
 이 문서는 #81의 다음 구현을 정의합니다. 등록된 수정을 새 소유 복사본 하나에 적용하고
 그 복사본에서 읽은 바이트를 검사한 뒤 별도의 복구 선택을 제공합니다. 실행 가능한 API·worker·CLI나
 관찰 결과를 추가하지 않습니다. 기존 계약·과거 관찰·소비된 승인은 그대로 유지합니다.

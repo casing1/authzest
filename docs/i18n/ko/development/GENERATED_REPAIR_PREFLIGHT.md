@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 런타임 메타데이터 — 고정 로컬 Engine 조회
+# 생성 수정 런타임 메타데이터 (고정 로컬 Engine 조회)
 
 [문서 목록](../INDEX.md) · [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) ·
 [입력 staging](GENERATED_REPAIR_STAGING.md)
 
-## 범위 — 2026-11-18 KST
+## 범위 (2026-11-18 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 로컬 Engine 메타데이터
 reader와 제한된 전달 데이터 비교기를 추가합니다. 오프라인 회귀 검사의 소켓·endpoint 정보·시계는

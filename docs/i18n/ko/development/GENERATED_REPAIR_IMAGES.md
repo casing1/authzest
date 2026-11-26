@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 이미지 — 빌드한 이미지가 아닌 고정 입력
+# 생성 수정 이미지 (빌드한 이미지가 아닌 고정 입력)
 
 [문서 목록](../INDEX.md) · [Guest 진입점](GENERATED_REPAIR_GUESTS.md) ·
 [런타임 메타데이터](GENERATED_REPAIR_PREFLIGHT.md)
 
-## 범위 — 2026-11-15 KST
+## 범위 (2026-11-15 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 기반은 분리된 T/테스트, A/애플리케이션,
 B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입력 검사·비공개 context 준비·호스트 archive

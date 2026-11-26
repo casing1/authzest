@@ -8,7 +8,7 @@
 [문서 목차](../INDEX.md) · [세션](GENERATED_REPAIR_SESSION.md) ·
 [이미지 입력](GENERATED_REPAIR_IMAGES.md)
 
-## 현재 범위 — 2026-11-15 KST
+## 현재 범위 (2026-11-15 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 입력 staging,
 고정 Docker 명령, 동시 출력 수집, 호스트 HTTP 비교를 내부 T → 새 A/B 단계로 연결합니다.

@@ -9,7 +9,7 @@
 [원래 S1 설계](../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81)
 
-## 제공 상태와 경계 — 2026-10-16 KST
+## 제공 상태와 경계 (2026-10-16 KST)
 
 [PR #99](https://github.com/casing1/authzest/pull/99)에서 도입한 S1 소스 구현은 `authzest.codex.owner_policy_recommendation`에 순수 Python
 데이터 API를 구현합니다. 고정 요청·엄격한 추천 검증·검토 가능한 미리보기만 제공합니다.
