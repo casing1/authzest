@@ -46,7 +46,7 @@ import한 router에는 자체 prefix가 있고 두 번 등록됩니다. 두 moun
 [테스트](../../../../tests/test_examples.py)에서 비교할 때는 컴퓨터마다 다른 스캔 루트를 제외하고
 라우트 파일의 경로 구분자를 POSIX 형식으로 정규화합니다.
 현재 스키마는 1.2이며 이 fixture에는 지원하는 직접·상속 의존성 선언이 없으므로 세 route 모두
-`dependencies: []`, `effective_dependencies: []`입니다. 인증이나 인가를 분류한 결과가 아닙니다.
+`dependencies: []`, `effective_dependencies: []`입니다. 인증이나 인가를 분류하지는 않습니다.
 
 개발 환경을 활성화한 뒤 다음 명령으로 예제를 검증합니다.
 

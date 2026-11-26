@@ -95,7 +95,7 @@ after 검사를 뜻하며 **현재 복구된 before 파일이 검사를 통과�
 해당 checkpoint 이후 `close()`로 descriptor를 해제하고 메모리 내 세션을 닫았으며 host는
 종료 코드 **0**으로 끝났습니다. `close()`는 `record.json`을 다시 쓰지 않으므로 마지막 영속
 기록의 `closed` 필드는 `false`로 남습니다. 열린 세션이나 재개 가능한 세션이라는 뜻이 아닙니다.
-기록 digest는 무결성 비교용으로 보존 바이트를 식별할 뿐 실행 증명·서명·승인이 아닙니다.
+기록 digest는 무결성 비교용으로 보존 바이트를 식별할 뿐 실행을 증명하거나 서명·승인 역할을 하지 않습니다.
 Receipt와 출처는 인증되지 않으며 `authorization_status`도 `unknown`을 유지합니다.
 
 등록된 순수 정책 한 쌍과 사례 8개의 소스 API 수용이지 임의 저장소 실행, HTTP/FastAPI나

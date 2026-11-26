@@ -314,7 +314,7 @@ include prefix도 기록합니다. include chain은 가장 바깥 등록(애플�
 진단은 지원하지 않는 모든 Python 패턴의 완전한 목록이 아닙니다.
 의존성 진단은 warning이며 route 경로가 확인돼도 리포트를 partial로 만듭니다. 근거 항목을 만드는
 호출은 `unresolved_reasons`에도 사유 코드를 보존합니다. 동적 목록이나 미지원 중첩 annotation은 의존성
-항목 없이 진단만 만들 수 있습니다. scopes 진단은 OAuth 실패 판정이 아니며 빈 의존성 목록은 공개 route label이 아닙니다.
+항목 없이 진단만 만들 수 있습니다. scopes 진단은 OAuth 실패 판정이 아니며 빈 의존성 목록이 곧 공개 route label이 되지는 않습니다.
 
 ## 추후 지원할 패턴과 결과 해석
 

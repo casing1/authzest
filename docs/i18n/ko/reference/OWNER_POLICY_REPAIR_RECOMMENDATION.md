@@ -290,7 +290,7 @@ before 재실행이나 런타임 변경 없이 사례 8개가 일치했고 자�
 [파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)은
 과거 실제 추천을 재검증하고 before 검사·정확한 diff·적용·after 검사·복구 각각의 승인을
 소비했습니다. 새 제공자 호출 없이 before 6/8, 적용 after 8/8 일치를 관찰하고 소유 복사본을
-복구했습니다. 이는 소스 API 수용이지 새 모델 수용이나 설치형 CLI 통합이 아니며 내장 after
+복구했습니다. 이는 소스 API만 수용한 것으로 새 모델 수용이나 설치형 CLI 통합은 없었으며 내장 after
 대조군은 여전히 적용 파일을 검증할 수 없습니다. 별도 [#82 선택형 CLI 구현](../guides/OWNER_FILE_WORKFLOW.md)은
 가짜 adapter/scripted worker의 오프라인 검증과 이후 별도 승인한 `c868152` 설치형 정상 경로 관찰을
 구분합니다. 현재 추천·캡처 before 6/8·정확한 diff/적용·실제 적용 after 8/8·복구를 확인했습니다.

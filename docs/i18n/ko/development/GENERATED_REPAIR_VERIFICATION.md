@@ -58,7 +58,7 @@ executor 경계는 준비 전용입니다. `GeneratedRepairVerificationExecutor.
 `prepare_generated_repair_executor(preview, executor=None)`는 전체 미리보기를 재검증하고
 런타임 호출·효과 발생·실행 준비 완료를 주장하는 readiness를 거부합니다. 호출자가 주입한
 readiness 구현은 신뢰하는 테스트 경계이지 sandbox나 capability가 아닙니다. 제품 코드는 실제
-런타임 어댑터를 선택하거나 호출하지 않습니다. 미리보기 전달은 승인이 아니며 Docker를
+런타임 어댑터를 선택하거나 호출하지 않습니다. 미리보기를 전달해도 승인으로 보지 않으며 Docker를
 시작할 수 없습니다.
 
 ## 관리형 대조군

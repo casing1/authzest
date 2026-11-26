@@ -265,9 +265,9 @@ authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-o
 
 승인한 요청은 AuthZest 재시도나 모델 대체 없이 어댑터 1회만 시도합니다. 요청 제한 시간은 최대 120초이고 정리는 별도로 처리하므로 전체 흐름의 절대 시간 보장이나 Codex 내부 재시도·토큰·비용의 상한이 아닙니다. 사용량 누락을 0으로 해석하지 마세요.
 
-기본 최종 출력은 전체 전송 envelope를 반복하는 대신 간결한 결과 요약부터 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 아직 적용하거나 검사하지 않은 상태입니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이지 모델 작성 사실의 독립 증명이 아니며 mock 응답도 실제 생성의 증거가 아닙니다.
+기본 최종 출력은 전체 전송 envelope를 반복하는 대신 간결한 결과 요약부터 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 아직 적용하거나 검사하지 않은 상태입니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이며 모델이 작성했다는 사실을 독립적으로 증명하지 않고, mock 응답도 실제 생성의 증거가 되지 않습니다.
 
-최종 JSON의 `kind`는 `codex-generated-repair-workflow`입니다. 바깥 `status`는 흐름(`generation-ready`, `not-shared`, `preview-changed`, `generation-failed`)을 설명하고 `proposal_status`는 제안 상태를 별도로 설명합니다. `generation-ready`는 검증한 응답이지 수정 성공이 아닙니다. `generation`은 전송 envelope를, `proposal_preview`는 실행 기능이 없는 호스트 계산 미리보기를 보존합니다. `execution_status`, `patch_application`, `restoration_status`는 `not-run`이고 `applied`는 false입니다. `application_turn_attempts`는 로컬 어댑터 호출 수이지 제공자가 수락하거나 과금한 turn 수가 아닙니다.
+최종 JSON의 `kind`는 `codex-generated-repair-workflow`입니다. 바깥 `status`는 흐름(`generation-ready`, `not-shared`, `preview-changed`, `generation-failed`)을 설명하고 `proposal_status`는 제안 상태를 별도로 설명합니다. `generation-ready`는 응답을 검증했다는 뜻일 뿐 수정이 성공했다는 뜻은 없습니다. `generation`은 전송 envelope를, `proposal_preview`는 실행 기능이 없는 호스트 계산 미리보기를 보존합니다. `execution_status`, `patch_application`, `restoration_status`는 `not-run`이고 `applied`는 false입니다. `application_turn_attempts`는 로컬 어댑터 호출 수이며 제공자가 수락하거나 과금한 turn 수와는 다릅니다.
 
 ### 결과 읽기
 
@@ -287,7 +287,7 @@ authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-o
 
 assistant가 작성한 정책은 **유지관리자 검토 대기** 상태입니다. 소유자에게는 기존 성공 응답을 유지하고 다른 사용자의 문서는 내용을 노출하지 않고 403으로 거부하며 누락·미등록 actor는 401, 유효한 actor가 없는 문서를 요청하면 404로 처리하도록 제안합니다. 이는 제안한 예상값과 소스 선언이며 관찰한 HTTP 결과나 독립적으로 승인한 정답 집합이 아닙니다.
 
-요청하는 출력은 새로 작성한 방어용 pytest 파일 `tests/test_generated_ownership.py`와 `app.py`의 전체 대체 소스입니다. 경로는 고정된 이름표이지 임의 파일시스템 대상이 아닙니다. `test_before = "absent-in-planned-copy"`는 계획한 복사본을 설명할 뿐 실제 파일시스템을 관찰한 값이 아닙니다. 등록된 after 정답 소스나 미리 작성한 테스트를 선택지로 제공하지 않습니다.
+요청하는 출력은 새로 작성한 방어용 pytest 파일 `tests/test_generated_ownership.py`와 `app.py`의 전체 대체 소스입니다. 경로는 고정된 이름표이며 임의 파일시스템 대상을 가리키지 않습니다. `test_before = "absent-in-planned-copy"`는 계획한 복사본을 설명할 뿐 실제 파일시스템을 관찰한 값이 아닙니다. 등록된 after 정답 소스나 미리 작성한 테스트를 선택지로 제공하지 않습니다.
 
 ## 요청·제안·미리보기
 

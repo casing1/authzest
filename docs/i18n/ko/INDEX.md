@@ -39,7 +39,7 @@ GET 객체 소유권 인가, 새 HTTP PoC·수정 생성, 독립 전후 검사�
 외부 GUI는 저장 결과 열람으로 한정하고 활성 GUI·외부 생성 pytest 실행은 후속으로 미룹니다.
 이 목표는 아직 구현·실제 수용이 완료된 기능 목록이 아닙니다. 12월 1일 완성 목표와
 12월 6일 23:59 Asia/Seoul 공식 마감은 구분합니다. 아래 내장 사례와 T/A/B 설명은 현재 구현·과거
-전달 기록이며 새 HTTP 전용 흐름의 완료 근거가 아닙니다.
+전달 기록이며 새 HTTP 전용 흐름의 완료는 따로 확인했습니다.
 
 새 HTTP 전용 경로의 [사례·계획 선언](reference/REPOSITORY_HTTP_VERIFICATION.md),
 [비공개 파일 checkpoint·A 입력](reference/REPOSITORY_HTTP_FILES.md),
@@ -137,14 +137,14 @@ alpha.4 이후 #130의 소스 변경은 가짜 서버의 완성된 JSONL 스냅�
 제안은 역사로 보존합니다. 실제 capture/격리/실패 정책은 미구현이며 nonce echo도 신원 인증/제공자
 응답 새로움이 아닙니다. 이제 `scripts/evaluation_dispatch_recipe.py` / `scripts/evaluation_dispatch.py`에
 직접 관리하는 오프라인 recipe/프레임 후보·revision ticket 기반 직렬 batch 상태 시뮬레이션을
-제공합니다. 시계·결정·null 답·정리 주장은 합성이지 인증된 런타임 근거나 실제 timer가 아닙니다.
+제공합니다. 시계·결정·null 답·정리 주장은 합성 값이며 인증된 런타임 근거나 실제 timer를 대신하지 않습니다.
 직접 관리하는 생성 스키마 일부 projection은 요청 형식만 검사하며 전체 프로토콜/제공자 지원은
 검증하지 않습니다. 별도 `scripts/evaluation_preflight.py` 순수 API는 제공된 설정 후보·두 MCP
 이름 집합을 식별정보 없는 요약으로 검사하며 CLI/RPC·Batch 연결은 추가하지 않습니다. 소스 검토는
 제공된 병합 설정과 실제 시작 동작을 구분합니다. 비활성화 plugin warmup은 guard로 건너뛰지만
 다른 시작 네트워크 효과는 가능하며 실행/격리 준비 완료를 입증하지 않습니다. 이제 순수 JSONL/RPC
 검사·고정 소유 가짜 서버의 stdio/종료/timeout/정리 테스트로 이 경계를 유지하지만 허용 notification
-payload 의미는 미검증입니다. 구현된 제공자 transport·공개 launcher가 아닙니다. 별도 순수 helper는
+payload 의미는 미검증입니다. 제공자 transport·공개 launcher는 구현하지 않았습니다. 별도 순수 helper는
 제한된 호출자 선언 경계·선택한 합성 session/목록/thread/settings/final-answer 형식을 검사하지만
 전체 recipe 검증·실제 신원 인증/사용 권한·수용한 trial이 아닙니다. 새 순수 slot/batch coordinator는
 제공된 생명주기 기록·원래 시계로 기존 검사를 조합하며 프로세스 I/O·launcher·런타임/인증 근거가
@@ -180,7 +180,7 @@ executor나 새 CLI 명령이 없습니다. 별도 [#80 고정 정책 검사 API
 [PR #98](https://github.com/casing1/authzest/pull/98)로 `f1cbd2f`에 전달됐습니다. 구현 CI·리뷰·
 전달 결과는 PR #99에서 별도로 추적합니다. 별도
 [S1 진행 결정](https://github.com/casing1/authzest/issues/81#issuecomment-6206079101)은
-전체 #81 확장 승인이나 해당 구현 gate의 대체가 아닙니다.
+전체 #81 확장을 승인하거나 해당 구현 gate를 대신하지 않습니다.
 이후 S1 구현은 PR #99로 `4290d2d`에 병합됐습니다. 과거
 [합성 수정 쌍 설계](development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md)는 2026-10-19 KST에
 [PR #100](https://github.com/casing1/authzest/pull/100)으로 `c12f4b1`에 전달됐습니다.
@@ -202,7 +202,7 @@ App Server 시도 1회 전에 전체 요청과 설정을 표시하며 미리보�
 `recommendation-ready` / `registered-change`를 반환했습니다.
 [제한된 수용 기록](https://github.com/casing1/authzest/issues/81#issuecomment-6458726176)을 참고하세요.
 임의 대체 코드가 아닌 기존 등록 템플릿을 선택했고 결과/diff 오프라인 재검증을 통과했습니다.
-해당 1회 공유 승인은 소비됐으며 정책 실행·적용·복구는 하지 않았고 독립 벤치마크도 아닙니다.
+해당 1회 공유 승인은 소비됐으며 정책 실행·적용·복구는 하지 않았고 독립 벤치마크로 쓸 수도 없습니다.
 이후 관리자는 [전용 검사 설계와 오프라인 구현을 승인했습니다](https://github.com/casing1/authzest/pull/110#issuecomment-6459020000).
 PR #110은 before/after 별도 결정·전용 worker·프로세스 mock 테스트를 갖춘
 [단일 후보 고정 검사 Python API](reference/OWNER_POLICY_REPAIR_CHECK.md)를 추가합니다.
@@ -225,7 +225,7 @@ PR #118로 전달했으며 최초 검증은 임시 파일·모의 프로세스�
 [#82 선택형 CLI 소스 구현](guides/OWNER_FILE_WORKFLOW.md)은 현재 검증한 추천을 `--file-workflow`로
 연결하며 추천 전용 기본 동작과 별도 복사본/다섯 단계 결정을 유지합니다. 최종 head의 CI·코드/보안
 리뷰를 거쳐 [PR #120](https://github.com/casing1/authzest/pull/120)의 `a0ae879`로 소스 전달을
-완료했습니다. 최초 가짜 adapter·임시 파일·scripted worker 검증은 새 정책 관찰이 아닙니다.
+완료했습니다. 최초 가짜 adapter·임시 파일·scripted worker 검증으로 새 정책을 관찰하지는 않았습니다.
 2026-10-30 KST에 Python `3.12.7`의 별도 non-editable wheel 설치에서 패키지 파일 64개가 해당
 소스와 일치했고 기존 13개와 추가 10개의 오프라인 검사를 통과했습니다. 이어 별도 승인한 설치 CLI 추천 2회가
 성공했습니다. 첫 실행은 복사 확인 만료 후 복사 없이 종료했고 둘째는 비공개 복사본 1개와
@@ -239,7 +239,7 @@ before 6/8 일치, 정확한 diff 수용·적용, 실제 적용 바이트의 aft
 [제한된 설치 흐름 기록과 남은 조건](guides/OWNER_FILE_ACCEPTANCE.md)을 참고하세요.
 관리자는 **2026-11-02 KST**에 등록된 합성 정책 쌍·사례 8개·Codex 템플릿 선택·POSIX 소스 CLI로
 한정한 핵심 흐름을 수용했습니다. 위 기록의 실행과 기존 오프라인 거절·사용자 편집·복구 테스트를
-근거로 한 결정이며 새 실제 실행이 아닙니다. 최종 상태 문서는 [PR #123](https://github.com/casing1/authzest/pull/123)의
+근거로 한 결정이며 새 실제 실행은 없었습니다. 최종 상태 문서는 [PR #123](https://github.com/casing1/authzest/pull/123)의
 `ee49f5a`로 정상 병합했고 해당 제한된 핵심 범위에서 #82 → #81 → #35를 순서대로 종료했습니다.
 #83/#84/#85/#89는 각각 별도로 열려 있습니다. 일반 FastAPI 저장소를 위한 새 PoC 생성과 모델이
 새로 작성한 수정 소스는 미구현입니다. 이 소유 파일 수용은 여러 플랫폼/native 수용이 아니며
