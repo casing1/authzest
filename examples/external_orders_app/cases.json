@@ -9,7 +9,7 @@
     "policy_path": "policy.txt",
     "policy_sha256": "2628d8edacf5a0608500a97972a58b06e5f85361c56e2d7118a5784bca6ce2d3"
   },
-  "authorship": "Drafted by Claude Code from policy.txt on 2026-11-26; pending maintainer review.",
+  "authorship": "Drafted by Claude Code from policy.txt and reviewed/accepted by maintainer casing1 on 2026-11-26.",
   "assumptions": [
     "x-user-id and x-role carry synthetic test identities; no real authentication is exercised.",
     "Before values describe the shipped app.py; after values follow policy.txt."
