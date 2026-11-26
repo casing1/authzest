@@ -8,7 +8,7 @@
 [Documentation index](../README.md) · [Session](GENERATED_REPAIR_SESSION.md) ·
 [Image inputs](GENERATED_REPAIR_IMAGES.md)
 
-## Current scope — 2026-11-15 KST
+## Current scope (2026-11-15 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) implementation connects private
 input staging, fixed Docker commands, concurrent capture and the host-owned HTTP comparison into

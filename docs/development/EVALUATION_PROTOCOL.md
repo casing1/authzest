@@ -447,7 +447,7 @@ Actual trials still need explicit source/account/model/turn/time approval and mi
 evidence. Existing codec, pin, product `0.1.0a4` / report `1.2`, v1/math/history are unchanged. #84
 remains OPEN with all seven checks pending; no AI/worker call, risk acceptance or release is added.
 
-## Pure offline configuration preflight — not startup proof
+## Pure offline configuration preflight (not startup proof)
 
 `scripts/evaluation_preflight.py` provides `check_config(result, configuration, *, phase)` and
 `compare_configs(discovery_result, generation_result, configuration)` for caller-supplied
@@ -517,7 +517,7 @@ The selected semantic helpers below are separate from this envelope-only layer; 
 and broader recipe coverage still precede any separately approved live path. No actual AI call,
 risk acceptance or release is added.
 
-## Selected synthetic response semantics — not a trial
+## Selected synthetic response semantics (not a trial)
 
 `scripts/evaluation_semantics.py` bounds and deep-detaches caller-supplied JSON via `checked`;
 `Boundary` holds declared configuration/cwd/thread expectations, not authenticated execution scope.
@@ -551,7 +551,7 @@ The pure coordinator continuation below does not establish live lifecycle or ful
 product/pin/recipe/codec/preflight/data/v1/math/history, product `0.1.0a4` / report `1.2` and all seven
 pending #84 checks are unchanged. No actual call, risk acceptance or release is added.
 
-## Pure slot and batch coordination — not live transport
+## Pure slot and batch coordination (not live transport)
 
 `scripts/evaluation_coordinator.py` adds `SlotCoordinator`, composing the unchanged recipe,
 JSONL, preflight and selected session/turn checks. Successful discovery requires initialize/initialized/config,

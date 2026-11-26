@@ -84,6 +84,6 @@ core의 `FixtureApplySession`은 요청/검토/제안을 다시 검증합니다.
 선택적 고정 소스 검사를 추가하며 대상 소스를 실행하지 않습니다.
 후속 [#54 런타임 옵션](RUNTIME_VERIFICATION.md)은 이 #48 데모가 아닌 Codex fixture 흐름과
 `python -m scripts.demo_verify --runtime-check`에 다른 고정 계획의 별도 승인을 추가합니다. 동일한 번들 fixture만
-실행해 `app.debug`와 메모리 내 ASGI health 응답 한 번을 확인하며, 옵션 선택만으로 실행을 승인하지
+실행해 `app.debug`와 메모리 내 ASGI health 응답 한 번을 확인하며 옵션 선택만으로 실행을 승인하지
 않습니다. 일반 저장소 연동·생성 회귀 테스트 모음·더 넓은 #35 완료 조건은 별도 작업입니다.
 alpha.3 공개는 더 넓은 #35 흐름의 완료가 아닌 별도의 [릴리스 검증](../releases/RELEASING.md)을 근거로 합니다.

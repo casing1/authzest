@@ -223,7 +223,7 @@ after의 8개 일치는 위의 각각 별도 승인한 실행에서 관찰했습
 [검토한 설계](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)에 따른 별도
 [소유 파일 수정 API](OWNER_POLICY_FILE_REPAIR.md)를 PR #118에서 전달했으며 최초 검증은
 임시 파일·scripted 프로세스를 사용한 오프라인 검증이었습니다. 이후 별도 승인한
-[파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)은
+[파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)은
 2026-10-29 소스 커밋 `fb90c46`에서 실제 copied-before 검사 1회(6/8), 정확한 diff 수락,
 적용 1회, 캡처한 적용 after 검사 1회(8/8), 복구 1회를 관찰했습니다. 이 소스 전용 API 기록이
 내장 after를 적용 파일 검사로 바꾸거나 CLI 통합·새 실행 권한을 추가하지는 않습니다.

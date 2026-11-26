@@ -135,8 +135,8 @@ an informational warning cannot waive these checks.
 
 A valid draft is shown for a separate exact-diff decision. Approval can change only a newly created,
 private fixture copy, never the original checkout. Type the displayed `apply <proposal_id>` phrase
-exactly; decline/cancel does not apply the draft. After application, the selected check—default
-source-configuration or opt-in owned-fixture runtime—is optional and separately approved.
+exactly; decline/cancel does not apply the draft. After application, the selected check (default
+source-configuration or opt-in owned-fixture runtime) is optional and separately approved.
 Restoration requires `restore <proposal_id>` and
 refuses detected intervening edits; it does not overwrite user work. The copy, before/after snapshots,
 and `record.json` are retained for inspection; the structured result includes request/proposal IDs
@@ -282,7 +282,7 @@ separately from offline mocks. Unknown usage is not zero; successful mocks alone
 end-to-end success. The dated history below preserves the state at each step, including superseded
 pending/Draft records. The successful live check below predates #52; newer offline work is labelled separately.
 
-## Historical development validation — 2026-09-11
+## Historical development validation (2026-09-11)
 
 Local Python 3.12.7 validation passed 1,129 tests in 112.99 seconds, including 394 new tests. The transport
 subset includes 242 offline tests with actual fake-server subprocesses and CLI approve/restore and decline flows.
@@ -297,7 +297,7 @@ two disabled inherited MCP servers, and a fresh read-only thread with no instruc
 runtime workspace roots. It issued **zero model turns** and sent no fixture source. Live model
 generation remains **PENDING**; these checks do not establish live end-to-end success or a verified fix.
 
-## Approved live attempts — 2026-09-11
+## Approved live attempts (2026-09-11)
 
 This is the historical record through `807ada2`, before the bounded same-turn recovery change.
 The user approved an initial maximum of three live attempts, then two additional attempts. All five
@@ -320,7 +320,7 @@ approval/restoration tests above are separate evidence, not a successful live de
 [PR #51](https://github.com/casing1/authzest/pull/51) remains a draft without a merge or release.
 There are no remaining approved live attempts; further calls require fresh user approval.
 
-## Offline follow-up — 2026-09-12
+## Offline follow-up (2026-09-12)
 
 The implementation and tests in this offline follow-up made **zero live calls**. Python 3.12.7 passed 1,171 tests in
 153.54 seconds, adding 42 tests since the historical 1,129-test run. Transport tests total 276 (+34),
@@ -337,7 +337,7 @@ and clean main checkout were unchanged; no artifacts were published.
 These offline results do not convert the five historical failures into successes or grant another live
 attempt. Live end-to-end validation remains **PENDING** and PR #51 remains a draft.
 
-## Fresh approved live attempt — 2026-09-12
+## Fresh approved live attempt (2026-09-12)
 
 On `ca97ab1`, one newly approved host attempt (maximum 120 seconds, same fixture/login) returned
 `draft-failed`/exit `1` in `11610.537 ms`. A diagnostic observer identified `responseStreamDisconnected`
@@ -351,7 +351,7 @@ API-key change, or further attempt was performed. The fresh one-attempt approval
 approved host attempts in total have failed before a validated draft, not proof of six billed turns.
 Live validation remains **PENDING**; PR #51 stays draft, with no merge or new call authorization.
 
-## After user reauthentication — 2026-09-12
+## After user reauthentication (2026-09-12)
 
 The user completed login again. CLI login status and a read-only App Server `account/rateLimits/read`
 succeeded without a model turn or fixture-source transmission. The user then approved one additional
@@ -378,7 +378,7 @@ or assertion was relaxed. Earlier wheel/native artifact checks predate this corr
 There has been no model generation after this routing correction. The one-attempt approval is
 exhausted; no eighth attempt, merge, or release was made. PR #51 remains draft and #35 stays open.
 
-## Successful approved CLI check — 2026-09-12
+## Successful approved CLI check (2026-09-12)
 
 After fresh approval for one attempt with the same public fixture, managed ChatGPT account,
 `gpt-6-astra`, and 120-second deadline, runtime commit
@@ -421,7 +421,7 @@ restriction, then passed unchanged with the needed local permission. These unpub
 local dependencies; they do not establish clean-device installation, upgrades, signing, notarization,
 other-OS support or a live model run from the packaged artifacts.
 
-## Source-configuration extension — offline validation, 2026-09-12
+## Source-configuration extension (offline validation, 2026-09-12)
 
 #52's runtime `52311f99a28711d7d362cfd313a7dfde8571f785` passed 1,350 tests in 152.04 seconds.
 Ruff lint and formatting (124 Python files), frontend clean install/lint/format/build, 14 documentation

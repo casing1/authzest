@@ -20,7 +20,7 @@ PR #170에서 연결한 [세션](GENERATED_REPAIR_SESSION.md)과 명시적
 
 ## 전용 Engine transport를 사용하는 이유
 
-Docker CLI `v29.0.0`의 `docker info`는 format 처리 전 `ListPlugins`를 호출하고, 빈 `--config` 밖의
+Docker CLI `v29.0.0`의 `docker info`는 format 처리 전 `ListPlugins`를 호출하고 빈 `--config` 밖의
 시스템 경로를 포함한 설치 plugin 바이너리로 metadata를 요청합니다. JSON template이나 닫힌 환경만으로
 이 경로를 없앨 수 없습니다. CLI `info`, 주변 설정을 탐색하는 SDK, `curl`, shell·보조 실행 파일을
 사용하지 않습니다.
@@ -77,7 +77,7 @@ UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 
 별도 [호스트 archive 비교](GENERATED_REPAIR_IMAGES.md)는 제공한 rootfs catalog를 압축 해제·실행하지
 않고 관리형 자산·정확한 wheel payload와 비교할 수 있습니다. 세분화된 파일 관찰을 보고하고 검증하지
-않은 pip 생성 파일을 보존하며, 일치해도 전체 내용/config/readiness는 false입니다. 메타데이터 reader
+않은 pip 생성 파일을 보존하며 일치해도 전체 내용/config/readiness는 false입니다. 메타데이터 reader
 결과는 이 파일 관찰을 대체하지 않으며 두 helper 모두 제공한 export의 이미지 신원을 인증하지 않습니다.
 
 결과의 `ready`, `execution_authorized`, `verified_fix`는 false, authorization은 unknown이며 생성

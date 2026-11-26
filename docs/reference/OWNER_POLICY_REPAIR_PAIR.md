@@ -10,7 +10,7 @@
 [S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-21 KST
+## Availability and boundary (2026-10-21 KST)
 
 The source implementation introduced in [PR #101](https://github.com/casing1/authzest/pull/101)
 provides a pure Python data API in `authzest.codex.owner_policy_repair_pair`:

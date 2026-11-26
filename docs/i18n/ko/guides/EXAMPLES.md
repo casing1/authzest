@@ -14,7 +14,7 @@
 유지하며 alpha.1 스캐폴딩은 이 목록화 동작을 제공하지 않습니다. fixture가 있는 checkout에서 실행하세요.
 독립 실행 파일은 예제 디렉터리를 설치하지 않습니다. 정확한 릴리스 fixture는
 [태그 소스 압축 파일](https://github.com/casing1/authzest/archive/refs/tags/v0.1.0-alpha.3.zip)에 있습니다.
-아래 명령은 `authzest`가 PATH에 있다는 가정이며, 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
+아래 명령은 `authzest`가 PATH에 있다는 가정이며 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
 검증 근거와 한계는 [릴리스 기록](../releases/RELEASING.md)을 참고하세요.
 
 후속 [소유 보고서 정책 예제](OWNER_POLICY.md)는 #73을 포함한 checkout에만 있으며 alpha.3

@@ -3,7 +3,7 @@
 [문서](../INDEX.md) · [English](../../../guides/REPOSITORY_HTTP_FIX.md) · 한국어
 
 `authzest repo-fix`는 다른 로컬 폴더에 있는 자체 완결 FastAPI 소스 파일 하나를 위한 0.1.0 CLI
-흐름입니다. Codex에 GET PoC와 한 파일 수정을 요청하고, 정확한 수정 전·후 소스를 격리 A/B 컨테이너에서
+흐름입니다. Codex에 GET PoC와 한 파일 수정을 요청하고 정확한 수정 전·후 소스를 격리 A/B 컨테이너에서
 직접 검토한 사례와 비교합니다. 두 검사가 모두 통과한 뒤에만 원본 파일 쓰기를 제안하며 비공개 백업을
 남깁니다. 이후 파일을 편집하지 않았다면 `authzest repo-restore`로 되돌릴 수 있습니다.
 [확정 범위](../development/0.1.0-SCOPE.md)를 참고하세요.
@@ -76,13 +76,13 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
 
 효과마다 300초 동안 유효한 확인 코드를 따로 입력해야 하며 Enter는 거절하고 멈춥니다.
 
-1. **share** – 미리 본 소스와 정책을 Codex에 보내 제안 하나를 받습니다.
-2. **copy** – 새 비공개 복사본을 만듭니다. 원본은 그대로입니다.
-3. **run-before** – 비공개 수정 전 소스를 A에서 실행하고 B에서 관찰해 `before` 응답과 비교합니다. 지정
+1. `share`: 미리 본 소스와 정책을 Codex에 보내 제안 하나를 받습니다.
+2. `copy`: 새 비공개 복사본을 만듭니다. 원본은 그대로입니다.
+3. `run-before`: 비공개 수정 전 소스를 A에서 실행하고 B에서 관찰해 `before` 응답과 비교합니다. 지정
    회귀가 재현되지 않으면 멈춥니다.
-4. **apply-private** – 정확한 diff를 승인하고 비공개 복사본에만 적용합니다.
-5. **run-after** – 수정한 복사본을 모든 `after` 응답과 비교합니다.
-6. **apply-original** – 원본과 정책이 캡처 이후 그대로인지 다시 확인하고 백업을 남긴 뒤 수정을 씁니다.
+4. `apply-private`: 정확한 diff를 승인하고 비공개 복사본에만 적용합니다.
+5. `run-after`: 수정한 복사본을 모든 `after` 응답과 비교합니다.
+6. `apply-original`: 원본과 정책이 캡처 이후 그대로인지 다시 확인하고 백업을 남긴 뒤 수정을 씁니다.
    캡처 이후 편집이 있으면 충돌로 거절합니다. 교체 파일은 권한·그룹·ACL·확장 속성을 그대로 유지합니다.
    다른 사용자 소유 파일, 파일 플래그가 있는 파일, 메타데이터를 정확히 재현할 수 없는 파일은 거절하고
    원본을 그대로 둡니다.
@@ -113,5 +113,5 @@ authzest repo-restore ~/.authzest/recovery/original-YYYYMMDDTHHMMSSZ-xxxxxxxx
 ```
 
 기록과 파일의 현재 상태를 보여 준 뒤 확인 코드를 묻습니다. 파일이 적용한 수정과 정확히 같을 때만 백업을
-되돌리고, 이후 편집이 있으면 거절해 그 편집을 남깁니다. 기록 디렉터리에는 `before.py`, `after.py`,
+되돌리고 이후 편집이 있으면 거절해 그 편집을 남깁니다. 기록 디렉터리에는 `before.py`, `after.py`,
 `record.json`이 남습니다.

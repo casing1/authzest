@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_HTTP_RELAY.md">한국어</a>
 </p>
 
-# Generated repair HTTP relay — offline stream foundation
+# Generated repair HTTP relay (offline stream foundation)
 
 [Documentation index](../README.md) · [Lifecycle model](GENERATED_REPAIR_LIFECYCLE.md) ·
 [Host controls](GENERATED_REPAIR_VERIFICATION.md)
 
-## Scope — 2026-11-12 KST
+## Scope (2026-11-12 KST)
 
 This is another partial slice of [#152](https://github.com/casing1/authzest/issues/152).
 The maintained relay codec reads bounded response facts for the fixed synthetic scenario.

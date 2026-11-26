@@ -119,7 +119,7 @@ That one-attempt approval was consumed. The source-only diagnostic addition belo
 the historical failure's cause or authorize another attempt. The 2026-09-30 attempt below used fresh,
 separate source-sharing and account-usage approval. No automatic retry is authorized by either failed result.
 
-## Redacted failure diagnostics — source addition on 2026-09-28
+## Redacted failure diagnostics (source addition on 2026-09-28)
 
 The final result now includes `failure`: `null` when no failure is reported, or an object containing
 only the allowlisted strings `stage`, `code` and `turn_start`. This records the adapter's local
@@ -182,7 +182,7 @@ remain incomplete. The subsequently approved offline follow-up below does not au
 provider attempt. The 2026-09-24 failure's cause remains unknown, and the newer diagnostic does not
 reconstruct it.
 
-## Offline contract alignment — prompt version 2
+## Offline contract alignment (prompt version 2)
 
 The source follow-up adds fixed validation reason codes without retaining rejected provider output.
 The failure object still has exactly three fields: `stage`, `code` and `turn_start`. A recognized
@@ -387,7 +387,7 @@ This approval covers labels only, not execution, sharing, patches or release. Th
 [#80 fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is the next work in progress.
 No actual execution approval or policy observation follows from this label decision itself.
 A later fresh separate exact-plan approval permitted
-[one macOS arm64 source check](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst):
+[one macOS arm64 source check](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst):
 ten matching expected/observed values, provider calls zero and authorization unknown. A scripted
 control-plane answer, not a new AI response, bound the retained exact cases for that check. Its
 single-run approval is consumed; future execution needs a new decision. Final-head #80 CI/reviews

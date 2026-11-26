@@ -10,7 +10,7 @@
 [Unchanged S1 recommendation API](OWNER_POLICY_RECOMMENDATION.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-29 KST
+## Availability and boundary (2026-10-29 KST)
 
 This **unreleased source feature** is tracked under #81. The pure offline selection contract in
 `authzest.codex.owner_policy_repair_recommendation` was delivered through
@@ -42,7 +42,7 @@ This reference describes the recommendation-only default. The separate unrelease
 response to the owned-file session only with additional copy and individual stage decisions.
 Sharing approval alone still grants no execution, application or restoration.
 
-## Bounded live acceptance — 2026-10-28 KST
+## Bounded live acceptance (2026-10-28 KST)
 
 The [acceptance record](https://github.com/casing1/authzest/issues/81#issuecomment-6458726176)
 documents one freshly approved `before` attempt at `cc644a1`, using the existing ChatGPT login,
@@ -297,9 +297,9 @@ approval. A separate later after run at documentation-only `7f9c5ce` matched eig
 its own approval, without a before rerun or runtime change. Offline comparison of the saved records
 is not a new product comparison API or authenticated execution attestation. #80 continues rejecting
 the negative source. PR #110 subsequently completed separately authorized final-head review and
-delivery at `ea081e0` on 2026-10-28; see the [source-delivery record](OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery--2026-10-28-kst).
+delivery at `ea081e0` on 2026-10-28; see the [source-delivery record](OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery-2026-10-28-kst).
 The separately reviewed file-bound API was then delivered in PR #118. Its
-[file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+[file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)
 on 2026-10-29 at `fb90c46` revalidated the historical real recommendation and consumed separate
 before-check, exact-diff, apply, after-check and restore approvals. It observed 6/8 before and 8/8
 applied-after matches and restored the owned copy, with no new provider call. This is source-API

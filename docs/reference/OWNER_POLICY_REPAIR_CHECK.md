@@ -9,7 +9,7 @@
 [Reviewed design](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) ·
 [Registered pair](OWNER_POLICY_REPAIR_PAIR.md) · [Recommendation](OWNER_POLICY_REPAIR_RECOMMENDATION.md)
 
-## Availability and evidence — 2026-10-29 KST
+## Availability and evidence (2026-10-29 KST)
 
 The unreleased source implementation in [PR #110](https://github.com/casing1/authzest/pull/110)
 adds `authzest.runner.owner_policy_repair_check`, a dedicated fixed worker and its bounded transport.
@@ -25,7 +25,7 @@ feature. The existing #80 coordinator, worker, policy registration and historica
 unchanged. This implementation does not complete #81/#35/#82 or grant new review, execution, patch
 or publication authority. Its separate delivery is recorded below.
 
-## Separately approved before acceptance — 2026-10-28 KST
+## Separately approved before acceptance (2026-10-28 KST)
 
 The [separate before-only approval](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210)
 was consumed by one fixed source run at `510377c`, on **2026-10-28 11:49:55 KST**. This was separate
@@ -57,7 +57,7 @@ This one-run before approval is consumed. At that before-only checkpoint, after 
 and unexecuted; the separate later after approval and observation are recorded below. The before run
 did not authorize or automatically start after, and another before run requires fresh approval.
 
-## Separately approved after-control acceptance — 2026-10-28 KST
+## Separately approved after-control acceptance (2026-10-28 KST)
 
 The [separate after-only acceptance record](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)
 records one approved run on **2026-10-28 13:11:38 KST**, at
@@ -93,7 +93,7 @@ Both candidate approvals are consumed; another run requires fresh approval. Neit
 authorized review activation, merge, patching or release. At that observation checkpoint, delivery
 was still pending; its separately authorized completion is recorded below. #81/#35/#82 remain incomplete.
 
-## Completed source delivery — 2026-10-28 KST
+## Completed source delivery (2026-10-28 KST)
 
 After [separate final-head review authorization](https://github.com/casing1/authzest/pull/110#issuecomment-6460920750),
 both configured automatic reviews on `c265bf1` completed
@@ -232,7 +232,7 @@ approvals. These embedded-control observations and consumed approvals cannot sta
 The separate [owned-file repair API](OWNER_POLICY_FILE_REPAIR.md), based on the
 [reviewed design](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md), was delivered in PR #118
 with initial offline verification using temporary files and scripted processes. Its later, separately
-approved [file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+approved [file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)
 at source commit `fb90c46` on 2026-10-29 observed one actual copied-before check (6/8), exact diff
 acceptance, one apply, one captured applied-after check (8/8), and one restore. That source-only API
 record does not turn the embedded after into an applied-file check, add CLI integration or grant new

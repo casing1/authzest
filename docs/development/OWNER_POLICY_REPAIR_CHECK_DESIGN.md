@@ -3,7 +3,7 @@
   <a href="../i18n/ko/development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md">한국어</a>
 </p>
 
-# Registered repair-policy checks — design for review
+# Registered repair-policy checks (design for review)
 
 [Documentation index](../README.md) · [Development plan](DEVELOPMENT_PLAN.md) ·
 [Registered pair](../reference/OWNER_POLICY_REPAIR_PAIR.md) ·
@@ -23,11 +23,11 @@ mismatches, execution completed, exit `0`, cleanup confirmed. A later
 at documentation-only commit `7f9c5ce` on 2026-10-28 13:11:38 KST matched eight cases with unchanged
 runtime code, exit `0` and confirmed cleanup. Both run approvals are consumed. PR #110 subsequently
 completed separately authorized final-head review and delivery at `ea081e0` on 2026-10-28; see the
-[source-delivery record](../reference/OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery--2026-10-28-kst).
+[source-delivery record](../reference/OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery-2026-10-28-kst).
 File-bound application/verification/restoration remains a separate design. The original proposal/checklist
 below is preserved, not a current execution receipt.
 
-**Proposed only — 2026-10-28 KST.** Baseline main is
+**Proposed only (2026-10-28 KST).** Baseline main is
 `cc644a16fb67d1a89538c5b4b27549ee1f136604`. This document adds no worker, execution API, CLI,
 policy observation, application or restoration capability. It does not change #80 or register new
 policy bytes, cases or labels. A passing documentation check is not design approval.

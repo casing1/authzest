@@ -25,14 +25,14 @@ AuthZest의 주요 변경사항을 기록합니다.
 ### alpha.4 이후 주요 변경사항
 
 - **외부 단일 파일 수정.** `repo-fix`는 다른 폴더의 독립 FastAPI 파일 하나, 사용자 정책, 검토한 GET
-  사례 4–8개를 받습니다. 공유를 따로 승인하면 Codex에 HTTP PoC 요청과 수정안을 받고, 정확한 수정
+  사례 4–8개를 받습니다. 공유를 따로 승인하면 Codex에 HTTP PoC 요청과 수정안을 받고 정확한 수정
   전·후 소스를 격리된 A/B 컨테이너에서 검토한 답과 비교합니다. 추가 승인 뒤에만 백업과 함께 원본에
   씁니다. `repo-restore`는 이후 편집이 없을 때 원본을 되돌립니다. 2026-11-25 동봉 시연이 소스
   checkout과 설치한 wheel 모두에서 실제 모델로 끝까지 통과했습니다(수정 전·후 5/5).
   [외부 수정 안내](guides/REPOSITORY_HTTP_FIX.md)
 - **외부 수정 결과 보기.** 대시보드에서 저장한 `repo-fix` JSON을 읽기 전용으로 엽니다. 기록한 소스로
-  diff를 다시 만들고, 모순되거나 변조된 결과는 거절합니다. [GUI 안내](guides/RESULT_VIEWER.md)
-- **Codex 제안.** 소스 CLI에서 요청을 오프라인으로 먼저 확인하고, 관리하는 FastAPI 소유권 예제의
+  diff를 다시 만들고 모순되거나 변조된 결과는 거절합니다. [GUI 안내](guides/RESULT_VIEWER.md)
+- **Codex 제안.** 소스 CLI에서 요청을 오프라인으로 먼저 확인하고 관리하는 FastAPI 소유권 예제의
   새 회귀 테스트와 단일 파일 수정안을 공유 승인 후 Codex에 요청할 수 있습니다. 실행 흐름은 각
   단계에서 결정을 받고 비공개 복사본에서 변경을 검사하며 복구 상태를 기록합니다. 실행 파일로 묶지
   않은 POSIX 소스 설치와 검토한 Linux 런타임 이미지가 필요합니다.
@@ -55,20 +55,20 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 2026-11-23 노트 이후 [#151](https://github.com/casing1/authzest/issues/151),
 [#152](https://github.com/casing1/authzest/issues/152), [#210](https://github.com/casing1/authzest/issues/210)에서
-전달했습니다. 이 묶음의 앞선 항목은 오프라인 단계 기록이며, 그때 남은 일로 적은 내용은 이후 PR로
+전달했습니다. 이 묶음의 앞선 항목은 오프라인 단계 기록이며 그때 남은 일로 적은 내용은 이후 PR로
 완료했습니다.
 
 - HTTP 경로의 직접 A/B phase: 사전 검사, 소유한 컨테이너와 정확한 정리, 요청 전용 제한 stdin, phase
   시간 예산을 추가했습니다. CLI가 공유·비공개 복사·수정 전 검사·정확한 diff·비공개 적용·수정 후 검사를
-  잇고, 효과마다 한 번만 쓰는 코드를 따로 받습니다. [PR #217](https://github.com/casing1/authzest/pull/217)
-- 승인형 원본 적용: 보유한 원본을 다시 확인하고 원자적으로 쓰며, 메타데이터·ACL·확장 속성을
-  유지하고 내구성 있는 백업을 기록합니다. 바뀐 원본은 거절하며, 복구는 파일이 적용한 바이트를
+  잇고 효과마다 한 번만 쓰는 코드를 따로 받습니다. [PR #217](https://github.com/casing1/authzest/pull/217)
+- 승인형 원본 적용: 보유한 원본을 다시 확인하고 원자적으로 쓰며 메타데이터·ACL·확장 속성을
+  유지하고 내구성 있는 백업을 기록합니다. 바뀐 원본은 거절하며 복구는 파일이 적용한 바이트를
   그대로 가질 때만 합니다. [PR #218](https://github.com/casing1/authzest/pull/218)
 - runtime 준비 스크립트(고정 wheel 다운로드, 로컬 이미지 빌드, 비공개 runtime 프로필)와 유지보수자가
   검토한 사례 5개를 가진 시연 앱. [PR #217](https://github.com/casing1/authzest/pull/217) ·
   [PR #218](https://github.com/casing1/authzest/pull/218)
-- `repo-fix` 읽기 전용 저장 결과 보기: diff를 다시 만들고, 각 검사를 검토 사례·캡처한 입력·phase
-  프레임·정리 기록에 묶으며, 모순된 기록은 거절합니다. [PR #219](https://github.com/casing1/authzest/pull/219)
+- `repo-fix` 읽기 전용 저장 결과 보기: diff를 다시 만들고 각 검사를 검토 사례·캡처한 입력·phase
+  프레임·정리 기록에 묶으며 모순된 기록은 거절합니다. [PR #219](https://github.com/casing1/authzest/pull/219)
 - 네 언어 README, 외부 수정 안내, 설치 후보 실행을 포함한 범위 기록.
   [PR #219](https://github.com/casing1/authzest/pull/219) · [PR #220](https://github.com/casing1/authzest/pull/220)
 
@@ -141,7 +141,7 @@ AuthZest의 주요 변경사항을 기록합니다.
 ### 최종 소스 수정
 
 - 완료·실패 상태를 수용하면 GUI의 반복 세션 조회를 중단합니다. 새 활성 실행이나 복구 가능한 연결
-  오류에는 갱신을 재개하고 결과/다운로드를 유지하며, 불명확한 시작 결과는 변경 요청을 다시 보내지
+  오류에는 갱신을 재개하고 결과/다운로드를 유지하며 불명확한 시작 결과는 변경 요청을 다시 보내지
   않고 재동기화합니다. [PR #192](https://github.com/casing1/authzest/pull/192)
 - 유한한 릴리스 검증 제한을 45분으로 조정하고 잠금 파일 기반 의존성 설치 뒤 기존 프런트엔드
   테스트를 포함합니다. 태그·권한·산출물·발행 조건은 유지합니다.
@@ -449,7 +449,7 @@ race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에
   임시 파일·가짜 adapter·scripted worker 검사는 오프라인이며 새 제공자/worker 관찰이나 운영 패치
   수용이 아닙니다. #82/#81/#35와 릴리스 조건은 열려 있고 공개 alpha.3는 그대로입니다.
 - 2026-10-29 KST의 main `fb90c46`에서 각각 범위를 정해 승인받은
-  [소유 파일 소스 API 인수 검증](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)을 기록합니다.
+  [소유 파일 소스 API 인수 검증](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)을 기록합니다.
   복사본의 캡처 before 검사, 정확한 diff 수락, 적용, 캡처 after 검사와 복구를 수행했습니다.
   Before는 예상값 6/8개가 일치하고 `non-owner`·`exact-owner-no-normalization`의 의도한 과도 허용
   2개를 관찰했으며 after는 8/8개가 일치했습니다. 두 검사는 종료 `0`, 정리와 파일/증거 상태가
@@ -523,7 +523,7 @@ race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에
   [정확한 계획/worker 식별값](reference/OWNER_POLICY_CHECK.md#2026-10-09-kst의-실제-소스-인수-검증)을
   보존합니다. 고정 control-plane 답변이며 새 AI 호출 없이 제공자 0·인가 unknown·패치 not-run입니다.
   1회 실행 허가는 소비됐고 원래 초안/오프라인 계획은 not-run입니다. Windows/frozen 바이너리/
-  HTTP 수용은 주장하지 않습니다. 당시에는 최종 head #80 CI·리뷰가 대기였으며, 이후
+  HTTP 수용은 주장하지 않습니다. 당시에는 최종 head #80 CI·리뷰가 대기였으며 이후
   2026-10-15 KST [PR #97](https://github.com/casing1/authzest/pull/97)로 추가 정책 실행이나
   릴리스 없이 전달을 완료했습니다. 후속 수정 recipe `1.1` 관찰은
   [별도 기록](../../../tests/fixtures/owner_case_review/observed_check_recipe_1_1.json)으로 보존합니다.
@@ -636,7 +636,7 @@ race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에
 - Dependabot 경고 #12의 [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) /
   CVE-2026-118764에 대응해 standalone frontend `minimatch`를 `10.2.6`에서 정확한 `11.0.1`로
   override합니다. ESLint·`@eslint/config-array`·`@typescript-eslint/typescript-estree`의 `^10.x`
-  범위를 의도적으로 넘으며, 범위를 정한 점검에서 이 소비자들이 v11의 삭제된 `makeRe`/`AST` API를
+  범위를 의도적으로 넘으며 범위를 정한 점검에서 이 소비자들이 v11의 삭제된 `makeRe`/`AST` API를
   사용하지 않음을 확인했습니다. 일반적인 major 버전 호환성 보장은 아닙니다. 필수 전이 의존성
   `@isaacs/nonrecursive-glob-match` `1.0.3`만 추가하고 직접 고정 버전·패키지 `0.1.0a4`·스키마 `1.2`는 유지합니다.
   집중 회귀 검사 10개가 통과했습니다. lock/설치 소비자 해석, CJS/ESM의 작은 명시적 전처리 상한,
@@ -655,7 +655,7 @@ race 1개 실패였고 [#130](https://github.com/casing1/authzest/issues/130)에
   동작을 기록합니다. 진단 후속 수정 ([#6662](https://github.com/colinhacks/zod/pull/6662))은
   `4.6.7`에 포함되지 않았습니다. lock 의존성 경고에 대한 조치이며 AuthZest 런타임 악용을
   입증한 것은 아닙니다. 자원 고갈 스트레스 검사는 수행하지 않았습니다. 상한이 없는 스키마는
-  계속 제한되지 않고 자동으로 보호되지 않으며, 인라인 ESLint 설정으로 전달될 수도 있는
+  계속 제한되지 않고 자동으로 보호되지 않으며 인라인 ESLint 설정으로 전달될 수도 있는
   downstream React Hooks 옵션도 여기에 포함됩니다. 앞선 #104의 Zod 기록은 당시 갱신 범위를
   보존합니다. 이 변경으로 더 넓은 보안 안전성을 판정하거나 독립적인 Prettier #89 후속 작업을
   해결하지는 않습니다.
@@ -831,7 +831,7 @@ Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은
   이 흐름은 [#35](https://github.com/casing1/authzest/issues/35)의 계획이며 이번 소스 리포트 변경으로
   구현된 기능이 아닙니다. 실제 모델 호출, 대상 코드 실행, 패치 적용은 추가하지 않았습니다.
 - 7주 개발 계획을 안정적인 소스 근거 계약과 AI 모델이 바뀌어도 반복할 수 있는 평가를 중심으로
-  정리하고, 나머지 4~5주는 시험·지연·제출 준비를 위한 여유로 남겼습니다.
+  정리하고 나머지 4~5주는 시험·지연·제출 준비를 위한 여유로 남겼습니다.
 - 초기 로드맵은 CLI 중심 근거/리포트 단계, 분리된 인증·인가 해석과 선택적 로컬 회귀 실행보다
   앞선 선택적 AI 설명 순서로 정리했습니다. 위의 최종 Codex 수정 흐름 목표는 이 초기 계획을
   확장합니다.
@@ -844,7 +844,7 @@ Python 패키지는 `0.1.0a2`, 리포트 스키마는 `1.2`, 릴리스 커밋은
 
 - 제외 디렉터리 이름을 명시적으로 선택한 스캔 루트 아래에만 적용하여 루트나 상위 디렉터리의 이름이
   `dist`, `node_modules`, `.venv`라는 이유로 대상 프로젝트 전체가 제외되지 않게 했습니다.
-- 단일 파일과 저장소 스캔 모두 UTF-8 BOM과 Python 소스 인코딩 선언을 해석하고, 잘못된 바이트와
+- 단일 파일과 저장소 스캔 모두 UTF-8 BOM과 Python 소스 인코딩 선언을 해석하고 잘못된 바이트와
   지원하지 않는 인코딩은 계속 오류로 보고합니다.
 - 텍스트 CLI에 저장소 상대 라우트 위치와 개별 파싱 오류를 출력하며 기존 JSON 필드와 기본 종료 코드를
   유지합니다. Codex 설치·로그인 진단이 AI 분석을 활성화하거나 로컬 스캔의 선행 조건이 되지 않음을

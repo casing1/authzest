@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_RUNTIME_PROFILE.md">한국어</a>
 </p>
 
-# Generated repair runtime profile — offline declarations and create plan
+# Generated repair runtime profile (offline declarations and create plan)
 
 [Documentation index](../README.md) · [Guest source](GENERATED_REPAIR_GUESTS.md) ·
 [Lifecycle model](GENERATED_REPAIR_LIFECYCLE.md)
 
-## Scope — 2026-11-13 KST
+## Scope (2026-11-13 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) slice validates supplied local
 engine/image declarations and builds fixed **stopped-create argument data**. It does not execute

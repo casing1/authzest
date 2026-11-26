@@ -9,7 +9,7 @@
 [#202](https://github.com/casing1/authzest/issues/202) ·
 [#152](https://github.com/casing1/authzest/issues/152)
 
-## Current release scope — 2026-11-24 KST
+## Current release scope (2026-11-24 KST)
 
 The frozen [0.1.0 scope](0.1.0-SCOPE.md) targets one explicitly selected, self-contained external
 FastAPI file, GET object ownership and an explicit policy. Newly model-authored bounded HTTP PoC

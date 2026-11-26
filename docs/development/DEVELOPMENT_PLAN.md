@@ -7,7 +7,7 @@
 
 [Documentation index](../README.md) · [Public roadmap](https://github.com/casing1/authzest/issues/1)
 
-## 0.1.0 scope freeze — 2026-11-24 KST
+## 0.1.0 scope freeze (2026-11-24 KST)
 
 The accepted [course-release scope](0.1.0-SCOPE.md) is an explicitly selected, self-contained
 **single-file FastAPI app with GET object-ownership authorization** and an explicit policy. Codex
@@ -29,7 +29,7 @@ features for 0.1.0. No source sharing, runtime activation, risk acceptance or pu
 this decision. The completion target is **2026-12-01**, not a guarantee; the official submission
 deadline is **2026-12-06 23:59 Asia/Seoul**. See the schedule below.
 
-## HTTP runtime input and metadata — offline delivery
+## HTTP runtime input and metadata (offline delivery)
 
 The separate [HTTP runtime checks](../reference/REPOSITORY_HTTP_RUNTIME.md) load a private schema 2.0
 profile, pin current client/empty-config/endpoint facts, query only four fixed A/B Engine documents
@@ -39,7 +39,7 @@ enforcement or direct phase facts. Next connect the bounded HTTP stdin seam and 
 A/B phases, then CLI coordination and final original-file correction. Actual images and installed
 full-flow acceptance remain required.
 
-## HTTP private-file checkpoints and A inputs — offline delivery
+## HTTP private-file checkpoints and A inputs (offline delivery)
 
 The separate [HTTP private-file APIs](../reference/REPOSITORY_HTTP_FILES.md) now bind a source-only
 copy plan, exact current private copy/diff/apply/restore decisions and live issuer checkpoints to
@@ -49,7 +49,7 @@ request-only stdin. Owned inert files and injected failures verify these source 
 images/runtime, Engine/direct phases, external CLI/GUI operator and final original correction remain
 pending; private byte transitions are not authorization/runtime proof.
 
-## HTTP A/B image preparation — offline delivery
+## HTTP A/B image preparation (offline delivery)
 
 The [HTTP image helpers](../reference/REPOSITORY_HTTP_IMAGES.md) validate the exact referenced
 base/dependency and new guest/recipe bytes, copy only selected opaque wheels and maintained inputs
@@ -58,7 +58,7 @@ and image validators remain unchanged. Synthetic ZIP/TAR and owned-file regressi
 a built image or effective runtime acceptance. Fresh HTTP file checkpoints/staging, Engine/direct
 phases, the CLI operator and final original application/recovery remain required.
 
-## HTTP policy and A/B preparation — offline delivery
+## HTTP policy and A/B preparation (offline delivery)
 
 The [HTTP verification APIs](../reference/REPOSITORY_HTTP_VERIFICATION.md) bind the model's exact
 PoC to a separately supplied regression case, retain 4–8 independent expectations and compare
@@ -70,7 +70,7 @@ kernel/tool collaborators. Image contexts/effective inspection, live HTTP file c
 Engine coordination and the actual before/apply/after/recovery operator remain pending. These
 preparations do not execute the target or finish original-project correction.
 
-## HTTP proposal slice — offline delivery
+## HTTP proposal slice (offline delivery)
 
 The explicit `repo-suggest --http-poc` path now prepares the single-file schema 2.0 request and
 validates one model-proposed GET request as data plus replacement source, using a dedicated adapter
@@ -81,7 +81,7 @@ part of this delivery. A/B-only runtime/case integration, original application/r
 import and installed actual acceptance remain pending under #210/#152/#150. This does not complete
 the frozen release checklist or enable external execution.
 
-## External-project correction — 2026-11-23 KST
+## External-project correction (2026-11-23 KST)
 
 This dated checkpoint records the broader plan before the scope freeze above; delivered source
 facts remain valid, while its T/pytest and active external GUI follow-ups are deferred.
@@ -127,7 +127,7 @@ behavior; they do not implement external execution or authorize it through brows
 Evidence-assisted value remains a hypothesis to measure. See the
 [model strategy](MODEL_STRATEGY.md).
 
-## Interactive course workflow — 2026-11-23 KST
+## Interactive course workflow (2026-11-23 KST)
 
 This and the following release-handoff sections record the packaged-case checkpoint. The external
 requirement above supersedes their former demo-only completion scope and release order.
@@ -155,7 +155,7 @@ and #85. [#194](https://github.com/casing1/authzest/pull/194) gives release vali
 separately from published alpha.4. General repository repair and comparative model claims remain
 outside this delivery; no product-acceptance issue is completed merely by this documentation update.
 
-## Final release handoff — 2026-11-23 KST
+## Final release handoff (2026-11-23 KST)
 
 [#197](https://github.com/casing1/authzest/issues/197) completes the source `80b574d` installation/upgrade,
 read-only UI and three-platform native preflight. [#198](https://github.com/casing1/authzest/issues/198)
@@ -165,7 +165,7 @@ demo requirement), current-candidate tooling disposition, then authorized tag/bu
 These are pending decisions; the preflight is not a new active end-to-end model/guest run.
 Do not expand parser/benchmark scope or close product issues in place of recording those decisions.
 
-## Course-release priorities — 2026-11-12 KST
+## Course-release priorities (2026-11-12 KST)
 
 This section preserves the earlier packaged-case priority order and delivered contracts. The
 2026-11-24 scope above supersedes its generated-pytest and active external GUI completion targets.
@@ -176,10 +176,10 @@ historical receipts. The accepted registered-template flow is a foundation, not 
 
 | Priority                                                                                                           | Required delivery                                                                                                                                                                                                                                                                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — [#151](https://github.com/casing1/authzest/issues/151)                                                         | One maintained FastAPI object-ownership scenario with explicit policy and in-memory data; generate a new defensive test and an AI-authored patch to one application source file. Do not offer the registered after-template as a repair choice or relabel template selection as generation.                                                                                                  |
-| 2 — [#152](https://github.com/casing1/authzest/issues/152)                                                         | Design and implement separately approved, isolated before/after checks of the reviewed generated test and independent owner/non-owner/anonymous/normal-use controls appropriate to the scenario. Apply only the reviewed exact diff to a new copy, refuse stale or user-edited input, and retain refusal, failure and restore evidence. A model-authored test alone does not prove a repair. |
-| 3 — [#153](https://github.com/casing1/authzest/issues/153), [#189](https://github.com/casing1/authzest/issues/189) | Display scan, PoC/test, diff, before/after and recovery honestly. Preserve the default read-only route and add the explicit local owner-read GUI using the same engine and separate decisions. Failed/not-run/unknown and recovery states remain visible; no cloud deployment is required.                                                                                                   |
-| 4 — [#85](https://github.com/casing1/authzest/issues/85) and #150                                                  | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
+| 1 - [#151](https://github.com/casing1/authzest/issues/151)                                                         | One maintained FastAPI object-ownership scenario with explicit policy and in-memory data; generate a new defensive test and an AI-authored patch to one application source file. Do not offer the registered after-template as a repair choice or relabel template selection as generation.                                                                                                  |
+| 2 - [#152](https://github.com/casing1/authzest/issues/152)                                                         | Design and implement separately approved, isolated before/after checks of the reviewed generated test and independent owner/non-owner/anonymous/normal-use controls appropriate to the scenario. Apply only the reviewed exact diff to a new copy, refuse stale or user-edited input, and retain refusal, failure and restore evidence. A model-authored test alone does not prove a repair. |
+| 3 - [#153](https://github.com/casing1/authzest/issues/153), [#189](https://github.com/casing1/authzest/issues/189) | Display scan, PoC/test, diff, before/after and recovery honestly. Preserve the default read-only route and add the explicit local owner-read GUI using the same engine and separate decisions. Failed/not-run/unknown and recovery states remain visible; no cloud deployment is required.                                                                                                   |
+| 4 - [#85](https://github.com/casing1/authzest/issues/85) and #150                                                  | Complete the reproducible installed workflow/demo, honest minimum release evidence, and implementation-matched English README plus Korean/Japanese/Russian translations. Validate the exact release candidate and obtain a fresh [#89](https://github.com/casing1/authzest/issues/89) disposition before publication.                                                                        |
 
 The [release readiness record](../releases/RELEASING.md) tracks what shipped and what still needs
 final-candidate evidence. Active stages and source sharing require the current decisions described in the
@@ -217,14 +217,14 @@ The [course demonstration](../guides/COURSE_DEMO.md) distinguishes the historica
 `34baebc` from the delivered #153 viewer and current-format refusal. #152 remains open for installed
 acceptance at the final candidate.
 
-## Published alpha.4 baseline — 2026-11-05 KST
+## Published alpha.4 baseline (2026-11-05 KST)
 
 Release source: `090002d64d1ec5072c4e2ddf403a0e73e35d61ce`, package `0.1.0a4`, scan schema `1.2`,
 tag [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
 The prerelease was published on November 5 at 03:02:07 UTC; all six public files were downloaded,
 checksum-verified and matched to the attempt-2 tag artifacts. The public macOS binary passed 13
 scan/preview plus one fixed-runtime check; see the
-[release receipt](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
+[release receipt](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification-2026-11-05-kst).
 Normal documentation delivery is tracked in #83. Tag run attempt 1
 failed with 4,923 Python tests passing and one fake-server JSONL race; unchanged-tag attempt 2 passed
 4,924 Python tests, 71 Node tests and all eight jobs including publication. The post-alpha.4 source
@@ -268,7 +268,7 @@ does not establish consumer installation/upgrades or acceptance of a later candi
 [PR #115](https://github.com/casing1/authzest/pull/115) added an opt-in editor review workspace, not an
 enforced security boundary or #89 risk acceptance. PR #116 added installed-CLI smoke: clean source
 installation and same-version source replacement at `1d0ebb8` passed 13 checks each on one macOS host.
-The [source-install record](../releases/RELEASING.md#local-source-install-observation--2026-10-29)
+The [source-install record](../releases/RELEASING.md#local-source-install-observation-2026-10-29)
 does not establish a versioned alpha.4 upgrade or other platforms/routes. Those historical observations
 retain their original scope; the November 5 candidate checks below are separate.
 The 2026-11-02 preparation sets the source version to `0.1.0a4` and proposes unused tag
@@ -282,11 +282,11 @@ offline scan/preview checks. Three downloaded binary manifests also passed local
 One-host disposable source installation and genuine alpha.3 → alpha.4 replacement each passed 13/13
 offline installed-CLI checks with noneditable provenance/package-byte verification. No product AI,
 policy/runtime worker, active-flow or UI check was added. These results belong to `b5f3eb8`, not later
-documentation merges or the eventual release commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst)
+documentation merges or the eventual release commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness-2026-11-05-kst)
 separates source-only active owner-file operation from native scan/static UI/offline previews.
 The [November 5 static recheck](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400)
 retains #89's `needs_review` / medium judgment. The maintainer subsequently
-[accepted the named residual tooling risk for the forthcoming alpha.4 only](FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst),
+[accepted the named residual tooling risk for the forthcoming alpha.4 only](FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst),
 with visible warnings, guarded-command assumptions and follow-up. This is a release disposition, not
 a parser fix, compatibility result or blanket waiver. PR #129 subsequently delivered the warnings at
 `090002d`; all 211 tracked non-Markdown file modes/blobs matched the decision basis `7509a6a`.
@@ -345,7 +345,7 @@ The [historical evaluation inventory](EVALUATION_INVENTORY.md) completed
 bytes and preserves their distinct provenance; it does not select or freeze a new benchmark.
 #84's independent-review attestation and measured comparison remain open.
 
-### Supporting evaluation work — secondary to the course-release priorities
+### Supporting evaluation work (secondary to the course-release priorities)
 
 The following inventory preserves #84's delivered preparation and remaining conditions. Its local
 next-step descriptions are not the overall release priority and do not replace #151–#153 or #85.
@@ -434,12 +434,12 @@ payload semantics remain unvalidated. See the
 Separate pure helpers now check bounded detached boundaries and selected synthetic session/catalog/
 thread/settings/final-answer candidates; they are not complete protocol/recipe coverage or actual
 account/model entitlement. See the
-[selected semantics scope](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics--not-a-trial).
+[selected semantics scope](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics-not-a-trial).
 Pure `SlotCoordinator` / `BatchCoordinator` now compose those unchanged checks with supplied
 discovery/generation byte/EOF/exit/cleanup records and the original dispatch clocks/budgets.
 Only `turn/start` marks model-send; exact RPC ack/lifecycle confirmation precedes finishing while
 failure/skipped denominators remain. See the
-[pure coordinator scope](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination--not-live-transport).
+[pure coordinator scope](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination-not-live-transport).
 The dispatch ledger is extended with `Batch.fail`: the bridge immediately latches an observed slot
 failure at the current clock, preserving its first cause until cleanup instead of replacing it with
 a later timeout; cleanup and secondary clock outcomes stay separate. Existing clock/TTL/`T`/window/
@@ -490,10 +490,10 @@ explicitly approved that exact envelope's ten labels: two allow and eight deny; 
 unchanged. This labels-only decision is not authenticated execution consent and does not approve
 the separate 28 assistant-authored developer-test labels or frozen evaluation set. The original
 draft and offline plans remain not-run. A later separate historical recipe `1.0` #80 source check produced
-[ten matching observations](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst);
+[ten matching observations](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst);
 authorization remains unknown. One later freshly and separately approved recipe `1.1` check at
 `e037986` also matched all ten expectations, recorded
-[separately](../reference/OWNER_POLICY_CHECK.md#current-coordinator-source-acceptance--2026-10-09-kst).
+[separately](../reference/OWNER_POLICY_CHECK.md#current-coordinator-source-acceptance-2026-10-09-kst).
 Both one-run approvals are consumed. Final-head review/CI and delivery subsequently completed in
 [PR #97](https://github.com/casing1/authzest/pull/97) on 2026-10-15 KST, without another policy execution.
 A host-valid response proves shape/reference checks, not correctness.
@@ -510,12 +510,12 @@ GitHub milestone numbers below are phase identifiers, not development-week numbe
 
 | Phase                                       | Current status              | Completion gate / remaining tracking                                                                                                          |
 | ------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 01 — CLI foundation and alpha.1 follow-up   | Closed; preserved           | Completed foundation history                                                                                                                  |
-| 02 — Source evidence and alpha.2 follow-up  | Closed; preserved           | Completed evidence/release follow-up history                                                                                                  |
-| 03 — Offline AI contract and evaluation     | Closed; preserved           | #33 contracts/mock evaluation; not actual model-quality results                                                                               |
-| 04 — User-approved Codex workflow           | Open; bounded core complete | #77/#80 complete; PR #123 delivered bounded acceptance and #82 → #81 → #35 completion; milestone closure is separate from core acceptance     |
-| 05 — CLI usability and prerelease readiness | Publication verified        | #79 complete; alpha.4/public readback complete; normal documentation delivery tracked in [#83](https://github.com/casing1/authzest/issues/83) |
-| 06 — Evaluation and course delivery         | Open                        | #84 reviewed comparison and #85 reproducible demo/evidence freeze; source test-harness stability delivery tracked separately under #130       |
+| 01 - CLI foundation and alpha.1 follow-up   | Closed; preserved           | Completed foundation history                                                                                                                  |
+| 02 - Source evidence and alpha.2 follow-up  | Closed; preserved           | Completed evidence/release follow-up history                                                                                                  |
+| 03 - Offline AI contract and evaluation     | Closed; preserved           | #33 contracts/mock evaluation; not actual model-quality results                                                                               |
+| 04 - User-approved Codex workflow           | Open; bounded core complete | #77/#80 complete; PR #123 delivered bounded acceptance and #82 → #81 → #35 completion; milestone closure is separate from core acceptance     |
+| 05 - CLI usability and prerelease readiness | Publication verified        | #79 complete; alpha.4/public readback complete; normal documentation delivery tracked in [#83](https://github.com/casing1/authzest/issues/83) |
+| 06 - Evaluation and course delivery         | Open                        | #84 reviewed comparison and #85 reproducible demo/evidence freeze; source test-harness stability delivery tracked separately under #130       |
 
 Authenticated reconciliation under [#78](https://github.com/casing1/authzest/issues/78) refined 04
 and created 05/06. #79/#83 are assigned to 05 and #84/#85 to 06; verify their assignee, labels and
@@ -608,7 +608,7 @@ restored the copy. Before matched 6/8 expectations with the two intended over-al
 8/8. File binding, exit/cleanup and evidence persistence were confirmed. No new provider call was
 made: the earlier recommendation was revalidated. The final copy is `restored-before` / generation 3;
 the passing after comparison is historical, not a pass for the restored before file. See the
-[exact file-workflow record](../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
+[exact file-workflow record](../reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst).
 The old expired preparation ran no worker and remains separate. All actual stage approvals are
 consumed. One macOS/Python 3.12.7 source observation is not CLI, cross-platform, HTTP or release acceptance.
 

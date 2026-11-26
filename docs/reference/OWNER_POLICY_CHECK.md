@@ -99,7 +99,7 @@ Every result keeps authorization unknown, provider calls zero and patch applicat
 A pure-policy comparison does not attest actual authentication, FastAPI dependency behavior,
 database access or endpoint authorization. A correct policy can legitimately need no change.
 
-## Actual source acceptance — 2026-10-09 KST
+## Actual source acceptance (2026-10-09 KST)
 
 After a fresh separate approval for one exact fixed-policy check, the assistant ran that check on
 macOS arm64 with Python `3.12.7` from the POSIX source installation, using historical coordinator
@@ -130,7 +130,7 @@ The policy and registered worker are unchanged, but coordinator recipe `1.1` cha
 plan identity. Its later separately approved source check is recorded separately below; this old
 record remains unchanged.
 
-## Current coordinator source acceptance — 2026-10-09 KST
+## Current coordinator source acceptance (2026-10-09 KST)
 
 After fresh separate approval, one fixed-policy recipe `1.1` check ran at tested commit
 `e03798645c2678477ac141724396beaa013286d9`. Its exact plan ID was

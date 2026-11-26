@@ -76,13 +76,13 @@ authzest repo-fix /path/to/project --source app.py --policy policy.md --model EX
 
 Each effect asks for its own typed code, valid for 300 seconds; Enter declines and stops:
 
-1. **share** – send the previewed source and policy to Codex for one proposal.
-2. **copy** – create a fresh private copy; the original is untouched.
-3. **run-before** – run the private before source in A, observe it from B and compare with your
+1. `share`: send the previewed source and policy to Codex for one proposal.
+2. `copy`: create a fresh private copy; the original is untouched.
+3. `run-before`: run the private before source in A, observe it from B and compare with your
    `before` answers. The designated regression must reproduce, or the flow stops.
-4. **apply-private** – accept the exact diff and apply it to the private copy.
-5. **run-after** – check the repaired copy against every `after` answer.
-6. **apply-original** – recheck that the original and policy are unchanged since capture, keep a
+4. `apply-private`: accept the exact diff and apply it to the private copy.
+5. `run-after`: check the repaired copy against every `after` answer.
+6. `apply-original`: recheck that the original and policy are unchanged since capture, keep a
    backup and write the repair. Any edit since capture is refused as a conflict. The replacement keeps
    the file's mode, group, ACL and extended attributes; a file owned by another user, with file
    flags, or whose metadata cannot be reproduced exactly is refused and left unchanged.

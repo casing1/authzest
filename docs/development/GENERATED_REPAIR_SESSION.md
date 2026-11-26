@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_SESSION.md">한국어</a>
 </p>
 
-# Generated repair session — guarded private-copy workflow
+# Generated repair session (guarded private-copy workflow)
 
 [Documentation index](../README.md) · [Private workspace](GENERATED_REPAIR_WORKSPACE.md) ·
 [CLI workflow](../guides/GENERATED_FILE_WORKFLOW.md)
 
-## Current scope — 2026-11-16 KST
+## Current scope (2026-11-16 KST)
 
 The source implementation for [#152](https://github.com/casing1/authzest/issues/152) now connects
 current local decisions to a private copy, before check, exact diff acceptance/application, fresh

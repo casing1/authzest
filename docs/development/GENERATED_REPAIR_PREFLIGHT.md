@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_PREFLIGHT.md">한국어</a>
 </p>
 
-# Generated repair runtime metadata — fixed local Engine queries
+# Generated repair runtime metadata (fixed local Engine queries)
 
 [Documentation index](../README.md) · [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) ·
 [Input staging](GENERATED_REPAIR_STAGING.md)
 
-## Scope — 2026-11-18 KST
+## Scope (2026-11-18 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) foundation adds a private local
 Engine metadata reader and a bounded supplied-data comparator. The offline regression suite uses

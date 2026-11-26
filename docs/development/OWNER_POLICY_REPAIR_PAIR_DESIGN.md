@@ -3,7 +3,7 @@
   <a href="../i18n/ko/development/OWNER_POLICY_REPAIR_PAIR_DESIGN.md">한국어</a>
 </p>
 
-# Synthetic owner-policy repair pair — design for review
+# Synthetic owner-policy repair pair (design for review)
 
 [Documentation index](../README.md) · [Development plan](DEVELOPMENT_PLAN.md) ·
 [Implemented S1 API](../reference/OWNER_POLICY_RECOMMENDATION.md) ·
@@ -11,7 +11,7 @@
 
 ## Status and requested decision
 
-**Proposed, unregistered and unexecuted — 2026-10-16 KST.** This document proposes one deliberately
+**Proposed, unregistered and unexecuted (2026-10-16 KST).** This document proposes one deliberately
 incorrect **test-only** policy and its exact repair, plus eight assistant-authored expected labels.
 It adds no source variant, registry entry, model request, executable case, worker, CLI or application
 capability. Documentation/CI success is not scenario review, label approval or execution evidence.
