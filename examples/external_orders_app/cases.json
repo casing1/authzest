@@ -1,0 +1,236 @@
+{
+  "schema_version": "2.0",
+  "kind": "repository-http-independent-cases",
+  "basis": {
+    "selection_id": "795073b9a80663a80e1aa54fd0383e6b26b04271091678c553d221e500fc00b5",
+    "interface_id": "repository-http-interface-9a5f22b9e0040075068f5fb4f1e024396549c0ddb6c739b89a2b022bcf1b28db",
+    "source_path": "app.py",
+    "source_sha256": "bbd72e290a7e53ab61c3cc07c0933be4d9714ddf9c3fe72431044215e0904b80",
+    "policy_path": "policy.txt",
+    "policy_sha256": "2628d8edacf5a0608500a97972a58b06e5f85361c56e2d7118a5784bca6ce2d3"
+  },
+  "authorship": "Drafted by Claude Code from policy.txt and reviewed/accepted by maintainer casing1 on 2026-11-26.",
+  "assumptions": [
+    "x-user-id and x-role carry synthetic test identities; no real authentication is exercised.",
+    "Before values describe the shipped app.py; after values follow policy.txt."
+  ],
+  "regression_case_id": "other",
+  "regression_reason": "test-lee can read order A-100 owned by test-kim; policy requires 403.",
+  "coverage": {
+    "owner": {
+      "case_ids": [
+        "owner"
+      ],
+      "not_applicable_reason": null
+    },
+    "non-owner": {
+      "case_ids": [
+        "other"
+      ],
+      "not_applicable_reason": null
+    },
+    "anonymous": {
+      "case_ids": [
+        "anonymous"
+      ],
+      "not_applicable_reason": null
+    },
+    "normal-use": {
+      "case_ids": [
+        "support",
+        "missing"
+      ],
+      "not_applicable_reason": null
+    },
+    "public": {
+      "case_ids": [
+        "public"
+      ],
+      "not_applicable_reason": null
+    }
+  },
+  "cases": [
+    {
+      "id": "owner",
+      "request": {
+        "method": "GET",
+        "path": "/orders/A-100",
+        "headers": {
+          "x-user-id": "test-kim"
+        }
+      },
+      "before": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "order_id": "A-100",
+            "customer": "test-kim",
+            "item": "keyboard",
+            "total": 59
+          }
+        }
+      },
+      "after": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "order_id": "A-100",
+            "customer": "test-kim",
+            "item": "keyboard",
+            "total": 59
+          }
+        }
+      }
+    },
+    {
+      "id": "other",
+      "request": {
+        "method": "GET",
+        "path": "/orders/A-100",
+        "headers": {
+          "x-user-id": "test-lee"
+        }
+      },
+      "before": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "order_id": "A-100",
+            "customer": "test-kim",
+            "item": "keyboard",
+            "total": 59
+          }
+        }
+      },
+      "after": {
+        "status": 403,
+        "body": {
+          "kind": "json",
+          "value": {
+            "detail": "Not your order"
+          }
+        }
+      }
+    },
+    {
+      "id": "anonymous",
+      "request": {
+        "method": "GET",
+        "path": "/orders/A-100",
+        "headers": {}
+      },
+      "before": {
+        "status": 401,
+        "body": {
+          "kind": "json",
+          "value": {
+            "detail": "Login required"
+          }
+        }
+      },
+      "after": {
+        "status": 401,
+        "body": {
+          "kind": "json",
+          "value": {
+            "detail": "Login required"
+          }
+        }
+      }
+    },
+    {
+      "id": "support",
+      "request": {
+        "method": "GET",
+        "path": "/orders/A-101",
+        "headers": {
+          "x-user-id": "test-park",
+          "x-role": "test-support"
+        }
+      },
+      "before": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "order_id": "A-101",
+            "customer": "test-lee",
+            "item": "monitor",
+            "total": 189
+          }
+        }
+      },
+      "after": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "order_id": "A-101",
+            "customer": "test-lee",
+            "item": "monitor",
+            "total": 189
+          }
+        }
+      }
+    },
+    {
+      "id": "missing",
+      "request": {
+        "method": "GET",
+        "path": "/orders/A-999",
+        "headers": {
+          "x-user-id": "test-kim"
+        }
+      },
+      "before": {
+        "status": 404,
+        "body": {
+          "kind": "json",
+          "value": {
+            "detail": "Order not found"
+          }
+        }
+      },
+      "after": {
+        "status": 404,
+        "body": {
+          "kind": "json",
+          "value": {
+            "detail": "Order not found"
+          }
+        }
+      }
+    },
+    {
+      "id": "public",
+      "request": {
+        "method": "GET",
+        "path": "/status",
+        "headers": {}
+      },
+      "before": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "service": "orders",
+            "ready": true
+          }
+        }
+      },
+      "after": {
+        "status": 200,
+        "body": {
+          "kind": "json",
+          "value": {
+            "service": "orders",
+            "ready": true
+          }
+        }
+      }
+    }
+  ]
+}
