@@ -10,7 +10,7 @@
 
 ## Status and decision to review
 
-**Proposed, not implemented — 2026-10-15 KST.** This specifies only the first offline recommendation
+**Proposed, not implemented (2026-10-15 KST).** This specifies only the first offline recommendation
 contract and read-only preview for #81. It is not a new API, CLI command, model invocation or approved
 patch workflow. Maintainer design review precedes implementation. Passing documentation checks or
 merging this design does not record that approval or complete #81.

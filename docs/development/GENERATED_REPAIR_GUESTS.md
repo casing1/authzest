@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_GUESTS.md">한국어</a>
 </p>
 
-# Generated repair guest entry points — offline source
+# Generated repair guest entry points (offline source)
 
 [Documentation index](../README.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [Lifecycle model](GENERATED_REPAIR_LIFECYCLE.md)
 
-## Scope — 2026-11-18 KST
+## Scope (2026-11-18 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) slice adds maintained standalone
 guest launcher **source**, tested only with fake dependencies and sockets. No guest, application,

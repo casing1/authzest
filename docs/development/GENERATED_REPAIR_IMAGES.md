@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_IMAGES.md">한국어</a>
 </p>
 
-# Generated repair images — pinned inputs, not built images
+# Generated repair images (pinned inputs, not built images)
 
 [Documentation index](../README.md) · [Guest entries](GENERATED_REPAIR_GUESTS.md) ·
 [Runtime metadata](GENERATED_REPAIR_PREFLIGHT.md)
 
-## Scope — 2026-11-15 KST
+## Scope (2026-11-15 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) foundation records candidate
 image inputs for the separate T/test, A/application and B/relay roles. It adds offline input checks,

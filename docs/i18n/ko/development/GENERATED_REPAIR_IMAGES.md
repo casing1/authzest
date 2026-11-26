@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 이미지 — 빌드한 이미지가 아닌 고정 입력
+# 생성 수정 이미지 (빌드한 이미지가 아닌 고정 입력)
 
 [문서 목록](../INDEX.md) · [Guest 진입점](GENERATED_REPAIR_GUESTS.md) ·
 [런타임 메타데이터](GENERATED_REPAIR_PREFLIGHT.md)
 
-## 범위 — 2026-11-15 KST
+## 범위 (2026-11-15 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 기반은 분리된 T/테스트, A/애플리케이션,
 B/relay 역할의 이미지 후보 입력을 기록합니다. 오프라인 입력 검사·비공개 context 준비·호스트 archive
@@ -62,13 +62,13 @@ Guest 후보는 검토한 release metadata에서 `pytest==9.0.3`을 선택합니
 [scripts/generated_image_inputs.py](../../../../scripts/generated_image_inputs.py)는 닫힌 manifest,
 역할/platform 집합, package metadata와 dependency 선택을 유지관리 소스와 대조합니다. 기록한 원본
 OCI/Docker JSON 바이트는 선언한 index → 선택 child manifest → config digest 연결과 일치해야 합니다.
-index는 선언한 Linux architecture/variant를 선택하며, 선택 config는 OS/architecture와 기록한 정확한 Python 환경 결합에 맞아야 합니다.
+index는 선언한 Linux architecture/variant를 선택하며 선택 config는 OS/architecture와 기록한 정확한 Python 환경 결합에 맞아야 합니다.
 현재 guest 자산의 바이트, 해시 고정 lock 텍스트와 고정 Dockerfile recipe도 비교합니다.
 
 이는 입력 식별자·일관성 검사입니다. 보존한 upstream 문서나 wheel 선언이 발행자를 인증하거나 서명을
 검증하거나 공급망 출처를 입증하지 않습니다. 같은 기록 입력의 digest와 일치한다는 사실은 이미지 내부
 파일의 독립적 증거가 아닙니다. 이 입력 검사는 root filesystem layer나 완성한 이미지를 검사하지
-않으며, 아래의 별도 호스트 archive 비교는 더 좁고 명시적인 관찰 범위만 갖습니다.
+않으며 아래의 별도 호스트 archive 비교는 더 좁고 명시적인 관찰 범위만 갖습니다.
 
 향후 recipe는 저장소 checkout·사용자 파일·살아 있는 workspace 대신 선택한 `requirements.txt`,
 `wheels/`, 고정 `assets/`만 있는 최소 준비 context를 기대합니다. T/A는 네트워크 비활성,

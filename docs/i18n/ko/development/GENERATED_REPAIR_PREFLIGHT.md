@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 런타임 메타데이터 — 고정 로컬 Engine 조회
+# 생성 수정 런타임 메타데이터 (고정 로컬 Engine 조회)
 
 [문서 목록](../INDEX.md) · [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md) ·
 [입력 staging](GENERATED_REPAIR_STAGING.md)
 
-## 범위 — 2026-11-18 KST
+## 범위 (2026-11-18 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 로컬 Engine 메타데이터
 reader와 제한된 전달 데이터 비교기를 추가합니다. 오프라인 회귀 검사의 소켓·endpoint 정보·시계는
@@ -20,7 +20,7 @@ PR #170에서 연결한 [세션](GENERATED_REPAIR_SESSION.md)과 명시적
 
 ## 전용 Engine transport를 사용하는 이유
 
-Docker CLI `v29.0.0`의 `docker info`는 format 처리 전 `ListPlugins`를 호출하고, 빈 `--config` 밖의
+Docker CLI `v29.0.0`의 `docker info`는 format 처리 전 `ListPlugins`를 호출하고 빈 `--config` 밖의
 시스템 경로를 포함한 설치 plugin 바이너리로 metadata를 요청합니다. JSON template이나 닫힌 환경만으로
 이 경로를 없앨 수 없습니다. CLI `info`, 주변 설정을 탐색하는 SDK, `curl`, shell·보조 실행 파일을
 사용하지 않습니다.
@@ -65,7 +65,7 @@ contact 시도를 구분합니다. 가짜를 주입해도 인증된 관찰이 �
 
 광고된 API 범위·Linux platform·version/info의 서버 버전 일치·선언한 엔진 식별자·역할별 정확한
 이미지 ID/architecture를 대조합니다. 엔진 식별자의 preimage는 `schema_version: "1.0"`,
-`kind: "generated-repair-engine-identity"`와 `/info`의 `ID`를 `engine_id`로 담은 canonical JSON이며,
+`kind: "generated-repair-engine-identity"`와 `/info`의 `ID`를 `engine_id`로 담은 canonical JSON이며
 UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 
 제한된 선택 메타데이터와 body hash만 보존합니다. 이미지 config·daemon security option·cgroup 필드는
@@ -77,7 +77,7 @@ UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 
 별도 [호스트 archive 비교](GENERATED_REPAIR_IMAGES.md)는 제공한 rootfs catalog를 압축 해제·실행하지
 않고 관리형 자산·정확한 wheel payload와 비교할 수 있습니다. 세분화된 파일 관찰을 보고하고 검증하지
-않은 pip 생성 파일을 보존하며, 일치해도 전체 내용/config/readiness는 false입니다. 메타데이터 reader
+않은 pip 생성 파일을 보존하며 일치해도 전체 내용/config/readiness는 false입니다. 메타데이터 reader
 결과는 이 파일 관찰을 대체하지 않으며 두 helper 모두 제공한 export의 이미지 신원을 인증하지 않습니다.
 
 결과의 `ready`, `execution_authorized`, `verified_fix`는 false, authorization은 unknown이며 생성
@@ -108,7 +108,7 @@ peer 신원을 성립시키지는 않습니다.
 
 정지 생성 inspect·제한된 attach/start/capture·정확한 guest 정리·현재 세션/CLI 결정을 소스로
 연결했습니다. 메타데이터 관찰은 실제 이미지 내용 검토나 이미지 소유 pre-import 커널 guard를
-대체하지 않습니다. 네트워크 수정은 엄격한 lo-only 또는 고정 기본 tunnel fallback 사실만 허용하며,
+대체하지 않습니다. 네트워크 수정은 엄격한 lo-only 또는 고정 기본 tunnel fallback 사실만 허용하며
 non-loopback fallback은 관리상 DOWN·operstate DOWN·iflink0, 양수이며 서로 다른 index와 제한된
 고정 proc/sysfs 전후 snapshot 일치 조건을 만족해야 합니다. 미확인/활성/변경/잘못된 사실은 종료 78로
 거부합니다. socket/netlink를 열지 않고 NET_ADMIN·sysctl·network template도 바꾸지 않습니다.

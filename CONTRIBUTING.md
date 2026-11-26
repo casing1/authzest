@@ -26,24 +26,24 @@ The [branch protection policy](docs/development/BRANCH_RULES.md) requires Python
 
 Apply these rules whenever creating an issue or pull request, not only when preparing a release:
 
-- **Assignee:** include `casing1` for the current maintainer-led workflow. Add the maintainer without
+- Assignee: include `casing1` for the current maintainer-led workflow. Add the maintainer without
   removing existing assignees. An assignee identifies responsibility; the author records the account that
   created the item. Preserve author/bot provenance rather than rewriting it.
-- **Labels:** choose the relevant work type from `bug`, `enhancement`, `documentation`, and `maintenance`.
+- Labels: choose the relevant work type from `bug`, `enhancement`, `documentation`, and `maintenance`.
   Add applicable areas from `area:core`, `area:api`, `area:ci`, `area:release`, and `area:codex`.
   Use `roadmap` for planning or cross-phase work. `security` means security-related work, not a confirmed
   vulnerability. Reuse the [existing labels](https://github.com/casing1/authzest/labels), preserve relevant
   labels already present, and avoid unnecessary duplicate categories.
-- **Milestone:** select the relevant open [milestone](https://github.com/casing1/authzest/milestones) and
+- Milestone: select the relevant open [milestone](https://github.com/casing1/authzest/milestones) and
   keep a focused issue and its PR aligned. Whole-project roadmap items such as #1 and genuinely
   cross-milestone process work may remain unmilestoned only with an explicit reason in the body.
   Do not reopen completed release milestones or invent a due date just to populate the field.
-- **Creation check:** set metadata during creation when supported; otherwise complete it immediately
+- Creation check: set metadata during creation when supported; otherwise complete it immediately
   afterward. Read back the actual issue/PR to verify labels, assignees, milestone or documented exception,
   and the linked issue before reporting creation complete. Copying checklist text does not set GitHub fields.
 
-These are mandatory maintainer workflow and review checks, not a claim that GitHub or CI automatically
-populates or enforces the metadata. Check them again before merging; required CI and review gates still apply.
+These are manual maintainer checks; GitHub and CI do not fill in or enforce the metadata. Check them
+again before merging. The required CI and review gates still apply.
 
 ## Branch names
 

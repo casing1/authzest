@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_STAGING.md">한국어</a>
 </p>
 
-# Generated repair input staging — private inert snapshots
+# Generated repair input staging (private inert snapshots)
 
 [Documentation index](../README.md) · [Private workspace](GENERATED_REPAIR_WORKSPACE.md) ·
 [Runtime profile](GENERATED_REPAIR_RUNTIME_PROFILE.md)
 
-## Scope — 2026-11-13 KST
+## Scope (2026-11-13 KST)
 
 This partial [#152](https://github.com/casing1/authzest/issues/152) slice prepares private input
 snapshots for future T/test and A/application file mounts. It is an internal POSIX source API,

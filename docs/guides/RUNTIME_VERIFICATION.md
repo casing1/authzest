@@ -138,7 +138,7 @@ live-model integration or authorization security. A release is published only af
 
 The request/response probe follows the official [ASGI HTTP specification](https://asgi.readthedocs.io/en/latest/specs/www.html).
 
-## Bounded live acceptance — 2026-09-12
+## Bounded live acceptance (2026-09-12)
 
 On runtime commit `ce2834c354f7c25d53e417382f41687296a508fc`, one newly approved live source-CLI
 attempt completed with exit 0: Codex draft → exact-diff copy application → separately approved
@@ -175,7 +175,7 @@ original hashes and recorded journal 1.2 with the historical passed AFTER digest
 PyInstaller's local semaphore required execution outside the restrictive tool sandbox; no deadline
 or success condition was weakened. Three-platform release/download verification remains a separate gate.
 
-## Published alpha.3 artifact acceptance — 2026-09-12
+## Published alpha.3 artifact acceptance (2026-09-12)
 
 [Alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) was published at
 2026-09-12T09:00:49Z from `99be6f5614d283befa2a421b64f84958b680f92f`, with package `0.1.0a3`.

@@ -7,7 +7,7 @@
 
 [Documentation index](../README.md)
 
-## Status — 2026-11-22 KST
+## Status (2026-11-22 KST)
 
 [#151](https://github.com/casing1/authzest/issues/151), under the
 [course-release scope](https://github.com/casing1/authzest/issues/150), connects the offline
@@ -342,7 +342,7 @@ The [local viewer](../guides/RESULT_VIEWER.md) from
 owns sharing and stage decisions. The adapter uses the current-turn `outputSchema` field described
 in the [Codex App Server documentation](https://learn.chatgpt.com/docs/app-server).
 
-## Opt-in local AI workflow design — 23 November 2026
+## Opt-in local AI workflow design (23 November 2026)
 
 [#189](https://github.com/casing1/authzest/issues/189) connects the existing owner-read engine to a
 local interactive GUI. This section is the design for implementation review. It grants no new live

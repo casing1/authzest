@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 HTTP relay — 오프라인 스트림 기반
+# 생성 수정 HTTP relay (오프라인 스트림 기반)
 
 [문서 목차](../INDEX.md) · [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md) ·
 [호스트 대조군](GENERATED_REPAIR_VERIFICATION.md)
 
-## 범위 — 2026-11-12 KST
+## 범위 (2026-11-12 KST)
 
 [#152](https://github.com/casing1/authzest/issues/152)의 또 다른 부분 단계입니다.
 관리형 relay codec은 고정 합성 사례의 응답 사실을 제한된 크기로 읽습니다. **활성 엔진 어댑터가
@@ -35,7 +35,7 @@ demo actor는 **인증이 아닙니다**.
 생성 테스트 T의 상태를 A/B로 전달하지 않습니다.
 
 스트림 factory와 동기 시계는 명시적인 **신뢰 Python 구성요소**입니다. factory에 고정 대상과
-남은 timeout을 전달하지만, 이를 무시하거나 다른 효과를 일으키는 것을 이 interface가 막지는
+남은 timeout을 전달하지만 이를 무시하거나 다른 효과를 일으키는 것을 이 interface가 막지는
 못합니다. sandbox·실제 소켓 어댑터·네트워크 격리 증명이 아닙니다. 테스트는 직접 유지하는
 인메모리 스트림만 사용합니다.
 

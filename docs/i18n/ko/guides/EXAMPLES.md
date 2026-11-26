@@ -14,7 +14,7 @@
 유지하며 alpha.1 스캐폴딩은 이 목록화 동작을 제공하지 않습니다. fixture가 있는 checkout에서 실행하세요.
 독립 실행 파일은 예제 디렉터리를 설치하지 않습니다. 정확한 릴리스 fixture는
 [태그 소스 압축 파일](https://github.com/casing1/authzest/archive/refs/tags/v0.1.0-alpha.3.zip)에 있습니다.
-아래 명령은 `authzest`가 PATH에 있다는 가정이며, 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
+아래 명령은 `authzest`가 PATH에 있다는 가정이며 그렇지 않으면 내려받은 실행 파일의 절대 경로로 바꾸세요.
 검증 근거와 한계는 [릴리스 기록](../releases/RELEASING.md)을 참고하세요.
 
 후속 [소유 보고서 정책 예제](OWNER_POLICY.md)는 #73을 포함한 checkout에만 있으며 alpha.3
@@ -42,7 +42,7 @@ authzest scan examples/fastapi_inventory --json
 
 import한 router에는 자체 prefix가 있고 두 번 등록됩니다. 두 mount의 라우트는 같은 원본 handler 위치를
 유지합니다. 이는 소스 위치이며 배포 URL이나 앱을 실행했다는 증거가 아닙니다.
-정확한 예상 JSON은 [별도 저장](../../../../tests/fixtures/fastapi_inventory.json)하며,
+정확한 예상 JSON은 [별도 저장](../../../../tests/fixtures/fastapi_inventory.json)하며
 [테스트](../../../../tests/test_examples.py)에서 비교할 때는 컴퓨터마다 다른 스캔 루트를 제외하고
 라우트 파일의 경로 구분자를 POSIX 형식으로 정규화합니다.
 현재 스키마는 1.2이며 이 fixture에는 지원하는 직접·상속 의존성 선언이 없으므로 세 route 모두

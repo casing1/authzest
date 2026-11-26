@@ -8,7 +8,7 @@
 [문서 목차](../INDEX.md) · [평가 프로토콜](EVALUATION_PROTOCOL.md) ·
 [개발 계획](DEVELOPMENT_PLAN.md) · [이슈 #84](https://github.com/casing1/authzest/issues/84)
 
-## 현재 순수 slot/batch 조합 — 2026-11-09 KST
+## 현재 순수 slot/batch 조합 (2026-11-09 KST)
 
 `scripts/evaluation_coordinator.SlotCoordinator`는 기존 recipe/JSONL/preflight/session/turn 검사를
 제공된 discovery 후 generation 순서로 조합하고 각 단계에 EOF·정상 종료·정리 확인을 요구합니다.
@@ -18,7 +18,7 @@ dispatch ledger와 slot 상태를 연결합니다. `turn/start`에서만 모델 
 Ledger에 `Batch.fail`을 추가하여 현재 시각의 slot 실패를 정리 전까지 즉시 고정합니다. 늦은
 timeout으로 첫 원인을 덮지 않고 정리·2차 clock 실패를 별도로 두며 기존 clock/TTL/`T`/시간창/
 finish 계약은 유지합니다.
-[현재 제한과 순수/POSIX 테스트 명령](EVALUATION_PROTOCOL.md#순수-slotbatch-조합--실제-transport-아님)을 참고하세요.
+[현재 제한과 순수/POSIX 테스트 명령](EVALUATION_PROTOCOL.md#순수-slotbatch-조합-실제-transport-아님)을 참고하세요.
 
 호출자가 제공하는 바이트/종료/정리/시각 상태이지 I/O·launcher·실제 timer 강제·제공자 신원 인증·
 실제 평가가 아닙니다. 프로세스 테스트에는 고정 소유 가짜 자식만 사용하며 선택 turn 부분집합은
@@ -28,7 +28,7 @@ finish 계약은 유지합니다.
 trial 수용/실제 동결은 false이며 #84는 체크 7개 미완료인 OPEN입니다. 실제 Codex/계정/모델/정책
 worker/네트워크 호출·위험 수용·릴리스는 없습니다.
 
-### 테스트 전용 batch-pipe 확장 — 2026-11-09 KST
+### 테스트 전용 batch-pipe 확장 (2026-11-09 KST)
 
 `tests/test_evaluation_batch_coordinator_process.py`는 기존 고정 소유 가짜 peer를
 `BatchCoordinator`에 연결합니다. 예약/송신/ack 순서·합성 원래 예산 만료·실패/취소·정리 거부와
@@ -39,7 +39,7 @@ worker/네트워크 호출·위험 수용·릴리스는 없습니다.
 launcher·실제 AI/계정/모델/네트워크/정책 worker 호출·실제 동결·채점·trial 수용·위험 수용·릴리스는
 추가하지 않으며 제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개도 유지합니다.
 
-## 선택 합성 의미 검사 단계 기록 — 2026-11-08 KST
+## 선택 합성 의미 검사 단계 기록 (2026-11-08 KST)
 
 아래 단계는 위 순수 coordinator 조합 이전의 기록입니다. Coordinator 없음/다음 단계 표현은 당시
 상태이며 개별 의미 validator는 계속 순수하고 변경하지 않았습니다.
@@ -48,7 +48,7 @@ launcher·실제 AI/계정/모델/네트워크/정책 worker 호출·실제 동�
 제한된 detached 후보/선언 경계·선택한 session/목록/thread/settings 검사·기존 codec을 사용하는
 연결된 합성 final-answer 순서 하나를 구분합니다. 미지원 변형은 이 좁은 정책의 범위 밖이지 반드시
 프로토콜 무효는 아닙니다. 더 넓은 recipe 구현이나 JSONL/preflight/`Batch`의 coordinator 연결이
-아닙니다. [현재 범위와 순수 테스트 명령 3개](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사--trial-아님)를 참고하세요.
+아닙니다. [현재 범위와 순수 테스트 명령 3개](EVALUATION_PROTOCOL.md#선택한-합성-응답-의미-검사-trial-아님)를 참고하세요.
 
 [App Server 프로토콜 안내](https://learn.chatgpt.com/docs/app-server)는 선택 형식의 근거이지 런타임
 증거가 아닙니다. 일치하는 ChatGPT 형태 계정/모델 목록 후보도
@@ -59,7 +59,7 @@ launcher·실제 AI/계정/모델/네트워크/정책 worker 호출·실제 동�
 과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로이며 #84는 체크 7개 미완료인 OPEN입니다. 실제
 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 JSONL·가짜 pipe 단계 기록 — 2026-11-08 KST
+## 순수 JSONL·가짜 pipe 단계 기록 (2026-11-08 KST)
 
 아래 단계는 위 별도 선택 의미 helper 이전의 기록입니다. Envelope 전용/의미 검증 대기 표현은 당시
 상태이며 JSONL 모듈 자체는 여전히 envelope만 다룹니다.
@@ -79,7 +79,7 @@ recipe/codec/preflight/ledger/v1/수학/데이터/과거 자료·제품 `0.1.0a4
 런타임/준비/승인/실제 동결 flag는 false이고 #84는 체크 7개 미완료인 OPEN이며 실제 AI 호출·위험
 수용·릴리스는 없습니다.
 
-## 오프라인 설정 preflight·시작 검토 기록 — 2026-11-08 KST
+## 오프라인 설정 preflight·시작 검토 기록 (2026-11-08 KST)
 
 아래 단계는 위 순수 JSONL/가짜 pipe 후속 구현 전 기록입니다. 다음 단계 표현은 당시 상태이며
 소스에서 도출한 시작 한계는 그대로 유효합니다.
@@ -91,7 +91,7 @@ recipe/codec/preflight/ledger/v1/수학/데이터/과거 자료·제품 `0.1.0a4
 아닙니다. Origins/MCP 내용은 opaque JSON으로 전체 스키마/출처 검증이 아닙니다. CLI·RPC·프로세스·
 timer·계정/모델 조회·worker·로그 import를 추가하지 않고 `Batch`에도 연결하지 않습니다. 기존
 recipe descriptor/ID는 그대로입니다.
-[API 한계와 합성 테스트 명령](EVALUATION_PROTOCOL.md#순수-오프라인-설정-preflight--시작-동작의-증거-아님)을 참고하세요.
+[API 한계와 합성 테스트 명령](EVALUATION_PROTOCOL.md#순수-오프라인-설정-preflight-시작-동작의-증거-아님)을 참고하세요.
 
 기록한 생성 `ConfigReadResponse` SHA-256은
 `96a04a3f7fff2dc7fafc9f831e8bcd422e021d697dd2c14c801f098a9f21396d`이며 문서 식별자이지 실행
@@ -125,7 +125,7 @@ transport 준비 완료가 아닙니다. 런타임/준비/실행/실제 동결 f
 `1.2`·고정 버전·v1/수학/과거 자료·#84 미완료 체크 7개는 그대로입니다. 실제 AI/worker 호출·위험
 수용·릴리스는 없습니다.
 
-## 오프라인 dispatch 후속 구현 기록 — 2026-11-08 KST
+## 오프라인 dispatch 후속 구현 기록 (2026-11-08 KST)
 
 아래 단계는 위 설정 검사기/소스 검토 이전의 기록이며 검토 대기 표현은 당시 상태입니다. 과거
 recipe/설계 주장을 현재 런타임 근거로 승격하지 않습니다.
@@ -151,7 +151,7 @@ projection은 요청 형식만 검사하며 전체 묶음·중첩 스키마 제�
 필요합니다. 기존 codec/고정 버전/제품 `0.1.0a4` / 리포트 `1.2`/v1/수학/과거 자료는 그대로이며
 #84는 체크 7개 미완료인 OPEN·실제 동결 false를 유지합니다. 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 codec 단계 기록 — 2026-11-07 KST
+## 순수 codec 단계 기록 (2026-11-07 KST)
 
 시간 순서를 보존한 이전 기록입니다. 아래 다음 단계 표현은 위 오프라인 dispatch 후속 구현 전
 상태이며 현재 recipe/상태 helper가 없다는 뜻이 아닙니다.
@@ -171,7 +171,7 @@ capture/격리/실패 처리는 여전히 제안입니다. 아래 버전별 disp
 리포트 스키마 `1.2`·실제 동결 false·#84 미완료 체크 7개는 그대로이며 새 위험 수용·릴리스도 없습니다.
 Codec 전달은 실제 실행/동결 승인이 아닙니다.
 
-## 버전별 dispatch 제안 — 2026-11-08 KST
+## 버전별 dispatch 제안 (2026-11-08 KST)
 
 과거 설계 전용 단계 기록입니다. 아래 미구현/다음 단계 표현은 당시 제안이며 현재 오프라인 builder/
 ledger가 없다는 뜻이 아닙니다. Params 정정 날짜는 본문에 표시하고 실제 프로세스/설정/수신 의미는
@@ -336,7 +336,7 @@ snapshot 재사용·전송한 슬롯의 만료·null 유효성·실패/정리/sk
 합니다. 실제 중첩 스키마/제공자 지원·유효 harness context는 미확인입니다. 현재 codec·제품 adapter·
 v1 값/바이트·채점 수학/이력·릴리스 버전·#84 체크는 변경하지 않습니다.
 
-## 원래 제안 — 보존한 이력
+## 원래 제안 (보존한 이력)
 
 아래 원래 설계는 당시 소스/날짜로 보존합니다. Codec/API가 미구현이라는 표현은 당시 상태이지 위의
 현재 오프라인 후속 구현을 뜻하지 않습니다. 실제 transport는 지금도 미구현이며 제안 전달을 실행
@@ -344,7 +344,7 @@ v1 값/바이트·채점 수학/이력·릴리스 버전·#84 체크는 변경�
 
 ## 상태와 목적
 
-**제안이며 미구현 — 2026-11-07 KST.** 기준 main은
+**제안이며 미구현 (2026-11-07 KST).** 기준 main은
 `42e5db7104fd715af1edf1a5032b7761dc1747ca`입니다. 호출 가능한 API·CLI 명령·제공자 연동·계정 조회·
 실제 시험·실행 권한·새 실제 설정 동결을 추가하지 않습니다. 문서 전달/리뷰는 모델 실행 승인이나
 벤치마크 준비 완료의 증명이 아니며 #84 체크 7개도 모두 미완료입니다. 기존 v1 과제/정답·채점

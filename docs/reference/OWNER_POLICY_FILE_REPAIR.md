@@ -10,7 +10,7 @@
 [Recommendation](OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [Embedded control checks](OWNER_POLICY_REPAIR_CHECK.md)
 
-## Availability and evidence — 2026-10-29 KST
+## Availability and evidence (2026-10-29 KST)
 
 The unreleased source implementation was delivered in
 [PR #118](https://github.com/casing1/authzest/pull/118). The maintainer
@@ -19,7 +19,7 @@ not a real file-policy worker run or an operator acceptance applying a repair. T
 used pure-data checks, temporary-file I/O, static worker inspection and fake process responses.
 Scripted responses are not observed policy behavior; exact offline test results and their commit
 binding remain recorded in the PR. The later, separately approved
-[file-workflow acceptance](#file-workflow-acceptance--2026-10-29-kst) below records actual captured-file
+[file-workflow acceptance](#file-workflow-acceptance-2026-10-29-kst) below records actual captured-file
 observations without changing the scope of that earlier approval.
 
 The live file workflow supports **POSIX, non-frozen Python source mode only**, with the required
@@ -31,7 +31,7 @@ open; neither this document nor offline test success grants review activation, m
 patch acceptance or release authority. Existing #80/#110 controls and their historical observations
 remain unchanged and do not establish execution of this new file worker.
 
-## File-workflow acceptance — 2026-10-29 KST
+## File-workflow acceptance (2026-10-29 KST)
 
 One fresh owned-copy workflow completed using source commit
 `fb90c46db1c6afa858451d434ccff1ebf8184fcd` and Python **3.12.7** on POSIX macOS. A previously

@@ -21,7 +21,7 @@ permission to share source is not permission to apply a patch or execute a test.
 below is not a general-repository implementation claim; the finite accepted core is recorded under
 current priorities. The separate
 [#50 fixture adapter](../guides/CODEX_FIXTURE.md) has a much narrower scope; one owned-fixture live draft/apply/restore check passed.
-The later [#54 source-live acceptance](../guides/RUNTIME_VERIFICATION.md#bounded-live-acceptance--2026-09-12)
+The later [#54 source-live acceptance](../guides/RUNTIME_VERIFICATION.md#bounded-live-acceptance-2026-09-12)
 also completed the separately approved fixed runtime check and restoration. Published
 [alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3) includes this bounded workflow;
 its separate [public-asset evidence](../releases/RELEASING.md) is not another live-model result or completion of #35.
@@ -31,7 +31,7 @@ and inherited application/router/include context. It does not yet resolve nested
 correctness, or run AI as part of a scan. The [source-only examples](../guides/EXAMPLES.md)
 are parser regressions/demos, not a security benchmark.
 
-## Release-first priorities — 2026-11-09 KST
+## Release-first priorities (2026-11-09 KST)
 
 The course-complete stable target is [#150](https://github.com/casing1/authzest/issues/150), not
 another comparison-transport milestone. Deliver [#151 genuine PoC/test and repair-source generation](https://github.com/casing1/authzest/issues/151),
@@ -73,7 +73,7 @@ General FastAPI PoC generation, model-authored replacement source, native active
 Windows policy execution remain unsupported, not prerequisites silently completed by that acceptance.
 
 Alpha.4 was published on November 5 from exact source `090002d`; the
-[release guide](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst)
+[release guide](../releases/RELEASING.md#alpha4-publication-and-public-asset-verification-2026-11-05-kst)
 records tag-run attempt 2 and all six public files. Its failed first attempt remains part of the
 release history. The post-alpha.4 source change under [#130](https://github.com/casing1/authzest/issues/130)
 atomically publishes complete fake-server JSONL snapshots with strict record validation and

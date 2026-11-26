@@ -8,7 +8,7 @@
 [문서 목차](../INDEX.md) · [세션](GENERATED_REPAIR_SESSION.md) ·
 [이미지 입력](GENERATED_REPAIR_IMAGES.md)
 
-## 현재 범위 — 2026-11-15 KST
+## 현재 범위 (2026-11-15 KST)
 
 이 [#152](https://github.com/casing1/authzest/issues/152) 부분 구현은 비공개 입력 staging,
 고정 Docker 명령, 동시 출력 수집, 호스트 HTTP 비교를 내부 T → 새 A/B 단계로 연결합니다.
@@ -54,7 +54,7 @@ A network namespace에서 고정 요청 21개를 재시도 없이 한 번씩 수
 중단하고 정리용 32 KiB를 예약합니다. 일반 출력 실패 뒤 기존 로컬 수집 파이프를 닫아 정확한 guest
 제거 시도 공간을 남기며 완전한 EOF를 관찰했다고 표시하지 않습니다. 기존 메타데이터 reader는
 Engine wire 바이트를 별도로 제한합니다. 조정기의 누적 2 MiB 근거 예산에는 journal JSON과
-메타데이터 wire 사용량을 계산하고, 저장 실패 시에도 base64 확장을 포함한 제한된 결과마다
+메타데이터 wire 사용량을 계산하고 저장 실패 시에도 base64 확장을 포함한 제한된 결과마다
 512 KiB를 예약합니다. Opt-in 세션은 before/after 전체에서 같은 예산 객체를 유지하고 효과 전에
 최종 요약·복구 계획 공간도 예약합니다. 수집·정리로 초기화하지 않습니다. 동기 파일시스템·프로세스 생성·daemon·커널
 작업 전체에 대한 보편적인 시간 상한은 없습니다.

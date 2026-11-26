@@ -2,7 +2,7 @@
 
 [Documentation](../README.md) · English · [한국어](../i18n/ko/releases/RELEASING.md)
 
-> **0.1.0 prepared — 2026-11-26 KST.** The external single-file flow is delivered and verified.
+> **0.1.0 prepared (2026-11-26 KST).** The external single-file flow is delivered and verified.
 > The current [release notes](0.1.0.md) and [readiness snapshot](0.1.0-READINESS.md) list the
 > remaining maintainer decisions and the release steps. The dated sections below keep their original
 > scope; they are history, not current acceptance, risk acceptance or publication authority.
@@ -10,7 +10,7 @@
 AuthZest publishes standalone executables through GitHub Releases. PyPI and npm publishing are not part of
 the current release process. The binaries are not signed or notarized.
 
-## Final 0.1.0 handoff preparation — 2026-11-23 KST
+## Final 0.1.0 handoff preparation (2026-11-23 KST)
 
 The [proposed release notes](0.1.0.md) describe the bounded delivery. The
 [readiness packet](0.1.0-READINESS.md) separates observed evidence from pending maintainer decisions.
@@ -43,7 +43,7 @@ Neither choice has been made by this document. The final source, tooling disposi
 and public-download verification remain separate gates; later source or artifact identities must be
 reviewed in their own right.
 
-## Release validation budget and UI coverage — 2026-11-23 KST
+## Release validation budget and UI coverage (2026-11-23 KST)
 
 The release workflow's `validate` job has a finite **45-minute** limit. At
 [#192](https://github.com/casing1/authzest/pull/192), the Python regression jobs took
@@ -61,14 +61,14 @@ job permissions and artifact smoke checks are unchanged. [#193](https://github.c
 tracks this preparation; passing PR checks does not establish a new native build, candidate
 acceptance or published release. Use the exact-candidate gates below before publication.
 
-## Stable 0.1.0 readiness — 2026-11-19 KST
+## Stable 0.1.0 readiness (2026-11-19 KST)
 
 [#150](https://github.com/casing1/authzest/issues/150) tracks the stable course release. The candidate
 uses package version `0.1.0`. Its [changelog](../../CHANGELOG.md) records the preparation date. The latest public release is
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4).
 November 18 was an approximate course submission date. Readiness depends on the outstanding checks below.
 
-**Current source update — 2026-11-23 KST:** [#190](https://github.com/casing1/authzest/pull/190)
+**Current source update (2026-11-23 KST:)** [#190](https://github.com/casing1/authzest/pull/190)
 adds the explicit owner-read operator GUI and [#192](https://github.com/casing1/authzest/pull/192)
 stops terminal-session polling. The [viewer guide](../guides/RESULT_VIEWER.md) and
 [course walkthrough](../guides/COURSE_DEMO.md) describe the shared CLI/GUI engine, separate current
@@ -98,7 +98,7 @@ retain their original source and scope.
 - Independent comparison remains under [#84](https://github.com/casing1/authzest/issues/84).
   Report unavailable evidence and keep benchmark expansion outside the core delivery.
 
-### Source installation preflight — 2026-11-19 KST
+### Source installation preflight (2026-11-19 KST)
 
 At [`db3eee6`](https://github.com/casing1/authzest/commit/db3eee65bc4f47a72f7d9a9d7bf88ee7fde63152),
 [main CI](https://github.com/casing1/authzest/actions/runs/44331310556) and
@@ -122,7 +122,7 @@ This preflight covers the listed source-install routes on one host. Actual provi
 generated-code execution, current native packages, public downloads and a stable-version upgrade remain
 outside this observation.
 
-## Post-alpha.4 test-harness stabilization — 2026-11-05 KST
+## Post-alpha.4 test-harness stabilization (2026-11-05 KST)
 
 The source-only follow-up in [#130](https://github.com/casing1/authzest/issues/130) replaces the
 offline fake server's live append log with closed, atomically replaced JSONL snapshots. The parent
@@ -138,7 +138,7 @@ temporary file in its private pytest directory. No actual Codex call or new prod
 part of this fix. Local results and normal PR/CI delivery are recorded in #130; include its regression
 cases in RC/stable validation. The alpha.4 tag, assets and failed first attempt below remain unchanged.
 
-## Alpha.4 readiness — 2026-11-05 KST
+## Alpha.4 readiness (2026-11-05 KST)
 
 **Published and public assets verified:**
 [`v0.1.0-alpha.4`](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.4) was published as a
@@ -148,7 +148,7 @@ The immutable tag's November 2 changelog heading records preparation; the curren
 the actual publication date. Normal documentation delivery is tracked in
 [#83](https://github.com/casing1/authzest/issues/83); publication does not complete #84/#85 or fix #89/#130.
 
-### Alpha.4 publication and public-asset verification — 2026-11-05 KST
+### Alpha.4 publication and public-asset verification (2026-11-05 KST)
 
 The [public release receipt](https://github.com/casing1/authzest/issues/83#issuecomment-6648591185)
 records the release/asset identities, checks and remaining limits.
@@ -196,7 +196,7 @@ accepted live walkthrough stays bound to `c868152`. Native files are experimenta
 distributions, not installers or evidence of UI, general OS compatibility, signing or notarization.
 General FastAPI PoC generation and model-authored replacement source remain unimplemented.
 
-The [explicit alpha.4-only #89 disposition](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst)
+The [explicit alpha.4-only #89 disposition](../development/FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst)
 is bound in [#83](https://github.com/casing1/authzest/issues/83) to this exact warning candidate after
 comparison of all 211 tracked non-Markdown file modes/blobs against `7509a6a`. #89 remains
 OPEN / `needs_review` / medium, not fixed. A stable release needs a new assessment/disposition;
@@ -211,7 +211,7 @@ guarantee. Retain the tag-run inventory separately from manual-main artifacts: d
 and versioned filenames may differ.
 Independent evaluation and reproducible course evidence remain under #84/#85.
 
-### Historical preparation and early preflight — 2026-11-05 KST
+### Historical preparation and early preflight (2026-11-05 KST)
 
 The following no-go matrix records the earlier `b5f3eb8` checkpoint, before final-candidate verification.
 Its pending items and original source identities are preserved as history, not current release status.
@@ -228,7 +228,7 @@ The November 5 nonpublishing native and source-install observations below add ca
 preflight evidence, not full release/runtime or public-asset verification. Published alpha.3 is unchanged.
 The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
 The maintainer has since accepted the named residual formatting risk for the forthcoming alpha.4 with
-[visible warnings and follow-up conditions](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
+[visible warnings and follow-up conditions](../development/FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst).
 This does not waive the remaining release gates or fix the embedded parser.
 
 The bounded source core is complete: [PR #123](https://github.com/casing1/authzest/pull/123) delivered
@@ -280,7 +280,7 @@ decision basis `7509a6a821947b516f543222d7cd620ab2ad8e83` before publication. Bi
 decision to that candidate; relevant source/toolchain/workflow or exposure changes need a new
 assessment rather than reuse of an earlier or unspecified-candidate decision.
 
-### Candidate preflight observation — 2026-11-05 KST
+### Candidate preflight observation (2026-11-05 KST)
 
 The [native preview run 41946366368](https://github.com/casing1/authzest/actions/runs/41946366368),
 attempt 1, completed **7/7 jobs** at `b5f3eb81d318e94c5e400ec52e78f1550e13f931`.
@@ -310,7 +310,7 @@ were still required. The current receipt above records later progress without re
 ## Published preview and current source
 
 Alpha.4 is the latest published prerelease; its exact commit, public files and bounded checks are
-recorded in the [current receipt above](#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
+recorded in the [current receipt above](#alpha4-publication-and-public-asset-verification-2026-11-05-kst).
 The following alpha.3/alpha.2 records remain historical and their immutable assets are unchanged.
 
 ### Published alpha.3
@@ -486,7 +486,7 @@ this readiness reconciliation. It is separate from #89's residual Prettier-embed
 The [2026-10-08 static assessment](../development/FORMATTING.md#dependency-evidence-and-limits), against
 `4218b807ad892bb92e27a6bb23c4d64000e2a3bf`, recorded #89 as `needs_review` with medium confidence.
 It verified affected embedded code, not exploitation of the guarded commands or the AuthZest runtime.
-The [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck--2026-11-02-kst) separately records the official
+The [2026-11-02 static follow-up](../development/FORMATTING.md#current-static-recheck-2026-11-02-kst) separately records the official
 `prettier@3.9.10` shipped-byte check and unchanged `needs_review` / medium disposition; it does not
 establish a compatible fix or accept risk. Preserve the earlier assessment as historical evidence.
 Neither dependency maintenance nor that recorded assessment establishes full tooling security clearance or
@@ -497,7 +497,7 @@ upstream replacement verified from shipped bytes and ordinary compatibility chec
 maintainer decision on the exact candidate's residual developer-tooling risk. Name wrapper-only coverage,
 direct editor/API gaps and the trusted-toolchain/stable-file assumptions; do not silently accept or dismiss
 the risk. Static assessments are not acceptance; the later
-[explicit alpha.4 maintainer decision](../development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst)
+[explicit alpha.4 maintainer decision](../development/FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst)
 is recorded separately, with exact-candidate binding in #83. Normal development and separately scoped candidate
 checks may continue while publication remains gated. #77's exact ten expectations were approved on
 2026-10-09 KST in the separate [label record](../../tests/fixtures/owner_case_review/maintainer_review.json);
@@ -718,7 +718,7 @@ using `-I` outside the checkout, verify that package and distribution paths are 
 match that source. The displayed version alone cannot prove replacement when both snapshots use
 the same package version. The commands above do not automate these provenance checks.
 
-### Local source-install observation — 2026-10-29
+### Local source-install observation (2026-10-29)
 
 On macOS 27.0.1 (26A434) arm64, Python 3.12.7 and pipx 1.18.7 with the pip backend, separate disposable
 pipx homes tested clean current-source installation and replacement of an alpha.3-source installation.

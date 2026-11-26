@@ -19,7 +19,7 @@ Windows는 복사본 생성 전에 거부합니다. 기존 Windows scan/바이�
 당시 #48 단계는 제품 CLI/API 명령·버전·의존성·리포트 스키마를 변경하지 않았으며 alpha.2 배포 파일도
 수정하지 않았습니다. 이 도우미는 현재 공개된
 [alpha.3](https://github.com/casing1/authzest/releases/tag/v0.1.0-alpha.3)의 POSIX `codex-fixture` 명령에
-사용됩니다. `scripts.demo_apply`는 설치된 명령이 아닌 소스 checkout 전용 데모이며,
+사용됩니다. `scripts.demo_apply`는 설치된 명령이 아닌 소스 checkout 전용 데모이며
 기존 `scripts/demo_proposal.py`는 계속 파일을 적용하지 않는 모의 실행입니다.
 
 ## 대화형 데모 실행
@@ -51,7 +51,7 @@ core의 `FixtureApplySession`은 요청/검토/제안을 다시 검증합니다.
 - 폴더는 비공개 `0700`, `main.py`·`before.txt`·`after.txt`·`record.json`은 `0600`입니다.
   스냅샷은 정확한 UTF-8 바이트이며 CRLF·마지막 개행을 정규화하지 않고 해시를 계산합니다.
 - 프로세스 안의 최신 승인/거절/취소가 이전 결정을 대체합니다. 적용 시도 전 결정을 소비하고 임시 쓰기 후
-  만료를 다시 확인하며 외부 결정 기록을 받지 않습니다. 거부한 시도를 다시 하려면 새 명시적 결정이 필요하고,
+  만료를 다시 확인하며 외부 결정 기록을 받지 않습니다. 거부한 시도를 다시 하려면 새 명시적 결정이 필요하고
   최종 오류는 해당 세션을 끝냅니다. 적용 완료한 세션에서는 같은 승인을 재사용할 수 없습니다.
 - 디렉터리 핸들을 기준으로 연산하며 크기 제한 읽기에서 symlink·hardlink·비일반 파일·권한/식별값 변경을
   거부합니다. 교체 직전에 내용·메타데이터를 검사하고 완전히 쓰고 flush한 임시 파일로만 `main.py`를
@@ -66,7 +66,7 @@ core의 `FixtureApplySession`은 요청/검토/제안을 다시 검증합니다.
 
 `applied`는 교체가 발생했다는 기록이지 보안 검증 성공이 아닙니다. 복구 후에도 과거 사실로 true를
 유지하며 `restored: true`가 원본 복사본 복구를 뜻합니다. 쓰기 후 기록/영속화/읽기 실패를 미변경으로
-보고하지 않습니다. `applied-state-unconfirmed`·`*-audit-failed`는 직접 확인해야 하고,
+보고하지 않습니다. `applied-state-unconfirmed`·`*-audit-failed`는 직접 확인해야 하고
 `restoration-state-unconfirmed`에서는 `restored: null`을 사용합니다. 갑작스러운 종료 시 의도만 기록될 수
 있으므로 마지막 phase만으로 성공/실패를 추정하지 말고 실제 바이트와 스냅샷을 확인하세요.
 
@@ -84,6 +84,6 @@ core의 `FixtureApplySession`은 요청/검토/제안을 다시 검증합니다.
 선택적 고정 소스 검사를 추가하며 대상 소스를 실행하지 않습니다.
 후속 [#54 런타임 옵션](RUNTIME_VERIFICATION.md)은 이 #48 데모가 아닌 Codex fixture 흐름과
 `python -m scripts.demo_verify --runtime-check`에 다른 고정 계획의 별도 승인을 추가합니다. 동일한 번들 fixture만
-실행해 `app.debug`와 메모리 내 ASGI health 응답 한 번을 확인하며, 옵션 선택만으로 실행을 승인하지
+실행해 `app.debug`와 메모리 내 ASGI health 응답 한 번을 확인하며 옵션 선택만으로 실행을 승인하지
 않습니다. 일반 저장소 연동·생성 회귀 테스트 모음·더 넓은 #35 완료 조건은 별도 작업입니다.
 alpha.3 공개는 더 넓은 #35 흐름의 완료가 아닌 별도의 [릴리스 검증](../releases/RELEASING.md)을 근거로 합니다.

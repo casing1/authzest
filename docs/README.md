@@ -234,7 +234,7 @@ implementation. The separate [owned-file repair Python API](reference/OWNER_POLI
 was delivered in PR #118, initially with temporary-file and scripted-process verification. A later
 separately approved source-API sequence at `fb90c46` observed captured before bytes (6/8 matches),
 exact diff acceptance/application, captured after bytes (8/8) and restoration; see the
-[bounded file-flow record](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst).
+[bounded file-flow record](reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst).
 It made no new AI call and does not establish installed-CLI acceptance. The separate
 [#82 opt-in CLI source implementation](guides/OWNER_FILE_WORKFLOW.md) now connects current validated
 recommendations through `--file-workflow`, preserving recommendation-only defaults and separate
@@ -265,10 +265,10 @@ The UI, #80, published alpha.3 and report schema are unchanged.
 Label review is not actual execution consent or an authenticated receipt. The dashboard at that
 checkpoint displayed static inventory; it did not provide AI review/approval controls.
 One later separately approved historical recipe `1.0` macOS arm64 source check matched all ten expected values;
-see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+see the [limited observation record](reference/OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst).
 It made no new AI call, leaves authorization unknown and consumes only that one approved run.
 A later freshly and separately approved recipe `1.1` source check at `e037986` also matched ten
-expectations; see the [separate current-coordinator record](reference/OWNER_POLICY_CHECK.md#current-coordinator-source-acceptance--2026-10-09-kst).
+expectations; see the [separate current-coordinator record](reference/OWNER_POLICY_CHECK.md#current-coordinator-source-acceptance-2026-10-09-kst).
 Both one-run approvals are consumed. #80's final-head CI/reviews and delivery subsequently completed
 through [PR #97](https://github.com/casing1/authzest/pull/97) on 2026-10-15 KST without another policy
 execution. This delivery published no release; alpha.3 is unchanged.
@@ -296,7 +296,7 @@ Linux x64, macOS arm64 and Windows x64. All three binary/checksum-manifest pairs
 local download; no local binary was executed. On one macOS/Python 3.12 host, disposable pipx environments
 passed 13/13 fresh-candidate checks and 13/13 after replacing genuine alpha.3 `99be6f5` / `0.1.0a3`
 with `b5f3eb8` / `0.1.0a4` in the same pipx venv; noneditable provenance and installed package-file
-bytes were verified. See the [dated candidate observation](releases/RELEASING.md#candidate-preflight-observation--2026-11-05-kst).
+bytes were verified. See the [dated candidate observation](releases/RELEASING.md#candidate-preflight-observation-2026-11-05-kst).
 
 These scan/preview observations are bound only to `b5f3eb8`, not later documentation merges. They do
 not establish other-OS source installation, clean consumer-device/native-installer or UI acceptance,
@@ -304,7 +304,7 @@ and made no AI call or policy-worker/active-file run. The historical `1d0ebb8` s
 and `c868152` owner-flow observation remain separate. Alpha.4 is unpublished; #83's remaining
 final-release/runtime/installation/public-asset gates remain open. On 2026-11-05 KST, the maintainer
 conditionally accepted #89's residual developer-tooling risk only for the next alpha.4, based on
-`7509a6a` with [visible warnings and formatting limits](development/FORMATTING.md#alpha4-maintainer-disposition--2026-11-05-kst).
+`7509a6a` with [visible warnings and formatting limits](development/FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst).
 #89 remains open with assessment `needs_review` / medium. This is not a fix, a confirmed AuthZest
 runtime vulnerability, a blanket future waiver or AI/worker permission. Compatible upstream fixes or
 new impact evidence require follow-up. The conditional 2026-11-04 target has passed; no new publication

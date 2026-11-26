@@ -103,7 +103,7 @@ contradictory or tampered files.
 - The repair is accepted because the reviewed cases matched, not because the model said so.
 - Five matching cases cover those requests only. They do not prove the whole application secure.
 - The identities are synthetic test headers, not a real login system.
-- Decline at any question to show that nothing further happens. An unchanged original stays unchanged.
+- Decline at any question to show that the flow stops there and the original is left as it was.
 
 The same flow ran end to end on 2026-11-25 from the source checkout and from an installed wheel;
 see the [readiness snapshot](../releases/0.1.0-READINESS.md).
@@ -117,7 +117,7 @@ It is independent of the external flow above.
 
 Active AI controls require a POSIX non-frozen, editable source checkout, Python 3.12, the UI extra
 and built frontend assets. Use Node.js 22.13 or later in the 22.x line, or Node.js 24.
-Wheels and standalone scan/preview binaries are not complete active-GUI installers.
+Wheels and the standalone scan/preview binaries do not include the active GUI.
 Run from the repository root:
 
 ```bash
@@ -135,10 +135,9 @@ source and policy.
 
 Prepare and review the local Docker image and private runtime configuration through the
 [owner-read workflow contract](../development/GENERATED_REPAIR_CONTRACT.md#running-the-approved-copy-workflow).
-Keep the reviewed Docker runtime running. Existing Codex ChatGPT login is reused; no API-key form
-or new OAuth login page is provided. The current adapter requires a trusted Codex CLI `0.153.0`.
-Runtime/source sharing and execution have their own current
-plans and decisions.
+Keep the reviewed Docker runtime running. The GUI reuses your existing Codex ChatGPT login, with
+no API-key form or new OAuth page. The current adapter requires a trusted Codex CLI `0.153.0`.
+Runtime, source sharing and execution each have their own current plan and decision.
 
 ### Open the active GUI
 
@@ -149,7 +148,7 @@ The default address is numeric loopback `127.0.0.1:8000`; this mode requires one
 .venv/bin/authzest ui --workspace examples/fastapi_inventory --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json
 ```
 
-Open the **complete private AI workspace URL printed in the terminal in a new browser tab**.
+Open the complete private AI workspace URL that the terminal prints, in a new browser tab.
 Its `authzest-ai` fragment carries a fresh launch capability; the page removes it and keeps it only
 in memory. Keep this URL private and omit it from recordings. A plain dashboard URL grants no
 active controls. After a page refresh, reopen the complete launch URL; restarting the server creates
@@ -168,8 +167,8 @@ a different capability. Use the built same-origin dashboard, not the Vite develo
 4. Show the source and declared policy, model-authored regression test and proposed replacement,
    and host-derived exact source/test diffs. Explain the bounded host activity; it is not raw Codex
    logs or a stream of model tokens.
-5. Compare the recorded checks and recovery in the table below. Inspect the semantic outcome,
-   application state, cleanup and restoration rather than treating a finished host job as a fix.
+5. Compare the recorded checks and recovery in the table below. A finished host job is not a fix
+   by itself, so inspect the semantic outcome, application state, cleanup and restoration.
 6. Use **Download result JSON**. Find it in the browser download list, or use the browser's download
    settings to choose a familiar private folder. Save it before another run replaces the result or
    the server is closed. The API accepts no server save path.
@@ -201,9 +200,9 @@ For static scanning and importing an existing result, start the ordinary read-on
 ```
 
 Select a final JSON you are authorized to view. Import supports `owner-read-suggestion` version 1.0
-and the historical generated-file format below, up to **512 KiB**. The local API labels the display
+and the historical generated-file format below, up to 512 KiB. The local API labels the display
 `imported-unverified`: it shows the record's claims and reads no referenced runtime, copy or log
-paths. The active GUI's final download can be up to **4 MiB**, so not every downloadable result can
+paths. The active GUI's final download can be up to 4 MiB, so not every downloadable result can
 be reimported. Keep full JSON and raw captures private. [Result viewer guide](RESULT_VIEWER.md)
 
 The CLI offers the same owner-read engine. Review its complete offline preview first:
@@ -232,8 +231,7 @@ current decisions.
 
 [#190](https://github.com/casing1/authzest/pull/190) delivers the opt-in GUI and
 [#192](https://github.com/casing1/authzest/pull/192) stops terminal-state polling. Their offline and
-mocked checks cover the UI bridge; they do not establish a new actual model/guest observation or
-stable acceptance. Use only invocation evidence you are authorized to present, with its own source
+mocked checks cover the UI bridge only; they include no actual model or guest observation. Use only invocation evidence you are authorized to present, with its own source
 revision, provenance and limits. Never publish private launch URLs, account details, raw logs or
 local result/copy paths in a screen recording.
 

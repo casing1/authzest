@@ -27,7 +27,7 @@ fixture after approval, accepts only its exact debug-setting replacement, and of
 copy-application, verification, and restoration decisions. General repository AI, generated
 regression-test execution, and edits to an existing checkout are not supported by that workflow.
 
-### Current interactive owner-read boundary — 23 November 2026
+### Current interactive owner-read boundary (23 November 2026)
 
 [#189](https://github.com/casing1/authzest/issues/189) adds an explicitly enabled local GUI for the
 existing owner-read engine, separate from the default read-only API and the historical fixture above.

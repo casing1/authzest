@@ -8,8 +8,8 @@
 [Documentation index](../README.md) · [Generated file workflow](GENERATED_FILE_WORKFLOW.md)
 
 The source dashboard displays an explicitly selected owner-read or generated-file workflow JSON and
-the existing static route inventory. It runs locally; website deployment is unnecessary. Ordinary
-launches remain read-only. The explicit owner-read mode below connects the same engine used by the
+the existing static route inventory. It runs locally and needs no website deployment. Ordinary
+launches stay read-only. The explicit owner-read mode below connects the same engine used by the
 CLI to separate current GUI decisions for sharing, execution, copy application and recovery.
 
 ## Supported source installation
@@ -29,8 +29,8 @@ cd ..
 Open `http://127.0.0.1:8000`. Keep the server running; Ctrl-C stops it.
 `authzest ui --help` lists `--host`, `--port`, `--reload`, `--workspace` and `--ai-runtime-config`. The workspace fixes the
 static scan root, not a result directory. Rebuild the frontend after UI source changes. This route
-uses an editable source install so the API can find `frontend/dist`; wheels and native scan/preview
-binaries are not advertised as complete active-workflow/UI installers.
+uses an editable source install so the API can find `frontend/dist`. Wheels and the native
+scan/preview binaries do not include a complete UI or active-workflow installation.
 
 ## Run the local AI workflow
 
@@ -86,9 +86,9 @@ Declining the after check with an empty answer may offer a fresh restore decisio
 permits it. Complete that separate decision to restore. Unknown cleanup, stale input and user edits
 remain visible and must not be bypassed. A finished job is not itself a verified fix.
 
-The interactive route is tracked in [#189](https://github.com/casing1/authzest/issues/189).
-Offline/mock checks of this bridge do not constitute a new installed live-Codex/guest observation,
-release acceptance or permission to reuse a previous execution decision.
+The interactive route is tracked in [#189](https://github.com/casing1/authzest/issues/189). Its
+offline and mock checks are not live Codex or guest observations, and they grant no permission to
+reuse an earlier execution decision.
 
 ## Import an existing result
 
@@ -136,7 +136,7 @@ results, previews and arbitrary JSON have their own formats and are rejected by 
 ## Import boundary and interpretation
 
 The file chooser sends selected bytes to the local API's `POST /api/results/preview`. Browser and
-API limit the file to **512 KiB**. The API checks bounded JSON shape and supported version, then
+API limit the file to 512 KiB. The API checks bounded JSON shape and supported version, then
 returns an `authzest-workflow-view` projection with schema `1.0` and provenance `imported-unverified`.
 It accepts no filesystem path and does not save the import, follow receipt directories, run
 commands, contact a model or apply patches. Do not upload private records to a hosted viewer.
@@ -147,9 +147,9 @@ execution IDs. This is not a general-purpose redaction tool: selected source and
 themselves contain sensitive information. Original JSON and raw phase captures remain in their
 existing private locations; the viewer neither retrieves nor authenticates them.
 
-An import displays what the record claims. Completion, approved decisions, test exit values and
-matching finite controls are not a security pass, new permission or authenticated execution proof.
-Unknown, not-run, declined, unsupported, failed and recovery-required states remain distinct.
-Before/after counts refer to maintained finite controls; generated test reports remain auxiliary.
-The viewer does not establish real authentication, resource enforcement, isolation or a generally
-verified repair. Opening a record cannot resume a session or reuse approval.
+An import shows what the record claims. A completed run, approved decisions, test exit codes and
+matching controls are not a security verdict, a new permission or proof that the run happened.
+Unknown, not-run, declined, unsupported, failed and recovery-required states stay distinct.
+Before/after counts refer to the maintained finite controls, and generated test reports are
+auxiliary. The viewer does not establish real authentication, resource enforcement, isolation or a
+generally verified repair, and opening a record cannot resume a session or reuse an approval.

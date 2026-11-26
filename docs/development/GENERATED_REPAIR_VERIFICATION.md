@@ -3,11 +3,11 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_VERIFICATION.md">한국어</a>
 </p>
 
-# Generated repair verification — offline foundation
+# Generated repair verification (offline foundation)
 
 [Documentation index](../README.md) · [Generation contract](GENERATED_REPAIR_CONTRACT.md)
 
-## Status and scope — 2026-11-09 KST
+## Status and scope (2026-11-09 KST)
 
 This is the first offline implementation slice of
 [#152](https://github.com/casing1/authzest/issues/152), under
@@ -119,16 +119,16 @@ boundary, bind actual captured file and runtime identities, and retain capture/c
 The generated pytest report remains untrusted auxiliary information: generated Python can forge
 its own failure/pass report. It cannot replace host-compared maintained controls.
 
-## Proposed isolation boundary — not implemented
+## Proposed isolation boundary (not implemented)
 
 The accepted direction is an optional trusted local Linux Docker engine, not host execution of
 generated pytest and not a widening of the registered-policy worker. Each before/after phase
 would use fresh roles:
 
-- **T — generated test:** exact captured app/test bytes in a fixed pytest entry point, network none.
-- **A — application:** exact captured app bytes, no generated test, fixed image-owned ASGI server,
+- **T (generated test:)** exact captured app/test bytes in a fixed pytest entry point, network none.
+- **A (application:)** exact captured app bytes, no generated test, fixed image-owned ASGI server,
   network none and a fixed container-local loopback port.
-- **B — maintained relay:** separate PID/filesystem namespaces, no source/test mount; joins only
+- **B (maintained relay:)** separate PID/filesystem namespaces, no source/test mount; joins only
   A's exact network namespace, sends fixed requests and returns bounded response facts.
 - **Host oracle:** keeps expected values and final verdicts outside generated Python and guests.
 

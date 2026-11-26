@@ -9,7 +9,7 @@
 [검토한 설계](../development/OWNER_POLICY_REPAIR_CHECK_DESIGN.md) ·
 [등록 수정 쌍](OWNER_POLICY_REPAIR_PAIR.md) · [추천](OWNER_POLICY_REPAIR_RECOMMENDATION.md)
 
-## 가용성과 근거 — 2026-10-29 KST
+## 가용성과 근거 (2026-10-29 KST)
 
 [PR #110](https://github.com/casing1/authzest/pull/110)의 미출시 소스 구현은
 `authzest.runner.owner_policy_repair_check`, 전용 고정 worker와 제한된 transport를 추가합니다.
@@ -24,7 +24,7 @@
 기존 #80 coordinator·worker·정책 등록·과거 관찰은 그대로 유지합니다. 이번 구현은 #81/#35/#82를
 완료하거나 새 리뷰·실행·패치·발행 권한을 부여하지 않습니다. 별도 전달 결과는 아래에 기록합니다.
 
-## 별도 승인한 before 수용 — 2026-10-28 KST
+## 별도 승인한 before 수용 (2026-10-28 KST)
 
 [별도 before 전용 승인](https://github.com/casing1/authzest/pull/110#issuecomment-6460245210)은
 `510377c`에서 **2026-10-28 11:49:55 KST**에 고정 소스 실행 1회로 소비됐습니다. 앞선 오프라인
@@ -54,7 +54,7 @@ Provider 호출은 `0`, 인가는 `unknown`, 적용/복구는 `not-run`을 유�
 이후의 별도 after 승인과 관찰은 아래에 기록합니다. Before 실행은 after를 승인하거나 자동으로
 시작하지 않았고 before를 다시 실행할 때도 새 승인이 필요합니다.
 
-## 별도 승인한 after 대조군 수용 — 2026-10-28 KST
+## 별도 승인한 after 대조군 수용 (2026-10-28 KST)
 
 [별도 after 전용 수용 기록](https://github.com/casing1/authzest/pull/110#issuecomment-6460474112)은
 **2026-10-28 13:11:38 KST**의 승인한 실행 1회를 기록합니다. 당시 커밋은
@@ -88,7 +88,7 @@ AI/네트워크 호출·임의 저장소 실행·패치는 없었고 과거 산�
 병합·패치·릴리스를 승인하지 않았습니다. 당시 관찰 시점에는 전달이 대기 중이었으며 이후 별도
 승인한 완료 결과는 아래에 기록합니다. #81/#35/#82는 미완료입니다.
 
-## 소스 전달 완료 — 2026-10-28 KST
+## 소스 전달 완료 (2026-10-28 KST)
 
 [별도 최종 head 리뷰 승인](https://github.com/casing1/authzest/pull/110#issuecomment-6460920750) 뒤
 `c265bf1`에 설정된 자동 리뷰 두 건은
@@ -223,7 +223,7 @@ after의 8개 일치는 위의 각각 별도 승인한 실행에서 관찰했습
 [검토한 설계](../development/OWNER_POLICY_FILE_REPAIR_DESIGN.md)에 따른 별도
 [소유 파일 수정 API](OWNER_POLICY_FILE_REPAIR.md)를 PR #118에서 전달했으며 최초 검증은
 임시 파일·scripted 프로세스를 사용한 오프라인 검증이었습니다. 이후 별도 승인한
-[파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)은
+[파일 흐름 수용](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)은
 2026-10-29 소스 커밋 `fb90c46`에서 실제 copied-before 검사 1회(6/8), 정확한 diff 수락,
 적용 1회, 캡처한 적용 after 검사 1회(8/8), 복구 1회를 관찰했습니다. 이 소스 전용 API 기록이
 내장 after를 적용 파일 검사로 바꾸거나 CLI 통합·새 실행 권한을 추가하지는 않습니다.

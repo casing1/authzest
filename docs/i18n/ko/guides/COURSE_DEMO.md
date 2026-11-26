@@ -3,11 +3,11 @@
 [English](../../../guides/COURSE_DEMO.md) · [문서 목차](../INDEX.md) · [과제 제출 #85](https://github.com/casing1/authzest/issues/85)
 
 주 시연은 이 저장소 밖의 FastAPI 파일에 있는 객체 소유권 결함을 고치는 과정입니다. AuthZest가 Codex에
-PoC와 수정안을 받고, 직접 검토한 사례로 격리된 컨테이너에서 결함과 수정을 확인한 뒤, 백업과 함께 원본에
-쓰고, 요청하면 되돌립니다. 마지막으로 저장한 결과를 로컬 대시보드에서 보여 줍니다. 아래쪽의 owner-read GUI
+PoC와 수정안을 받고 직접 검토한 사례로 격리된 컨테이너에서 결함과 수정을 확인한 뒤, 백업과 함께 원본에
+쓰고 요청하면 되돌립니다. 마지막으로 저장한 결과를 로컬 대시보드에서 보여 줍니다. 아래쪽의 owner-read GUI
 예제는 선택 사항입니다.
 
-전체 시연은 약 15분이며, 그중 모델 호출과 두 번의 컨테이너 검사는 약 2분입니다. macOS arm64, Python 3.12,
+전체 시연은 약 15분이며 그중 모델 호출과 두 번의 컨테이너 검사는 약 2분입니다. macOS arm64, Python 3.12,
 Node.js 22.13 이상(22.x) 또는 24, Docker Desktop, ChatGPT 계정으로 로그인한 Codex CLI `0.153.0`(다른 버전은 거절)이 필요합니다. 0.1.0의
 지원 범위는 [릴리스 노트](../releases/0.1.0.md)를 보세요.
 
@@ -15,7 +15,7 @@ Node.js 22.13 이상(22.x) 또는 24, Docker Desktop, ChatGPT 계정으로 로�
 
 ### 한 번만 준비
 
-저장소 최상위에서 실행합니다. runtime 명령은 고정 wheel 14개를 내려받아 모든 바이트를 확인하고, 대상
+저장소 최상위에서 실행합니다. runtime 명령은 고정 wheel 14개를 내려받아 모든 바이트를 확인하고 대상
 코드를 실행하지 않고 A/B 이미지 두 개를 빌드한 뒤, `~/.authzest/runtime`에 비공개 프로필을 씁니다.
 
 ```bash
@@ -54,7 +54,7 @@ umask 077
 ```
 
 Codex 계정에 표시되는 모델 ID를 사용하세요. 진행 상황과 질문 여섯 개가 터미널에 나옵니다. 질문마다 입력할
-코드를 보여 주며, Enter는 거절이고 모든 코드는 300초 뒤 만료됩니다.
+코드를 보여 주며 Enter는 거절이고 모든 코드는 300초 뒤 만료됩니다.
 
 | 코드               | 입력하기 전에 보여 줄 내용                                                                  |
 | ------------------ | ------------------------------------------------------------------------------------------- |
@@ -81,7 +81,7 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 .venv/bin/authzest repo-restore "$(.venv/bin/python -c "import json, pathlib; print(json.loads(pathlib.Path('~/authzest-demo-result.json').expanduser().read_text())['original']['record_path'])")"
 ```
 
-코드를 한 번 더 묻고, 쓰기 이후 파일이 편집됐으면 거절합니다. `diff`를 다시 실행하면 아무것도 출력되지
+코드를 한 번 더 묻고 쓰기 이후 파일이 편집됐으면 거절합니다. `diff`를 다시 실행하면 아무것도 출력되지
 않습니다.
 
 ### 4. 저장 결과 보여 주기
@@ -99,7 +99,7 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 - 수정안은 모델의 주장이 아니라 검토한 사례가 일치했기 때문에 받아들입니다.
 - 사례 5개의 일치는 그 요청에만 해당하며 앱 전체의 보안을 증명하지 않습니다.
 - 사용자 식별은 합성 테스트 헤더이며 실제 로그인 시스템이 아닙니다.
-- 어느 질문에서든 거절하면 더 진행되지 않고, 바뀌지 않은 원본은 그대로 남는다는 것을 보여 줄 수 있습니다.
+- 어느 질문에서든 거절하면 흐름이 거기서 멈추고 원본도 그대로 남는다는 것을 보여 줄 수 있습니다.
 
 같은 흐름이 2026-11-25 소스 checkout과 설치한 wheel에서 끝까지 실행됐습니다.
 [준비 상태](../releases/0.1.0-READINESS.md)를 보세요.
@@ -112,7 +112,7 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 
 활성 AI 기능에는 동결 바이너리가 아닌 POSIX의 편집 가능 소스 checkout, Python 3.12, UI extra와
 빌드한 프런트엔드 자산이 필요합니다. Node.js 22.13 이상인 22.x 또는 Node.js 24를 사용합니다.
-Wheel과 독립 스캔/미리보기 바이너리는 완전한 활성 GUI 설치판이 아닙니다. 저장소 루트에서 실행합니다.
+Wheel과 독립 스캔/미리보기 바이너리에는 활성 GUI가 들어 있지 않습니다. 저장소 루트에서 실행합니다.
 
 ```bash
 python3.12 -m venv .venv
@@ -141,10 +141,10 @@ AI 흐름은 패키지에 포함된 합성 보관 노트 소스와 정책을 사
 .venv/bin/authzest ui --workspace examples/fastapi_inventory --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json
 ```
 
-**터미널에 출력된 비공개 AI 작업 공간 URL 전체를 새 브라우저 탭에서 엽니다.** `authzest-ai`
+터미널에 출력된 비공개 AI 작업 공간 URL 전체를 새 브라우저 탭에서 엽니다. `authzest-ai`
 fragment에는 새 접속 권한이 담기며 화면이 이를 제거하고 메모리에만 유지합니다. URL은 비공개로
 보관하고 녹화에서 제외합니다. 일반 대시보드 URL만으로는 활성 기능을 사용할 수 없습니다.
-새로고침했다면 전체 실행 URL로 다시 열고, 서버를 재시작하면 다른 접속 권한을 사용합니다.
+새로고침했다면 전체 실행 URL로 다시 열고 서버를 재시작하면 다른 접속 권한을 사용합니다.
 Vite 개발 프록시 대신 빌드한 같은 출처 대시보드를 사용합니다.
 
 ### 결정과 결과 시연
@@ -192,9 +192,9 @@ Core가 별도의 복구 계획을 제시하면 그 계획을 새로 검토·결
 ```
 
 열람할 권한이 있는 최종 JSON을 선택합니다. `owner-read-suggestion` 버전 1.0과 아래의 이전 생성
-파일 형식을 최대 **512 KiB**까지 가져옵니다. 로컬 API의 `imported-unverified` 표시는 기록에 적힌
+파일 형식을 최대 512 KiB까지 가져옵니다. 로컬 API의 `imported-unverified` 표시는 기록에 적힌
 주장을 보여 준다는 뜻이며 참조된 런타임·복사본·로그 경로를 읽지 않습니다. 활성 GUI의 최종 다운로드는
-최대 **4 MiB**이므로 모든 다운로드 결과를 다시 가져올 수 있는 것은 아닙니다. 전체 JSON과 원본 캡처는
+최대 4 MiB이므로 모든 다운로드 결과를 다시 가져올 수 있는 것은 아닙니다. 전체 JSON과 원본 캡처는
 비공개로 보관합니다. [결과 화면 안내](RESULT_VIEWER.md)
 
 CLI도 같은 owner-read 엔진을 사용합니다. 먼저 전체 오프라인 미리보기를 검토합니다.
@@ -227,7 +227,7 @@ CLI도 같은 owner-read 엔진을 사용합니다. 먼저 전체 오프라인 �
 비공개 실행 URL, 계정 정보, 원본 로그나 로컬 결과/복사본 경로를 녹화에서 공개하지 않습니다.
 
 공개한 관리형 테스트 예제 검증은 유지보수자가 작성한 제안과 실제 격리된 Linux guest 4개를
-사용했습니다. 기대한 before 단언 실패를 관찰하고 정확한 변경을 새 복사본에만 적용했으며,
+사용했습니다. 기대한 before 단언 실패를 관찰하고 정확한 변경을 새 복사본에만 적용했으며
 after 테스트 통과와 의도한 대조 7개 일치, 원래 소스 바이트 복구와 guest 4개 제거를 확인했습니다.
 이 근거는 모델 생성 및 GUI 수용과 구별합니다. [관리형 테스트 예제 검증 #187](https://github.com/casing1/authzest/pull/187)
 
@@ -307,11 +307,11 @@ npm --prefix frontend run build
 | 범위                                                                                                                                                              | 관찰과 한계                                                                                                                                                                                                                                                                                                       |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`34baebc`](https://github.com/casing1/authzest/commit/34baebc) 설치형 실행 기록, [#172 병합 `ad4dea7`](https://github.com/casing1/authzest/pull/172)과 같은 트리 | 실제 어댑터가 테스트와 소스 변경을 제안했습니다. 생성 테스트 종료 코드는 before 1, after 0이었습니다. 독립 대조는 각 단계의 기대 프로필에 대해 사례 17/17개와 요청 21/21개에 일치했습니다. 승인한 변경은 복사본에만 적용했고 복사본을 원래 바이트로 복구했습니다. 정리를 확인했고 checkout 바이트를 보존했습니다. |
-| [`c454628` / #173](https://github.com/casing1/authzest/pull/173) 로컬 화면                                                                                        | 브라우저에서 이전 실제 기록을 열었고, 별도로 버전 1.0 거절도 표시했습니다. 버전 1.0 성공과 소스 필드는 테스트 예제로 검증했습니다. 이 리비전의 새로운 버전 1.0 실제 성공 기록은 없습니다.                                                                                                                         |
+| [`c454628` / #173](https://github.com/casing1/authzest/pull/173) 로컬 화면                                                                                        | 브라우저에서 이전 실제 기록을 열었고 별도로 버전 1.0 거절도 표시했습니다. 버전 1.0 성공과 소스 필드는 테스트 예제로 검증했습니다. 이 리비전의 새로운 버전 1.0 실제 성공 기록은 없습니다.                                                                                                                          |
 | [PR CI](https://github.com/casing1/authzest/actions/runs/44273783577)와 [병합 CI](https://github.com/casing1/authzest/actions/runs/44276437537)                   | 검토한 PR에서 Python 테스트 8,712개와 Windows 테스트 3,037개가 통과했고 Windows 테스트 422개를 건너뛰었습니다. 병합 후 [CodeQL 분석](https://github.com/casing1/authzest/actions/runs/44276438312)을 포함한 검사 작업이 통과했습니다.                                                                             |
 | [독립 평가 #84](https://github.com/casing1/authzest/issues/84)                                                                                                    | 이 제출에서 인용할 독립 비교 근거는 확보되지 않았습니다. 기록한 단계는 한정된 흐름의 동작을 측정하며 접근제어 보장 여부는 불명입니다.                                                                                                                                                                             |
 
-정식판 수용은 [#150](https://github.com/casing1/authzest/issues/150)에서 추적하며, 설치형 수용의 후속
+정식판 수용은 [#150](https://github.com/casing1/authzest/issues/150)에서 추적하며 설치형 수용의 후속
 작업은 [#151](https://github.com/casing1/authzest/issues/151)과 [#152](https://github.com/casing1/authzest/issues/152)에
 남아 있습니다. 공개 alpha.4 산출물은 과거 릴리스 근거입니다. 후보별 도구 의존성에 관한
 [#89](https://github.com/casing1/authzest/issues/89)와 [#171](https://github.com/casing1/authzest/issues/171)은

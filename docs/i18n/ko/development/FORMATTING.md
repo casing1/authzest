@@ -8,13 +8,13 @@
 > [!WARNING]
 > 익숙하지 않은 checkout을 먼저 검토한 뒤 아래 보호 명령을 사용하세요. 직접 CLI·에디터·API 호출에는
 > 보호 명령의 사전 검사가 적용되지 않습니다. 과거 위험 수용은
-> [alpha.4에만 적용](#alpha4-관리자-판단--2026-11-05-kst)됩니다.
+> [alpha.4에만 적용](#alpha4-관리자-판단-2026-11-05-kst)됩니다.
 
 ## 현재 소스 포맷터
 
 잠금 파일은 [Prettier 3.10.1](https://github.com/prettier/prettier/releases/tag/3.10.1)을 고정합니다.
 [공식 npm 배포 파일](https://registry.npmjs.org/prettier/-/prettier-3.10.1.tgz)이 레지스트리의 SHA-512와
-일치함을 확인했습니다. 배포본의 고지에는 내장 `brace-expansion` 5.0.12가 명시되어 있으며, 이전 버전에는
+일치함을 확인했습니다. 배포본의 고지에는 내장 `brace-expansion` 5.0.12가 명시되어 있으며 이전 버전에는
 5.0.6이 들어 있었습니다. 확인한 파서 코드는 [#89](https://github.com/casing1/authzest/issues/89)에서 추적하는
 [다시 쓰기](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr),
 [중첩 확장](https://github.com/advisories/GHSA-qhr7-859c-m2p7),
@@ -22,12 +22,12 @@
 의존성 검사는 기존 CLI와 CJS API가 사용하는 설치된 ESM 번들을 검토한 SHA-256과 대조합니다.
 정상 포맷 테스트에서는 EditorConfig 동작을 확인합니다.
 
-### Picomatch 후속 확인 — 2026-11-19 KST
+### Picomatch 후속 확인 (2026-11-19 KST)
 
 GitHub는 11월 18일 UTC에 [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)를
 철회했습니다. 확인 시점에 [CVE 원본 API](https://cveawg.mitre.org/api/cve/CVE-2026-112366)는
 여전히 `PUBLISHED`를 반환했습니다. GitHub는 수정 버전을 표시하지 않습니다. `d793d32`의 개발
-도구는 picomatch 4.0.7을 사용하고, Prettier 개발 도구 번들에는 picomatch 2.3.2가 들어 있습니다.
+도구는 picomatch 4.0.7을 사용하고 Prettier 개발 도구 번들에는 picomatch 2.3.2가 들어 있습니다.
 [#171](https://github.com/casing1/authzest/issues/171)에서 두 사본과 두 출처의 상태를 추적합니다.
 
 보호 명령은 고정된 디렉터리 또는 검사한 기존 Markdown 경로를 전달합니다.
@@ -37,7 +37,7 @@ GitHub는 11월 18일 UTC에 [GHSA-fc5q-39xc-vjpf](https://github.com/advisories
 한정됩니다. 편집기 유효 설정, 확장 버전, 도구 직접 실행 경로는 별도 근거가 필요합니다.
 기존 alpha.4 위험 결정은 공개 프리릴리스에 적용됩니다.
 
-### 최종 소스 사전검증 — 2026-11-23 KST
+### 최종 소스 사전검증 (2026-11-23 KST)
 
 소스 `80b574d`의 lock·포맷터 guard·검토한 설정 바이트는 이전 평가와 같습니다.
 [#197](https://github.com/casing1/authzest/issues/197)에 새 설치 도구와 세 플랫폼 native 아카이브
@@ -105,7 +105,7 @@ VS Code용 선택형 [authzest-review.code-workspace](../../../../authzest-revie
 Checkout과 toolchain을 검토한 뒤 터미널에서 [명령](#명령)의 보호 명령을 사용하세요. 직접 Prettier
 호출이나 **문서 서식 지정(Format Document)**으로 대체하지 않습니다. Guard가 설정을 거절하면
 우회하지 말고 설정을 검토하세요. 다른 편집기에서도 이 checkout의 자동 Prettier 연동을 끄고 같은
-명령을 사용하며, 편집기 간 설정 호환성을 보장하지 않습니다. 테스트는 프리셋 데이터와 npm 경로를
+명령을 사용하며 편집기 간 설정 호환성을 보장하지 않습니다. 테스트는 프리셋 데이터와 npm 경로를
 검사할 뿐 실제 편집기를 실행하지 않습니다. 설치된 포맷터와 번들은 별도로 검사합니다.
 
 ## 검토한 설정
@@ -158,7 +158,7 @@ SHA-1 `09b826918c91cd4cbc80e0cbd1d2a922ff04f233`은 registry 메타데이터와 
 
 guard는 이 저장소 명령에만 적용합니다. 직접 Prettier 호출·editor 연동·직접 CJS/ESM 모듈 호출은
 guard로 보장하지 않습니다. 제한 시간은 OS sandbox가 아닙니다. 이 경계는 설치된 toolchain과
-workflow script를 신뢰하고, 사전 검사부터 Prettier가 다시 읽을 때까지 파일이 유지되며,
+workflow script를 신뢰하고 사전 검사부터 Prettier가 다시 읽을 때까지 파일이 유지되며
 같은 사용자로 실행하는 악의적인 동시 작성자가 없다는 가정을 둡니다.
 
 2026-10-08에 검사한 런타임 소스와 packaging spec은 Prettier를 호출하거나 Node toolchain을
@@ -166,10 +166,10 @@ workflow script를 신뢰하고, 사전 검사부터 Prettier가 다시 읽을 �
 이 기록은 확인한 개발 도구 경로를 런타임 주장과 구분했으며 전체 의존성 감사나 새 바이너리
 내용 증명은 아니었습니다.
 
-## 현재 정적 재확인 — 2026-11-02 KST
+## 현재 정적 재확인 (2026-11-02 KST)
 
 소스 `ee49f5a04be41453aa7bf7b75438d04761b5880a`의 별도 정적 재확인에서도 전달된
-[#89](https://github.com/casing1/authzest/issues/89) 주장은 **`needs_review` / 신뢰도 medium**이며,
+[#89](https://github.com/casing1/authzest/issues/89) 주장은 **`needs_review` / 신뢰도 medium**이며
 단일 항목 needs-review 대기열의 순위는 1입니다. 위의 과거 기록에 대한 후속 판단이지 새로 확정한
 AuthZest 런타임 취약점이나 위험 수용 결정이 아닙니다.
 
@@ -202,7 +202,7 @@ npm 감사 0이나 CI 통과도 이 판단을 바꾸지 않습니다. 정적 판
 호환 배포 바이트 교체 또는 정확한 후보의 잔여 개발 도구 위험에 대한 명시적 결정을 기록하는 것이었습니다.
 이후 아래 관리자 결정은 별도로 구분하며 #89는 열어 둡니다.
 
-## Alpha.4 관리자 판단 — 2026-11-05 KST
+## Alpha.4 관리자 판단 (2026-11-05 KST)
 
 관리자는 설명된 위험을 검토한 뒤 명시적 경고와 후속 추적을 조건으로 **다가오는 alpha.4의 개발용
 포맷터 가용성 잔여 위험만 수용**했습니다. 추적은 [#89](https://github.com/casing1/authzest/issues/89)와

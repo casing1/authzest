@@ -15,7 +15,7 @@
 `RepositoryFileSession`의 생성자와 일반 파일 결정은 계속 v1.0 전용입니다. 내부 runtime
 checkpoint는 진행 중 결정이 없는 현재 `copied-before` 또는 `applied-after` 복사본을 읽고
 검증합니다. 선택한 소스·context 바이트, 생성 테스트, evidence, journal revision과 파일 식별자를
-포함합니다. 발급한 정확한 live checkpoint만 다시 확인할 수 있으며, 대기 결정·상태 전환·편집·교체,
+포함합니다. 발급한 정확한 live checkpoint만 다시 확인할 수 있으며 대기 결정·상태 전환·편집·교체,
 닫힌 세션이나 과거 객체는 사용할 수 없습니다. 바뀌지 않은 checkpoint를 별도 T/A stage에서 함께
 사용할 수 있습니다. 저장한 JSON은 checkpoint를 다시 열거나 실행 권한을 부여하지 않습니다.
 
@@ -35,11 +35,11 @@ stage/                         # host-private; never mounted as a directory
     tests/test_authzest_regression.py   # T only
 ```
 
-입력 파일은 mode `0444`, 입력 디렉터리는 `0555`로 봉인하며, 바깥 디렉터리는 `0700`, record는
+입력 파일은 mode `0444`, 입력 디렉터리는 `0555`로 봉인하며 바깥 디렉터리는 `0700`, record는
 `0600`을 유지합니다. staging과 create 계획 전후로 descriptor·경로명 식별자, 정확한 구성원,
-mode·소유자·단일 링크 파일·바이트를 검사합니다. 일반적인 변경은 stage를 무효화하지만,
+mode·소유자·단일 링크 파일·바이트를 검사합니다. 일반적인 변경은 stage를 무효화하지만
 동일한 host 계정으로 쓰는 적대적 행위자에 대한 원자적 방어는 아닙니다. 부분 실패 시 파일과
-할당·정리 사실을 보존합니다. `close()`는 열린 host descriptor를 닫으며, 증거를 삭제하거나
+할당·정리 사실을 보존합니다. `close()`는 열린 host descriptor를 닫으며 증거를 삭제하거나
 guest 정리를 주장하지 않습니다. Snapshot과 stopped-create 계획은 과거 관찰이며 재개 가능한
 세션이나 실행 허가가 아닙니다.
 
@@ -62,7 +62,7 @@ guest 소스에서 정확한 mount 목록과 캡처 파일의 크기·hash를 �
 
 관리하는 소스는 `runtime/repository/`에 있으며 기존 고정 사례 launcher와 분리합니다. 진입점은
 정확한 Linux script, Python `-I -B`, UID/GID `65532`를 요구합니다. 상속한 환경·설정을 비우고 입력
-검색 경로를 제거합니다. 프로젝트 import 전에 kernel을 확인하며, 선언한 읽기 전용 mount,
+검색 경로를 제거합니다. 프로젝트 import 전에 kernel을 확인하며 선언한 읽기 전용 mount,
 resource/cgroup 설정, capability 없음, no-new-privileges, seccomp, 비공개 process view와 좁게
 지원하는 network 관찰을 요구합니다. 이 진단으로 검토한 이미지, 탈출 불가능한 격리나 부하 실험을
 통한 제한 검증을 증명하지는 않습니다.
@@ -111,7 +111,7 @@ guest import 지원을 보장하지 않습니다. Bootstrap은 제공한 mount �
 설치나 mount 확대 없이 실패해야 합니다.
 
 `runtime/repository/images/`의 새 recipe·자산 manifest는 **새 소스 기준**을 정의합니다. 고정한
-base·lock 입력과 별도 진입 자산을 사용하며, 이미지 ID는 없고 내용도 검증하지 않았습니다.
+base·lock 입력과 별도 진입 자산을 사용하며 이미지 ID는 없고 내용도 검증하지 않았습니다.
 기존 고정 사례 이미지나 과거 수용 기록으로 이 pin을 충족할 수 없습니다. 이 기반을 위해
 이미지를 빌드·검사·수용·실행하지 않았습니다.
 

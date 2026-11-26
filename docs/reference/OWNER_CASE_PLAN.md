@@ -82,7 +82,7 @@ fresh independent exact-plan execution decision. The offline plan here remains n
 Only the owned pure policy is in scope; HTTP/auth/database, arbitrary source/commands, generated
 test execution, install hooks, networking and model calls are excluded. The labels-only decision
 grants no execution; a later separately approved exact #80 source check produced
-[ten matching observations](OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+[ten matching observations](OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst).
 Pure-policy results do not prove authentication
 or endpoint authorization. A correct policy may need no change.
 

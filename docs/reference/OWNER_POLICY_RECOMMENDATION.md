@@ -9,7 +9,7 @@
 [Original S1 design](../development/OWNER_POLICY_IMPROVEMENT_DESIGN.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81)
 
-## Availability and boundary — 2026-10-16 KST
+## Availability and boundary (2026-10-16 KST)
 
 The S1 source implementation introduced in [PR #99](https://github.com/casing1/authzest/pull/99) provides a pure Python data API in
 `authzest.codex.owner_policy_recommendation`: a fixed request, strict recommendation validation

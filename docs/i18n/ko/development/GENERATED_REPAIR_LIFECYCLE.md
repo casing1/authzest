@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 생명주기 — 순수 모의 전용
+# 생성 수정 생명주기 (순수 모의 전용)
 
 [문서 목차](../INDEX.md) · [오프라인 복사 세션](GENERATED_REPAIR_SESSION.md) ·
 [검증 기반](GENERATED_REPAIR_VERIFICATION.md)
 
-## 범위 — 2026-11-12 KST
+## 범위 (2026-11-12 KST)
 
 [#152](https://github.com/casing1/authzest/issues/152)의 또 다른 부분 오프라인 단계입니다.
 비공개 생명주기 모델은 수용한 **T → 새 A/B** 컨테이너 순서를 제한된 모의 이벤트로 표현합니다.

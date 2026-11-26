@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 guest 진입점 — 오프라인 소스
+# 생성 수정 guest 진입점 (오프라인 소스)
 
 [문서 목차](../INDEX.md) · [HTTP relay](GENERATED_REPAIR_HTTP_RELAY.md) ·
 [생명주기 모델](GENERATED_REPAIR_LIFECYCLE.md)
 
-## 범위 — 2026-11-18 KST
+## 범위 (2026-11-18 KST)
 
 이번 [#152](https://github.com/casing1/authzest/issues/152) 부분 단계는 관리형 standalone guest
 launcher **소스**를 추가하고 가짜 의존성·소켓으로만 검사합니다. 실제 guest·앱·생성 테스트·소켓·
@@ -65,7 +65,7 @@ A는 ASGI3·asyncio·h11·worker 하나를 고정하고 reload·proxy header·We
 hook을 끕니다. health route도 추가하지 않습니다. import·시작 로그·프로세스 시작 성공은 신뢰할 수
 있는 HTTP 준비 근거가 아닙니다. 유지 관리하는 startup은 서버 시작 뒤에만 `AUTHZEST_A_STARTED`를
 출력하지만 앱이 stdout 신호를 위조할 수 있습니다. 비공개 조정기는 누적 준비 시간을 지키며 B의 순서
-조정에만 이를 사용하고, 완전한 독립 HTTP 관찰을 별도로 요구합니다.
+조정에만 이를 사용하고 완전한 독립 HTTP 관찰을 별도로 요구합니다.
 
 B는 숫자 IPv4 loopback과 요청마다 새로운 TCP 소켓만 쓰며 hostname 탐색·proxy·`create_connection`을
 사용하지 않습니다. 연결 dispatch 전에 codec이 소켓 소유권을 받아 연결/설정 실패·취소에도 닫기를

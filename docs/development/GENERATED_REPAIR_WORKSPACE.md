@@ -3,11 +3,11 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_WORKSPACE.md">한국어</a>
 </p>
 
-# Generated repair private workspace — offline file-I/O foundation
+# Generated repair private workspace (offline file-I/O foundation)
 
 [Documentation index](../README.md) · [Verification foundation](GENERATED_REPAIR_VERIFICATION.md)
 
-## Scope — 2026-11-16 KST
+## Scope (2026-11-16 KST)
 
 This is the **private low-level file-I/O seam** under
 [#152](https://github.com/casing1/authzest/issues/152). The opt-in

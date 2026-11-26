@@ -36,12 +36,12 @@ module/submodule 충돌을 거부합니다. 유효한 선언만으로 앱 객체
 모델은 선택한 소스·정책·근거와 명시적 인터페이스를 받습니다. 독립 사례 집합, case ID, 기대값이나
 사람의 검토 선언은 받지 **않습니다**. 제공자 접근, 공유 결정과 transport 호환성은 별도 조건입니다.
 [공식 App Server 문서](https://learn.chatgpt.com/docs/app-server#turns)는 turn별 `outputSchema`를
-설명하지만, 그 문서가 이 프로젝트의 고정된 `0.153.0` adapter와 새 요청의 호환성을 입증하지는
+설명하지만 그 문서가 이 프로젝트의 고정된 `0.153.0` adapter와 새 요청의 호환성을 입증하지는
 않습니다. 이번 단계에는 RPC/pin 변경이나 실제 모델 호출이 없습니다.
 
 ## 호스트에만 두는 독립 사례 선언
 
-`build_repository_cases(data)`는 동결된 `RepositoryCaseSet`을 반환하고,
+`build_repository_cases(data)`는 동결된 `RepositoryCaseSet`을 반환하고
 `validate_repository_cases`는 이를 정확히 재구성합니다. 기반 정보는 선택한 소스, 정책, 전체 선택
 내용과 테스트 인터페이스를 식별해야 합니다. 작성자·가정·적용 가능성·이유는 **제공된 데이터**이며
 인증된 검토, 정책의 참값 또는 구체적인 정답 수용이 아닙니다.
@@ -49,7 +49,7 @@ module/submodule 충돌을 거부합니다. 유효한 선언만으로 앱 객체
 닫힌 schema는 고유 사례 4–8개, 지정된 회귀 사례 정확히 하나와 비어 있지 않은 이유를 요구합니다.
 그 사례가 선언한 before 응답은 원하는 after 응답과 달라야 합니다. Coverage 이름은 owner,
 non-owner, anonymous, normal-use, public입니다. 각각 존재하는 사례를 참조하거나 적용하지 않는
-이유를 제시해야 하며, normal-use는 항상 대조 사례를 참조해야 합니다. AST나 누락된 dependency에서
+이유를 제시해야 하며 normal-use는 항상 대조 사례를 참조해야 합니다. AST나 누락된 dependency에서
 공개 의도를 추론하지 않고도 명시적 public coverage를 지원합니다. 이는 계약 테스트용 선언이며 동결된
 독립 benchmark나 관리자가 새로 승인한 정책 정답은 아닙니다.
 
@@ -63,7 +63,7 @@ non-owner, anonymous, normal-use, public입니다. 각각 존재하는 사례를
   64 ASCII 문자와 `test-` 합성 token 접두사를 사용합니다. Host, Authorization, Cookie,
   proxy/framing header, 실제 자격정보, request body, script, callback과 redirect는 지원하지
   않습니다. 접두사는 이름에 대한 선언일 뿐 비밀 탐지나 합성 신원에 대한 증거가 아닙니다.
-- 기대 status: 2xx 또는 4xx. Body: 타입을 유지하는 JSON 또는 명시적 empty이며, 204/205는 빈
+- 기대 status: 2xx 또는 4xx. Body: 타입을 유지하는 JSON 또는 명시적 empty이며 204/205는 빈
   body를 요구합니다. JSON은 최대 4 KiB, 깊이 8, 값 node 128개, 문자열 값 1,024 UTF-8 byte,
   key 128 byte입니다. 정수는 ±(2^53−1) 범위이며 실수는 유한해야 합니다. Boolean·정수·실수
   타입은 서로 구분하고 객체 key 순서는 무시합니다. 중복 JSON key와 알 수 없는 필드는 거부합니다.
@@ -103,9 +103,9 @@ Pytest 데이터에는 크기가 제한된 정확한 정수 count, exit code와 
 `assertion`, `other`, `none`이 들어 있습니다. Cleanup에는 정확히 T/A/B 상태만 있습니다.
 Before 후보의 조건은 다음과 같습니다.
 
-- 모든 응답이 선언한 before 값과 일치하며, 지정된 사례는 원하는 after 동작과 다른 값을 가집니다.
-- 수집된 테스트가 0개가 아니고, 제공된 assertion 실패가 정확히 하나이며, 나머지는 모두 통과하고,
-  exit 1이고, error/skip/xfail/xpass가 없으며, 세 guest 모두의 cleanup이 제공 데이터상 확인됨입니다.
+- 모든 응답이 선언한 before 값과 일치하며 지정된 사례는 원하는 after 동작과 다른 값을 가집니다.
+- 수집된 테스트가 0개가 아니고 제공된 assertion 실패가 정확히 하나이며 나머지는 모두 통과하고
+  exit 1이고 error/skip/xfail/xpass가 없으며 세 guest 모두의 cleanup이 제공 데이터상 확인됨입니다.
 
 After 후보의 조건은 선언한 모든 after 대조 사례, 0개가 아닌 전체 통과 pytest count, exit 0,
 failure kind `none`, error/skip/xfail/xpass 없음, 제공 데이터상 전체 cleanup 확인됨입니다.
@@ -120,7 +120,7 @@ failure kind `none`, error/skip/xfail/xpass 없음, 제공 데이터상 전체 c
 완전히 일치한 결과도 항상 `evidence_basis: supplied-unverified`, execution `not-run`,
 authorization `unknown`, `verified_fix: false`, `live_evidence: false`, `writes_authorized: false`를
 유지합니다. `supplied_criteria_met`는 제공된 선언의 비교 조건 충족 여부일 뿐입니다. 호출자는 일치하는
-응답·pytest label·cleanup을 꾸며낼 수 있으며, 이것으로 결함을 재현하거나 수정 효과를 검증한 것이
+응답·pytest label·cleanup을 꾸며낼 수 있으며 이것으로 결함을 재현하거나 수정 효과를 검증한 것이
 되지는 않습니다.
 
 ## 남은 제품 작업
@@ -128,6 +128,6 @@ authorization `unknown`, `verified_fix: false`, `live_evidence: false`, `writes_
 별도 [런타임 기반](REPOSITORY_RUNTIME.md)은 봉인한 선택 바이트 staging, T/A/B 진입점 소스, 제한된
 raw HTTP 캡처와 정적 생성 계획을 구현하고 비활성 파일·가짜 peer로 검사합니다. 이미지 빌드·수용과
 직접 반환하는 실제 외부 phase 결과는 미완료입니다. 이후 CLI 조작 흐름을 그 live 결과와
-S2 결정에 결합하고, 제한된 설치형 외부 흐름을 검증하고, 별도로 검토한 원본 프로젝트 최종 수정을
+S2 결정에 결합하고 제한된 설치형 외부 흐름을 검증하고 별도로 검토한 원본 프로젝트 최종 수정을
 구현하고 공통 GUI 엔진에 연결합니다. #152/#150은 계속 열어 둡니다. 이 순수 계약이 계정 사용,
 실제 외부 프로젝트 실행, 위험 수용, tag나 릴리스를 승인하거나 입증하지는 않습니다.

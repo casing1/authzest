@@ -36,7 +36,7 @@ bundle의 지원 범위 내 소스 snapshot을 선언 목표와 비교합니다.
   포함한 모든 실질적인 내용이 이 식별값에 반영됩니다.
 - 각 예상 결과에는 `id`, `source_evidence_id`, `route_evidence_id`, `policy_evidence_ids`,
   `observation`, `expected`, 비어 있지 않은 `limitations`를 제공합니다. 소스와 라우트는 같은 요청에
-  속하는 올바른 종류의 근거여야 하며 같은 파일을 가리켜야 하고, 제안은 그 파일을 수정해야 합니다.
+  속하는 올바른 종류의 근거여야 하며 같은 파일을 가리켜야 하고 제안은 그 파일을 수정해야 합니다.
   각 정책 참조는 해당 요청의 정책 근거를 가리켜야 합니다. 인용만으로 정책이 예상 결과를 의미상
   뒷받침하거나 정책 소유자가 승인했다는 사실을 입증하지는 않습니다.
 - 준비 함수는 해당 산출물에서 `path`, `baseline_registration_id`, `before_sha256`, `after_sha256`을

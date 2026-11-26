@@ -10,7 +10,7 @@
 [S1 추천 API](OWNER_POLICY_RECOMMENDATION.md) ·
 [이슈 #81](https://github.com/casing1/authzest/issues/81)
 
-## 사용 가능 범위와 경계 — 2026-10-21 KST
+## 사용 가능 범위와 경계 (2026-10-21 KST)
 
 [PR #101](https://github.com/casing1/authzest/pull/101)에서 도입한 소스 구현은
 `authzest.codex.owner_policy_repair_pair`에 순수 Python 데이터 API를 제공합니다.
@@ -46,7 +46,7 @@ API는 호출자가 선택한 경로·소스·쌍·레지스트리·케이스·�
 쌍은 파생 속성 `pair_id`를 제공하며 두 wrapper의 `to_dict()`는 분리된 데이터를 반환합니다.
 validator의 `raw` 인자는 직렬화한 JSON 텍스트이며 dictionary, 파일 경로 또는 실행 가능한 입력이
 아닙니다. 직접 생성한 dataclass, 복사한 ID, 해시, `to_dict()` 결과 또는 미리보기는 검증이나 승인
-권한이 아닙니다. 모든 consumer는 전체 등록 컨텍스트를 다시 검증해야 하며, 미리보기 builder는
+권한이 아닙니다. 모든 consumer는 전체 등록 컨텍스트를 다시 검증해야 하며 미리보기 builder는
 diff 도출 전에 이를 수행합니다. 위조·오래된 상태·변경된 내용은 거부합니다.
 
 ## 등록된 manifest와 식별값
@@ -86,7 +86,7 @@ after 해시만이 아니라 S1 요청 식별값과 전체 내용을 고정합�
 이는 파생 속성이며 자기 참조 manifest 필드가 아닙니다. 구조화된 식별값은 객체 키 정렬,
 compact 구분자, 배열 순서 유지, 마지막 LF 없는 canonical UTF-8 JSON을 사용합니다.
 반면 소스/diff 해시는 정확한 UTF-8 텍스트 바이트를 식별합니다. 버전/내용이 변경되면 이전
-binding은 무효화되며, 변경한 데이터의 해시를 다시 계산해도 이를 등록하거나 승인하지 않습니다.
+binding은 무효화되며 변경한 데이터의 해시를 다시 계산해도 이를 등록하거나 승인하지 않습니다.
 
 ### 별도 기록된 검토 binding
 
@@ -98,7 +98,7 @@ binding은 무효화되며, 변경한 데이터의 해시를 다시 계산해도
 `kind` = `recorded-owner-policy-pair-review`와 정확히
 `provenance` = `{"kind":"recorded-maintainer-chat","authenticated":false}`입니다.
 
-content를 먼저 해시하고 별도 기록이 그 content 해시를 참조하며, manifest가 두 해시에
+content를 먼저 해시하고 별도 기록이 그 content 해시를 참조하며 manifest가 두 해시에
 결합합니다. 자기 참조 해시 순환은 없습니다. validator는 URL이나 복사한 digest만이 아니라
 등록된 전체 기록을 확인합니다. 기록한 관리자 결정은 정확한 검토의 실제 출처이지만 JSON 자체는
 인증된 승인 증표나 다른 행동에 이전할 수 있는 권한이 아닙니다.
@@ -141,7 +141,7 @@ recipe `unified-v1-context-3`은 등록된 정확한 소스 바이트에서 문�
 | `provenance`                                                    | 정확히 `{"kind":"registered-test-only-template","authenticated":false}` |
 
 미리보기는 확인 가능한 데이터이며 승인 token, renderer, 패치 서비스 또는 실행 계획이 아닙니다.
-이를 표시해도 diff를 적용하거나 정책을 검증하지 않습니다. 이후 표현 계층에서 텍스트를 escape하며,
+이를 표시해도 diff를 적용하거나 정책을 검증하지 않습니다. 이후 표현 계층에서 텍스트를 escape하며
 복사한 JSON·터미널 출력·Markdown은 권한을 부여할 수 없습니다.
 
 ## 제한과 엄격한 검증
@@ -150,12 +150,12 @@ recipe `unified-v1-context-3`은 등록된 정확한 소스 바이트에서 문�
 깊이 32, 방문 node 8,192개 예산을 강제합니다. 등록 소스 텍스트는 32,768자, 일반 텍스트는
 4,096자, 식별자는 128자로 제한합니다. 고정 계약에는 가정 3개, 서로 다른 case ID 8개와
 principal당 최대 16개의 서로 다른 scope가 있습니다. 이 제한이 레지스트리를 설정 가능하게
-만들지는 않으며, 형식이 올바른 다른 내용도 거부합니다.
+만들지는 않으며 형식이 올바른 다른 내용도 거부합니다.
 
 정확한 키/스칼라 타입, 중복 JSON 키, 유한하지 않은 숫자, 잘못된 Unicode 및 공유 텍스트 제어
 규칙을 강제 변환이나 소스 정규화 없이 검사합니다. 알 수 없는/추가 필드, 변경한 라벨/소스/기준/
 가정/버전/검토 출처, 위조 해시 및 실행·제공자·패치·승인 필드는 거부합니다. 등록 manifest를
-재구성한 뒤 전체 컨텍스트 일치가 필요하며, wrapper를 직접 생성해도 검사를 우회하지 못합니다.
+재구성한 뒤 전체 컨텍스트 일치가 필요하며 wrapper를 직접 생성해도 검사를 우회하지 못합니다.
 
 ## 순수 Python 미리보기 예제
 
@@ -183,7 +183,7 @@ print(json.dumps(preview.to_dict(), ensure_ascii=True, indent=2))
 기록하며 테스트/CI 통과나 런타임 관찰을 기록하지 않습니다.
 
 모델 통합에는 별도로 최소화한 요청/출력 설계와 새롭고 제한된 공유 결정이 필요합니다.
-변경 전후 관찰에는 별도로 검토한 고정 recipe와 새로운 정확한 계획별 실행 결정이 필요하며,
+변경 전후 관찰에는 별도로 검토한 고정 recipe와 새로운 정확한 계획별 실행 결정이 필요하며
 #80은 이 잘못된 소스를 계속 거부해야 합니다. pair-bound 새 복사본의 diff 승인·적용·검증·복구는
 각각 별도 후속 설계와 현재 상태 기반 결정을 받아야 합니다. 이 데이터 API나 기록된 라벨 승인은
 런타임, 제공자 사용, 소스 공유, 파일 쓰기, 자동 재시도/복구, 병합, tag 또는 release를

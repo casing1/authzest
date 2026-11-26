@@ -3,12 +3,12 @@
   <strong>한국어</strong>
 </p>
 
-# 생성 수정 세션 — 보호된 비공개 복사본 흐름
+# 생성 수정 세션 (보호된 비공개 복사본 흐름)
 
 [문서 목차](../INDEX.md) · [비공개 파일 기반](GENERATED_REPAIR_WORKSPACE.md) ·
 [CLI 흐름](../guides/GENERATED_FILE_WORKFLOW.md)
 
-## 현재 범위 — 2026-11-16 KST
+## 현재 범위 (2026-11-16 KST)
 
 [#152](https://github.com/casing1/authzest/issues/152)의 소스 구현은 현재 로컬 결정을 비공개 복사,
 before 검사, 정확한 diff 수용·적용, 새 after 검사와 복구에 연결합니다. 명시적 opt-in 경로이며

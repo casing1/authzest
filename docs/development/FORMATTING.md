@@ -8,7 +8,7 @@ Install the locked formatter from the source checkout to use that configuration.
 > [!WARNING]
 > Review unfamiliar checkouts and use the guarded commands below. Direct CLI, editor and API calls
 > operate outside the guard. The historical risk decision applies to
-> [alpha.4 only](#alpha4-maintainer-disposition--2026-11-05-kst).
+> [alpha.4 only](#alpha4-maintainer-disposition-2026-11-05-kst).
 
 ## Current source formatter
 
@@ -23,7 +23,7 @@ replacing 5.0.6 in the previous pin. The selected parser code matches the fixes 
 bundle used by the legacy CLI and CJS API to the reviewed SHA-256. Normal format tests retain
 EditorConfig behavior.
 
-### Picomatch follow-up — 2026-11-19 KST
+### Picomatch follow-up (2026-11-19 KST)
 
 GitHub [withdrew GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) on
 November 18 UTC. The [CVE record API](https://cveawg.mitre.org/api/cve/CVE-2026-112366) still returned
@@ -38,7 +38,7 @@ the compiled frontend HTML, JavaScript, and CSS. Their archive inventory shows n
 for those artifacts. Individual editor settings, extension versions, and direct tool calls require
 separate evidence. The alpha.4 disposition applies to the published prerelease.
 
-### Final-source preflight — 2026-11-23 KST
+### Final-source preflight (2026-11-23 KST)
 
 At source `80b574d`, the lock, guarded formatter and reviewed configuration bytes still match the
 prior assessment. [#197](https://github.com/casing1/authzest/issues/197) records fresh installed-tool
@@ -171,7 +171,7 @@ Node toolchain; the optional dashboard used built frontend assets. That record s
 developer-tooling route from runtime claims; it was not an audit of every dependency or a new
 binary-content attestation.
 
-## Current static recheck — 2026-11-02 KST
+## Current static recheck (2026-11-02 KST)
 
 A separate static recheck at source `ee49f5a04be41453aa7bf7b75438d04761b5880a` keeps the supplied
 [#89](https://github.com/casing1/authzest/issues/89) claim at **`needs_review` / medium confidence**,
@@ -207,7 +207,7 @@ At that static-assessment checkpoint, the remaining decision was to establish th
 record a reviewed compatible shipped-byte replacement / explicit exact-candidate residual-tooling-risk
 decision under #83 before publication. The later maintainer decision below is distinct; #89 remains open.
 
-## Alpha.4 maintainer disposition — 2026-11-05 KST
+## Alpha.4 maintainer disposition (2026-11-05 KST)
 
 After reviewing the risks, the maintainer explicitly accepted **only the residual developer-formatting
 availability risk for the forthcoming alpha.4**, with visible warnings and follow-up tracked in

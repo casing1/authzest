@@ -11,7 +11,7 @@
 
 앞서 사용자가 공개 의도 대조 항목을 요청했고 준비 단계에서 `status-probe-context`를 예약 평가에
 배치했으며 기존 시나리오 6개·각 분할·정답 제안 18개는 바꾸지 않았습니다. 이전 긍정적인 반응과
-준비 PR 병합은 당시 정답 승인이 아니었으며, 11월 6일 직접 확인을 새로운 정답 값 결정으로 기록하고
+준비 PR 병합은 당시 정답 승인이 아니었으며 11월 6일 직접 확인을 새로운 정답 값 결정으로 기록하고
 과거 승인을 소급하지 않습니다. v1은 소스·질문·분할·정답 값·채점 수학만 고정합니다. 독립 검토 증명과
 모든 소스/이유/인용을 확인했다는 증명은 수집하지 않았으며 `independent_review_attested`는 false입니다.
 실제 프롬프트·모델/설정·반복 예산은 미고정, `live_benchmark_ready`는 false이고 #84의 체크 항목
@@ -39,7 +39,7 @@ python scripts/check_evaluation_candidate.py --review --json
 
 기본 출력은 간결한 사전 검사 요약이며 `--json`은 기계가 읽을 수 있는 출력을 선택합니다.
 `--review`는 정확한 예상 정답·이유 검토 자료를 추가합니다. 이 자료를 제공자 입력에 넣으면 안 됩니다.
-사람용 출력에는 줄 번호·escape를 적용한 가상 소스와 질문을 표시하고, 검토 JSON에는 정답 초안과
+사람용 출력에는 줄 번호·escape를 적용한 가상 소스와 질문을 표시하고 검토 JSON에는 정답 초안과
 연결된 공개 입력도 포함합니다.
 성공한 출력도 `draft-not-frozen`·실행하지 않음·실제 호출 시험 0개·벤치마크 준비 미완료를 선언합니다.
 기존 검사기는 변경하지 않은 원래 제안 메타데이터를 읽으므로 당시 검토 대기 상태를 의도적으로
@@ -58,7 +58,7 @@ python scripts/check_evaluation_candidate.py --review --json
 서로 대체하면 안 됩니다.
 
 `public_inputs(root)`는 작업·소스 데이터만 읽어 해당 공개 투영을 반환합니다. 참고 정답·이유·
-분할·작성 주체 메타데이터는 제외하며, 사전 검사는 그 뒤 정답을 별도로 읽습니다. 이 분리는 유출
+분할·작성 주체 메타데이터는 제외하며 사전 검사는 그 뒤 정답을 별도로 읽습니다. 이 분리는 유출
 검사이지 구현된 실제 비교 adapter나 동의 절차가 아닙니다.
 
 ## 수용한 v1 참고 정답 스냅샷과 오프라인 검사
@@ -134,7 +134,7 @@ unknown 런타임 보장이며 수용이 독립 검토나 런타임 보장을 �
 질문 7개에는 의도적으로 런타임 근거가 없으며 일반적인 불확실성 조절 능력을 입증하지 않습니다.
 대조 항목을 별도로 채점하고 합계로 AI의 이점을 주장하지 않습니다. 소스 선언의 정답은 파서와의
 자기 일치가 아닙니다. Keyword-path 사례의 소스 선언은 지원 inventory가 하나만 내보내더라도
-2개입니다. 불완전한 inventory는 하한일 뿐 올바른 전체 소스 개수가 아니며, 정적 baseline은 입증하지
+2개입니다. 불완전한 inventory는 하한일 뿐 올바른 전체 소스 개수가 아니며 정적 baseline은 입증하지
 못한 전체 개수의 답을 유보해야 합니다.
 
 v1 참고 정답 스냅샷은 작업 문구·소스/정책 범위를 고정합니다. 아래 오프라인 응답 계약은 개발용
@@ -413,7 +413,7 @@ python -m scripts.evaluation_dispatch --model offline-example-model --effort med
 필요합니다. 기존 codec·고정 버전·제품 `0.1.0a4` / 리포트 `1.2`·v1/수학/과거 자료는 그대로입니다.
 #84는 체크 7개가 모두 미완료인 OPEN이며 실제 AI/worker 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 오프라인 설정 preflight — 시작 동작의 증거 아님
+## 순수 오프라인 설정 preflight (시작 동작의 증거 아님)
 
 `scripts/evaluation_preflight.py`의 `check_config(result, configuration, *, phase)`·
 `compare_configs(discovery_result, generation_result, configuration)`는 호출자가 제공한
@@ -479,7 +479,7 @@ CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책
 미완료인 OPEN입니다. 아래 선택 의미 helper는 이 envelope 전용 계층과 별도이며 coordinator 생명주기·
 더 넓은 recipe 검증은 실제 경로의 별도 승인 전 후속 조건입니다. 실제 AI 호출·위험 수용·릴리스는 없습니다.
 
-## 선택한 합성 응답 의미 검사 — trial 아님
+## 선택한 합성 응답 의미 검사 (trial 아님)
 
 `scripts/evaluation_semantics.py`의 `checked`는 호출자 제공 JSON을 제한하고 deep-detach하며
 `Boundary`는 선언한 설정/cwd/thread 기대값이지 인증된 실행 범위가 아닙니다.
@@ -513,7 +513,7 @@ python -m pytest tests/test_evaluation_turn_semantics.py
 codec/preflight/데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`·#84 미완료 체크 7개는
 그대로이며 실제 호출·위험 수용·릴리스는 없습니다.
 
-## 순수 slot·batch 조합 — 실제 transport 아님
+## 순수 slot·batch 조합 (실제 transport 아님)
 
 `scripts/evaluation_coordinator.py`의 `SlotCoordinator`는 기존 recipe·JSONL·preflight·선택
 session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initialized/config 뒤 제공된 EOF·정상
@@ -523,7 +523,7 @@ session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initia
 관찰한 근거가 아닙니다.
 
 제한된 LF 부분을 같은 inbox·공유 예산으로 순서대로 검사합니다. 검증된 상관 turn ack는 같은 입력
-묶음의 뒤 envelope가 잘못되더라도 보존하지만, 치명적 후행 오류가 있으면 최종 성공 결과는 거부합니다.
+묶음의 뒤 envelope가 잘못되더라도 보존하지만 치명적 후행 오류가 있으면 최종 성공 결과는 거부합니다.
 카운터는 검사한 prefix만 설명하며 미검사 tail의 크기나 transport 수신 보장을 뜻하지 않습니다.
 
 `scripts/evaluation_batch_coordinator.py`의 `BatchCoordinator`는 dispatch `Batch`와 slot 상태를
@@ -570,7 +570,7 @@ trial 수용/실제 동결은 false입니다. 실제 생명주기/호환성 조�
 `CaseSpec(id, split, questions)`의 tuple, 각 `questions`는
 `QuestionSpec(id, family, answer_format, expected)`의 tuple입니다. 각 예상 정답은 canonical
 문자열 또는 `None`(JSON null로 표현하는 unknown)입니다. 응답은 사례 ID를 정확히 `question_id`와
-`answer`만 포함하는 기록의 list에 연결하며, 사례 응답이 없으면 `None`에 연결합니다.
+`answer`만 포함하는 기록의 list에 연결하며 사례 응답이 없으면 `None`에 연결합니다.
 
 답 형식은 정확한 canonical 십진수·정렬된 CSV·boolean·정책 문자열을 요구합니다. 공백 제거·형변환·
 정렬·정규화 등으로 답을 보정하지 않습니다. 빈 문자열은 빈 정렬 CSV 답에만 유효하며 `None`만
@@ -600,21 +600,21 @@ python -m pytest tests/test_evaluation_metrics.py
 필요하며 분모를 알리지 않고 바꾸거나 v1 해시를 갱신하지 않습니다. 실제 시험 수나 반복 예산은 고정하지
 않습니다.
 
-| 측정               | 분자 / 분모                                                                               |
-| ------------------ | ----------------------------------------------------------------------------------------- |
-| 답한 항목의 정확도 | 올바른 비-unknown 답 / 모든 비-unknown 답이며, unknown이 필요한 질문에 답하면 오답입니다. |
-| 작업 coverage      | 비-unknown 답 / 전체 질문 기회 21개입니다.                                                |
-| 전체 대비 정답률   | 올바른 비-unknown 답 / 전체 21개이며, 답할 수 있는 항목 14개 대비 값도 별도로 보고합니다. |
-| 필수 unknown 처리  | 올바른 unknown 응답 / unknown이 필요한 정답 7개입니다.                                    |
-| 잘못된 유보        | 답할 수 있는 질문에 대한 unknown 응답 / 답할 수 있는 정답 14개입니다.                     |
-| 잘못된 확신        | unknown이 필요한 질문에 대한 비-unknown 응답 / 해당 정답 7개입니다.                       |
-| 무효 응답          | 무효 시나리오 응답 / 요청한 시나리오 응답 7개이며 누락·무득점 질문도 유지합니다.          |
+| 측정               | 분자 / 분모                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| 답한 항목의 정확도 | 올바른 비-unknown 답 / 모든 비-unknown 답이며 unknown이 필요한 질문에 답하면 오답입니다. |
+| 작업 coverage      | 비-unknown 답 / 전체 질문 기회 21개입니다.                                               |
+| 전체 대비 정답률   | 올바른 비-unknown 답 / 전체 21개이며 답할 수 있는 항목 14개 대비 값도 별도로 보고합니다. |
+| 필수 unknown 처리  | 올바른 unknown 응답 / unknown이 필요한 정답 7개입니다.                                   |
+| 잘못된 유보        | 답할 수 있는 질문에 대한 unknown 응답 / 답할 수 있는 정답 14개입니다.                    |
+| 잘못된 확신        | unknown이 필요한 질문에 대한 비-unknown 응답 / 해당 정답 7개입니다.                      |
+| 무효 응답          | 무효 시나리오 응답 / 요청한 시나리오 응답 7개이며 누락·무득점 질문도 유지합니다.         |
 
 종류별·분할별로도 해당 고정 분모를 적용합니다. 무효 응답에는 정답·unknown 처리·coverage 점수를
 주지 않으며 성공적인 유보로 세지 않습니다. 분모 0은 null/해당 없음이지 만점이 아닙니다. 누락 답과
 실패를 제외하지 말고 보고합니다. 정적 유보는 예상한 한계이지 정책 정확성의 증거가 아닙니다.
 unknown 감소나 coverage 증가만으로 더 나은 분석이 되지는 않습니다.
-빈 CSV 문자열은 알려진 빈 선언 집합이며, 불명 정답은 null로만 나타냅니다.
+빈 CSV 문자열은 알려진 빈 선언 집합이며 불명 정답은 null로만 나타냅니다.
 
 인용 ID 존재 여부는 구조적 지표일 뿐입니다. 사람이 검토한 인용의 의미상 뒷받침과, 근거 없는 주장을
 하나 이상 포함한 검토 응답 수를 별도로 기록합니다. Unknown에 붙은 오해를 주는 설명도 포함합니다.
@@ -639,7 +639,7 @@ unknown 감소나 coverage 증가만으로 더 나은 분석이 되지는 않습
 기존에 수용한 제한적 핵심의 이력은 기록된 해당 사례의 근거이지 새 독립 워크플로 측정이나 새 후보
 실행이 아닙니다. 정책 검사 통과 수·선언 질문·워크플로 결과를 하나의 점수로 합치지 않습니다.
 
-후속 실제 비교에는 별도 범위의 소스·계정·모델·turn·시간 결정과 사전에 정한 반복 예산이 필요하며,
+후속 실제 비교에는 별도 범위의 소스·계정·모델·turn·시간 결정과 사전에 정한 반복 예산이 필요하며
 정답 검토·사전 검사가 이를 대신하지 않습니다. 소스 공유는 실행·패치 적용 허가가 아닙니다.
 이 참고 정답 단계는 #84 체크 항목을 완료하지 않으며 실제 호출·worker 실행·적용·릴리스·새 위험 수용을
 허가하지 않습니다.

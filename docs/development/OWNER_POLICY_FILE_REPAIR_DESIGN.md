@@ -3,14 +3,14 @@
   <a href="../i18n/ko/development/OWNER_POLICY_FILE_REPAIR_DESIGN.md">한국어</a>
 </p>
 
-# Owned policy file application, checks and restoration — design for review
+# Owned policy file application, checks and restoration (design for review)
 
 [Documentation index](../README.md) · [Development plan](DEVELOPMENT_PLAN.md) ·
 [Issue #81](https://github.com/casing1/authzest/issues/81) ·
 [Repair recommendation](../reference/OWNER_POLICY_REPAIR_RECOMMENDATION.md) ·
 [Embedded control checks](../reference/OWNER_POLICY_REPAIR_CHECK.md)
 
-## Current status — 2026-10-29 KST
+## Current status (2026-10-29 KST)
 
 The maintainer [approved this design at `29d8c82` and offline implementation](https://github.com/casing1/authzest/pull/118#issuecomment-6486618422).
 Source implementation and offline verification records are tracked in
@@ -26,7 +26,7 @@ that the unreleased implementation has completed operational acceptance.
 
 ## Historical proposal and decision request
 
-**Proposed — 2026-10-29 KST**, against main `80110e02ec8b3392e1841a42f8761179219285cd`.
+**Proposed (2026-10-29 KST)**, against main `80110e02ec8b3392e1841a42f8761179219285cd`.
 This document specifies the next #81 implementation: apply the registered repair to one new owned
 copy, check bytes read from that copy, and offer a separate restoration choice. It adds no executable
 API, worker, CLI or observation. Existing contracts, historical observations and consumed approvals

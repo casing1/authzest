@@ -36,7 +36,7 @@ The `v0.1.0` tag points to the release commit. Files and checksums are on
 - **Saved-result viewing for external fixes.** The dashboard opens a saved `repo-fix` JSON read-only.
   It rebuilds the diff from the recorded source and refuses contradictory or tampered results.
   [GUI guide](docs/guides/RESULT_VIEWER.md)
-- **Codex proposals.** The source CLI offers an offline request preview and can ask Codex for a
+- **Maintained-example proposals.** The source CLI offers an offline request preview and can ask Codex for a
   newly authored regression test and one-file repair for the maintained FastAPI ownership example
   after sharing approval. The active workflow uses separate decisions, checks changes on a private
   copy, and records recovery. It requires a non-frozen POSIX source installation and reviewed Linux runtime images.
@@ -47,11 +47,11 @@ The `v0.1.0` tag points to the release commit. Files and checksums are on
   Ordinary launch supports static route inventory and read-only result import; current workflow
   results use schema `1.0`. Use an editable source install and frontend build.
   [PR #190](https://github.com/casing1/authzest/pull/190) · [GUI guide](docs/guides/RESULT_VIEWER.md)
-- **Installation and demonstration.** The bilingual course guide leads with the GUI workflow and
-  retains CLI and saved-result alternatives. Exact-source preflight at `80b574d` passed 39 installed
+- **Installation and demonstration.** The bilingual course guide leads with the external repair
+  demo and keeps the owner-read GUI as an optional section. Exact-source preflight at `80b574d` passed 39 installed
   CLI checks, seven read-only UI checks and all seven native-preview jobs across Linux x64,
-  macOS arm64 and Windows x64. This is installation/offline evidence, not a new actual AI or product
-  guest run. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
+  macOS arm64 and Windows x64. These are installation and offline checks; they ran no model or
+  product guest. [Preflight #197](https://github.com/casing1/authzest/issues/197) · [Course guide](docs/guides/COURSE_DEMO.md)
 - **Developer formatting.** The brace-expansion bundled in Prettier 3.10.1 meets the fixed-version
   requirements for the three advisories tracked in #89. The separate picomatch advisory/CVE status,
   warnings and remaining candidate-specific decision are tracked in #171.
@@ -416,7 +416,7 @@ all eight jobs, 4,924 Python and 71 Node tests. Attempt 1 failed with 4,923 pass
 fake-server JSONL race, tracked separately under [#130](https://github.com/casing1/authzest/issues/130);
 the unchanged-tag rerun did not fix it. All six public assets matched checksums and tag artifacts;
 the public macOS binary passed 13 scan/preview plus one fixed-runtime check. See the
-[exact receipt and limitations](docs/releases/RELEASING.md#alpha4-publication-and-public-asset-verification--2026-11-05-kst).
+[exact receipt and limitations](docs/releases/RELEASING.md#alpha4-publication-and-public-asset-verification-2026-11-05-kst).
 No actual model call, arbitrary target execution or user-source patch was part of these release checks.
 Keep packaging evidence separate from historical live acceptance at `c868152` and independent
 #84/#85 evaluation/course evidence. #89 remains OPEN under its alpha.4-only residual-tooling decision.
@@ -471,11 +471,11 @@ the candidate's current status. Historical observations are not reruns on this c
 - Reconcile [alpha.4 readiness](docs/releases/RELEASING.md) after PR #123's reviewed delivery and
   ordered #82 → #81 → #35 completion. Separate accepted POSIX source-CLI core evidence from portable
   scan/preview capabilities, final versioned candidate, consumer install/upgrade and publication gates.
-  Refresh the dated [#89 static tooling assessment](docs/development/FORMATTING.md#current-static-recheck--2026-11-02-kst):
+  Refresh the dated [#89 static tooling assessment](docs/development/FORMATTING.md#current-static-recheck-2026-11-02-kst):
   the inspected official Prettier 3.9.10 still embeds brace-expansion 5.0.6 on the selected paths;
   `needs_review` / medium confidence and the exact-candidate disposition gate remain. No dependency,
   runtime, package/schema version, release asset or risk-acceptance change is made.
-- Record [bounded maintainer acceptance](docs/guides/OWNER_FILE_ACCEPTANCE.md#bounded-maintainer-acceptance--2026-11-02-kst)
+- Record [bounded maintainer acceptance](docs/guides/OWNER_FILE_ACCEPTANCE.md#bounded-maintainer-acceptance-2026-11-02-kst)
   on 2026-11-02 KST of the existing installed walkthrough, English/Korean limitations and separate
   offline failure/refusal/user-edit/recovery/no-change evidence. Align four READMEs, indexes, roadmap
   and #82/#81/#35 criteria without claiming a new live run or issue closure. The accepted core is one
@@ -483,7 +483,7 @@ the candidate's current status. Historical observations are not reruns on this c
   FastAPI PoC generation and model-authored repair source are not implemented. Final status-document
   checks, separately approved reviews and normal merge precede ordered issue completion. Independent
   #83/#84/#85/#89, published alpha.3, package/schema versions and runtime permissions are unchanged.
-- Record one separately approved [installed owned-file CLI happy path](docs/guides/OWNER_FILE_ACCEPTANCE.md#installed-happy-path-observation--2026-10-30-kst)
+- Record one separately approved [installed owned-file CLI happy path](docs/guides/OWNER_FILE_ACCEPTANCE.md#installed-happy-path-observation-2026-10-30-kst)
   at source `c868152` on macOS/Python 3.12.7: current registered recommendation, one private copy,
   captured before check (6/8), exact diff/apply, captured actual applied-after check (8/8), then verified
   restoration to before / generation 3. Complete original JSON, stderr and file/record bindings were
@@ -497,7 +497,7 @@ the candidate's current status. Historical observations are not reruns on this c
   a single JSON stdout result with complete interactive previews on stderr. Temporary-file, fake-adapter
   and scripted-worker checks are offline, not new provider/worker observations or operational patch
   acceptance. #82/#81/#35 and release gates remain open; published alpha.3 is unchanged.
-- Record the separately scoped [owned-file source API acceptance](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance--2026-10-29-kst)
+- Record the separately scoped [owned-file source API acceptance](docs/reference/OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)
   on main `fb90c46`, 2026-10-29 KST: captured-copy before check, exact-diff acceptance, apply,
   captured-copy after check and restore. Before matched 6/8 expectations with the intended over-allows
   for `non-owner` and `exact-owner-no-normalization`; after matched 8/8. Both checks exited `0`,
@@ -578,7 +578,7 @@ the candidate's current status. Historical observations are not reruns on this c
   macOS arm64/Python `3.12.7`, ten matching observations (two allow/eight deny), aggregate `passed`,
   child exit `0` and confirmed cleanup. Preserve the separate
   [observed record](tests/fixtures/owner_case_review/observed_check.json) and
-  [exact plan/worker identities](docs/reference/OWNER_POLICY_CHECK.md#actual-source-acceptance--2026-10-09-kst).
+  [exact plan/worker identities](docs/reference/OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst).
   Scripted control-plane answer, no new AI call, provider zero, authorization unknown, patch not-run.
   The one-run permission is consumed; original draft/offline plans remain not-run and no Windows/
   frozen-binary/HTTP acceptance is claimed. Final-head #80 CI/reviews were pending at that checkpoint;

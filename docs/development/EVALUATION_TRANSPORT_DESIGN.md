@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/EVALUATION_TRANSPORT_DESIGN.md">한국어</a>
 </p>
 
-# Evaluation invocation and capture boundary — design
+# Evaluation invocation and capture boundary (design)
 
 [Documentation](../README.md) · [Evaluation protocol](EVALUATION_PROTOCOL.md) ·
 [Development plan](DEVELOPMENT_PLAN.md) · [Issue #84](https://github.com/casing1/authzest/issues/84)
 
-## Current pure slot/batch coordination — 2026-11-09 KST
+## Current pure slot/batch coordination (2026-11-09 KST)
 
 `scripts/evaluation_coordinator.SlotCoordinator` now composes unchanged recipe/JSONL/preflight/
 session/turn checks across supplied discovery then generation sequences, each requiring EOF,
@@ -19,7 +19,7 @@ The ledger now adds `Batch.fail` to latch slot failures immediately at the curre
 cleanup. The first cause is retained rather than replaced by late timeout, with cleanup and secondary
 clock failures separate; existing clock/TTL/`T`/window/finish contracts remain.
 First nonvalid stops later slots and preserves all planned denominators. See the
-[current limits and pure/POSIX test commands](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination--not-live-transport).
+[current limits and pure/POSIX test commands](EVALUATION_PROTOCOL.md#pure-slot-and-batch-coordination-not-live-transport).
 
 This is caller-supplied byte/exit/cleanup/time state, not I/O, a launcher, actual timer enforcement,
 provider authentication or a live evaluation. Process tests use only fixed owned fake children;
@@ -30,7 +30,7 @@ recipe/codec/preflight/JSONL/semantics/data/v1/math/history and product `0.1.0a4
 claims stay false; #84 remains OPEN with seven pending checks. No actual Codex/account/model/
 policy-worker/network call, risk acceptance or release is added.
 
-### Test-only batch-pipe extension — 2026-11-09 KST
+### Test-only batch-pipe extension (2026-11-09 KST)
 
 `tests/test_evaluation_batch_coordinator_process.py` connects `BatchCoordinator` to the existing
 fixed owned fake peers. It checks reserve/send/ack ordering, synthetic original-budget expiry,
@@ -42,7 +42,7 @@ process-tree cleanup. Production scripts/recipe/schema/fixtures/pin/data/history
 CLI/provider launcher, actual AI/account/model/network/policy-worker call, live freeze, score, accepted
 trial, risk acceptance or release; product `0.1.0a4` / report `1.2` and all seven #84 checks remain unchanged.
 
-## Selected synthetic semantics checkpoint — 2026-11-08 KST
+## Selected synthetic semantics checkpoint (2026-11-08 KST)
 
 The following stage preceded the pure coordinator composition above. Its no-coordinator/next-step
 wording records that checkpoint; the individual semantic validators remain pure and unchanged.
@@ -52,7 +52,7 @@ modules now separate bounded detached candidates/declared boundaries, selected s
 thread/settings checks, and one correlated synthetic final-answer sequence using the unchanged
 codec. Unsupported variants are outside this narrow policy, not necessarily protocol-invalid;
 this does not implement the broader recipe or integrate JSONL/preflight/`Batch` into a coordinator.
-See the [current scope and three pure test commands](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics--not-a-trial).
+See the [current scope and three pure test commands](EVALUATION_PROTOCOL.md#selected-synthetic-response-semantics-not-a-trial).
 
 [App Server protocol guidance](https://learn.chatgpt.com/docs/app-server) informs selected shapes,
 not runtime attestation. Matching ChatGPT-shaped account/model-list candidates do not establish
@@ -63,7 +63,7 @@ and unsupported recipe paths before any separately approved live execution. Prod
 codec/preflight/data/v1/math/history and product `0.1.0a4` / report `1.2` are unchanged; #84 stays
 OPEN with seven pending checks. No actual call, risk acceptance or release is added.
 
-## Pure JSONL and fake-pipe checkpoint — 2026-11-08 KST
+## Pure JSONL and fake-pipe checkpoint (2026-11-08 KST)
 
 The following stage preceded the separate selected semantic helpers above. Its envelope-only and
 pending-semantic wording records that checkpoint; the JSONL module itself remains envelope-only.
@@ -84,7 +84,7 @@ observation. Product/pin/recipe/codec/preflight/ledger/v1/math/data/history and 
 report `1.2` are unchanged. All runtime/readiness/authorization/live-freeze flags remain false;
 #84 stays OPEN with seven pending checks. No actual AI call, risk acceptance or release is added.
 
-## Offline config preflight and startup review checkpoint — 2026-11-08 KST
+## Offline config preflight and startup review checkpoint (2026-11-08 KST)
 
 The following checkpoint preceded the pure JSONL/fake-pipe continuation above. Its next-step wording
 records that stage; the source-derived startup limitations remain applicable.
@@ -96,7 +96,7 @@ generation requires every server's `enabled=false`. Unknown extras are unsupport
 protocol-invalid. Origins/MCP bodies remain opaque JSON; this is not full-schema/provenance validation.
 It adds no CLI, RPC, process, timer, account/model lookup, worker or log import and is not wired to
 `Batch`; the existing recipe descriptor/IDs are unchanged. See the
-[API limits and synthetic test command](EVALUATION_PROTOCOL.md#pure-offline-configuration-preflight--not-startup-proof).
+[API limits and synthetic test command](EVALUATION_PROTOCOL.md#pure-offline-configuration-preflight-not-startup-proof).
 
 The recorded generated `ConfigReadResponse` SHA-256 is
 `96a04a3f7fff2dc7fafc9f831e8bcd422e021d697dd2c14c801f098a9f21396d`: document identity, not
@@ -131,7 +131,7 @@ this startup boundary explicit, not real transport readiness. Runtime/readiness/
 flags remain false; product `0.1.0a4` / report `1.2`, pin, v1/math/history and #84's seven pending checks
 are unchanged. No actual AI/worker call, risk acceptance or release is added.
 
-## Offline dispatch continuation checkpoint — 2026-11-08 KST
+## Offline dispatch continuation checkpoint (2026-11-08 KST)
 
 The following checkpoint preceded the config checker/source review above. Its pending review wording
 records that stage; no old recipe/design claim is promoted to current runtime evidence.
@@ -159,7 +159,7 @@ capture/generation still needs new source/account/model/turn/time approval and m
 evidence. Existing codec/pin/product `0.1.0a4` / report `1.2`/v1/math/history are unchanged; #84 stays
 OPEN with seven pending checks and live freeze false. No actual AI/worker call, risk acceptance or release.
 
-## Pure-codec checkpoint — 2026-11-07 KST
+## Pure-codec checkpoint (2026-11-07 KST)
 
 This earlier checkpoint is retained for chronology; its next-step wording preceded the offline
 dispatch continuation above, not an account of unavailable current recipe/state helpers.
@@ -179,7 +179,7 @@ precedes pure offline decision/state tests and separate fake-process tests. Prod
 product `0.1.0a4` / report schema `1.2`, live-freeze false and #84's seven pending checks are unchanged;
 there is no new risk acceptance or release. Codec delivery does not approve live execution/freeze.
 
-## Version-specific dispatch proposal — 2026-11-08 KST
+## Version-specific dispatch proposal (2026-11-08 KST)
 
 Historical design-only checkpoint: the original unimplemented/next-step wording below records that
 proposal, not the current offline builder/ledger. The dated params correction is identified inline;
@@ -354,7 +354,7 @@ review complete effective config/MCP startup semantics and pin conforming fake-p
 Actual nested-schema/provider support and effective harness context remain unverified. No current
 codec, product adapter, v1 values/bytes, metrics/history, release version or #84 checklist is changed.
 
-## Original proposal — preserved history
+## Original proposal (preserved history)
 
 The original design below is preserved at its original source/date. Its “not implemented” codec/API
 wording describes that checkpoint, not the current offline continuation above; the live transport
@@ -362,7 +362,7 @@ remains unimplemented today. Do not reinterpret the proposal's delivery as execu
 
 ## Status and purpose
 
-**Proposed, not implemented — 2026-11-07 KST**, against main
+**Proposed, not implemented (2026-11-07 KST)**, against main
 `42e5db7104fd715af1edf1a5032b7761dc1747ca`. This document adds no callable API, CLI command,
 provider integration, account lookup, live trial, execution permission or new live freeze. Documentation
 delivery/review does not approve a model run or attest benchmark readiness. All seven #84 checks remain

@@ -13,7 +13,7 @@ This is an **acceptance procedure with a bounded observation and maintainer sign
 execution permission or release acceptance**. It preserves the existing CLI and its separate decisions. It adds no unattended approval,
 resume/import, deadline extension, worker selection or new execution route.
 
-## Bounded maintainer acceptance — 2026-11-02 KST
+## Bounded maintainer acceptance (2026-11-02 KST)
 
 The maintainer accepted the existing bounded #82 walkthrough, English/Korean limitations and evidence
 mapping below, based on the recorded `c868152` installed happy path and separate existing offline
@@ -33,11 +33,11 @@ by normal merge at `ee49f5a` on 2026-11-02 KST. Its exact-head CI passed all 10 
 approved automatic code and security reviews completed, and all 6 post-merge CI checks passed.
 #82 → #81 → #35 were then closed in that order for this bounded scope. #83/#84/#85/#89 remain
 independent open work. This sign-off grants no new AI/worker execution, file effects, risk acceptance
-or release. The [current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness--2026-11-05-kst)
+or release. The [current alpha.4 candidate](../releases/RELEASING.md#alpha4-readiness-2026-11-05-kst)
 uses source package `0.1.0a4` and is unpublished; the latest public release remains alpha.3 with package
 `0.1.0a3`, and report schema `1.2` is unchanged.
 
-## Recorded boundary — 2026-10-30 KST
+## Recorded boundary (2026-10-30 KST)
 
 [PR #120](https://github.com/casing1/authzest/pull/120) delivered the source CLI at main
 `a0ae8792ce4c2d88d0cbbf6bc66fc13635094be2` after its required checks and separately authorized
@@ -75,7 +75,7 @@ separately approved happy path below supplies that narrow evidence without repai
 capture gap. #82/#81/#35 and the separate #83 release gates remain open. Published alpha.3,
 package `0.1.0a3` and report schema `1.2` are unchanged.
 
-## Installed happy-path observation — 2026-10-30 KST
+## Installed happy-path observation (2026-10-30 KST)
 
 A fresh non-editable wheel installation from main `c868152590b70fdaae6fd8274d5344b09e5d948f`
 matched all 64 packaged source files and passed the existing 13 installed-smoke checks plus 10

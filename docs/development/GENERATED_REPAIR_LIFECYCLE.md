@@ -3,12 +3,12 @@
   <a href="../i18n/ko/development/GENERATED_REPAIR_LIFECYCLE.md">한국어</a>
 </p>
 
-# Generated repair lifecycle — pure simulation only
+# Generated repair lifecycle (pure simulation only)
 
 [Documentation index](../README.md) · [Offline copy session](GENERATED_REPAIR_SESSION.md) ·
 [Verification foundation](GENERATED_REPAIR_VERIFICATION.md)
 
-## Scope — 2026-11-12 KST
+## Scope (2026-11-12 KST)
 
 This is another partial offline slice of [#152](https://github.com/casing1/authzest/issues/152).
 The private lifecycle model describes the accepted **T → fresh A/B** container sequence using
