@@ -89,7 +89,7 @@ AuthZest는 GitHub Releases를 통해 독립 실행 파일을 배포합니다. �
   권고 세 건을 반영했습니다. [현재 포맷터 근거](../development/FORMATTING.md#현재-소스-포맷터)에
   #171의 GitHub 권고 철회, CVE 공개 상태, 네이티브 사전 검증 산출물 확인을 기록했습니다. 기존 위험
   결정은 alpha.4에 적용됩니다.
-- 독립 비교는 [#84](https://github.com/casing1/authzest/issues/84)에서 추적합니다. 확보하지 못한 근거를 밝히고,
+- 독립 비교는 [#84](https://github.com/casing1/authzest/issues/84)에서 추적합니다. 확보하지 못한 근거를 밝히고
   벤치마크 확대는 핵심 릴리스 범위 밖에 둡니다.
 
 ### 소스 설치 사전 검증 — 2026-11-19 KST
@@ -174,7 +174,7 @@ Linux `13383908551`, macOS `13383938350`, Windows `13383444171`입니다.
 정확한 후보의 [비배포 main 실행 41955210082](https://github.com/casing1/authzest/actions/runs/41955210082)
 1차 시도는 발행 단계를 건너뛰고 job 7개를 통과했습니다. Python 4,924개·Node 71개와 frontend·문서 검사,
 세 동일 OS native 빌드/다운로드 검사가 포함됩니다. 각 플랫폼의 스캔/오프라인 미리보기는
-선택/이동 26개·패키징 13개·새 다운로드 13개를 통과했습니다. 고정 런타임 부모 검사는 각각 2/1/1개이며,
+선택/이동 26개·패키징 13개·새 다운로드 13개를 통과했습니다. 고정 런타임 부모 검사는 각각 2/1/1개이며
 POSIX는 소유 AFTER의 debug/ASGI-health만, Windows는 worker 없는 명시적 미지원 처리를 확인했습니다.
 Windows 런타임 지원을 뜻하지 않습니다. 전체 회귀 검사에는 신뢰한 소유 BEFORE/AFTER fixture와
 테스트 자식 프로세스 실행도 포함됩니다.
@@ -208,7 +208,7 @@ Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현�
 조건부 2026-11-04 KST 목표는 발행 없이 지났으며 새 날짜를 약속하지 않습니다. 아래에서 확인한
 후보는 `b5f3eb81d318e94c5e400ec52e78f1550e13f931`, 패키지 `0.1.0a4`, 미사용 제안 태그
 `v0.1.0-alpha.4`이며 report schema `1.2`는 그대로입니다.
-[PR #125](https://github.com/casing1/authzest/pull/125)가 `676c1cc`에서 버전을 준비했고,
+[PR #125](https://github.com/casing1/authzest/pull/125)가 `676c1cc`에서 버전을 준비했고
 [PR #127](https://github.com/casing1/authzest/pull/127)이 위 후보에 minimatch 수정을 정상 병합했습니다.
 두 PR head 모두 CI 10개와 자동 리뷰 두 건을 완료했고 각각 병합 후 main 검사 6개도 통과했습니다.
 보안 발견 건수는 미보고이며 0건 판단이 아닙니다. 아래 11월 5일 비배포 native·소스 설치 관찰은
@@ -552,7 +552,7 @@ Windows에서는 Git Bash로 실행하고 로컬 빌드를 확인할 때 `.exe` 
    이는 OS sandbox가 아니며 공유·사례 예상값 승인·정책 실행·패치 승인·인가 판정을 부여하지 않습니다.
    수정 before/after 텍스트는 내장 데이터이며 정책 실행 관찰이나 적용 파일 검증이 아닙니다.
    기준 생성은 표준 라이브러리 전용 core 모듈을 사용하므로 기존 의존성 없는 `python -I` artifact
-   검사도 유지합니다. 같은 버전 관리 smoke 스크립트를 세 플랫폼 빌드/다운로드 작업에서 사용하며,
+   검사도 유지합니다. 같은 버전 관리 smoke 스크립트를 세 플랫폼 빌드/다운로드 작업에서 사용하며
    단위 테스트나 로컬 플랫폼 하나의 성공만으로 모든 native 산출물 통과를 주장하지 않습니다.
 
    별도 [런타임 smoke](../guides/RUNTIME_VERIFICATION.md)는 실제 native 부모·worker와 이동한
@@ -636,7 +636,7 @@ macOS, Windows 실행 파일을 빌드하고 바이너리/이동 복사본의 fi
 프로젝트 패키지 설치 없이 Python 격리 모드(`-I`)로 artifact smoke를 실행합니다. 배포에는 검증·빌드·모든
 새 artifact 검증 job의 통과가 필요합니다. 이 검사도 사용자 기기의 깨끗한 설치나 업그레이드를 입증하지 않습니다.
 자산 이름에는 릴리스 버전, 운영체제,
-빌드 시 확인한 아키텍처가 들어갑니다. prerelease 접미사가 있는 태그는 GitHub prerelease를 만들고,
+빌드 시 확인한 아키텍처가 들어갑니다. prerelease 접미사가 있는 태그는 GitHub prerelease를 만들고
 최종 버전 태그는 일반 릴리스를 만듭니다. Python·npm 패키지 배포와 바이너리 서명은 수행하지 않습니다.
 
 ## 소스 설치 CLI 사전 검사

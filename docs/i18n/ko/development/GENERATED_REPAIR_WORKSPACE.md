@@ -74,7 +74,7 @@ root와 `tests`의 디렉터리 descriptor를 보유하고 열린 객체와 이�
 확인합니다. 누락·symlink·hardlink·특수 파일·권한 변경·root/하위 디렉터리 교체·동일 바이트의
 inode 교체도 검토한 상태로 간주하지 않습니다.
 
-`apply_source(expected, guard=..., commit_guard=None)`는 `app.py`만 정확한 after 바이트로 교체하고,
+`apply_source(expected, guard=..., commit_guard=None)`는 `app.py`만 정확한 after 바이트로 교체하고
 `restore_source(expected, guard=..., commit_guard=None)`는 확인된 적용 파일을 정확한 before로 돌립니다.
 테스트·불변 snapshot·추적 journal도 확인합니다. 두 동기 hook은 `None`을 반환해야 하며 동의가 아닙니다.
 

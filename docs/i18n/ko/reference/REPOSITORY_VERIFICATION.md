@@ -41,7 +41,7 @@ module/submodule 충돌을 거부합니다. 유효한 선언만으로 앱 객체
 
 ## 호스트에만 두는 독립 사례 선언
 
-`build_repository_cases(data)`는 동결된 `RepositoryCaseSet`을 반환하고,
+`build_repository_cases(data)`는 동결된 `RepositoryCaseSet`을 반환하고
 `validate_repository_cases`는 이를 정확히 재구성합니다. 기반 정보는 선택한 소스, 정책, 전체 선택
 내용과 테스트 인터페이스를 식별해야 합니다. 작성자·가정·적용 가능성·이유는 **제공된 데이터**이며
 인증된 검토, 정책의 참값 또는 구체적인 정답 수용이 아닙니다.
@@ -104,7 +104,7 @@ Pytest 데이터에는 크기가 제한된 정확한 정수 count, exit code와 
 Before 후보의 조건은 다음과 같습니다.
 
 - 모든 응답이 선언한 before 값과 일치하며 지정된 사례는 원하는 after 동작과 다른 값을 가집니다.
-- 수집된 테스트가 0개가 아니고 제공된 assertion 실패가 정확히 하나이며 나머지는 모두 통과하고,
+- 수집된 테스트가 0개가 아니고 제공된 assertion 실패가 정확히 하나이며 나머지는 모두 통과하고
   exit 1이고 error/skip/xfail/xpass가 없으며 세 guest 모두의 cleanup이 제공 데이터상 확인됨입니다.
 
 After 후보의 조건은 선언한 모든 after 대조 사례, 0개가 아닌 전체 통과 pytest count, exit 0,

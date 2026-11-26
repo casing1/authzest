@@ -141,7 +141,7 @@ recipe `unified-v1-context-3`은 등록된 정확한 소스 바이트에서 문�
 | `provenance`                                                    | 정확히 `{"kind":"registered-test-only-template","authenticated":false}` |
 
 미리보기는 확인 가능한 데이터이며 승인 token, renderer, 패치 서비스 또는 실행 계획이 아닙니다.
-이를 표시해도 diff를 적용하거나 정책을 검증하지 않습니다. 이후 표현 계층에서 텍스트를 escape하며,
+이를 표시해도 diff를 적용하거나 정책을 검증하지 않습니다. 이후 표현 계층에서 텍스트를 escape하며
 복사한 JSON·터미널 출력·Markdown은 권한을 부여할 수 없습니다.
 
 ## 제한과 엄격한 검증
@@ -183,7 +183,7 @@ print(json.dumps(preview.to_dict(), ensure_ascii=True, indent=2))
 기록하며 테스트/CI 통과나 런타임 관찰을 기록하지 않습니다.
 
 모델 통합에는 별도로 최소화한 요청/출력 설계와 새롭고 제한된 공유 결정이 필요합니다.
-변경 전후 관찰에는 별도로 검토한 고정 recipe와 새로운 정확한 계획별 실행 결정이 필요하며,
+변경 전후 관찰에는 별도로 검토한 고정 recipe와 새로운 정확한 계획별 실행 결정이 필요하며
 #80은 이 잘못된 소스를 계속 거부해야 합니다. pair-bound 새 복사본의 diff 승인·적용·검증·복구는
 각각 별도 후속 설계와 현재 상태 기반 결정을 받아야 합니다. 이 데이터 API나 기록된 라벨 승인은
 런타임, 제공자 사용, 소스 공유, 파일 쓰기, 자동 재시도/복구, 병합, tag 또는 release를

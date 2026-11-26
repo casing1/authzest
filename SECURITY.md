@@ -7,7 +7,7 @@
 
 ## Supported versions
 
-AuthZest is in early development. Security fixes are provided for the latest published `0.1.x` prerelease
+AuthZest is in early development. Security fixes are provided for the latest published `0.1.x` release
 and the latest commit on the default branch. Older preview builds are unsupported.
 
 ## Reporting a vulnerability
@@ -65,14 +65,13 @@ parses those exact bytes, and shows the complete prompt/schema/source before a f
 decision. The decision expires after 300 seconds; every selected input is compared again before one
 adapter call. Existing authentication remains managed by the trusted Codex installation.
 
-Selected source/policy, comments and model output are untrusted data. Explicit selection is not
-secret detection; the operator must inspect the full sharing preview. Request IDs bind content,
-not human identity. Generated tests/source and host-derived diffs remain inert; structural AST
-validation proves neither executable tests nor policy correctness. This command supplies no copy,
-application, execution or GUI authority. Review unintended file disclosure, scope substitution,
-stale sharing and reachable generated-code execution as real boundary failures; the external
-source is not exempt because older workflows used synthetic fixtures. There is no new finding
-exclusion, accepted risk or live validation receipt. See the
+Selected source/policy, comments and model output are untrusted data. Explicit selection does not
+detect secrets, so the operator must read the full sharing preview. Request IDs bind content, not a
+person. Generated tests/source and host-derived diffs stay inert, and structural AST validation
+shows neither that tests run nor that the policy is right. This command grants no copy,
+application, execution or GUI authority. Treat unintended file disclosure, scope substitution,
+stale sharing and reachable generated-code execution as real boundary failures, even though older
+workflows used synthetic fixtures. This section accepts no risk and excludes no findings. See the
 [external-project guide](docs/guides/REPOSITORY_PROPOSALS.md).
 
 ## Threat model and current boundaries
@@ -105,8 +104,8 @@ See the [local workflow guide](docs/guides/RESULT_VIEWER.md) and
 
 Review reachable browser-to-local request paths that could disclose plans, consume model usage or
 issue an unintended file-stage decision. The synthetic target does not exempt the HTTP controller,
-request gates or copy/guest consumers from security review. These boundaries add no accepted risk,
-finding exclusion, completed audit or general repository execution support.
+request gates or copy/guest consumers from security review. These boundaries accept no risk, exclude
+no findings and do not add general repository execution.
 
 Private fixture copies and their records are retained for inspection; file-state checks and atomic
 replacement are not isolation from hostile concurrent same-user writers.

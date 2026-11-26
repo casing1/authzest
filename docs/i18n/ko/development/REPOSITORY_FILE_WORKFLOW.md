@@ -177,7 +177,7 @@ no-new-privileges, 제한된 임시 저장소를 사용하며 Docker socket, 호
 호스트가 기대 정답을 보유합니다.
 
 제안하는 단계 제한은 시작·요청·완료를 함께 묶은 40초 기한과 정리용 10초입니다. guest나 요청마다
-기한을 다시 시작하지 않습니다. 각 guest는 최대 1 CPU, 512 MiB 메모리, 64 PID, 32 MiB tmpfs를 사용하고,
+기한을 다시 시작하지 않습니다. 각 guest는 최대 1 CPU, 512 MiB 메모리, 64 PID, 32 MiB tmpfs를 사용하고
 캡처 출력 합계는 최대 256 KiB입니다. 정확한 이미지·launcher·codec·stage한 바이트 식별자, 응답 제한,
 종료 상태, 모든 guest의 정리를 강제하고 기록합니다. 자동 재시도나 단계 재개는 없습니다. 호스트
 파일시스템·Engine 호출에는 전체 작업의 엄격한 실시간 상한이 없으며 이 통제는 탈출 불가능한 격리가
@@ -197,7 +197,7 @@ no-new-privileges, 제한된 임시 저장소를 사용하며 Docker socket, 호
 
 초기 요청은 상대 경로와 제한된 합성 allowlist header를 사용하며 Host, Authorization, Cookie,
 proxy·framing header와 실제 자격 증명은 제외합니다. redirect, 재시도, 절대 URL, callback·정규식 matcher,
-임의 요청 script는 허용하지 않습니다. 정확한 상태와 타입이 지정된 JSON·빈 본문 기대값을 정의하며,
+임의 요청 script는 허용하지 않습니다. 정확한 상태와 타입이 지정된 JSON·빈 본문 기대값을 정의하며
 중복 key·유한하지 않은 수의 엄격한 거부, HTTP framing·fragment 제한, 응답 바이트 제한을 적용합니다.
 observer에는 요청 일정만 전달하고 기대값은 호스트에 둡니다.
 

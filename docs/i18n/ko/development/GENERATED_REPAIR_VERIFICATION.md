@@ -67,7 +67,7 @@ readiness 구현은 신뢰하는 테스트 경계이지 sandbox나 capability가
 데이터 전용 비교기를 관리합니다. 예상값은 호스트가 관리하는 데이터이며 생성된 assertion이나
 앱·relay·모델 응답이 정하는 값이 아닙니다.
 
-`build_generated_repair_controls()`는 `GeneratedRepairControls`를 반환하고,
+`build_generated_repair_controls()`는 `GeneratedRepairControls`를 반환하고
 `validate_generated_repair_controls(raw)`는 완전한 현재 정의만 수용합니다.
 `compare_generated_repair_observations(raw, controls, candidate="before" | "after")`는
 명시적 후보와 전체 순서의 사실을 요구합니다. 사실 JSON은 schema `1.0`, kind

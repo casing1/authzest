@@ -99,7 +99,7 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 - 수정안은 모델의 주장이 아니라 검토한 사례가 일치했기 때문에 받아들입니다.
 - 사례 5개의 일치는 그 요청에만 해당하며 앱 전체의 보안을 증명하지 않습니다.
 - 사용자 식별은 합성 테스트 헤더이며 실제 로그인 시스템이 아닙니다.
-- 어느 질문에서든 거절하면 더 진행되지 않고 바뀌지 않은 원본은 그대로 남는다는 것을 보여 줄 수 있습니다.
+- 어느 질문에서든 거절하면 흐름이 거기서 멈추고 원본도 그대로 남는다는 것을 보여 줄 수 있습니다.
 
 같은 흐름이 2026-11-25 소스 checkout과 설치한 wheel에서 끝까지 실행됐습니다.
 [준비 상태](../releases/0.1.0-READINESS.md)를 보세요.
@@ -112,7 +112,7 @@ diff examples/external_notes_app/app.py ~/authzest-demo-notes/app.py
 
 활성 AI 기능에는 동결 바이너리가 아닌 POSIX의 편집 가능 소스 checkout, Python 3.12, UI extra와
 빌드한 프런트엔드 자산이 필요합니다. Node.js 22.13 이상인 22.x 또는 Node.js 24를 사용합니다.
-Wheel과 독립 스캔/미리보기 바이너리는 완전한 활성 GUI 설치판이 아닙니다. 저장소 루트에서 실행합니다.
+Wheel과 독립 스캔/미리보기 바이너리에는 활성 GUI가 들어 있지 않습니다. 저장소 루트에서 실행합니다.
 
 ```bash
 python3.12 -m venv .venv
@@ -141,7 +141,7 @@ AI 흐름은 패키지에 포함된 합성 보관 노트 소스와 정책을 사
 .venv/bin/authzest ui --workspace examples/fastapi_inventory --ai-runtime-config /ABSOLUTE/PRIVATE/runtime.json
 ```
 
-**터미널에 출력된 비공개 AI 작업 공간 URL 전체를 새 브라우저 탭에서 엽니다.** `authzest-ai`
+터미널에 출력된 비공개 AI 작업 공간 URL 전체를 새 브라우저 탭에서 엽니다. `authzest-ai`
 fragment에는 새 접속 권한이 담기며 화면이 이를 제거하고 메모리에만 유지합니다. URL은 비공개로
 보관하고 녹화에서 제외합니다. 일반 대시보드 URL만으로는 활성 기능을 사용할 수 없습니다.
 새로고침했다면 전체 실행 URL로 다시 열고 서버를 재시작하면 다른 접속 권한을 사용합니다.
@@ -192,9 +192,9 @@ Core가 별도의 복구 계획을 제시하면 그 계획을 새로 검토·결
 ```
 
 열람할 권한이 있는 최종 JSON을 선택합니다. `owner-read-suggestion` 버전 1.0과 아래의 이전 생성
-파일 형식을 최대 **512 KiB**까지 가져옵니다. 로컬 API의 `imported-unverified` 표시는 기록에 적힌
+파일 형식을 최대 512 KiB까지 가져옵니다. 로컬 API의 `imported-unverified` 표시는 기록에 적힌
 주장을 보여 준다는 뜻이며 참조된 런타임·복사본·로그 경로를 읽지 않습니다. 활성 GUI의 최종 다운로드는
-최대 **4 MiB**이므로 모든 다운로드 결과를 다시 가져올 수 있는 것은 아닙니다. 전체 JSON과 원본 캡처는
+최대 4 MiB이므로 모든 다운로드 결과를 다시 가져올 수 있는 것은 아닙니다. 전체 JSON과 원본 캡처는
 비공개로 보관합니다. [결과 화면 안내](RESULT_VIEWER.md)
 
 CLI도 같은 owner-read 엔진을 사용합니다. 먼저 전체 오프라인 미리보기를 검토합니다.
@@ -227,7 +227,7 @@ CLI도 같은 owner-read 엔진을 사용합니다. 먼저 전체 오프라인 �
 비공개 실행 URL, 계정 정보, 원본 로그나 로컬 결과/복사본 경로를 녹화에서 공개하지 않습니다.
 
 공개한 관리형 테스트 예제 검증은 유지보수자가 작성한 제안과 실제 격리된 Linux guest 4개를
-사용했습니다. 기대한 before 단언 실패를 관찰하고 정확한 변경을 새 복사본에만 적용했으며,
+사용했습니다. 기대한 before 단언 실패를 관찰하고 정확한 변경을 새 복사본에만 적용했으며
 after 테스트 통과와 의도한 대조 7개 일치, 원래 소스 바이트 복구와 guest 4개 제거를 확인했습니다.
 이 근거는 모델 생성 및 GUI 수용과 구별합니다. [관리형 테스트 예제 검증 #187](https://github.com/casing1/authzest/pull/187)
 

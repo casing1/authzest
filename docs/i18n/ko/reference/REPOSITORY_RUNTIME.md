@@ -37,7 +37,7 @@ stage/                         # host-private; never mounted as a directory
 
 입력 파일은 mode `0444`, 입력 디렉터리는 `0555`로 봉인하며 바깥 디렉터리는 `0700`, record는
 `0600`을 유지합니다. staging과 create 계획 전후로 descriptor·경로명 식별자, 정확한 구성원,
-mode·소유자·단일 링크 파일·바이트를 검사합니다. 일반적인 변경은 stage를 무효화하지만,
+mode·소유자·단일 링크 파일·바이트를 검사합니다. 일반적인 변경은 stage를 무효화하지만
 동일한 host 계정으로 쓰는 적대적 행위자에 대한 원자적 방어는 아닙니다. 부분 실패 시 파일과
 할당·정리 사실을 보존합니다. `close()`는 열린 host descriptor를 닫으며 증거를 삭제하거나
 guest 정리를 주장하지 않습니다. Snapshot과 stopped-create 계획은 과거 관찰이며 재개 가능한

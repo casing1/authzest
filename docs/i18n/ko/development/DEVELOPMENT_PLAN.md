@@ -237,7 +237,7 @@ PR #123이 상태 전달을 완료했습니다.
 이후 `fb90c46`에 연결된 과거 결과이며 새 CLI 관찰로 옮겨 해석하지 않습니다.
 [PR #114](https://github.com/casing1/authzest/pull/114)는
 #113의 비배포 native 미리보기 workflow를 전달했습니다. `b5de9d9`에서 별도 승인한 기준 실행은
-세 hosted 플랫폼의 바이너리·패키지·새 다운로드 검사를 통과했지만,
+세 hosted 플랫폼의 바이너리·패키지·새 다운로드 검사를 통과했지만
 [기록된 실행](https://github.com/casing1/authzest/issues/83#issuecomment-6484547184)이 사용자 기기의
 설치/업데이트나 이후 후보 수용을 입증하지는 않습니다.
 [PR #115](https://github.com/casing1/authzest/pull/115)는 선택형 에디터 검토 workspace를 추가했으며

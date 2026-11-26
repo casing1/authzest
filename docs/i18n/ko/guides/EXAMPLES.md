@@ -42,7 +42,7 @@ authzest scan examples/fastapi_inventory --json
 
 import한 router에는 자체 prefix가 있고 두 번 등록됩니다. 두 mount의 라우트는 같은 원본 handler 위치를
 유지합니다. 이는 소스 위치이며 배포 URL이나 앱을 실행했다는 증거가 아닙니다.
-정확한 예상 JSON은 [별도 저장](../../../../tests/fixtures/fastapi_inventory.json)하며,
+정확한 예상 JSON은 [별도 저장](../../../../tests/fixtures/fastapi_inventory.json)하며
 [테스트](../../../../tests/test_examples.py)에서 비교할 때는 컴퓨터마다 다른 스캔 루트를 제외하고
 라우트 파일의 경로 구분자를 POSIX 형식으로 정규화합니다.
 현재 스키마는 1.2이며 이 fixture에는 지원하는 직접·상속 의존성 선언이 없으므로 세 route 모두

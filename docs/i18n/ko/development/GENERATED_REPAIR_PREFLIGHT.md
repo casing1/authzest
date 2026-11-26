@@ -65,7 +65,7 @@ contact 시도를 구분합니다. 가짜를 주입해도 인증된 관찰이 �
 
 광고된 API 범위·Linux platform·version/info의 서버 버전 일치·선언한 엔진 식별자·역할별 정확한
 이미지 ID/architecture를 대조합니다. 엔진 식별자의 preimage는 `schema_version: "1.0"`,
-`kind: "generated-repair-engine-identity"`와 `/info`의 `ID`를 `engine_id`로 담은 canonical JSON이며,
+`kind: "generated-repair-engine-identity"`와 `/info`의 `ID`를 `engine_id`로 담은 canonical JSON이며
 UTF-8 SHA-256이 profile 선언과 같아야 합니다.
 
 제한된 선택 메타데이터와 body hash만 보존합니다. 이미지 config·daemon security option·cgroup 필드는
@@ -108,7 +108,7 @@ peer 신원을 성립시키지는 않습니다.
 
 정지 생성 inspect·제한된 attach/start/capture·정확한 guest 정리·현재 세션/CLI 결정을 소스로
 연결했습니다. 메타데이터 관찰은 실제 이미지 내용 검토나 이미지 소유 pre-import 커널 guard를
-대체하지 않습니다. 네트워크 수정은 엄격한 lo-only 또는 고정 기본 tunnel fallback 사실만 허용하며,
+대체하지 않습니다. 네트워크 수정은 엄격한 lo-only 또는 고정 기본 tunnel fallback 사실만 허용하며
 non-loopback fallback은 관리상 DOWN·operstate DOWN·iflink0, 양수이며 서로 다른 index와 제한된
 고정 proc/sysfs 전후 snapshot 일치 조건을 만족해야 합니다. 미확인/활성/변경/잘못된 사실은 종료 78로
 거부합니다. socket/netlink를 열지 않고 NET_ADMIN·sysctl·network template도 바꾸지 않습니다.

@@ -34,7 +34,7 @@ AuthZest의 MIT 표기가 그 조건을 대신하지 않습니다.
 | opentelemetry-api                                                                | Apache-2.0         | A 이미지(FastAPI 의존성) |
 | httpx, pytest, pytest-cov, jsonschema, Ruff                                      | BSD-3-Clause / MIT | 개발·테스트 전용         |
 
-A 이미지 wheel은 `runtime/generated_repair/images/locks/linux-arm64-A.txt`에 고정되어 있으며,
+A 이미지 wheel은 `runtime/generated_repair/images/locks/linux-arm64-A.txt`에 고정되어 있으며
 [runtime 준비](../guides/REPOSITORY_HTTP_FIX.md) 과정에서 각각 바이트와 해시를 확인합니다.
 [HTTP 이미지 문서](REPOSITORY_HTTP_IMAGES.md)도 참고하세요.
 

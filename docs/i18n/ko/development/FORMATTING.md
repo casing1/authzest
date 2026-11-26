@@ -158,7 +158,7 @@ SHA-1 `09b826918c91cd4cbc80e0cbd1d2a922ff04f233`은 registry 메타데이터와 
 
 guard는 이 저장소 명령에만 적용합니다. 직접 Prettier 호출·editor 연동·직접 CJS/ESM 모듈 호출은
 guard로 보장하지 않습니다. 제한 시간은 OS sandbox가 아닙니다. 이 경계는 설치된 toolchain과
-workflow script를 신뢰하고 사전 검사부터 Prettier가 다시 읽을 때까지 파일이 유지되며,
+workflow script를 신뢰하고 사전 검사부터 Prettier가 다시 읽을 때까지 파일이 유지되며
 같은 사용자로 실행하는 악의적인 동시 작성자가 없다는 가정을 둡니다.
 
 2026-10-08에 검사한 런타임 소스와 packaging spec은 Prettier를 호출하거나 Node toolchain을
@@ -169,7 +169,7 @@ workflow script를 신뢰하고 사전 검사부터 Prettier가 다시 읽을 �
 ## 현재 정적 재확인 — 2026-11-02 KST
 
 소스 `ee49f5a04be41453aa7bf7b75438d04761b5880a`의 별도 정적 재확인에서도 전달된
-[#89](https://github.com/casing1/authzest/issues/89) 주장은 **`needs_review` / 신뢰도 medium**이며,
+[#89](https://github.com/casing1/authzest/issues/89) 주장은 **`needs_review` / 신뢰도 medium**이며
 단일 항목 needs-review 대기열의 순위는 1입니다. 위의 과거 기록에 대한 후속 판단이지 새로 확정한
 AuthZest 런타임 취약점이나 위험 수용 결정이 아닙니다.
 

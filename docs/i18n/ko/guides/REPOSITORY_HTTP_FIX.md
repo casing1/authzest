@@ -103,7 +103,7 @@ journal과 전체 결과가 담긴 비공개 근거 디렉터리를 남깁니다
 | `original-conflict`                                  | 캡처 이후 원본이나 정책이 바뀌어 쓰지 않았습니다.    |
 | `*-phase-failed`, `original-recovery-required`, 기타 | 단계가 실패했습니다. `failure`와 보존 근거를 보세요. |
 
-`verified_fix: true`는 after 검사가 **직접 검토한 사례**와 일치했다는 뜻입니다. 앱 전체, 실제 인증
+`verified_fix: true`는 after 검사가 직접 검토한 사례와 일치했다는 뜻입니다. 앱 전체, 실제 인증
 체계, 그 요청 밖의 동작을 보증하지 않습니다.
 
 ## 원본 복구
