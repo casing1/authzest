@@ -76,9 +76,9 @@ The raw recommendation has exactly these fields:
 | `limitations`      | Bounded nonblank text items; at least one for either status               |
 | `change_pair_id`   | Exactly JSON null                                                         |
 
-`no-change` means no source change is supported within this input scope, not that the policy is
-secure. `unknown` records missing support for a recommendation, not a fabricated denial or
-observed failure. Shape/reference validation does not establish semantic correctness, trusted
+`no-change` means no source change is supported within this input scope; it says nothing about
+whether the policy is secure. `unknown` records that a recommendation lacks support; it is neither a
+denial nor an observed failure. Shape/reference validation does not establish semantic correctness, trusted
 authentication or endpoint enforcement. Text that resembles instructions or code remains data.
 
 Additional fields are rejected even when empty: cases, labels, observations, replacement source,

@@ -174,16 +174,16 @@ time, and exit status. Unexpected workflow failures may omit result details; ins
 record instead of assuming a missing result means success or `not-run`.
 Decline/cancel starts no worker and records `not-run`; this intentional skip gives CLI exit `0`
 unless a separate workflow step fails.
-Worker failure, stale state, or journal failure causes exit `1`, not a verified result. A separate
+Worker failure, stale state, or journal failure causes exit `1` and no verified result. A separate
 restoration decision is still offered after a skip or failure when safe. Restoration is not automatic
-and does not change a retained verification result: that result describes the applied source hash,
-not the restored file. Application, verification, and restoration outcomes remain distinct.
+and does not change a retained verification result, which describes the applied source hash rather
+than the restored file. Application, verification, and restoration outcomes remain distinct.
 Journal schema `1.1` retains the full `verification_plan` preview, decision, and result when recorded.
-`journal_status: recorded` means the host write completed, not authenticated or permanent durability
-proof. A write/fsync error produces `unconfirmed` and triggers a best-effort correction to a failure
+`journal_status: recorded` means the host write completed; it does not authenticate the record or
+prove permanent durability. A write/fsync error produces `unconfirmed` and triggers a best-effort correction to a failure
 record; if correction also fails, the retained record may be uncertain. Inspect actual files and the
 reported failure rather than trusting an earlier success entry. The journal cannot restart or resume
-the session and is not a replay-proof approval receipt.
+the session, and it does not serve as a replay-proof approval receipt.
 
 The existing `scripts.demo_apply` flow is unchanged and remains `not-run`. #52's source-only addition
 does not itself complete #35's separately approved runtime verification and failure/recovery acceptance gate.

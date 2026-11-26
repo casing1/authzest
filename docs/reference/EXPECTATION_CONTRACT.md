@@ -67,8 +67,8 @@ These are caller-authored targets. This pure contract module does not parse or c
 The separate [#69 checker](../guides/PROPOSAL_CHECK.md) re-parses supported baseline/proposed snapshots
 and reports declaration comparisons, while `policy-intent` always remains `not-evaluated`.
 Baseline evidence may be partial, and an expectation manifest may
-cover only a subset of proposal changes. An empty scopes list or zero declaration count is not a finding
-that an endpoint is public, safe or vulnerable. Public intent does not prove public runtime behavior;
+cover only a subset of proposal changes. An empty scopes list or a zero declaration count says
+nothing about whether an endpoint is public, safe or vulnerable. Public intent does not prove public runtime behavior;
 restricted intent does not prove authorization.
 
 `expectation_preview` always returns `status: draft`, `verification_status: not-run`, `observed: null`

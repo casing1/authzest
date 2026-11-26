@@ -184,7 +184,7 @@ Windows 런타임 지원을 뜻하지 않습니다. 전체 회귀 검사에는 �
 일치했습니다. 새 사용자 기기·native 업데이트 검사가 아닙니다. 실제
 `codex-owner-repair --file-workflow`는 POSIX non-frozen 소스 전용이며 별도 수용한 실제 재현은
 계속 `c868152`에만 연결합니다. Native 파일은 실험용 scan/preview 배포물이지 설치기·UI 동작·일반 OS
-호환성·서명·공증의 근거가 아닙니다. 일반 FastAPI PoC와 모델 작성 교체 소스 생성은 미구현입니다.
+호환성·서명·공증을 보여 주지는 않습니다. 일반 FastAPI PoC와 모델 작성 교체 소스 생성은 미구현입니다.
 
 [#89의 명시적 alpha.4 한정 판단](../development/FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)은
 추적 non-Markdown 211개 파일의 모드/blob을 `7509a6a`와 대조한 뒤
@@ -195,7 +195,7 @@ Windows 런타임 지원을 뜻하지 않습니다. 전체 회귀 검사에는 �
 [추적 가능한 빌드 inventory](https://github.com/casing1/authzest/issues/83#issuecomment-6648515311)는
 [명확히 한 릴리스 조건](https://github.com/casing1/authzest/issues/83#issuecomment-6648284258)에 따라
 버전이 정해진 소스/workflow/frontend lock 절차와 실제 태그 실행의 해결된 의존성/빌드 관찰을 기록합니다.
-Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현성 보장이 아닙니다. 동적 빌드 입력과
+Python/빌드 요구사항은 완전히 고정하지 않았고 SBOM·바이트 재현성도 보장하지 않습니다. 동적 빌드 입력과
 버전 파일명이 달라질 수 있으므로 태그 실행 inventory와 비배포 main 산출물을 구별합니다.
 독립 평가와 재현 가능한 과목 근거는 #84/#85에서 계속 추적합니다.
 
@@ -211,9 +211,9 @@ Python/빌드 요구사항은 완전 고정이 아니며 SBOM·바이트 재현�
 [PR #125](https://github.com/casing1/authzest/pull/125)가 `676c1cc`에서 버전을 준비했고
 [PR #127](https://github.com/casing1/authzest/pull/127)이 위 후보에 minimatch 수정을 정상 병합했습니다.
 두 PR head 모두 CI 10개와 자동 리뷰 두 건을 완료했고 각각 병합 후 main 검사 6개도 통과했습니다.
-보안 발견 건수는 미보고이며 0건 판단이 아닙니다. 아래 11월 5일 비배포 native·소스 설치 관찰은
-해당 후보에 묶인 사전 근거이지 전체 릴리스/runtime·공개 산출물 검증이 아닙니다. 공개 alpha.3는 그대로입니다.
-11월 18일 전후라는 과목 제출 추정은 확정 기한이나 검사 조건을 생략할 근거가 아닙니다.
+보안 발견 건수는 보고되지 않았으며 0건과는 다릅니다. 아래 11월 5일 비배포 native·소스 설치 관찰은
+해당 후보에 묶인 사전 근거일 뿐이며 전체 릴리스/runtime·공개 산출물 검증은 이후에 했습니다. 공개 alpha.3는 그대로입니다.
+11월 18일 전후라는 과목 제출 추정은 확정 기한이 아니었고 검사 조건을 생략할 이유도 되지 않았습니다.
 이후 관리자는 [명시적 경고와 후속 조건](../development/FORMATTING.md#alpha4-관리자-판단-2026-11-05-kst)을 전제로
 다가오는 alpha.4의 명시한 포맷 잔여 위험을 수용했습니다. 다른 릴리스 조건을 면제하거나 내장 파서를 수정한 것은 아닙니다.
 
@@ -272,7 +272,7 @@ Linux x64·macOS arm64·Windows x64 각각 선택/이동 바이너리 **26개**,
 새 동일 OS 다운로드 **13개**를 통과했습니다. 세 실행 파일/manifest를 로컬에도 내려받아
 체크섬을 확인했으며 로컬 바이너리 호출은 하지 않았습니다. 7일 보관 Actions 테스트 산출물이지
 공개 릴리스 파일·영구 다운로드·서명이 아닙니다. 오프라인 정적 scan/소유 정책 미리보기 검사이며
-UI 동작·Codex·정책/runtime worker·실제 파일 흐름·새 기기 native 설치/업데이트 검증이 아닙니다.
+UI 동작·Codex·정책/runtime worker·실제 파일 흐름·새 기기 native 설치/업데이트는 검증하지 않았습니다.
 
 별도로 macOS/Python 3.12 host 한 대의 임시 noneditable 소스 설치에서 후보 새 설치 **13/13**,
 동일한 비공개 pipx 환경에 alpha.3 `99be6f5614d283befa2a421b64f84958b680f92f` / `0.1.0a3`를
@@ -426,7 +426,7 @@ Ubuntu/macOS/Windows runner마다 frontend와 native 실행 파일을 빌드한 
 runtime smoke·패치 적용은 포함하지 않습니다. 기존 전체 릴리스 workflow와 런타임/발행 조건은 유지합니다.
 
 Artifact 컨테이너는 `preview-`와 전체 실행 SHA·run ID·attempt·OS·아키텍처를 포함하고 보존 기간을
-7일로 요청합니다. GitHub Release 산출물이 아니라 Actions 테스트 산출물입니다. 실행 파일에는 현재
+7일로 요청합니다. GitHub Release 산출물과 구분되는 Actions 테스트 산출물입니다. 실행 파일에는 현재
 checkout의 패키지 버전이 표시됩니다. 과거 `0.1.0a3` preflight는 기존 공개 alpha.3 다운로드가 아니며
 준비한 `0.1.0a4` 표시만으로 alpha.4 발행이나 후보 수용을 입증하지 않습니다.
 실행 URL·전체 SHA·실제 runner 아키텍처·의존성/빌드 로그·artifact ID·체크섬을 검증 근거에 남깁니다.
@@ -472,7 +472,7 @@ AuthZest 런타임의 악용을 입증한 것은 아닙니다. 별도 [2026-11-0
 계속할 수 있습니다. #77의 정확한 예상값 10개는 2026-10-09 KST에 별도
 [정답 기록](../../../../tests/fixtures/owner_case_review/maintainer_review.json)으로 승인됐으며
 [사례 계획 계약](../reference/OWNER_CASE_PLAN.md)을 참고하세요. 해당 예상값만의 결정은 런타임
-근거·다른 사례 승인·새 후보 승인이 아닙니다. 최신 head 리뷰·native 산출물·사용자 설치/업데이트
+근거가 되거나 다른 사례·새 후보를 승인하지 않습니다. 최신 head 리뷰·native 산출물·사용자 설치/업데이트
 근거는 계속 별도 조건입니다.
 
 프로젝트 개발 환경을 활성화한 뒤 저장소 루트에서 아래 명령을 실행합니다. 명령 예시는 Bash 기준입니다.
@@ -550,7 +550,7 @@ Windows에서는 Git Bash로 실행하고 로컬 빌드를 확인할 때 `.exe` 
    13개입니다. 미리보기 자식 환경은 최소 변수만 허용하고
    계정 관련 변수와 외부 실행 경로를 제외하며 PATH에는 임시 실행 파일 디렉터리만 둡니다.
    이는 OS sandbox가 아니며 공유·사례 예상값 승인·정책 실행·패치 승인·인가 판정을 부여하지 않습니다.
-   수정 before/after 텍스트는 내장 데이터이며 정책 실행 관찰이나 적용 파일 검증이 아닙니다.
+   수정 before/after 텍스트는 내장 데이터이며 정책 실행을 관찰하거나 적용 파일을 검증하지 않습니다.
    기준 생성은 표준 라이브러리 전용 core 모듈을 사용하므로 기존 의존성 없는 `python -I` artifact
    검사도 유지합니다. 같은 버전 관리 smoke 스크립트를 세 플랫폼 빌드/다운로드 작업에서 사용하며
    단위 테스트나 로컬 플랫폼 하나의 성공만으로 모든 native 산출물 통과를 주장하지 않습니다.

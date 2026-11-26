@@ -126,19 +126,22 @@ Each scenario has one question in each family:
 | Policy intent     | The public/restricted intent explicitly supplied with the scenario.               | That the application enforces that intent.                      |
 | Runtime assurance | Unknown: these source-only scenarios do not establish general HTTP authorization. | An endpoint pass, verified vulnerability or security guarantee. |
 
-The reserved cases are public assistant-authored data, not secret, independently certified or
-provably unseen holdouts. Do not tune prompts on them. Record any exposure or use, and do not relabel
-development cases as fresh holdouts. Seven scenarios support a small descriptive comparison, not a
-representative population or statistically established superiority.
-The accepted policy values are four restricted, two mixed and one public. Development retains two
-restricted/one mixed/no public value; reserved evaluation has two restricted/one mixed/one
-public. A public answer is now present in reserved evaluation, but its single public control cannot
-establish representative coverage. This remains a small, unbalanced policy-classification draft.
-The new control declares public intent for two informational GET routes; its ordinary dependency is
-formatting only, not authorization evidence. Public intent comes from the explicit supplied policy,
-not from a missing authentication dependency or the presence of `Depends`. It does not establish
-runtime enforcement. Its accepted reference values are two route declarations, public intent and
-unknown runtime assurance; acceptance is not an independent-review or runtime guarantee.
+The reserved cases are public data written by the assistant. They are not secret, independently
+certified or provably unseen, so do not tune prompts on them, record any exposure or use, and never
+relabel development cases as fresh holdouts. Seven scenarios support only a small descriptive
+comparison; they represent no population and establish no statistical superiority.
+
+The accepted policy values are four restricted, two mixed and one public. Development keeps two
+restricted, one mixed and no public value; reserved evaluation has two restricted, one mixed and one
+public. Reserved evaluation now includes a public answer, but one public control cannot show
+representative coverage, so this remains a small, unbalanced policy-classification draft.
+
+The new control declares public intent for two informational GET routes. Its ordinary dependency
+only formats output and carries no authorization meaning. Public intent comes from the explicit
+supplied policy, not from a missing authentication dependency or the presence of `Depends`, and it
+says nothing about runtime enforcement. The accepted reference values are two route declarations,
+public intent and unknown runtime assurance; accepting them guarantees neither an independent review
+nor runtime behavior.
 
 Explicit-policy questions are intent-reading controls, not tests of access-control enforcement.
 The seven unknown assurance questions deliberately lack runtime evidence; they do not establish
@@ -297,22 +300,24 @@ For seven cases and two AI modes, the candidate describes these opportunities, n
 | 2           | 28            | 84                             | 3,360 seconds                              |
 | 3           | 42            | 126                            | 5,040 seconds                              |
 
-The timeout sum is not a wall-clock, token or credit cap. Cleanup time and Codex internal retries/
-usage have no bound established here. A desired one-attempt/no-AuthZest-retry-or-fallback policy is
-candidate metadata, not an implemented executor guarantee. Task IDs are sorted and the first mode
-flips by case/repetition. Seven pairs give a 4-versus-3 first-mode split in one repetition; odd repeat
-counts leave an imbalance. This order is deterministic, not randomized or fully counterbalanced.
+The timeout sum caps neither wall-clock time nor tokens or credits, and nothing here bounds cleanup
+time or Codex's internal retries and usage. The intended one-attempt policy, with no AuthZest retry
+or fallback, is candidate metadata that no executor implements yet. Task IDs are sorted and the
+first mode flips by case and repetition. With seven pairs, one repetition splits the first mode 4 to
+3, and odd repeat counts leave an imbalance; the order is deterministic, neither randomized nor
+fully counterbalanced.
 
 The planner keeps the existing paired payloads, common draft instructions and response schema `0.1`.
-It verifies task/request bindings and reports canonical application-message text, UTF-8 byte lengths
-and SHA-256 values. These candidates are not actual RPC wire envelopes or the effective Codex harness
-context. Fresh contexts and tool restrictions are future requirements, not enforced by this helper.
-Configuration, packet-set, plan and trial IDs are deterministic content metadata, not consent or
-invocation-freshness proof. Request IDs remain the same across configurations/repetitions; response
-schema `0.1` cannot bind a response to those settings, repeats or a fresh invocation. Provider capture/
-live collection/run support is not implemented; the separate host-batch validation below proves no
-provider freshness. `answer_contract_descriptor_id` binds the public descriptor, not the full
-validator implementation.
+It verifies task and request bindings and reports canonical application-message text, UTF-8 byte
+lengths and SHA-256 values. These candidates are neither actual RPC wire envelopes nor the effective
+Codex harness context, and this helper does not enforce fresh contexts or tool restrictions, which
+remain future requirements. Configuration, packet-set, plan and trial IDs are deterministic content
+metadata that prove neither consent nor a fresh invocation. Request IDs stay the same across
+configurations and repetitions, and response schema `0.1` cannot bind a response to those settings,
+repeats or a fresh invocation. Provider capture, live collection and run support are not
+implemented, and the host-batch validation below proves no provider freshness.
+`answer_contract_descriptor_id` binds the public descriptor only, not the full validator
+implementation.
 
 Only task data is read: no evaluator labels/reference scoring, account lookup, network, child process,
 target-source import/execution, AI or worker call. The full plan is evaluator metadata, never provider
@@ -382,16 +387,17 @@ python -m scripts.evaluation_invocation --model offline-example-model --effort m
 python -m scripts.evaluation_invocation --model offline-example-model --effort medium --repetitions 1 --timeout-seconds 120 --dry-run --fault stale
 ```
 
-The common `0.2` framing, new opaque invocation ID and original task form a prompt candidate, not a
-live-frozen prompt. Original `0.1` message SHA-256, final `0.2` message SHA-256 and schema SHA-256
-are distinct. The original/final application messages are each limited to 128 KiB and the schema to
-64 KiB; response text is bounded to 64 KiB of UTF-8 and JSON depth 16. Schema shaping is a
-subset, not the final validator: canonical formats, printability and duplicate-question checks are enforced
-by the strict decoder. This is not verified support for that schema in pinned App Server `0.153.0`.
-The returned in-memory `raw_received_text` preserves bounded valid-UTF-8 text, including malformed
-JSON; wrong-type, oversized or invalid-UTF-8 input leaves it null. `inner_canonical_json` is a
-serialization, not that original text or a persistent capture/log. Canonical inner text is also retained
-only within 64 KiB of UTF-8; oversized serialization leaves `inner_canonical_json` null.
+The common `0.2` framing, a new opaque invocation ID and the original task form a prompt candidate
+that is not yet frozen for a live run. The original `0.1` message SHA-256, the final `0.2` message
+SHA-256 and the schema SHA-256 are distinct. Each application message is limited to 128 KiB and the
+schema to 64 KiB; response text is bounded to 64 KiB of UTF-8 and JSON depth 16. Schema shaping
+covers a subset, and the strict decoder enforces canonical formats, printability and
+duplicate-question checks. Support for that schema in pinned App Server `0.153.0` is unverified.
+
+The returned in-memory `raw_received_text` keeps bounded valid UTF-8 text, including malformed JSON;
+wrong-type, oversized or invalid UTF-8 input leaves it null. `inner_canonical_json` is a
+re-serialization, distinct from the original text and from any persistent capture or log, and it is
+kept only within 64 KiB of UTF-8; an oversized serialization leaves it null.
 
 All 14/28/42 slots and 42/84/126 question opportunities remain for one/two/three repeats, with
 seven cases/21 questions per mode/repetition. Missing/invalid/stale behavior is synthetic validation,
@@ -450,17 +456,19 @@ remains OPEN with all seven checks pending; no AI/worker call, risk acceptance o
 ## Pure offline configuration preflight (not startup proof)
 
 `scripts/evaluation_preflight.py` provides `check_config(result, configuration, *, phase)` and
-`compare_configs(discovery_result, generation_result, configuration)` for caller-supplied
-discovery/generation results. It bounds the already-decoded JSON tree to 256 KiB compact UTF-8,
-depth 16 and 4,096 nodes; it cannot recover duplicate keys discarded by an earlier parser.
-It requires `config`/`origins` maps with `layers` absent
-or null, and checks exact owned recipe paths/types/values. Only a minimum known-inactive set may be
-absent/null; its 21 reviewed optional root fields allow no non-null value. Unknown additional paths
-are unsupported, not evidence of protocol-invalid output.
+`compare_configs(discovery_result, generation_result, configuration)` for discovery and generation
+results supplied by the caller. It bounds the already decoded JSON tree to 256 KiB of compact UTF-8,
+depth 16 and 4,096 nodes; duplicate keys that an earlier parser discarded cannot be recovered. It
+requires `config`/`origins` maps with `layers` absent or null and checks the exact owned recipe
+paths, types and values. Only a minimum known-inactive set may be absent or null, and its 21
+reviewed optional root fields allow no non-null value. Unknown additional paths are reported as
+unsupported, which does not make the output protocol-invalid.
+
 MCP configuration must be an explicit map of at most 64 safe names, each at most 128 characters;
-generation requires `enabled=false` and comparison requires identical names. Origins and MCP
-bodies remain opaque bounded JSON, not complete-schema validation or provenance evidence. Results
-contain redacted counts/closed diagnostics, not supplied names, paths or configuration content.
+generation requires `enabled=false`, and comparison requires identical names. Origins and MCP bodies
+stay opaque bounded JSON, so the check is neither complete schema validation nor provenance
+evidence. Results hold redacted counts and closed diagnostics instead of the supplied names, paths
+or configuration content.
 
 This is a pure API, not a CLI, launcher, configuration RPC, account/model lookup, timer, worker or
 log importer. It is not connected to `Batch` and changes no existing recipe descriptor. Its supplied
@@ -519,19 +527,23 @@ risk acceptance or release is added.
 
 ## Selected synthetic response semantics (not a trial)
 
-`scripts/evaluation_semantics.py` bounds and deep-detaches caller-supplied JSON via `checked`;
-`Boundary` holds declared configuration/cwd/thread expectations, not authenticated execution scope.
-Limits are 256 KiB per candidate, 2 MiB for aggregate inputs, depth 32, 65,536 decoded nodes and
-4,096-bit integers; earlier parsers' discarded duplicate keys cannot be recovered.
+`scripts/evaluation_semantics.py` bounds and deep-detaches caller-supplied JSON via `checked`.
+`Boundary` holds the declared configuration, cwd and thread expectations, which do not authenticate
+an execution scope. The limits are 256 KiB per candidate, 2 MiB of aggregate input, depth 32, 65,536
+decoded nodes and 4,096-bit integers; duplicate keys discarded by an earlier parser cannot be
+recovered.
+
 `scripts/evaluation_session_semantics.py` checks selected initialize, explicitly disabled remote
-control, ChatGPT-shaped account, model catalog, thread-start and settings candidates.
-The catalog supports at most ten pages, 100 entries/page and 1,000 entries total; checks of returned
-cursor uniqueness and terminal null do not establish the actual requested pagination chain.
-`scripts/evaluation_turn_semantics.py` checks one narrow synthetic settings → turn-started →
-agent final-started/completed → turn-completed sequence with correlated identities, then uses the
-unchanged invocation codec. These are selected supported shapes, not all valid protocol variants or
-complete recipe semantics; unsupported does not mean protocol-invalid. This selected turn subset
-rejects reasoning/status/usage/user/tool/unknown events rather than supporting the broader recipe.
+control, ChatGPT-shaped account, model catalog, thread-start and settings candidates. The catalog
+allows at most ten pages, 100 entries per page and 1,000 entries in total. Checking that returned
+cursors are unique and end in null does not show which pagination chain was actually requested.
+
+`scripts/evaluation_turn_semantics.py` checks one narrow synthetic sequence (settings → turn-started
+→ agent final-started/completed → turn-completed) with correlated identities, then uses the
+unchanged invocation codec. These are selected supported shapes rather than every valid protocol
+variant or the complete recipe semantics, and an unsupported shape is not necessarily
+protocol-invalid. This turn subset rejects reasoning, status, usage, user, tool and unknown events
+instead of supporting the broader recipe.
 
 All inputs remain caller-supplied records, not captured RPCs or authenticated session/order/timing/
 provider evidence. A matching catalog/account shape proves no model entitlement. Results are

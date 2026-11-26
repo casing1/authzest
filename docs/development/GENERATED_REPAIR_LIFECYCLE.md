@@ -52,11 +52,11 @@ maintained comparator still accepts supplied data only, not authenticated runtim
 
 The simulation models the proposed shared 40-second phase and cumulative startup/readiness at
 most 10 seconds within it. Startup covers each role's record/create/inspect/attach/start interval
-and A's readiness, not just its final readiness reply. Normal T teardown remains inside the
+and A's readiness, including more than its final readiness reply. Normal T teardown remains inside the
 original phase. Final/failure cleanup gets one additional absolute 10-second deadline shared
-by remaining roles, not a fresh deadline per guest. Combined stdout/stderr is at most 256 KiB
-across all roles. These are modeled policy limits, not measured Docker capability or a universal
-filesystem/daemon/kernel time bound.
+by the remaining roles; each guest does not get a fresh deadline. Combined stdout/stderr is at most 256 KiB
+across all roles. These are modeled policy limits. They are neither measured Docker capabilities
+nor a universal filesystem, daemon or kernel time bound.
 
 Invalid/reversing clocks, replay, wrong ordering, malformed replies, persistence/capture errors,
 timeout, output overflow, signal, OOM and cancellation cannot become simulated success. The

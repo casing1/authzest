@@ -91,25 +91,29 @@ report that gap rather than manufacturing a model-quality claim. Complete the bo
 before adding models, another transport, a complete Python interpreter or browser-side execution.
 The local results UI above is now a release deliverable, not an optional post-course expansion.
 
-The separate [evaluation protocol](EVALUATION_PROTOCOL.md) records November 6 direct user acceptance
-of the current 21 reference values in seven assistant-authored scenarios. v1 fixes source, questions,
-splits, reference values and `scripts/evaluation_metrics.py` math, not a live benchmark. Raw task/
-reference copies preserve their historical pending proposal metadata; the new manifest records
-`accepted-current-reference-values` from `direct-user-chat-confirmation`, recorded by assistant.
-It neither authenticates identity nor attests all-source/rationale/citation inspection or human
-authorship. `independent_review_attested` is false; earlier preparation is not retroactively approved.
-The split stays three development/four reserved with four restricted/two mixed/one public policy
-values. One reserved public control is not class balance or a secret/guaranteed unseen holdout.
-Explicit public intent and ordinary formatting DI still establish no runtime authorization guarantee.
-The source-only `python -m scripts.evaluate_reference` preflight checks the pinned snapshot;
-`--control` creates all-unknown synthetic task-only responses before references are loaded. This
-control is not a static baseline, a model run or evidence of model quality. Generic unit math tests
-remain separate from this pinned reference adapter; changed v1 data/math requires reviewed v2.
-Live prompts/model/configuration/repeat budget remain unfixed and `live_benchmark_ready` is false.
-Citation/prose support, usage, latency, repeats, reviewer effort and workflow measurements remain
-unmeasured/null. No product command/schema relaxation, actual model/source/worker/workflow execution,
-release or risk acceptance is added; historical bytes/observations stay unchanged and all seven #84
-checklist items remain pending.
+The separate [evaluation protocol](EVALUATION_PROTOCOL.md) records the user's November 6 direct
+acceptance of the current 21 reference values in seven assistant-authored scenarios. v1 fixes
+source, questions, splits, reference values and the `scripts/evaluation_metrics.py` math; it is not
+a live benchmark. Raw task and reference copies keep their historical pending proposal metadata, and
+the new manifest records `accepted-current-reference-values` from `direct-user-chat-confirmation`,
+recorded by the assistant. The record does not authenticate an identity, attest inspection of every
+source, rationale and citation, or prove human authorship. `independent_review_attested` is false,
+and earlier preparation is not approved after the fact.
+
+The split stays three development and four reserved, with four restricted, two mixed and one public
+policy value. One reserved public control gives neither class balance nor a secret or guaranteed
+unseen holdout, and explicit public intent with ordinary formatting DI still guarantees nothing
+about runtime authorization. The source-only `python -m scripts.evaluate_reference` preflight checks
+the pinned snapshot. `--control` creates all-unknown synthetic task-only responses before references
+are loaded; it is neither a static baseline, a model run nor evidence of model quality. Generic unit
+math tests stay separate from this pinned reference adapter, and changed v1 data or math requires a
+reviewed v2.
+
+Live prompts, model, configuration and repeat budget are still unfixed, and `live_benchmark_ready`
+is false. Citation and prose support, usage, latency, repeats, reviewer effort and workflow
+measurements are unmeasured or null. This adds no product command or schema relaxation, no actual
+model, source, worker or workflow execution and no release or risk acceptance. Historical bytes and
+observations stay unchanged, and all seven #84 checklist items remain pending.
 
 The offline comparison contract now pairs task-only packets and strict schema-`0.1` responses bound
 to opaque task IDs and mode/payload-derived request IDs. Both AI inputs share source, policy,
@@ -197,23 +201,26 @@ proposal/approval contracts, the adapter, approved application, and isolated ver
 not implement that workflow. No provider call, credentials, subscription, or paid model is required by
 the default scan or CI.
 
-The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and the packaged fixture
-only. It requires exact-request sharing approval before starting a process, then separate apply/restore
-decisions for a fresh POSIX copy. One live fixture check passed with assistant-entered approval phrases
-under user authorization, not independent human review. That recorded #50 run did not execute runtime
-verification; general repository AI remains unsupported.
-At most one application-issued turn has no application retry/fallback; Codex internal transport retries can still
-occur. A 120-second default timeout is not a hard token or monetary cap. See the [fixture guide](../guides/CODEX_FIXTURE.md).
+The opt-in #50 command selects Codex App Server 0.153.0, a caller-selected model and only the
+packaged fixture. It requires exact-request sharing approval before starting a process, then
+separate apply and restore decisions for a fresh POSIX copy. One live fixture check passed with
+approval phrases entered by the assistant under user authorization, which is not an independent
+human review. That recorded #50 run did not execute runtime verification, and general repository AI
+is unsupported. At most one application-issued turn runs, with no application retry or fallback,
+although Codex's internal transport retries can still occur. The 120-second default timeout does not
+cap tokens or cost. See the [fixture guide](../guides/CODEX_FIXTURE.md).
+
 The later #52 extension separately approves a fixed-source check in a bounded subprocess. It checks
-AST configuration with pinned source hashes, executes no target source or model command, and adds no live-model evidence.
-The [#54 runtime option](../guides/RUNTIME_VERIFICATION.md) keeps that static default and selects one
-different, separately approved plan with `--runtime-check`. Only identical bundled fixture code runs;
-the check observes `app.debug`, one in-memory ASGI `GET /health`, and dependency versions. It accepts
-no arbitrary repository, generated command or regression suite, and makes no model-quality or
-verified-security-fix claim. Process isolation is not an OS/network or dependency sandbox.
-Alpha.3's native fixture workflow uses these core contracts; the evaluation corpus and demo scripts
-remain source-checkout tools. Packaged fixed runtime checking is supported only on the tested POSIX
-platforms; Windows retains scan support and explicitly refuses this fixture workflow.
+the AST configuration against pinned source hashes, executes no target source or model command and
+adds no live-model evidence. The [#54 runtime option](../guides/RUNTIME_VERIFICATION.md) keeps that
+static default and, with `--runtime-check`, selects one different, separately approved plan. Only
+identical bundled fixture code runs; the check observes `app.debug`, one in-memory ASGI
+`GET /health` and dependency versions. It accepts no arbitrary repository, generated command or
+regression suite and makes no claim about model quality or a verified security fix. Process
+isolation is not an OS, network or dependency sandbox. Alpha.3's native fixture workflow uses these
+core contracts, while the evaluation corpus and demo scripts remain source-checkout tools. Packaged
+fixed runtime checking is supported only on the tested POSIX platforms; Windows keeps scan support
+and explicitly refuses this fixture workflow.
 
 For every live adapter, require explicit data-sharing approval and inspect the permitted input scope.
 Repository text is untrusted data, not instructions granting the model tools or access. Minimize source

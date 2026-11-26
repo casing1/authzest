@@ -165,8 +165,9 @@ outcomes, cleanup and evidence persistence are separate fields, not one global s
 | Restore         | Separate choice; exact tracked after snapshot still present | Keep copy/user edits; never overwrite a changed or unconfirmed state                                 |
 
 A complete baseline may legitimately report mismatches: the intentionally incorrect before policy is
-expected to mismatch two labels. A valid mismatch observation is not a transport failure. The registered
-after is expected to match eight labels; those are expectations for the future file run, not new evidence.
+expected to mismatch two labels, and a valid mismatch observation is not a transport failure. The
+registered after is expected to match eight labels; these are expectations for the future file run
+and add no new evidence.
 The earlier embedded-control observations remain separate historical records.
 
 Compare only accepted before/after observations from the same session, with the same cases, reviewed

@@ -123,11 +123,11 @@ nor an observation of a user's startup. Source-derived conclusions are:
   [`mcpServerStatus/list` creates an eager connection set](https://github.com/openai/codex/blob/41e22fee981a63b3698df7ed36bad393cda24715/codex-rs/codex-mcp/src/mcp/mod.rs#L468-L526);
   do not add it as passive preflight. Manager creation alone is not connection creation.
 
-These observations are a compatibility/startup gate, not a product vulnerability finding or proof
-of live isolation. [App Server guidance](https://learn.chatgpt.com/docs/app-server) on effective config
+These observations form a compatibility and startup gate. They report no product vulnerability and
+do not prove live isolation. [App Server guidance](https://learn.chatgpt.com/docs/app-server) on effective config
 reads and the [MCP `enabled=false` option](https://learn.chatgpt.com/docs/config-file/config-reference)
-do not attest pre-initialization behavior. Next is a separate fake-JSONL/parser/lifecycle slice with
-this startup boundary explicit, not real transport readiness. Runtime/readiness/execution/live-freeze
+do not attest pre-initialization behavior. Next is a separate fake-JSONL, parser and lifecycle slice that makes this startup boundary explicit;
+it does not make the real transport ready. Runtime/readiness/execution/live-freeze
 flags remain false; product `0.1.0a4` / report `1.2`, pin, v1/math/history and #84's seven pending checks
 are unchanged. No actual AI/worker call, risk acceptance or release is added.
 
@@ -211,10 +211,9 @@ The generated bundles are not vendored or imported by the current codec.
 | `v2/ThreadSettingsUpdatedNotification.json` | `f7865eabaa34c7895a1ae345e51c1ba181a63c649237d36583b80f9d759b0f53` |
 
 The [official App Server reference](https://learn.chatgpt.com/docs/app-server) explains version-specific
-schema generation and RPC lifecycle. Here the generated files were read and compared with local
-product code, not used to mechanically validate every existing fake fixture. In particular, existing
-fake Model/Thread/item/usage payloads omit some generated required fields; passing those tests is not
-full protocol-schema conformance. `outputSchema` accepts arbitrary JSON at the protocol layer, which
+schema generation and RPC lifecycle. Here the generated files were read and compared with local product code; they were not used to
+validate every existing fake fixture. Existing fake Model, Thread, item and usage payloads omit some
+generated required fields, so passing those tests does not show full protocol-schema conformance. `outputSchema` accepts arbitrary JSON at the protocol layer, which
 does not establish provider support for the codec's nested shaping schema. Config also permits extra
 keys: field presence alone does not establish effective configuration or disabled capabilities.
 
@@ -460,19 +459,19 @@ instead of claiming the codec authenticates output or proves that a new model in
 
 ## Future evaluation-only direct capture
 
-`scripts/evaluation_transport.py` is a proposed separate coordinator, not an implemented launcher.
+`scripts/evaluation_transport.py` is a proposed separate coordinator; no launcher is implemented yet.
 It must receive only the owned current candidate and fresh bounded decision, rebuild and compare the
 complete preview immediately before dispatch, and consume the slot attempt **before the first possible
 turn send**. A failed write/uncertain acknowledgement must not cause another application-level attempt.
-The later consent UI should present all selected batch messages, settings, attempt counts and time/usage
-limitations in one complete bounded decision, not demand a new user confirmation for every normal slot.
-Per-slot single-use state is an internal constraint, not additional authority. The batch dispatch window,
+The later consent UI should present all selected batch messages, settings, attempt counts and time
+and usage limits in one complete bounded decision instead of asking again for every normal slot.
+Per-slot single-use state is an internal constraint and grants no additional authority. The batch dispatch window,
 expiry bounds and monotonic-clock rules must be fixed/tested in the transport recipe before its process
 boundary is implemented; do not assume a preview has an unlimited lifetime or automatically renew it.
 One slot uses a new empty ephemeral thread and one turn; no resume, fork, history import, steering,
 model substitution or AuthZest retry. Metadata discovery may use a separately cleaned process, but it
 must not create a model turn. Each slot's generation transport is separate and cannot reuse another
-slot's context. This is not a promise of only one OS process per slot.
+slot's context. It does not promise exactly one OS process per slot.
 
 Before generation, validate the exact candidate model and explicit effort against the pinned catalog
 and server-reported settings. Never choose a default effort or alternate model. If the pinned protocol

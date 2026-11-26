@@ -139,17 +139,18 @@ The runtime execution boundary is at [_runtime_worker:107](../../src/authzest/ru
 ### Assumptions, exclusions, and open questions
 
 - CLI and Python-library callers already act with the local user's authority. Exact terminal phrases
-  and in-memory records are workflow gates, not authenticated human receipts. Internal workers and
+  and in-memory records are workflow gates; they do not authenticate a person. Internal workers and
   the hidden packaging smoke can be invoked directly by that same user; visibility is not authorization
   ([cli:202](../../src/authzest/cli.py#L202)). Application helpers can accept caller-owned fixture text;
   only the live CLI and fixed verification paths impose the packaged-source allowlist.
 - Trust the operating system, interpreter/site startup, installed or bundled dependencies, Codex
   executable and its managed account storage. Codex inherits HOME/CODEX_HOME despite an empty cwd.
-  Its no-tools/read-only settings restrict the model session, not the trusted provider process's
-  account/network access. No endpoint, served-model, executable or human-identity attestation is claimed.
+  Its no-tools/read-only settings restrict the model session; the trusted provider process keeps its
+  own account and network access. Nothing here attests the endpoint, served model, executable or a
+  human identity.
 - Exclude hostile same-user concurrent writers from the copy workflow. Private permissions and atomic
-  replacement are not compare-and-swap against such an actor. Local source scans likewise are not an
-  immutable filesystem snapshot. Their aggregate file/byte/time budget needs a separate review before
+  replacement give no compare-and-swap guarantee against such an actor, and local source scans do not
+  read an immutable filesystem snapshot. Their aggregate file/byte/time budget needs a separate review before
   unattended use on hostile repositories; the Codex/worker limits do not bound static scanning.
 - The ordinary read-only API has no application authentication or tenant isolation. The explicitly
   enabled `/api/ai` boundary adds a launch capability and Host/Origin controls described above; it
@@ -164,14 +165,14 @@ The runtime execution boundary is at [_runtime_worker:107](../../src/authzest/ru
   existing local-only deployment assumptions still apply; the byte limit is not a general request
   duration or concurrency guarantee.
 - A producer of an imported record controls its claimed decisions, observations and model/source
-  text. Shape/hash consistency is not authenticated provenance, approval or repair proof. The
+  text. Consistent shapes and hashes do not authenticate provenance, approval or a repair. The
   [viewer](../../frontend/src/WorkflowResult.tsx) uses ordinary React text rendering, with control
   and bidirectional characters escaped by [`visibleText`](../../frontend/src/viewer-text.ts), rather
   than HTML/Markdown execution. Missing evidence remains unavailable and imported claims remain
   unverified, including legacy unversioned records. Display projection omits operational metadata
   but cannot remove secrets embedded in source/model text; importing does not authorize or resume a
-  CLI session. Misleading status text or script-like input is a review hypothesis, not a validated
-  vulnerability or a newly accepted risk.
+  CLI session. Misleading status text or script-like input remains a review hypothesis: neither a
+  validated vulnerability nor an accepted risk.
 - Windows scanning is distinct from POSIX fixture application/checking. An exact configuration/health
   demo is not an authentication/ownership PoC. Test fixtures may intentionally contain unsafe settings;
   do not flag their presence alone, or exempt the production code that consumes them.

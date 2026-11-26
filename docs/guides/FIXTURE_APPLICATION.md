@@ -85,12 +85,13 @@ multi-file apply or persisted approval revocation service. Reopening a receipt c
 
 The separate [#50 Codex fixture command](CODEX_FIXTURE.md) adds opt-in source sharing and a narrowly
 accepted model draft before these copy-only decisions. One owned-fixture live draft/apply/restore check
-passed with user-authorized, assistant-entered approval phrases, not independent human review. This #48 demo remains
-offline and scripted, with verification still `not-run`. #52 adds an optional, separately approved
-fixed-source check to the Codex fixture flow, not this demo; it does not execute target source.
-The later [#54 runtime option](RUNTIME_VERIFICATION.md) adds a different, separately approved fixed
-plan to the Codex fixture flow and `python -m scripts.demo_verify --runtime-check`, not this #48 demo. It runs
+passed with approval phrases that the assistant entered under user authorization, without an
+independent human review. This #48 demo stays offline and scripted, with verification still `not-run`.
+#52 adds an optional, separately approved fixed-source check to the Codex fixture flow only; it does
+not execute target source. The later [#54 runtime option](RUNTIME_VERIFICATION.md) adds a different,
+separately approved fixed plan to the Codex fixture flow and `python -m scripts.demo_verify --runtime-check`;
+this #48 demo is unaffected. It runs
 only the identical bundled fixture and observes `app.debug` and one in-memory ASGI health response;
 selection alone never approves execution. General repository integration, generated regression suites
-and the broader #35 acceptance gate remain separate work. Alpha.3 publication is backed by the separate
-[release gates](../releases/RELEASING.md), not completion of the broader #35 workflow.
+and the broader #35 acceptance gate remain separate work. Alpha.3 publication rests on the separate
+[release gates](../releases/RELEASING.md); the broader #35 workflow was not complete.

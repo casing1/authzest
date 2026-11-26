@@ -72,14 +72,14 @@ preparations do not execute the target or finish original-project correction.
 
 ## HTTP proposal slice (offline delivery)
 
-The explicit `repo-suggest --http-poc` path now prepares the single-file schema 2.0 request and
-validates one model-proposed GET request as data plus replacement source, using a dedicated adapter
-entry and host-derived source-only diff. Default v1.0 and v1.1 contracts remain separate. See the
-[proposal guide](../guides/REPOSITORY_PROPOSALS.md). Owned inert files, fake adapters and scripted
-App Server peers check the integration; no actual model/source sharing or target/guest execution is
-part of this delivery. A/B-only runtime/case integration, original application/recovery, new-result GUI
-import and installed actual acceptance remain pending under #210/#152/#150. This does not complete
-the frozen release checklist or enable external execution.
+The explicit `repo-suggest --http-poc` path prepares the single-file schema 2.0 request and
+validates one model-proposed GET request (as data) plus replacement source, using a dedicated
+adapter entry and a host-derived source-only diff. The default v1.0 and v1.1 contracts stay
+separate. See the [proposal guide](../guides/REPOSITORY_PROPOSALS.md). Owned inert files, fake
+adapters and scripted App Server peers check the integration; this delivery shared no source with a
+model and ran no target or guest. When it landed, the A/B runtime and case integration, original
+application and recovery, new-result GUI import and installed actual acceptance were still pending
+under #210, #152 and #150, and the frozen release checklist was not complete.
 
 ## External-project correction (2026-11-23 KST)
 
@@ -244,54 +244,62 @@ the single maintained scenario are required; general-repository support is not.
 
 ### Delivery history and preflight observations
 
-The recorded bounded-core delivery baseline is `ee49f5a`, after
-[PR #123](https://github.com/casing1/authzest/pull/123) delivered the bounded acceptance-status record
-by normal merge and #82 → #81 → #35 were completed in order. Exact head `a24b859` passed ten CI checks;
-both automatic reviews completed with no published findings or unresolved review threads. The security
-review did not report a finding count, so this is not a zero-finding assessment. Six post-merge checks
-passed. This completes the registered source-core scope, not general repository remediation,
-independent evaluation or release-candidate acceptance.
-The recorded installed observation remains bound to source `c868152`, after
-[PR #120](https://github.com/casing1/authzest/pull/120) delivered the reviewed opt-in owned-file CLI and
-[PR #121](https://github.com/casing1/authzest/pull/121) delivered its acceptance/capture runbook.
-A separately approved installed happy path at that source completed recommendation, before/diff/apply/
-after/restore with full original output and actual file verification. On 2026-11-02 KST the maintainer
-accepted that bounded walkthrough, English/Korean limitations and existing offline failure/refusal/
-user-edit/recovery and no-change/unknown evidence. This is a review decision, not a new live run or
-release-candidate acceptance. PR #123 subsequently completed that status delivery as recorded above.
-The earlier file-API observation remains bound to `fb90c46`, after
-[PR #118](https://github.com/casing1/authzest/pull/118); do not transfer that observation to the new CLI.
-[PR #114](https://github.com/casing1/authzest/pull/114) delivered #113's nonpublishing native preview
-workflow. Its separately approved baseline run at `b5de9d9` passed all three hosted platforms' binary,
-package and fresh-download checks; [the recorded run](https://github.com/casing1/authzest/issues/83#issuecomment-6484547184)
-does not establish consumer installation/upgrades or acceptance of a later candidate.
-[PR #115](https://github.com/casing1/authzest/pull/115) added an opt-in editor review workspace, not an
-enforced security boundary or #89 risk acceptance. PR #116 added installed-CLI smoke: clean source
-installation and same-version source replacement at `1d0ebb8` passed 13 checks each on one macOS host.
-The [source-install record](../releases/RELEASING.md#local-source-install-observation-2026-10-29)
-does not establish a versioned alpha.4 upgrade or other platforms/routes. Those historical observations
-retain their original scope; the November 5 candidate checks below are separate.
-The 2026-11-02 preparation sets the source version to `0.1.0a4` and proposes unused tag
-`v0.1.0-alpha.4`, without tagging or publication. PR #125 delivered that preparation; PR #127 then
+The recorded bounded-core delivery baseline is `ee49f5a`. [PR
+#123](https://github.com/casing1/authzest/pull/123) delivered the bounded acceptance-status record
+by normal merge after #82 → #81 → #35 were completed in order. Exact head `a24b859` passed ten CI
+checks, and both automatic reviews completed with no published findings or unresolved review
+threads. The security review reported no finding count, so this is not a zero-finding assessment.
+Six post-merge checks passed. This completes the registered source-core scope only; general
+repository remediation, independent evaluation and release-candidate acceptance are separate.
+
+The recorded installed observation is bound to source `c868152`, after [PR
+#120](https://github.com/casing1/authzest/pull/120) delivered the reviewed opt-in owned-file CLI and
+[PR #121](https://github.com/casing1/authzest/pull/121) its acceptance and capture runbook. A
+separately approved installed happy path at that source completed recommendation, before, diff,
+apply, after and restore with full original output and actual file verification. On 2026-11-02 KST
+the maintainer accepted that bounded walkthrough, the English/Korean limitations and the existing
+offline evidence for failure, refusal, user edits, recovery, no-change and unknown results. That was
+a review decision; it added no live run and no release-candidate acceptance. PR #123 then completed
+the status delivery recorded above. The earlier file-API observation stays bound to `fb90c46`, after
+[PR #118](https://github.com/casing1/authzest/pull/118), and does not carry over to the new CLI.
+
+[PR #114](https://github.com/casing1/authzest/pull/114) delivered #113's nonpublishing native
+preview workflow. Its separately approved baseline run at `b5de9d9` passed the binary, package and
+fresh-download checks on all three hosted platforms; [the recorded
+run](https://github.com/casing1/authzest/issues/83#issuecomment-6484547184) says nothing about
+consumer installation, upgrades or a later candidate. [PR
+#115](https://github.com/casing1/authzest/pull/115) added an opt-in editor review workspace, which
+is neither an enforced security boundary nor #89 risk acceptance. PR #116 added an installed-CLI
+smoke test: clean source installation and same-version source replacement at `1d0ebb8` each passed
+13 checks on one macOS host. The [source-install
+record](../releases/RELEASING.md#local-source-install-observation-2026-10-29) covers neither a
+versioned alpha.4 upgrade nor other platforms or routes. These historical observations keep their
+original scope; the November 5 candidate checks below are separate.
+
+The 2026-11-02 preparation set the source version to `0.1.0a4` and proposed the unused tag
+`v0.1.0-alpha.4` without tagging or publishing. PR #125 delivered that preparation, and PR #127 then
 delivered the minimatch dependency repair at candidate `b5f3eb81d318e94c5e400ec52e78f1550e13f931`.
-Both heads passed ten CI checks and both automatic reviews; each merged main passed six checks.
-Dependabot #12 is fixed and #126 is complete, independently of #89. On November 5 the exact candidate's
-[native preview](https://github.com/casing1/authzest/actions/runs/41946366368) passed 7/7 jobs: each of
-Linux x64/macOS arm64/Windows x64 passed 26 selected/relocated, 13 packaged and 13 fresh-download
-offline scan/preview checks. Three downloaded binary manifests also passed local checksum verification.
-One-host disposable source installation and genuine alpha.3 → alpha.4 replacement each passed 13/13
-offline installed-CLI checks with noneditable provenance/package-byte verification. No product AI,
-policy/runtime worker, active-flow or UI check was added. These results belong to `b5f3eb8`, not later
-documentation merges or the eventual release commit. The [current release-readiness matrix](../releases/RELEASING.md#alpha4-readiness-2026-11-05-kst)
-separates source-only active owner-file operation from native scan/static UI/offline previews.
-The [November 5 static recheck](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400)
-retains #89's `needs_review` / medium judgment. The maintainer subsequently
-[accepted the named residual tooling risk for the forthcoming alpha.4 only](FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst),
-with visible warnings, guarded-command assumptions and follow-up. This is a release disposition, not
-a parser fix, compatibility result or blanket waiver. PR #129 subsequently delivered the warnings at
-`090002d`; all 211 tracked non-Markdown file modes/blobs matched the decision basis `7509a6a`.
-The alpha.4-only decision is bound to that exact source in #83. #89 stays open; final release/public
-readback is recorded separately above, not retroactively attributed to the earlier preflight.
+Both heads passed ten CI checks and both automatic reviews, and each merged main passed six checks.
+Dependabot #12 is fixed and #126 is complete, independently of #89. On November 5 the exact
+candidate's [native preview](https://github.com/casing1/authzest/actions/runs/41946366368) passed
+7/7 jobs: Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 packaged and
+13 fresh-download offline scan/preview checks, and three downloaded binary manifests passed local
+checksum verification. On one host, a disposable source installation and a genuine alpha.3 → alpha.4
+replacement each passed 13/13 offline installed-CLI checks with noneditable provenance and
+package-byte verification. No product AI, policy/runtime worker, active-flow or UI check was added.
+These results belong to `b5f3eb8`, not to later documentation merges or the eventual release commit.
+The [release-readiness matrix](../releases/RELEASING.md#alpha4-readiness-2026-11-05-kst) separates
+source-only active owner-file operation from native scan, static UI and offline previews.
+
+The [November 5 static
+recheck](https://github.com/casing1/authzest/issues/89#issuecomment-6647312400) kept #89's
+`needs_review` / medium judgment. The maintainer then [accepted the named residual tooling risk for
+the forthcoming alpha.4 only](FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst), with
+visible warnings, guarded-command assumptions and follow-up. That was a release disposition, not a
+parser fix, compatibility result or blanket waiver. PR #129 delivered the warnings at `090002d`, and
+all 211 tracked non-Markdown file modes and blobs matched the decision basis `7509a6a`. The
+alpha.4-only decision is bound to that exact source in #83. #89 stays open; the final release and
+public readback are recorded separately above and are not attributed back to the earlier preflight.
 
 The sharing/adapter source implementation was delivered through [PR #103](https://github.com/casing1/authzest/pull/103)
 at merge `cc644a1` on 2026-10-25 KST. It builds on offline repair-recommendation delivery `8409bc7`,
@@ -350,24 +358,28 @@ bytes and preserves their distinct provenance; it does not select or freeze a ne
 The following inventory preserves #84's delivered preparation and remaining conditions. Its local
 next-step descriptions are not the overall release priority and do not replace #151–#153 or #85.
 
-The [evaluation protocol](EVALUATION_PROTOCOL.md) now records the user's November 6 direct acceptance
-of the current exact 21 reference values across seven assistant-authored scenarios. The v1 snapshot
-at `tests/fixtures/evaluation_reference/v1/` fixes source, questions, splits, reference values and
-scoring math; its raw task/reference copies intentionally preserve the original pending proposal
-metadata. The new manifest records `accepted-current-reference-values` from
-`direct-user-chat-confirmation`, recorded by assistant, not authenticated identity, human authorship
-or an all-rationale/citation inspection. `independent_review_attested` remains false. Earlier positive
-reactions/preparatory merges are not retroactively relabeled as approval.
-The unchanged split is three development/four reserved, with four restricted/two mixed/one public
-policy values. The single reserved public control is not balanced coverage, a secret/unseen holdout
-or a runtime guarantee. Source-checkout preflight uses `python -m scripts.evaluate_reference`
-(`--json` optional); `--control` builds task-only all-unknown synthetic responses before references
-are loaded, not a static baseline or model-quality result. The existing pure math remains separate
-from this pinned offline reference adapter. v1 changes need a new reviewed v2, not refreshed hashes.
-Next collect the missing independent/inspection review evidence and separately fix any live prompt,
-model/configuration and repeat budget. `live_benchmark_ready` remains false; no live model/source/
-worker/workflow execution, release or risk acceptance is added. Historical artifacts remain unchanged,
-and all seven #84 checklist items remain pending.
+The [evaluation protocol](EVALUATION_PROTOCOL.md) records the user's November 6 direct acceptance of
+the current exact 21 reference values across seven assistant-authored scenarios. The v1 snapshot at
+`tests/fixtures/evaluation_reference/v1/` fixes source, questions, splits, reference values and
+scoring math, while its raw task and reference copies keep the original pending proposal metadata on
+purpose. The new manifest records `accepted-current-reference-values` from
+`direct-user-chat-confirmation`, recorded by the assistant; it does not authenticate an identity,
+prove human authorship or show that every rationale and citation was inspected.
+`independent_review_attested` stays false, and earlier positive reactions or preparatory merges are
+not relabeled as approval.
+
+The split is unchanged: three development and four reserved cases, with four restricted, two mixed
+and one public policy value. The single reserved public control gives neither balanced coverage, a
+secret or unseen holdout nor a runtime guarantee. Source-checkout preflight uses
+`python -m scripts.evaluate_reference` (`--json` optional). `--control` builds task-only all-unknown
+synthetic responses before references are loaded, so it is neither a static baseline nor a
+model-quality result. The existing pure math stays separate from this pinned offline reference
+adapter, and any v1 change needs a new reviewed v2 rather than refreshed hashes.
+
+Next, collect the missing independent and inspection review evidence and separately fix any live
+prompt, model/configuration and repeat budget. `live_benchmark_ready` stays false. This adds no live
+model, source, worker or workflow execution and no release or risk acceptance; historical artifacts
+are unchanged, and all seven #84 checklist items remain pending.
 
 The offline comparison contract supplies `scripts/evaluation_response.py`'s strict, task/request-bound
 response and `python -m scripts.evaluation_comparison` paired input plan. Evidence-assisted alone gets
@@ -574,29 +586,32 @@ regression as a production vulnerability or evaluation set. This pure API alone 
 the later bounded workflow acceptance is recorded above.
 
 PR #102 delivered the separate offline repair-recommendation contract: a fixed `before`/`after`
-request, strict registered-change/no-change/unknown results and host-derived diff selection.
-PR #103 delivered the separate `codex-owner-repair` command at `cc644a1`. Complete
-source/prompt/schema/settings previews and a fresh exact sharing decision precede one pinned
-App Server attempt; preview-only remains offline. Host transport metadata is not signed provider
-provenance, and validated explanations/expected effects are not observed policy behavior.
-Offline refusal, stale-sharing and scripted-response checks do not establish live acceptance. The
-separate 2026-10-28 live attempt is recorded above and its one-run approval is consumed; the transport
-remains unreleased. The maintainer approved the exact
-[dedicated fixed-check recipe design](OWNER_POLICY_REPAIR_CHECK_DESIGN.md) and offline implementation.
-PR #110 implements the [separate Python API](../reference/OWNER_POLICY_REPAIR_CHECK.md), complete fixed
-plans, terminal expiring decisions and a dedicated worker/transport. Offline/static/mock tests do not
-execute either candidate or provide runtime observations. The later separate before-only source run
-at `510377c` produced the expected two mismatches and completed with confirmed cleanup; its approval
-is consumed. The separate later after-only run at documentation-only `7f9c5ce` matched all eight
-expectations with unchanged runtime code and consumed its own approval. Offline inspection of the
-saved records confirmed matching shared bindings and only the two expected true-to-false changes;
-this is not a new product comparison API or authenticated attestation. Another candidate run requires
-fresh approval; no automatic paired execution or new CLI/UI is added.
-The five-second startup/I/O/completion budget and one-second child cleanup budget are not a hard
-whole-filesystem deadline or OS sandbox. Embedded after is a control, not applied-file verification.
-PR #110's final-head review and delivery completed separately as recorded above. PR #118 supplies the
-separately reviewed file-bound new-copy workflow below; existing `codex-owner-review`, S1 and the
-#80 worker stay unchanged.
+request, strict registered-change, no-change and unknown results, and host-derived diff selection.
+PR #103 delivered the separate `codex-owner-repair` command at `cc644a1`. Complete source, prompt,
+schema and settings previews and a fresh exact sharing decision come before one pinned App Server
+attempt, and preview-only stays offline. Host transport metadata is not signed provider provenance,
+and validated explanations and expected effects are not observed policy behavior. Offline refusal,
+stale-sharing and scripted-response checks say nothing about live acceptance. The separate
+2026-10-28 live attempt is recorded above, its one-run approval is consumed, and the transport stays
+unreleased.
+
+The maintainer approved the exact [dedicated fixed-check recipe
+design](OWNER_POLICY_REPAIR_CHECK_DESIGN.md) and its offline implementation. PR #110 implements the
+[separate Python API](../reference/OWNER_POLICY_REPAIR_CHECK.md), complete fixed plans, terminal
+expiring decisions and a dedicated worker and transport; its offline, static and mock tests execute
+neither candidate. The later separate before-only source run at `510377c` produced the expected two
+mismatches and completed with confirmed cleanup, consuming its approval. The separate after-only run
+at documentation-only `7f9c5ce` matched all eight expectations with unchanged runtime code and
+consumed its own approval. Offline inspection of the saved records confirmed matching shared
+bindings and only the two expected true-to-false changes. That inspection is neither a new product
+comparison API nor an authenticated attestation. Another candidate run needs fresh approval, and no
+automatic paired execution or new CLI/UI is added.
+
+The five-second startup/I/O/completion budget and the one-second child cleanup budget are not a hard
+whole-filesystem deadline or an OS sandbox. The embedded after source is a control and does not
+verify an applied file. PR #110's final-head review and delivery completed separately, as recorded
+above. PR #118 supplies the separately reviewed file-bound new-copy workflow below; the existing
+`codex-owner-review`, S1 and the #80 worker stay unchanged.
 
 The maintainer approved the [owned-file repair design](OWNER_POLICY_FILE_REPAIR_DESIGN.md) at `29d8c82`.
 PR #118 introduces the [source API](../reference/OWNER_POLICY_FILE_REPAIR.md): separate

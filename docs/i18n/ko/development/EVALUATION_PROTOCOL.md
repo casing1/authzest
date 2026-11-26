@@ -120,12 +120,12 @@ worker/워크플로를 실행하지 않으며 실제 프롬프트/모델/시험 
 예약 사례는 공개된 assistant 작성 자료이지 비밀 자료·독립 인증 자료·모델이 보지 않았음이 입증된
 holdout이 아닙니다. 해당 사례로 프롬프트를 조정하지 않습니다. 노출·사용 이력을 기록하고 개발
 사례를 새로운 holdout으로 이름만 바꾸지 않습니다. 사례 7개는 소규모 기술적 비교용이지 대표성 있는
-모집단이나 통계적으로 입증된 우월성의 근거가 아닙니다.
+모집단을 대표하거나 통계적 우월성을 입증하지는 못합니다.
 수용한 정책 값은 restricted 4개·mixed 2개·public 1개입니다. 개발용은 restricted 2개·mixed
 1개·public 0개를 유지하고 예약용은 restricted 2개·mixed 1개·public 1개입니다. 예약 평가에도
 Public 답이 추가됐지만 public 대조 항목 하나로 대표성 있는 범위를 확보하지는 못합니다.
 여전히 작고 불균형한 정책 분류 초안입니다. 새 대조 항목은 정보용
-GET 라우트 2개에 공개 의도를 명시하며 일반 의존성은 서식 처리일 뿐 인가 근거가 아닙니다.
+GET 라우트 2개에 공개 의도를 명시하며 일반 의존성은 서식 처리에만 쓰이며 인가와는 관계가 없습니다.
 공개 의도는 명시적으로 제공한 정책에서 읽으며 인증 의존성 부재나 `Depends` 존재에서 추론하지
 않습니다. 런타임 강제를 입증하지도 않습니다. 수용한 참고 정답 값은 라우트 선언 2개·공개 의도·
 unknown 런타임 보장이며 수용이 독립 검토나 런타임 보장을 뜻하지는 않습니다.
@@ -134,7 +134,7 @@ unknown 런타임 보장이며 수용이 독립 검토나 런타임 보장을 �
 질문 7개에는 의도적으로 런타임 근거가 없으며 일반적인 불확실성 조절 능력을 입증하지 않습니다.
 대조 항목을 별도로 채점하고 합계로 AI의 이점을 주장하지 않습니다. 소스 선언의 정답은 파서와의
 자기 일치가 아닙니다. Keyword-path 사례의 소스 선언은 지원 inventory가 하나만 내보내더라도
-2개입니다. 불완전한 inventory는 하한일 뿐 올바른 전체 소스 개수가 아니며 정적 baseline은 입증하지
+2개입니다. 불완전한 inventory는 하한일 뿐 올바른 전체 소스 개수를 보여 주지 못하며 정적 baseline은 입증하지
 못한 전체 개수의 답을 유보해야 합니다.
 
 v1 참고 정답 스냅샷은 작업 문구·소스/정책 범위를 고정합니다. 아래 오프라인 응답 계약은 개발용
@@ -176,7 +176,7 @@ adapter/report 버전·내용 식별자·반환된 모델 ID를 기록합니다.
 다른 요청/모드의 응답을 거부합니다. 두 AI payload는 선언 근거와 파생 request ID만 다르며 공통
 초안 지시는 동결한 실제 프롬프트가 아닙니다. 잠재 제공자 payload에서 사례 이름·분할·참고 정답
 manifest/후보 해시·예상 정답·이유·검토 메타데이터를 제외합니다. 평가자 계획 자체에는 사례 매핑이
-있으며 **제공자 입력이 아닙니다**. 해시 연결은 신원 인증이나 비밀성 주장이 아닙니다.
+있으며 제공자 입력에 들어가지 않습니다. 해시 연결로 신원을 인증하거나 비밀성을 주장하지 않습니다.
 
 저장소 루트에서 계획이나 명시적인 합성 dry run을 준비합니다.
 
@@ -275,7 +275,7 @@ python -m scripts.evaluation_trial_plan --model offline-example-model --effort m
 | 2    | 28        | 84             | 3,360초                                      |
 | 3    | 42        | 126            | 5,040초                                      |
 
-Timeout 합계는 실제 경과 시간·token·credit 상한이 아닙니다. 정리 시간이나 Codex 내부 재시도/사용량의
+Timeout 합계로는 실제 경과 시간·token·credit을 제한하지 못합니다. 정리 시간이나 Codex 내부 재시도/사용량의
 상한은 여기서 확립하지 않습니다. 슬롯당 1회·AuthZest 재시도/대체 모델 없음이라는 목표 정책도 후보
 메타데이터이지 구현된 실행기의 보장이 아닙니다. Task ID를 정렬하고 사례/반복별로 첫 모드를 바꿉니다.
 한 반복의 사례 쌍 7개는 첫 모드가 4대3으로 나뉘어 홀수 반복 수에서는 불균형이 남습니다. 결정적 순서이며
@@ -288,7 +288,7 @@ envelope나 Codex harness의 유효 전체 context가 아닙니다. 새 context�
 새 호출의 증명이 아닙니다. 설정/반복이 달라도 request ID는 같으므로 응답 스키마 `0.1`은 해당 설정·
 반복·새 호출에 응답을 연결할 수 없습니다. 제공자 capture/실제 수집·실행은 미구현이며 아래 별도
 호스트 batch 검증도 제공자 응답의 새로움을 입증하지 않습니다. `answer_contract_descriptor_id`는
-공개 descriptor를 연결할 뿐 전체 validator 구현의 해시가 아닙니다.
+공개 descriptor만 연결하며 전체 validator 구현은 해시에 들어가지 않습니다.
 
 작업 데이터만 읽으며 평가자 정답/참고 정답 채점·계정 조회·네트워크·자식 프로세스·대상 소스
 import/실행·AI/worker 호출이 없습니다. 전체 계획은 평가자 메타데이터이며 제공자 입력이 아닙니다.
@@ -304,7 +304,7 @@ Native 실행 파일 기능이나 제품 `authzest` 명령도 아닙니다. 프�
 `new_collection`은 직접 관리하는 작업 전용 planner와 새 32바이트 무작위 nonce로 로컬 namespace의
 예상 슬롯을 만듭니다. 엄격한 호스트 receipt는 collection·plan·설정·패킷 집합·trial·invocation·순번·
 반복·모드·task·request·메시지 SHA-256에 연결하며 `response_raw`는 기존 엄격한 응답 스키마
-`0.1`을 그대로 사용합니다. 세션/receipt 메타데이터는 제공자 입력이 아닙니다. 모델에 보이는 envelope나
+`0.1`을 그대로 사용합니다. 세션/receipt 메타데이터는 제공자 입력에 들어가지 않습니다. 모델에 보이는 envelope나
 실제 제공자 capture에는 후속 버전 경계가 필요합니다.
 
 ```bash
@@ -330,7 +330,7 @@ batch 상한 입력에는 닫힌 입력 오류를 내고 유효한 관찰을 꾸
 다시 감싸면 유효하게 통과할 수 있습니다. 따라서 `provider_freshness_verified`는 false,
 `transport_provenance`는 `caller-supplied-unverified`이며 실제 모델 실행·유효 모델/설정/context·
 제공자 capture를 입증하지 않습니다. 같은 batch를 다시 검증할 수 있으므로 중복 검사는 영속적인
-일회용 ledger가 아닙니다. Nonce/ID는 신원 인증이나 공유/실행 동의가 아니며 기존 프롬프트/payload/
+일회용 ledger가 아닙니다. Nonce/ID로 신원을 인증하거나 공유/실행 동의를 대신할 수 없으며 기존 프롬프트/payload/
 request 스키마 `0.1`도 그대로입니다.
 
 제공자 호출·실제 시험은 0, 유효 모델·제공자 사용량·지연은 null이며 채점하지 않습니다. 런타임/정책/
@@ -359,9 +359,9 @@ python -m scripts.evaluation_invocation --model offline-example-model --effort m
 원래/최종 애플리케이션 메시지는 각각 128 KiB·스키마는 64 KiB, 응답은 UTF-8 텍스트 64 KiB·JSON
 깊이 16으로 제한합니다. Schema shaping은 부분집합이지 최종 validator가 아니며 canonical 답 형식·
 printability·중복 질문 검사는 strict decoder가 강제합니다. 고정 App Server `0.153.0`에서 해당
-스키마를 지원한다고 검증한 것이 아닙니다. 반환값 메모리의 `raw_received_text`는 잘못된 JSON까지
+스키마 지원 여부는 검증하지 않았습니다. 반환값 메모리의 `raw_received_text`는 잘못된 JSON까지
 제한된 유효 UTF-8 원문을 보존하고 잘못된 타입·과대 입력·잘못된 UTF-8이면 null입니다.
-`inner_canonical_json`은 재직렬화이지 그 원문이나 영속 capture/log가 아닙니다. Canonical 내부 텍스트도
+`inner_canonical_json`은 재직렬화한 값으로 원문이나 영속 capture/log와 다릅니다. Canonical 내부 텍스트도
 UTF-8 64 KiB 이내만 보존하고 직렬화가 이를 넘으면 `inner_canonical_json`은 null입니다.
 
 반복 1/2/3회의 슬롯 14/28/42개·질문 기회 42/84/126개와 모드/반복당 사례 7개·질문 21개를 유지합니다.
@@ -425,7 +425,7 @@ map은 필수,
 알 수 없는 추가 경로는 미지원이지 프로토콜 무효의 증거가 아닙니다.
 MCP 설정은 최대 64개·각 이름 최대 128자의 안전한 명칭을 가진 명시적 map이어야 하며 generation은
 `enabled=false`, 두 결과 비교는 정확히 같은 이름 집합을 요구합니다. Origins/MCP 내용은 제한된
-opaque JSON이지 전체 스키마 검증·출처 근거가 아닙니다. 결과는 제공된 이름/경로/설정 내용 없이
+opaque JSON으로 남으므로 전체 스키마 검증이나 출처 근거가 되지 못합니다. 결과는 제공된 이름/경로/설정 내용 없이
 식별정보 없는 개수·닫힌 진단만 담습니다.
 
 순수 API이지 CLI·launcher·설정 RPC·계정/모델 조회·timer·worker·로그 importer가 아닙니다.
@@ -452,7 +452,7 @@ JSONL/가짜 pipe 후속 구현은 이 경계를 유지하며 의미 검증·coo
 총 2 MiB/4,096프레임·대기 notification 128개·깊이 32·decode 노드 65,536개·정수 4,096비트입니다.
 엄격한 decode/envelope 검사로 중복 key·비유한 숫자·잘못된 UTF-8·잘못되거나 재사용한 RPC ID·서버
 요청·RPC 오류·경고/오류/알 수 없는 method를 거부합니다. 증가하는 양의 정수 ID·dict result는 좁은
-평가 정책이지 문자열 ID/임의 result를 허용하는 고정 JSON-RPC 전체 형식이 아닙니다.
+평가 정책이며 문자열 ID/임의 result를 허용하는 고정 JSON-RPC 전체 형식과는 다릅니다.
 
 허용 notification 이름과 dict params도 envelope만 검사하므로 다른 thread·실패 turn payload가
 통과할 수 있으며 `notification_semantics_verified`/`accepted_trial`은 false입니다. Initialized
@@ -482,7 +482,7 @@ CLI·로그 import·실제 제공자/App Server/계정/모델 호출·새 정책
 ## 선택한 합성 응답 의미 검사 (trial 아님)
 
 `scripts/evaluation_semantics.py`의 `checked`는 호출자 제공 JSON을 제한하고 deep-detach하며
-`Boundary`는 선언한 설정/cwd/thread 기대값이지 인증된 실행 범위가 아닙니다.
+`Boundary`는 선언한 설정/cwd/thread 기대값을 담을 뿐 실행 범위를 인증하지 않습니다.
 제한은 후보당 256 KiB·합산 입력 2 MiB·깊이 32·decode 노드 65,536개·정수 4,096비트이며 앞선
 parser가 버린 중복 key를 복원하지 못합니다.
 `scripts/evaluation_session_semantics.py`는 선택한 initialize·명시적 비활성 remote control·
@@ -491,7 +491,7 @@ ChatGPT 형태 계정·모델 목록·thread-start·settings 후보를 검사합
 실제 요청한 페이지 연결을 입증하지 않습니다.
 `scripts/evaluation_turn_semantics.py`는 settings → turn-started → agent final-started/completed →
 turn-completed의 좁은 합성 순서와 ID 연결을 검사한 뒤 기존 invocation codec을 사용합니다. 지원하는
-일부 형식이지 유효한 프로토콜 변형 전체나 recipe 의미 전체가 아니며 미지원은 프로토콜 무효가 아닙니다.
+일부 형식이지 유효한 프로토콜 변형 전체나 recipe 의미 전체가 아니며 미지원 형식도 프로토콜상 유효할 수 있습니다.
 선택 turn 부분집합은 더 넓은 recipe를 지원하는 대신 reasoning/status/usage/user/tool/unknown event를
 거부합니다.
 
@@ -532,10 +532,10 @@ session/turn 검사를 조합합니다. Discovery 성공에는 initialize/initia
 덮지 못하게 하고 정리·2차 clock 실패는 별도로 둡니다. 원래 `Clock` 기준점·확인 TTL·`T`·dispatch
 시간창·finish 계약을 초기화 없이 유지하고 모델 송신은
 `turn/start`에서만 표시하며 정확한 RPC ack를 연결하고 생명주기 확인 후 finish합니다.
-송신 시도 표시는 후보 프레임 바이트를 반환하기 전에 설정하며 실제 write의 증거가 아닙니다. 첫 nonvalid는
+송신 시도 표시는 후보 프레임 바이트를 반환하기 전에 설정하며 실제 write가 일어났다는 증거는 되지 못합니다. 첫 nonvalid는
 후속 슬롯을 중단하되 예정 슬롯 14/28/42개·질문 기회 42/84/126개를 모두 보존합니다. 순수 연결이지
 I/O·launcher·실제 timer/취소/정리 강제·인증된 승인이 아닙니다. 선택 turn 부분집합은 더 넓은 유효
-프로토콜 변형을 계속 거부하며 조합도 전체 recipe 검증이 아닙니다.
+프로토콜 변형을 계속 거부하며 조합해도 전체 recipe를 검증하지는 않습니다.
 
 기존 Windows CI 설정에 순수 테스트 경로 3개를 포함하며 CI 통과를 뜻하지 않습니다. POSIX 프로세스
 테스트는 고정 소유 가짜 자식만 두 단계에서 사용하고 자식별 테스트 watchdog 5초·제한된 TERM/KILL 정리를
@@ -612,7 +612,7 @@ python -m pytest tests/test_evaluation_metrics.py
 
 종류별·분할별로도 해당 고정 분모를 적용합니다. 무효 응답에는 정답·unknown 처리·coverage 점수를
 주지 않으며 성공적인 유보로 세지 않습니다. 분모 0은 null/해당 없음이지 만점이 아닙니다. 누락 답과
-실패를 제외하지 말고 보고합니다. 정적 유보는 예상한 한계이지 정책 정확성의 증거가 아닙니다.
+실패를 제외하지 말고 보고합니다. 정적 유보는 예상한 한계일 뿐 정책이 정확하다는 근거는 되지 않습니다.
 unknown 감소나 coverage 증가만으로 더 나은 분석이 되지는 않습니다.
 빈 CSV 문자열은 알려진 빈 선언 집합이며 불명 정답은 null로만 나타냅니다.
 
@@ -631,7 +631,7 @@ unknown 감소나 coverage 증가만으로 더 나은 분석이 되지는 않습
 11월 6일 직접 확인은 현재 정확한 정답 값을 수용한 것이지 모든 소스/질문/이유/인용을 확인했다는
 증명이 아닙니다. 확인 증명은 수집하지 않았으며 `independent_review_attested`도 false를 유지합니다.
 #84의 독립 검토 기준 충족을 주장하기 전에 실제 검토 근거와 남은 불확실성을 확보하며 사람 작성·
-서명 승인·인증 신원을 꾸며내지 않습니다. Assistant가 기록한 결정은 인증된 검토자 증명이 아닙니다.
+서명 승인·인증 신원을 꾸며내지 않습니다. Assistant가 기록한 결정으로 검토자를 인증할 수는 없습니다.
 예약 사례를 실제 평가에 쓰기 전에 별도 프롬프트/모델/설정/반복 정책을 고정합니다. 변경이나 유출에는
 버전 관리와 영향을 받은 비교의 재검토가 필요합니다.
 
