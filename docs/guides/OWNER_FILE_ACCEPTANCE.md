@@ -101,11 +101,12 @@ separate read-only probes compared the saved evidence. This is one-host source-i
   files 0600 were verified. The final closed checkpoint matches the durable record except for `closed`.
   The original checkout stayed clean. Raw evidence, identifiers, account data and usage remain private.
 
-The single recommendation and all copy/stage allowances are consumed. Negotiated model metadata is
-not independent served-model attestation, and internal transport retries/usage are not hard-capped.
-Historical after success describes the applied bytes, not the currently restored before file.
-This walkthrough is not an independent benchmark, authenticated approval, HTTP/authentication/DB
-test, installed live failure injection, pipx/upgrade/native acceptance or a release decision. Existing
+The single recommendation and all copy and stage allowances are consumed. Negotiated model metadata
+does not independently attest the served model, and internal transport retries and usage have no
+hard cap. The historical after success describes the applied bytes, while the file now holds the
+restored before source. This walkthrough was a bounded observation; it was not an independent
+benchmark, an authenticated approval, an HTTP, authentication or database test, installed live
+failure injection, pipx, upgrade or native acceptance, or a release decision. Existing
 offline refusal/user-edit/recovery tests remain separate evidence accepted in the bounded review
 above; no parent issue is closed by the observation alone.
 

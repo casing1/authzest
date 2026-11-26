@@ -261,13 +261,13 @@ authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-o
 authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-only --json
 ```
 
-`--preview-only`가 없으면 POSIX 활성 경로에서 유지하는 소스·정책·선언, 호스트 프롬프트와 출력 스키마를 먼저 정확히 표시하고 새 요청에 연결된 공유 확인을 요구합니다. 거절·취소·잘못된 확인은 공유 승인이 아닙니다. 미리보기도 동의가 아닙니다. 신뢰하는 로컬 Codex `0.153.0` 설치와 기존 ChatGPT 로그인을 사용하며 Codex는 자체 harness 문맥을 추가합니다.
+`--preview-only`가 없으면 POSIX 활성 경로에서 유지하는 소스·정책·선언, 호스트 프롬프트와 출력 스키마를 먼저 정확히 표시하고 새 요청에 연결된 공유 확인을 요구합니다. 거절·취소·잘못된 확인과 미리보기는 모두 공유 승인으로 보지 않습니다. 신뢰하는 로컬 Codex `0.153.0` 설치와 기존 ChatGPT 로그인을 사용하며 Codex는 자체 harness 문맥을 추가합니다.
 
 승인한 요청은 AuthZest 재시도나 모델 대체 없이 어댑터 1회만 시도합니다. 요청 제한 시간은 최대 120초이고 정리는 별도로 처리하므로 전체 흐름의 절대 시간 보장이나 Codex 내부 재시도·토큰·비용의 상한이 아닙니다. 사용량 누락을 0으로 해석하지 마세요.
 
-기본 최종 출력은 전체 전송 envelope를 반복하는 대신 간결한 결과 요약부터 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 적용·검사된 수정안이 아닙니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이지 모델 작성 사실의 독립 증명이 아니며 mock 응답도 실제 생성의 증거가 아닙니다.
+기본 최종 출력은 전체 전송 envelope를 반복하는 대신 간결한 결과 요약부터 표시합니다. 유효한 `proposed-change`는 전체 제안 소스/테스트와 호스트 계산 diff·해시를 제공할 뿐 아직 적용하거나 검사하지 않은 상태입니다. `no-change`, `unknown`, `refused`는 구분합니다. 전송 메타데이터는 호스트가 연결한 문맥이며 모델이 작성했다는 사실을 독립적으로 증명하지 않고, mock 응답도 실제 생성의 증거가 되지 않습니다.
 
-최종 JSON의 `kind`는 `codex-generated-repair-workflow`입니다. 바깥 `status`는 흐름(`generation-ready`, `not-shared`, `preview-changed`, `generation-failed`)을 설명하고 `proposal_status`는 제안 상태를 별도로 설명합니다. `generation-ready`는 검증한 응답이지 수정 성공이 아닙니다. `generation`은 전송 envelope를, `proposal_preview`는 실행 기능이 없는 호스트 계산 미리보기를 보존합니다. `execution_status`, `patch_application`, `restoration_status`는 `not-run`이고 `applied`는 false입니다. `application_turn_attempts`는 로컬 어댑터 호출 수이지 제공자가 수락하거나 과금한 turn 수가 아닙니다.
+최종 JSON의 `kind`는 `codex-generated-repair-workflow`입니다. 바깥 `status`는 흐름(`generation-ready`, `not-shared`, `preview-changed`, `generation-failed`)을 설명하고 `proposal_status`는 제안 상태를 별도로 설명합니다. `generation-ready`는 응답을 검증했다는 뜻일 뿐 수정이 성공했다는 뜻은 없습니다. `generation`은 전송 envelope를, `proposal_preview`는 실행 기능이 없는 호스트 계산 미리보기를 보존합니다. `execution_status`, `patch_application`, `restoration_status`는 `not-run`이고 `applied`는 false입니다. `application_turn_attempts`는 로컬 어댑터 호출 수이며 제공자가 수락하거나 과금한 turn 수와는 다릅니다.
 
 ### 결과 읽기
 
@@ -283,11 +283,11 @@ authzest codex-generate --model EXPLICIT_MODEL --timeout-seconds 120 --preview-o
 
 ## 유지하는 시나리오
 
-[시나리오 소스](../../../../src/authzest/codex/generated_repair_scenario.py)는 합성 `app.py` 하나, `GET /documents/{document_id}` 경로 하나, `alice` 또는 `bob`이 소유한 메모리 내 문서를 포함합니다. 의도적으로 누락한 소유권 검사는 데모 조건이지 실제 운영 취약점 발견이 아닙니다. `X-Demo-Actor`는 호출자가 선택하는 fixture 데이터이며 **인증이나 신뢰할 수 있는 신원이 아닙니다**.
+[시나리오 소스](../../../../src/authzest/codex/generated_repair_scenario.py)는 합성 `app.py` 하나, `GET /documents/{document_id}` 경로 하나, `alice` 또는 `bob`이 소유한 메모리 내 문서를 포함합니다. 의도적으로 누락한 소유권 검사는 데모 조건이며 실제 운영 환경에서 찾은 취약점과는 관계가 없습니다. `X-Demo-Actor`는 호출자가 선택하는 fixture 데이터이며 **인증이나 신뢰할 수 있는 신원이 아닙니다**.
 
 assistant가 작성한 정책은 **유지관리자 검토 대기** 상태입니다. 소유자에게는 기존 성공 응답을 유지하고 다른 사용자의 문서는 내용을 노출하지 않고 403으로 거부하며 누락·미등록 actor는 401, 유효한 actor가 없는 문서를 요청하면 404로 처리하도록 제안합니다. 이는 제안한 예상값과 소스 선언이며 관찰한 HTTP 결과나 독립적으로 승인한 정답 집합이 아닙니다.
 
-요청하는 출력은 새로 작성한 방어용 pytest 파일 `tests/test_generated_ownership.py`와 `app.py`의 전체 대체 소스입니다. 경로는 고정된 이름표이지 임의 파일시스템 대상이 아닙니다. `test_before = "absent-in-planned-copy"`는 계획한 복사본을 설명하며 실제 파일시스템 관찰이 아닙니다. 등록된 after 정답 소스나 미리 작성한 테스트를 선택지로 제공하지 않습니다.
+요청하는 출력은 새로 작성한 방어용 pytest 파일 `tests/test_generated_ownership.py`와 `app.py`의 전체 대체 소스입니다. 경로는 고정된 이름표이며 임의 파일시스템 대상을 가리키지 않습니다. `test_before = "absent-in-planned-copy"`는 계획한 복사본을 설명할 뿐 실제 파일시스템을 관찰한 값이 아닙니다. 등록된 after 정답 소스나 미리 작성한 테스트를 선택지로 제공하지 않습니다.
 
 ## 요청·제안·미리보기
 
@@ -307,7 +307,7 @@ assistant가 작성한 정책은 **유지관리자 검토 대기** 상태입니�
 ## 검증이 입증하지 않는 것
 
 - AST 파싱은 컴파일·테스트 수집·OS sandbox·의미 검증·안전성 검사가 아닙니다. 문법이 유효해도 요청한 제한이나 정책을 위반할 수 있습니다.
-- ID와 해시는 내용을 결합할 뿐 검토자·모델 인증, 최신성 증명, 공유·실행·적용·복구 승인이 아닙니다.
+- ID와 해시는 내용을 결합할 뿐 검토자·모델을 인증하거나 최신성을 증명하지 않으며 공유·실행·적용·복구를 승인하지도 않습니다.
 - 모델이 작성한 테스트가 같은 모델의 수정안을 통과시키는 것만으로 올바른 수정임을 독립적으로 입증할 수 없습니다. 이번 단계에서는 생성 코드를 실행하지 않습니다.
 - 과거 등록 템플릿 승인은 새 시나리오나 생성 코드를 승인하지 않습니다. 현재 산출물을 수용된 실제 trial, 검증된 수정안, 정식 릴리스 조건 완료로 표시하지 않습니다.
 

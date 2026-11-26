@@ -221,17 +221,17 @@ dependency is fixed by this documentation.
 
 - Keep the guarded commands, reviewed patterns/options/discovery and child limit. Direct CLI/editor/API
   calls have no wrapper guarantee, and effective editor exposure remains unknown. The opt-in workspace
-  does not prove machine settings; the timeout is not an OS sandbox.
+  does not prove machine settings, and the timeout is no OS sandbox.
 - Retain trusted-toolchain/workflow, stable-file and no hostile concurrent same-user writer assumptions.
-  This is not user-fault attribution or a waiver for code execution, data exposure or unrelated findings.
+  These assumptions neither blame the user nor waive code execution, data exposure or unrelated findings.
 - Bind the exact resulting candidate SHA in #83 after the warning PR's normal review/merge and a
   byte comparison showing every tracked non-Markdown file unchanged from the decision basis.
   Relevant source/toolchain/workflow or exposure changes require reassessment; arbitrary successors
   and future releases are not automatically accepted.
 - Keep #89 open. Reassess when a compatible shipped-byte upstream fix appears, new exposure/impact
   or a guard bypass is reported, relevant tooling changes, or the next release is prepared. Apply a
-  reviewed fix with compatibility/regression checks; an incident is not the only follow-up trigger.
-  This records follow-up criteria, not an automated monitoring service.
+  reviewed fix with compatibility/regression checks; an incident is only one of these triggers.
+  These are follow-up criteria; no automated monitoring service watches for them.
 
 ## Prerelease disposition
 

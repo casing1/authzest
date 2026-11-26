@@ -26,13 +26,14 @@ approved application/restoration in a fresh POSIX copy only. This contract modul
 it nor that bounded copy demo provides arbitrary-checkout writes, live AI or verification execution.
 The separate [#50 Codex fixture command](../guides/CODEX_FIXTURE.md) supplies a narrowly validated model
 draft to these host-bound contracts. One owned-fixture live draft/apply/restore check passed with
-user-authorized, assistant-entered approval phrases, not independent human review. It does not change these pure functions
-into a provider client or verification executor, and is not a general repository patch workflow.
+approval phrases that the assistant entered under user authorization, without an independent human
+review. The command leaves these pure functions as they are (they gain no provider client or
+verification executor), and it is no general repository patch workflow.
 The command's later #52 fixed-source check is a separate, plan-approved runner; it checks only the
-applied fixture's AST configuration with pinned source hashes, not runtime behavior, and does not
-change this pure contract's `not-run` results.
+applied fixture's AST configuration against pinned source hashes, observes no runtime behavior and
+leaves this pure contract's `not-run` results unchanged.
 The separate [#54 runtime check](../guides/RUNTIME_VERIFICATION.md) can be selected with
-`--runtime-check`; this is not approval. Its own exact-plan decision permits only the identical bundled
+`--runtime-check`, which does not by itself approve anything. Its own exact-plan decision permits only the identical bundled
 fixture to run for `app.debug` and an in-memory ASGI health check. It neither executes arbitrary
 proposal contents nor changes the pure contract's `not-run` results or proposal/decision schemas.
 

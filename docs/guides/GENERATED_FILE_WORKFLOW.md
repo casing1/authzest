@@ -87,12 +87,12 @@ plans and interaction use stderr. Raw captures remain in private phase records.
 The [local result viewer](RESULT_VIEWER.md) displays a selected final JSON without another model
 request. Importing a record does not run a stage, apply a change or reuse a decision.
 
-T before exit 1 and after exit 0 are auxiliary observations, not proof of assertion authenticity.
+T before exit 1 and after exit 0 are auxiliary observations; they do not prove that the assertions are genuine.
 The host independently checks the full 17-case/21-request HTTP profile and exact input bindings.
 Only the current direct phase return can establish a session baseline; saved JSON cannot reopen it.
-After restoration, a prior after comparison is historical, not a pass for the restored before file.
+After restoration, the earlier after comparison is historical and does not apply to the restored before file.
 Authorization remains unknown and `verified_fix: false`. An uncertain write reports `applied: null`
-with an explicit `current_copy_state`; it is not a false/no-effect result. A historical application
+with an explicit `current_copy_state`, which differs from a false or no-effect result. A historical application
 may remain true after confirmed restoration.
 
 ## Runtime and remaining acceptance

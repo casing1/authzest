@@ -43,14 +43,13 @@ readable scope/identity summary followed by the complete authoritative JSON enve
 for one complete preview object on stdout. There is no arbitrary path or automatic-approval option.
 The preview includes the request, task prompt, host
 instructions, output schema and limits, along with the `sharing_id` to which approval is bound.
-This ID covers that entire sharing envelope and a fresh per-invocation `invocation_nonce`, not just
-the request ID. `sharing_content_id` separately identifies the stable displayed content. Identical
+This ID covers that entire sharing envelope and a fresh per-invocation `invocation_nonce`, in
+addition to the request ID. `sharing_content_id` separately identifies the stable displayed content. Identical
 content has the same content ID but a different confirmation phrase on each invocation, including
 `--preview-only`. An offline preview's phrase cannot approve a later interactive run. Revalidation
 reuses that invocation's nonce before its one adapter construction; no CLI nonce override is accepted.
-The nonce is a public local challenge, not a secret or authenticated proof of human review.
-Codex adds its own harness
-context, so the preview is not a claim to show the model's entire context.
+The nonce is a public local challenge; it is not secret and does not prove that a person reviewed
+anything. Codex adds its own harness context, so the preview does not show the model's entire context.
 
 The task/source input is limited to:
 
@@ -306,14 +305,13 @@ The runner rebuilds the preview with that same nonce before constructing its one
 A captured old phrase is rejected before any adapter/provider use, even when the model, timeout,
 request and sharing content are identical. The content hash remains separate for comparison.
 
-This follow-up changes only local confirmation and result metadata, not the model's request,
-instructions, prompt, output schema, transport, deadline, source snapshots or execution boundaries.
-The local nonce is not sent as task data to Codex and does not create an authenticated approval
-service or prevent deliberate automation by a caller controlling the process and its current input.
+This follow-up changes only local confirmation and result metadata. The model's request,
+instructions, prompt, output schema, transport, deadline, source snapshots and execution boundaries
+stay the same. The local nonce is not sent to Codex as task data. It creates no authenticated
+approval service and cannot stop deliberate automation by a caller who controls the process and its input.
 Historical phrases recorded above are evidence of those earlier runs, never reusable approval.
 Offline tests cover fresh identities, stale-phrase rejection, same-nonce revalidation and the real
-source CLI with a fake App Server reading its actual displayed challenge. No new live provider run
-was made; the 2026-10-01 success remains evidence at `9257bd7`, not a live run of this follow-up.
+source CLI with a fake App Server reading its actual displayed challenge. This follow-up made no new live provider run; the 2026-10-01 success remains evidence for `9257bd7` only.
 Follow-up verification passed: **2,463** full offline tests in 163.18 seconds, **542** portable-subset
 tests and **152** focused owner-CLI/schema tests. Ruff and Markdown formatting passed, as did the
 14 documentation tests and 54-document / 26-pair / 936-link audit. Final-head CI and automated
@@ -383,12 +381,12 @@ It is not an authenticated receipt or a change to the original model-authored dr
 2026-10-01 result above was unreviewed at that time; new provider drafts remain unreviewed until
 their own exact review. The 28 assistant-authored developer labels and frozen evaluation set are unchanged.
 
-This approval covers labels only, not execution, sharing, patches or release. The source-only
+This approval covers labels only; execution, sharing, patches and release each need their own
+decision, and the label decision itself produced no policy observation. The source-only
 [#80 fixed policy-check API](../reference/OWNER_POLICY_CHECK.md) is the next work in progress.
-No actual execution approval or policy observation follows from this label decision itself.
 A later fresh separate exact-plan approval permitted
 [one macOS arm64 source check](../reference/OWNER_POLICY_CHECK.md#actual-source-acceptance-2026-10-09-kst):
-ten matching expected/observed values, provider calls zero and authorization unknown. A scripted
-control-plane answer, not a new AI response, bound the retained exact cases for that check. Its
+ten matching expected/observed values, zero provider calls and authorization unknown. A scripted
+control-plane answer bound the retained exact cases for that check; no new AI response was involved. Its
 single-run approval is consumed; future execution needs a new decision. Final-head #80 CI/reviews
 are pending, and the broader #35 workflow is not complete.

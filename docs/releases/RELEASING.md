@@ -35,11 +35,10 @@ not for a later documentation merge or release tag:
   Linux x64, macOS arm64 and Windows x64 each passed 26 selected/relocated, 13 packaged and 13
   fresh-download offline scan/preview checks. These seven-day test artifacts are not release assets.
 
-This preflight made no new actual model call or product guest execution. It does not satisfy the
-existing final-candidate active end-to-end gate. That gate remains pending: either obtain a fresh
-actual installed-candidate run, or have the maintainer explicitly accept combined evidence and
-approve a change to the existing criterion with its limits recorded in the readiness packet.
-Neither choice has been made by this document. The final source, tooling disposition, tag pipeline
+This preflight made no new model call and ran no product guest, so the final-candidate active
+end-to-end gate stayed open. Closing it needed either a fresh installed-candidate run or the
+maintainer's explicit acceptance of combined evidence, with the changed criterion and its limits
+recorded in the readiness packet; this document made neither choice. The final source, tooling disposition, tag pipeline
 and public-download verification remain separate gates; later source or artifact identities must be
 reviewed in their own right.
 
@@ -223,10 +222,11 @@ is promised. The candidate checked below is `b5f3eb81d318e94c5e400ec52e78f1550e1
 [PR #125](https://github.com/casing1/authzest/pull/125) prepared the version at `676c1cc`;
 [PR #127](https://github.com/casing1/authzest/pull/127) then delivered the minimatch repair by normal
 merge at this candidate. Both PR heads passed ten CI checks and both automatic reviews; each merged
-main passed six checks. Security finding counts were unreported, not zero-count assessments.
-The November 5 nonpublishing native and source-install observations below add candidate-bound
-preflight evidence, not full release/runtime or public-asset verification. Published alpha.3 is unchanged.
-The estimated course submission around November 18 is not a confirmed deadline or a reason to bypass gates.
+main passed six checks. Security finding counts were unreported, which is different from zero.
+The November 5 nonpublishing native and source-install observations below are candidate-bound
+preflight evidence only; full release, runtime and public-asset verification came later. Published
+alpha.3 is unchanged. The estimated course submission around November 18 was neither a confirmed
+deadline nor a reason to skip gates.
 The maintainer has since accepted the named residual formatting risk for the forthcoming alpha.4 with
 [visible warnings and follow-up conditions](../development/FORMATTING.md#alpha4-maintainer-disposition-2026-11-05-kst).
 This does not waive the remaining release gates or fix the embedded parser.
@@ -452,10 +452,10 @@ fixture/policy worker, runtime smoke or patch application is included. The separ
 workflow and its runtime/publication gates remain unchanged.
 
 Artifact containers use `preview-` plus the full run SHA, run ID, attempt, OS and architecture, with a
-requested seven-day retention period. They are Actions test artifacts, not GitHub Release assets.
-The executable reports its checkout's package version. A historical `0.1.0a3` preflight is not an
-immutable published alpha.3 download, and a prepared `0.1.0a4` label alone does not establish an alpha.4
-publication or accepted candidate. Retain the run URL, full SHA, actual runner architecture,
+requested seven-day retention period. They are Actions test artifacts, separate from GitHub Release
+assets. The executable reports its checkout's package version, so a historical `0.1.0a3` preflight
+differs from the immutable published alpha.3 download, and a prepared `0.1.0a4` label alone shows
+neither an alpha.4 publication nor an accepted candidate. Retain the run URL, full SHA, actual runner architecture,
 dependency/build logs, artifact IDs and checksums with the test evidence. Match the download to that
 same run and attempt; partial job reruns are not a supported way to reuse another attempt's artifacts.
 Any rerun requires a fresh decision on its scope rather than automatic retry.
@@ -581,9 +581,10 @@ checking a local build.
    invocation nonce, including calls across preview kinds, candidates and relocated copies.
    These six preview checks per executable bring binary mode to 26 checks and checksum-aware artifact
    mode to 13. Preview children receive a minimal environment, no ambient credentials and only the
-   temporary executable directory on PATH. This is not an OS sandbox; preview mode grants no sharing,
-   case-label approval, policy execution, patch approval or authorization verdict. The repair before/after
-   texts are packaged data, not observed policy outcomes or checks of an applied file. The controller's baseline uses
+   temporary executable directory on PATH. This is not an OS sandbox. Preview mode grants no sharing,
+   case-label approval, policy execution or patch approval and gives no authorization verdict. The
+   repair before/after texts are packaged data; they are neither observed policy outcomes nor checks of
+   an applied file. The controller's baseline uses
    standard-library-only core modules, so the existing dependency-free `python -I` artifact gate
    remains supported. The same versioned smoke script runs in all three platform build/download jobs;
    passing unit tests or one local platform does not establish that all native artifacts pass.

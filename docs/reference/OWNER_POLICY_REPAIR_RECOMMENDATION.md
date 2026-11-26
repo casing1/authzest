@@ -288,28 +288,28 @@ bindings; stale/forged/detached data; closed field and complete-artifact budget 
 against side effects or policy import/evaluation. These are requirements, not results claimed here.
 
 The sharing/adapter checks additionally cover scripted transport responses, refusal/cancellation,
-exact sharing bindings and failure cases; offline tests are not live-model acceptance. The separate
+exact sharing bindings and failure cases; these offline tests do not accept a live model. The separate
 2026-10-28 acceptance above consumed its one-run sharing approval; any further provider check needs
 a fresh bounded decision. The [dedicated fixed-check API](OWNER_POLICY_REPAIR_CHECK.md) implements
 the reviewed recipe in PR #110, initially verified offline/static/with mocks at `510377c`. The subsequent
 separately approved before run recorded the expected two mismatches and consumed that one-run
 approval. A separate later after run at documentation-only `7f9c5ce` matched eight cases and consumed
-its own approval, without a before rerun or runtime change. Offline comparison of the saved records
-is not a new product comparison API or authenticated execution attestation. #80 continues rejecting
+its own approval, without a before rerun or runtime change. The offline comparison of the saved
+records adds no product comparison API and does not attest the execution. #80 continues rejecting
 the negative source. PR #110 subsequently completed separately authorized final-head review and
 delivery at `ea081e0` on 2026-10-28; see the [source-delivery record](OWNER_POLICY_REPAIR_CHECK.md#completed-source-delivery-2026-10-28-kst).
 The separately reviewed file-bound API was then delivered in PR #118. Its
 [file-workflow acceptance](OWNER_POLICY_FILE_REPAIR.md#file-workflow-acceptance-2026-10-29-kst)
 on 2026-10-29 at `fb90c46` revalidated the historical real recommendation and consumed separate
 before-check, exact-diff, apply, after-check and restore approvals. It observed 6/8 before and 8/8
-applied-after matches and restored the owned copy, with no new provider call. This is source-API
-acceptance, not a new model acceptance or installed CLI integration; an embedded after control still
-cannot verify an applied file. The separate [#82 opt-in CLI implementation](../guides/OWNER_FILE_WORKFLOW.md)
+applied-after matches and restored the owned copy, with no new provider call. This accepted the
+source API only, with no new model acceptance or installed CLI integration, and an embedded after
+control still cannot verify an applied file. The separate [#82 opt-in CLI implementation](../guides/OWNER_FILE_WORKFLOW.md)
 has offline fake-adapter/scripted-worker verification and a later separately approved installed
 happy-path observation at `c868152`: current recommendation, captured before 6/8, exact diff/apply,
 actual applied-after 8/8 and verified restore. See the [installed observation record](../guides/OWNER_FILE_ACCEPTANCE.md)
 for complete-output/private-evidence checks and limits. The maintainer accepted the bounded walkthrough,
-bilingual limitations and separate offline evidence on 2026-11-02 KST, not through another live run.
+bilingual limitations and separate offline evidence on 2026-11-02 KST, without another live run.
 General FastAPI PoC generation and model-authored repair source are not implemented. Acceptance-status
 documentation still needs required exact-head checks, separately approved reviews and normal merge
 before conditional #82 → #81 → #35 completion.

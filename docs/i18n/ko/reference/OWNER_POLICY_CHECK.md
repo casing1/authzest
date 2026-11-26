@@ -26,7 +26,7 @@ alpha.3와 구분해 [PR #97](https://github.com/casing1/authzest/pull/97)에서
 같은 날 이후 정확한 소스 검사에 대한 새 별도 승인을 받아 한 번 실행했습니다. 제한된 관찰은 아래에
 원래 초안·오프라인 계획과 구분하여 기록합니다.
 현재 coordinator recipe `1.1`은 결정의 종결성과 시작 실패 보고를 수정합니다. 아래의 과거
-recipe `1.0` 관찰은 새 coordinator의 수용 근거가 아닙니다. 이후 recipe `1.1` 소스 검사
+recipe `1.0` 관찰로 새 coordinator를 수용하지는 않습니다. 이후 recipe `1.1` 소스 검사
 1회에 대한 새 범위 제한 승인을 받아 `e037986`에서 예상값 10개가 모두 일치했습니다.
 두 1회 실행 승인은 소비됐습니다. 해당 소스 검사 시점에서 최종 head 리뷰·CI·전달은 별도 gate였고
 이후 결과는 [PR #97](https://github.com/casing1/authzest/pull/97)에서 추적합니다. 관찰로 릴리스를

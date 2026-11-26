@@ -58,7 +58,7 @@ FastAPI 예제를 import하거나 서버로 실행하지 않습니다. 모델 �
 선택적 검토자 이름은 호출자 텍스트이며 `reviewer_authenticated`는 항상 false입니다. 인증한
 승인 증표나 독립적인 의미 검토 증명이 아닙니다. 별도 2026-10-09 관리자 기록은 위의 변경하지
 않은 내용 해시에만 적용됩니다. 실행·소스 공유·패치 권한이나 별도 assistant 작성 개발 정답
-28개·고정 평가셋의 승인이 아닙니다.
+28개·고정 평가셋까지 승인하지는 않습니다.
 
 ## 고정 계획이며 실행은 아님
 
@@ -69,7 +69,7 @@ FastAPI 예제를 import하거나 서버로 실행하지 않습니다. 모델 �
 
 어느 계획도 `execution_available: false`, `requires_separate_execution_approval: true`,
 `execution_status: not-run`, `authorization_status: unknown`을 바꾸지 않고 패치 적용·제공자
-호출도 없습니다. 내용 식별값은 공유·적용·실행 권한이 아닙니다. 제안한 한도(사례 16개·scope
+호출도 없습니다. 내용 식별값으로 공유·적용·실행 권한을 얻지는 않습니다. 제안한 한도(사례 16개·scope
 16개·식별값 128자·입력 256 KiB·출력 16 KiB·5초)는 **설계 데이터**이지 실제로 강제한
 프로세스/sandbox 보장이 아닙니다. 이 오프라인 계약 자체는 harness·worker를 실행하거나 관찰
 결과를 만들지 않습니다. 별도 #80 검사 API에는 자체 한도·결과 기록이 있습니다.

@@ -80,7 +80,7 @@ Codex 로그인 동작은 공식 [인증 안내](https://learn.chatgpt.com/docs/
 요약의 `application_turn_attempts`는 adapter 호출 횟수이지 전송된 모델 턴이나 과금 횟수가 아닙니다.
 `turn/start` 전에 사전검사에서 실패할 수 있습니다. AuthZest는 애플리케이션 재시도·fallback·모델
 교체를 하지 않습니다. 다만 Codex 내부 transport
-재시도는 발생할 수 있습니다. timeout은 토큰이나 금액의 강제 상한이 아니며 실패·취소 전에 사용량이
+재시도는 발생할 수 있습니다. timeout으로 토큰이나 금액을 강제로 제한하지는 않으며 실패·취소 전에 사용량이
 발생할 수 있습니다. 측정하지 못한 사용량은 미확인 상태로 남겨야 합니다.
 
 같은 thread·turn의 `error`가 `willRetry: true`이고 인식하는 `responseStreamConnectionFailed`나
@@ -177,7 +177,7 @@ worker 실패, 오래된 상태나 journal 실패는 검증된 결과가 아닌 
 안전할 때 별도의 복구 결정을 계속 제시합니다. 복구는 자동이 아니며 보존된 검사 결과를 바꾸지 않습니다.
 그 결과는 복구한 파일이 아닌 적용 당시의 소스 해시를 설명합니다. 적용·검사·복구 결과는 별개입니다.
 journal 스키마 `1.1`은 기록에 성공하면 전체 `verification_plan` 미리보기, 결정과 결과를 보존합니다.
-`journal_status: recorded`는 호스트 쓰기의 완료를 뜻하며 인증이나 영구 보존의 증명이 아닙니다.
+`journal_status: recorded`는 호스트 쓰기의 완료를 뜻할 뿐 기록을 인증하거나 영구 보존을 증명하지 않습니다.
 쓰기·fsync 오류는 `unconfirmed`가 되고 실패 기록으로의 수정을 최선 노력 방식으로 시도합니다.
 이 수정도 실패하면 남은 기록은 불확실할 수 있습니다. 이전 성공 항목만 믿지 말고 실제 파일과 보고된
 실패를 확인하세요. journal로 세션을 재시작·재개할 수 없으며 재사용을 방지하는 승인 증표도 아닙니다.
@@ -198,7 +198,7 @@ authzest codex-fixture --model MODEL --timeout-seconds 120 --runtime-check
 결정이 필요합니다. 고정 worker는 정확히 유지하는 fixture 전후 버전만 허용하고 일치하는 번들 상수를
 실행합니다. `app.debug`와 메모리 내 ASGI `GET /health`를 관찰하며 의존성 버전도 관측값으로 기록합니다.
 임의 소스 경로나 모델이 만든 명령을 받지 않고 TCP/UDP 서버를 시작하지 않습니다. OS·네트워크
-sandbox, 인가 검사, exploit 재현이나 검증된 보안 수정이 아닙니다.
+sandbox, 인가 검사, exploit 재현 역할을 하지 않으며 보안 수정을 검증하지도 않습니다.
 
 런타임 세션은 `verification_scope: owned-fixture-runtime`과 journal 스키마 `1.2`를 사용합니다.
 `runtime_verification_status`는 기록된 검사를 반영하며 예기치 못한 중단에서는 실행하지 않았다고
@@ -377,7 +377,7 @@ Codex나 대상 소스를 실행하지 않았습니다. 원본 fixture 해시와
 초안 단계는 `13580.995 ms` 걸렸으며 보고된 사용량은 `input_tokens: 5573`, `output_tokens: 315`,
 관찰 횟수는 `provider_warning_count: 1`, `provider_retry_notification_count: 0`입니다.
 이는 이번 성공의 제공자 보고 사용량이지 이전 실패까지 합한 총량이나 독립 검증된 과금 기록이 아닙니다.
-모델 식별값은 여전히 thread에서 협의된 메타데이터이며 실제 처리 모델의 독립 증명이 아닙니다.
+모델 식별값은 여전히 thread에서 협의된 메타데이터이며 실제 처리 모델을 독립적으로 증명하지 않습니다.
 
 assistant가 호스트에서 만든 한 줄 diff를 검토하고 사용자가 승인한 E2E 검사 범위에서 별도의
 정확한 적용·복구 문구를 입력한 뒤 `status: completed` / 종료 `0`을 확인했습니다. 같은 제안과

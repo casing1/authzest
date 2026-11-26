@@ -22,7 +22,7 @@ finish 계약은 유지합니다.
 
 호출자가 제공하는 바이트/종료/정리/시각 상태이지 I/O·launcher·실제 timer 강제·제공자 신원 인증·
 실제 평가가 아닙니다. 프로세스 테스트에는 고정 소유 가짜 자식만 사용하며 선택 turn 부분집합은
-더 넓은 유효 프로토콜 변형을 계속 거부하고 전체 recipe 검증이 아닙니다. 실제 생명주기/호환성 조건·
+더 넓은 유효 프로토콜 변형을 계속 거부하며 전체 recipe를 검증하지는 않습니다. 실제 생명주기/호환성 조건·
 별도 실행 허가는 남아 있습니다. 제품/고정 버전/recipe/codec/preflight/JSONL/semantics/
 데이터/v1/수학/과거 자료·제품 `0.1.0a4` / 리포트 `1.2`는 그대로입니다. 신원 인증/새로움/준비/승인/
 trial 수용/실제 동결은 false이며 #84는 체크 7개 미완료인 OPEN입니다. 실제 Codex/계정/모델/정책
@@ -121,7 +121,7 @@ recipe descriptor/ID는 그대로입니다.
 설명하는 [App Server 안내](https://learn.chatgpt.com/docs/app-server)와
 [MCP `enabled=false` 옵션](https://learn.chatgpt.com/docs/config-file/config-reference)도 초기화 전
 동작을 증명하지 않습니다. 다음은 이 시작 경계를 명시한 별도 가짜 JSONL/파서/생명주기 단계이지 실제
-transport 준비 완료가 아닙니다. 런타임/준비/실행/실제 동결 flag는 false이며 제품 `0.1.0a4` / 리포트
+transport를 준비 완료 상태로 만들지 않습니다. 런타임/준비/실행/실제 동결 flag는 false이며 제품 `0.1.0a4` / 리포트
 `1.2`·고정 버전·v1/수학/과거 자료·#84 미완료 체크 7개는 그대로입니다. 실제 AI/worker 호출·위험
 수용·릴리스는 없습니다.
 
@@ -218,7 +218,7 @@ JSON을 받을 뿐 codec의 중첩 shaping 스키마를 제공자가 지원한�
 developer 지시에는 같은 공통 지시 바이트를 사용합니다. 다음 오프라인 builder가 전체 값·선택 스키마·
 제한·시계/실패 규칙을 구체화하고 해시해야 하며 이 문서는 실행 가능한 recipe 해시가 아닙니다.
 알 수 없는 instruction/profile/provider/context 재정의를 조용히 상속하지 않습니다. Discovery 중
-ambient MCP 동작을 포함한 유효 설정은 프로세스 구현 전 검토 조건이지 이 descriptor의 보장이 아닙니다.
+ambient MCP 동작을 포함한 유효 설정은 프로세스 구현 전 검토 조건이며 이 descriptor가 보장하지는 않습니다.
 
 | 단계               | 제안하는 정확한 선택과 필요한 관찰                                                                                                                                                  |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -235,7 +235,7 @@ ambient MCP 동작을 포함한 유효 설정은 프로세스 구현 전 검토 
 
 **2026-11-08 스키마 정정:** 생성 실험 `ClientRequest`에서 `remoteControl/status/read` params는
 선택적/null이며 `{}`가 아닙니다. 오프라인 프레임 후보는 `null`을 선택합니다. 일부 형식 대조일 뿐
-제품 adapter 변경이나 런타임/제공자 호환성 결과가 아닙니다.
+제품 adapter를 바꾸거나 런타임/제공자 호환성을 보여 주지 않습니다.
 
 계정/목록/thread 생성 전에 `null`로 `remoteControl/status/read`를 호출하고 `status="disabled"`를
 요구합니다. 누락·잘못된 형식·다른 상태면 batch를 거부하며 notification 부재를 비활성화의 근거로
@@ -270,7 +270,7 @@ message와 그 뒤 동일 turn의 성공 `turn/completed`·null error를 요구�
 없는 phase는 final이 아닙니다. delta나 turn snapshot만으로 최종 결과를 만들지 않습니다.
 Snapshot에 이미 완료된 같은 item이 다시 있다면 내용도 같아야 하며 다른/충돌 final을 추가하면
 안 됩니다. 이후 기존 strict codec을 호출하고 정리가 확인된 뒤에만 관찰 결과를 게시합니다.
-미보고 사용량은 null이며 마지막 turn 사용량은 전체 청구액이 아닙니다.
+미보고 사용량은 null이며 마지막 turn 사용량이 곧 전체 청구액이 되지는 않습니다.
 
 기존 제안 제한을 유지합니다. 완전한 JSONL 프레임당 256 KiB, 슬롯의 두 프로세스를 합쳐 수신
 stream 2 MiB·event 4,096개, 대기 notification 최대 128개, startup/preflight/generation을 합쳐
@@ -372,7 +372,7 @@ v1 값/바이트·채점 수학/이력·릴리스 버전·#84 체크는 변경�
 [`CodexAppServerAdapter`](../../../../src/authzest/codex/app_server.py)는 `0.153.0`에 고정되어 있으며
 검증된 공개 진입점에서 소유 fixture/owner-policy 요청만 허용합니다. 비공개 `_turn`은 fixture 전용
 base/developer 지시를 사용하고 평가 후보의 명시적 effort가 아니라 모델 목록의
-`defaultReasoningEffort`를 선택합니다. 따라서 **평가 transport 인터페이스가 아닙니다.**
+`defaultReasoningEffort`를 선택합니다. 따라서 평가 transport 인터페이스로 쓰지 않습니다.
 
 평가 prompt/schema를 이 비공개 메서드에 주입하거나 요청 타입/허용 목록을 넓히거나 제품 지시·
 effort 선택·버전 지원을 조용히 바꾸지 않습니다. 후속 소스 전용 평가 transport가 자체의 제한된 요청
@@ -443,7 +443,7 @@ split label·정답/manifest 해시·예상값·근거 설명·검토자 자료�
 불확실성을 이유로 애플리케이션 수준 시도를 추가하지 않습니다.
 후속 동의 UI는 선택한 batch의 모든 메시지·설정·시도 수·시간/사용량 한계를 하나의 완전한 한정
 결정으로 제시해야 하며 정상 슬롯마다 사용자 확인을 다시 요구하지 않습니다. 슬롯별 일회용 상태는
-내부 제약이지 추가 권한이 아닙니다. Batch 전송 유효 구간·만료 상한·단조 시계 규칙은 프로세스 경계
+내부 제약일 뿐 추가 권한을 주지 않습니다. Batch 전송 유효 구간·만료 상한·단조 시계 규칙은 프로세스 경계
 구현 전 transport recipe에서 고정/검사해야 합니다. 미리보기가 무기한 유효하다고 보거나 자동 갱신하지
 않습니다. 슬롯마다 새 빈 ephemeral thread와
 turn 하나를 사용하고 resume·fork·과거 기록 import·steer·모델 대체·AuthZest 재시도를 허용하지
