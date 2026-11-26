@@ -12,6 +12,16 @@ Support: macOS arm64, Python 3.12 source installation and Docker Desktop with re
 One flat `.py` app file, in-memory data, GET routes, explicit policy, synthetic identity headers
 (`x-user`, `x-user-id`, `x-role`). No packages, databases, other HTTP methods or real login systems.
 
+## Bundled examples
+
+Two examples come with reviewed-style case files. Copy either folder outside the repository first.
+
+- `examples/external_notes_app`: a handler reads the `x-user` header directly. Five cases; the
+  regression is `test-bob` reading note 1.
+- `examples/external_orders_app`: the user comes from a `Depends` helper with `x-user-id` and an
+  optional `x-role`, and support staff may read every order. Six cases, including support access
+  and a missing order that must stay 404; the regression is `test-lee` reading order `A-100`.
+
 ## 1. Preview the inputs and the case basis
 
 ```bash

@@ -1,0 +1,16 @@
+# Order lookup access policy
+
+- Requests identify a synthetic user with the `x-user-id` header and an optional `x-role` header.
+  Customers: `test-kim`, `test-lee`. Support staff: `test-park` with `x-role: test-support`.
+- Order `A-100` belongs to customer `test-kim`; order `A-101` belongs to customer `test-lee`.
+- `GET /orders/{order_id}` without `x-user-id` must return 401 `{"detail": "Login required"}`.
+- A customer may read only their own orders. Reading another customer's order must return 403
+  `{"detail": "Not your order"}`.
+- A user with `x-role: test-support` may read any order.
+- An unknown order ID returns 404 `{"detail": "Order not found"}` to any signed-in user, as today.
+- Allowed reads return the order unchanged: `{"order_id", "customer", "item", "total"}`.
+- `GET /status` is public and returns `{"service": "orders", "ready": true}`.
+
+Designated regression: `test-lee` reading order `A-100` (`GET /orders/A-100` with
+`x-user-id: test-lee` and no `x-role`) must be denied with 403. Do not change response bodies, the
+support-staff access or other behaviour.
