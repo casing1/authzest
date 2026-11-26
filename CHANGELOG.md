@@ -16,13 +16,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 No changes after the 0.1.0 entries below yet.
 
-## [0.1.0] - 2026-11-23
+## [0.1.0] - 2026-11-26
 
-This heading date records preparation of the course-release notes. It is replaced with the
-publication date in the release commit, which creates the matching tag. Check
-[GitHub Releases](https://github.com/casing1/authzest/releases) for actual publication and assets.
+The `v0.1.0` tag points to the release commit. Files and checksums are on
+[GitHub Releases](https://github.com/casing1/authzest/releases).
 [Release notes](docs/releases/0.1.0.md) and the
-[readiness snapshot](docs/releases/0.1.0-READINESS.md) describe the supported scope and pending decisions.
+[readiness snapshot](docs/releases/0.1.0-READINESS.md) describe the supported scope and the recorded decisions.
 
 ### Highlights since alpha.4
 
