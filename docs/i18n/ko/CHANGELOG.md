@@ -16,12 +16,11 @@ AuthZest의 주요 변경사항을 기록합니다.
 
 아래 0.1.0 항목 이후의 변경은 아직 없습니다.
 
-## [0.1.0] - 2026-11-23
+## [0.1.0] - 2026-11-26
 
-제목의 날짜는 과제용 릴리스 노트를 준비한 날입니다. 일치하는 태그를 만드는 릴리스 커밋에서 실제
-발행일로 바꿉니다. 실제 발행과 산출물은 [GitHub Releases](https://github.com/casing1/authzest/releases)에서
-확인하세요. [릴리스 노트](releases/0.1.0.md)와 [준비 상태](releases/0.1.0-READINESS.md)에
-지원 범위와 남은 결정을 기록합니다.
+`v0.1.0` 태그는 릴리스 커밋을 가리킵니다. 파일과 체크섬은
+[GitHub Releases](https://github.com/casing1/authzest/releases)에 있습니다.
+[릴리스 노트](releases/0.1.0.md)와 [준비 상태](releases/0.1.0-READINESS.md)에 지원 범위와 기록한 결정이 있습니다.
 
 ### alpha.4 이후 주요 변경사항
 
