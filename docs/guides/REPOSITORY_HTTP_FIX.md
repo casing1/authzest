@@ -14,7 +14,8 @@ One flat `.py` app file, in-memory data, GET routes, explicit policy, synthetic 
 
 ## Bundled examples
 
-Two examples come with reviewed-style case files. Copy either folder outside the repository first.
+Two examples come with reviewed case files, and both passed with a real model (2026-11-25 and
+2026-11-27). Copy either folder outside the repository first.
 
 - `examples/external_notes_app`: a handler reads the `x-user` header directly. Five cases; the
   regression is `test-bob` reading note 1.
